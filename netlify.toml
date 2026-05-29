@@ -9,3 +9,7 @@
   timeout = 26
 
 # Trigger deploy
+
+
+[build.environment]
+  SECRETS_SCAN_OMIT_KEYS = "AIzaSyAtW-rocD37V23HGwA6xqwgxMFjhpRJMg4"

@@ -10,7 +10,7 @@ function makeRequest(options, postData) {
               req.on('error', (e) => reject(e));
               req.setTimeout(25000, () => {
                         req.destroy(new Error('Request timed out after 25 seconds'));
-              });
+              });h
               req.write(postData);
               req.end();
       });
@@ -45,7 +45,7 @@ exports.handler = async function(event) {
       }
 
       const payload = {
-              model: 'claude-sonnet-4-5',
+                  model: 'claude-haiku-4-5-20251001',
               max_tokens: body.max_tokens || 1000,
               system: body.system || '',
               messages: body.messages || [],

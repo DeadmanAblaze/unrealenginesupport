@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -118,6 +118,18 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .src.ep{border-color:var(--accent2);color:var(--accent2);background:var(--adim)}.src.ep:hover{background:var(--adim2)}
 .src.cm{border-color:#2a5f3a;color:var(--green);background:var(--gdim)}
 .src.yt{border-color:#c00;color:#ff4444;background:rgba(255,68,68,0.08)}
+.api-modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:10000;align-items:center;justify-content:center;padding:24px}
+.api-modal-bg.show{display:flex}
+.api-modal{background:var(--bg1);border:1px solid var(--border);border-radius:var(--rl);padding:32px;max-width:420px;width:100%}
+.api-modal h2{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--accent);margin-bottom:8px}
+.api-modal p{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:16px}
+.api-modal a{color:var(--accent);text-decoration:underline}
+.api-modal .afield{margin-bottom:14px}
+.api-modal .afield label{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:5px}
+.api-modal .afield input{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-family:var(--mono);font-size:12px;padding:9px 12px;outline:none;transition:border-color .15s}
+.api-modal .afield input:focus{border-color:var(--accent2)}
+.api-modal-err{font-family:var(--mono);font-size:11px;color:var(--red);background:var(--rdim);border:1px solid var(--red);border-radius:var(--r);padding:7px 11px;margin-bottom:12px;display:none}
+.api-key-display{font-family:var(--mono);font-size:11px;color:var(--green);background:var(--gdim);border:1px solid var(--green);border-radius:var(--r);padding:7px 11px;margin-bottom:12px;display:none}
 .diag-wrap{margin-top:20px;background:var(--bg1);border:1px solid var(--border);border-radius:var(--rl);padding:20px;overflow-x:auto}
 .diag-title{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);margin-bottom:16px;display:flex;align-items:center;gap:8px}
 .diag-title::after{content:'';flex:1;height:1px;background:var(--border)}
@@ -219,6 +231,24 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
       <div class="afield"><label>Email</label><input type="email" id="su-em" placeholder="you@studio.com" onkeydown="if(event.key==='Enter')doSignUp()"></div>
       <div class="afield"><label>Password</label><input type="password" id="su-pw" placeholder="Min 6 characters" onkeydown="if(event.key==='Enter')doSignUp()"></div>
       <button class="abtn" id="su-btn" onclick="doSignUp()">Create Account</button>
+    </div>
+  </div>
+</div>
+
+<!-- API KEY SETUP MODAL -->
+<div class="api-modal-bg" id="api-modal-bg">
+  <div class="api-modal">
+    <h2>&#9671; API Key Required</h2>
+    <p>This app uses the Anthropic Claude API for AI support. You need your own API key — it's stored only in your browser and never sent to our servers except to make API calls on your behalf.</p>
+    <p>Get your free API key at <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a></p>
+    <div class="api-modal-err" id="api-modal-err"></div>
+    <div class="afield">
+      <label>Anthropic API Key</label>
+      <input type="password" id="api-key-input" placeholder="sk-ant-api03-..." autocomplete="off" onkeydown="if(event.key==='Enter')saveApiKey()">
+    </div>
+    <button class="abtn" onclick="saveApiKey()">Save & Continue</button>
+    <div style="text-align:center;margin-top:10px">
+      <span style="font-family:var(--mono);font-size:10px;color:var(--text3);cursor:pointer;text-decoration:underline" onclick="skipApiKey()">Skip for now (chat will be unavailable)</span>
     </div>
   </div>
 </div>
@@ -634,6 +664,21 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
       </div>
     </div></div>
 
+    <!-- API Key Settings Card (shown for non-owner accounts) -->
+    <div id="api-key-section" style="display:none;margin-top:8px">
+      <div class="sh">API Configuration</div>
+      <div class="card">
+        <div class="ch"><div class="cd"></div><span class="ct">Anthropic API Key</span></div>
+        <p style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:14px">Your API key is stored only in this browser. Get yours at <a href="https://console.anthropic.com" target="_blank" style="color:var(--accent)">console.anthropic.com</a></p>
+        <div class="api-key-display" id="api-key-set-indicator">&#10003; API key is set</div>
+        <div class="f"><label>API Key</label><input type="password" id="config-api-key" placeholder="sk-ant-api03-..." autocomplete="off"></div>
+        <div style="display:flex;gap:8px;margin-top:4px">
+          <button class="btn bp sm" onclick="saveApiKeyFromConfig()">Save Key</button>
+          <button class="btn bd sm" onclick="clearApiKey()">Clear Key</button>
+        </div>
+      </div>
+    </div>
+
     <div class="pnl" id="pnl-issues">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap">
         <h1 style="font-family:var(--mono);font-size:15px;font-weight:500">Issue Tracker</h1>
@@ -884,6 +929,7 @@ async function loadData(){
     renderRigSum();
     buildSysPrompt();
     initChat();
+    checkApiKeyOnLogin();
     // Live diagram updates as user types in VP spec fields
     var vpFields = ['editor-machine','editor-gpu','ue-version',
       'n1-machine','n1-gpu','n1-sync','n1-cap','n1-sdi',
@@ -904,6 +950,72 @@ async function loadData(){
 }
 
 // Nav
+// ── API KEY MANAGEMENT ────────────────────────────────────────────────────────
+var OWNER_EMAIL = 'mttw87@gmail.com';
+
+function isOwner(){ return cu && cu.email === OWNER_EMAIL; }
+
+function getStoredKey(){ return localStorage.getItem('vp_anthropic_key') || ''; }
+
+function showApiModal(){
+  el('api-modal-bg').classList.add('show');
+  el('api-modal-err').style.display='none';
+  el('api-key-input').value='';
+  setTimeout(function(){ el('api-key-input').focus(); }, 100);
+}
+
+function hideApiModal(){ el('api-modal-bg').classList.remove('show'); }
+
+function saveApiKey(){
+  var key = el('api-key-input').value.trim();
+  if(!key){ el('api-modal-err').textContent='Please enter your API key.'; el('api-modal-err').style.display='block'; return; }
+  if(!key.startsWith('sk-ant-')){ el('api-modal-err').textContent='Invalid key format. Should start with sk-ant-'; el('api-modal-err').style.display='block'; return; }
+  localStorage.setItem('vp_anthropic_key', key);
+  hideApiModal();
+  updateApiKeyUI();
+}
+
+function skipApiKey(){ hideApiModal(); }
+
+function saveApiKeyFromConfig(){
+  var key = el('config-api-key').value.trim();
+  if(!key){ alert('Please enter your API key.'); return; }
+  if(!key.startsWith('sk-ant-')){ alert('Invalid key format. Should start with sk-ant-'); return; }
+  localStorage.setItem('vp_anthropic_key', key);
+  el('config-api-key').value='';
+  updateApiKeyUI();
+  var ind = el('api-key-set-indicator');
+  ind.textContent = '\u2713 API key saved successfully';
+  ind.style.display='block';
+  setTimeout(function(){ ind.textContent='\u2713 API key is set'; }, 2000);
+}
+
+function clearApiKey(){
+  if(!confirm('Remove your stored API key?')) return;
+  localStorage.removeItem('vp_anthropic_key');
+  updateApiKeyUI();
+}
+
+function updateApiKeyUI(){
+  var hasKey = !!getStoredKey();
+  var ind = el('api-key-set-indicator');
+  if(ind){ ind.style.display = hasKey ? 'block' : 'none'; ind.textContent='\u2713 API key is set'; }
+  var configInput = el('config-api-key');
+  if(configInput) configInput.value = '';
+}
+
+function checkApiKeyOnLogin(){
+  if(isOwner()) return; // Owner uses server key
+  // Show API section in config
+  var sec = el('api-key-section');
+  if(sec) sec.style.display='block';
+  // Show modal on first login if no key stored
+  if(!getStoredKey()){
+    setTimeout(showApiModal, 800);
+  }
+  updateApiKeyUI();
+}
+
 function go(id, btn){
   document.querySelectorAll('.pnl').forEach(function(p){ p.classList.remove('on'); });
   document.querySelectorAll('.nb').forEach(function(b){ b.classList.remove('on'); });
@@ -1255,10 +1367,11 @@ function sendChat(){
   var si=document.createElement('div'); si.className='sind'; si.id='sind';
   si.innerHTML='&#9657; Searching docs &amp; community<span class="dots"><span>.</span><span>.</span><span>.</span></span>';
   m.appendChild(si); m.scrollTop=m.scrollHeight;
+  var storedKey = localStorage.getItem('vp_anthropic_key') || '';
   fetch('/.netlify/functions/chat',{
     method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:SYS,
-      tools:[{type:'web_search_20250305',name:'web_search'}],messages:chatHist})
+    body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:1000,system:SYS,
+      messages:chatHist,userEmail:cu?cu.email:'',userApiKey:storedKey})
   }).then(function(r){
     return r.text().then(function(text){
       var si=el('sind'); if(si) si.remove();
@@ -1276,7 +1389,14 @@ function sendChat(){
       }
       var full='';
       if(data.content) data.content.forEach(function(b){if(b.type==='text') full+=b.text;});
-      if(!full&&data.error) full='API error: '+(data.error.message||JSON.stringify(data.error));
+      if(!full&&data.error){
+        if(data.error.message==='NO_API_KEY'){
+          full='No API key configured. Go to Rig Specs to enter your Anthropic API key, or visit console.anthropic.com to get one.';
+          showApiModal();
+        } else {
+          full='API error: '+(data.error.message||JSON.stringify(data.error));
+        }
+      }
       if(!full) full='No response content received.';
       var ps=parseSrc(full);
       chatHist.push({role:'assistant',content:full});

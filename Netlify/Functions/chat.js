@@ -1,4 +1,4 @@
-const https = require('https');
+﻿const https = require('https');
 
 function makeRequest(options, postData) {
   return new Promise(function(resolve, reject) {
@@ -39,7 +39,7 @@ exports.handler = async function(event) {
     return { statusCode: 400, headers: respHeaders, body: JSON.stringify({ error: { message: 'Invalid request body: ' + e.message } }) };
   }
 
-  var ownerEmail = 'mttw87@gmail.com';
+  var ownerEmail = 'matthew.whalen87@icloud.com';
   var apiKey = null;
 
   if (body.userApiKey && body.userApiKey.trim().startsWith('sk-ant-')) {

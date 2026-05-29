@@ -10,7 +10,7 @@ function makeRequest(options, postData) {
               req.on('error', (e) => reject(e));
               req.setTimeout(25000, () => {
                         req.destroy(new Error('Request timed out after 25 seconds'));
-              });h
+              });
               req.write(postData);
               req.end();
       });

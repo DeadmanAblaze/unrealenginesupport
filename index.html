@@ -1,0 +1,1383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VP Support Console</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#080c10;--bg1:#0d1117;--bg2:#131920;--bg3:#1a2230;--border:#1e2d3d;--border2:#2a3f55;--accent:#00d4ff;--accent2:#0099cc;--adim:rgba(0,212,255,0.08);--adim2:rgba(0,212,255,0.15);--green:#00ff88;--gdim:rgba(0,255,136,0.08);--amber:#ffb347;--adimb:rgba(255,179,71,0.1);--red:#ff4d6d;--rdim:rgba(255,77,109,0.1);--purple:#b06aff;--pdim:rgba(176,106,255,0.1);--text:#c8d8e8;--text2:#7a90a4;--text3:#4a5f72;--mono:'IBM Plex Mono',monospace;--sans:'IBM Plex Sans',sans-serif;--r:6px;--rl:10px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);pointer-events:none;z-index:9999}
+#loading{display:flex;align-items:center;justify-content:center;min-height:100vh;flex-direction:column;gap:16px;font-family:var(--mono);font-size:13px;color:var(--text3)}
+.spin{width:24px;height:24px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+#auth-screen{display:none;align-items:center;justify-content:center;min-height:100vh;padding:24px}
+.auth-box{width:100%;max-width:380px;background:var(--bg1);border:1px solid var(--border);border-radius:var(--rl);padding:36px}
+.auth-logo{display:flex;align-items:center;gap:12px;margin-bottom:28px}
+.auth-mark{width:38px;height:38px;border:1px solid var(--accent);border-radius:6px;display:flex;align-items:center;justify-content:center;background:var(--adim);font-size:18px}
+.auth-title{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--accent)}
+.auth-sub{font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-top:2px}
+.tabs{display:flex;border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:24px}
+.tab{flex:1;padding:9px;font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);background:none;border:none;cursor:pointer;transition:all .15s}
+.tab.active{background:var(--adim2);color:var(--accent)}
+.afield{margin-bottom:14px}
+.afield label{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:5px}
+.afield input{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-family:var(--mono);font-size:12px;padding:9px 12px;outline:none;transition:border-color .15s}
+.afield input:focus{border-color:var(--accent2)}
+.abtn{width:100%;padding:10px;font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;border-radius:var(--r);border:1px solid var(--accent);background:var(--adim2);color:var(--accent);cursor:pointer;transition:all .15s;margin-top:4px}
+.abtn:hover{background:rgba(0,212,255,.25)}
+.abtn:disabled{opacity:.4;cursor:not-allowed}
+.aerr{font-family:var(--mono);font-size:11px;color:var(--red);background:var(--rdim);border:1px solid var(--red);border-radius:var(--r);padding:8px 12px;margin-bottom:12px;display:none}
+.aok{font-family:var(--mono);font-size:11px;color:var(--green);background:var(--gdim);border:1px solid var(--green);border-radius:var(--r);padding:8px 12px;margin-bottom:12px;display:none}
+.alink{font-family:var(--mono);font-size:10px;color:var(--text3);text-align:center;margin-top:12px;cursor:pointer;text-decoration:underline}
+#app{display:none}
+.hdr{display:flex;align-items:center;gap:16px;padding:11px 24px;background:var(--bg1);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+.logo-wrap{display:flex;align-items:center;gap:10px}
+.logo-mark{width:28px;height:28px;border:1px solid var(--accent);border-radius:4px;display:flex;align-items:center;justify-content:center;background:var(--adim);font-size:14px}
+.logo-txt{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--accent);letter-spacing:.05em}
+.logo-s{font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:.08em;text-transform:uppercase}
+.hdr-r{margin-left:auto;display:flex;align-items:center;gap:10px}
+.upill{display:flex;align-items:center;gap:6px;padding:3px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;font-family:var(--mono);font-size:10px;color:var(--text2)}
+.udot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.sobt{font-family:var(--mono);font-size:10px;color:var(--text3);background:none;border:1px solid var(--border);border-radius:var(--r);padding:4px 10px;cursor:pointer;transition:all .15s}
+.sobt:hover{color:var(--red);border-color:var(--red)}
+.nav{display:flex;padding:0 24px;background:var(--bg1);border-bottom:1px solid var(--border);overflow-x:auto}
+.nb{padding:10px 14px;font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:color .15s,border-color .15s;white-space:nowrap}
+.nb:hover{color:var(--text)}
+.nb.on{color:var(--accent);border-bottom-color:var(--accent)}
+.nbadge{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;background:var(--adim2);color:var(--accent);border-radius:50%;font-size:9px;margin-left:5px;vertical-align:middle}
+.main{padding:24px;max-width:1200px;margin:0 auto}
+.pnl{display:none}.pnl.on{display:block}
+.card{background:var(--bg1);border:1px solid var(--border);border-radius:var(--rl);padding:20px;margin-bottom:16px}
+.ch{display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.ct{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.cd{width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:700px){.g2{grid-template-columns:1fr}}
+.f{margin-bottom:13px}
+.f label{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:5px}
+.f input,.f select,.f textarea{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-family:var(--mono);font-size:12px;padding:7px 11px;outline:none;transition:border-color .15s;resize:vertical}
+.f input:focus,.f select:focus,.f textarea:focus{border-color:var(--accent2)}
+.f select option{background:var(--bg2)}
+.f textarea{min-height:70px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;border-radius:var(--r);border:1px solid;cursor:pointer;transition:all .15s}
+.bp{background:var(--adim2);border-color:var(--accent);color:var(--accent)}.bp:hover{background:rgba(0,212,255,.25)}
+.bg{background:transparent;border-color:var(--border2);color:var(--text2)}.bg:hover{border-color:var(--text2);color:var(--text)}
+.bd{background:var(--rdim);border-color:var(--red);color:var(--red)}
+.bs{background:var(--gdim);border-color:var(--green);color:var(--green)}
+.sm{padding:4px 9px;font-size:10px}
+.badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:20px;font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.05em;border:1px solid}
+.bopen{background:var(--rdim);border-color:var(--red);color:var(--red)}
+.bprog{background:var(--adimb);border-color:var(--amber);color:var(--amber)}
+.bres{background:var(--gdim);border-color:var(--green);color:var(--green)}
+.binf{background:var(--adim2);border-color:var(--accent);color:var(--accent)}
+.bwait{background:var(--pdim);border-color:var(--purple);color:var(--purple)}
+.sr{display:flex;align-items:flex-start;gap:12px;padding:7px 0;border-bottom:1px solid var(--border)}
+.sr:last-child{border-bottom:none}
+.sk{font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;min-width:130px;padding-top:1px;flex-shrink:0}
+.sv{font-family:var(--mono);font-size:12px;color:var(--text);flex:1}
+.sv.ac{color:var(--accent)}
+.sh{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.sh::after{content:'';flex:1;height:1px;background:var(--border)}
+.si{font-family:var(--mono);font-size:10px;color:var(--green);opacity:0;transition:opacity .3s;margin-left:auto}
+.si.on{opacity:1}
+.ic{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:14px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+.ic:hover{border-color:var(--border2)}
+.ic.ex{border-color:var(--border2)}
+.ih{display:flex;align-items:flex-start;gap:10px}
+.in{font-family:var(--mono);font-size:10px;color:var(--text3);min-width:28px;padding-top:2px}
+.it{font-size:13px;font-weight:500;color:var(--text);flex:1;line-height:1.4}
+.im{display:flex;align-items:center;gap:7px;margin-top:5px;flex-wrap:wrap}
+.id{font-family:var(--mono);font-size:10px;color:var(--text3)}
+.ib{display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+.ib.on{display:block}
+.ib p{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:8px}
+.steps{display:flex;flex-direction:column;gap:4px;margin:8px 0}
+.step{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--text2);padding:5px 0;cursor:pointer}
+.sdot{width:8px;height:8px;border-radius:50%;border:1px solid var(--border2);flex-shrink:0;margin-top:3px;transition:all .15s}
+.sdot.done{background:var(--green);border-color:var(--green)}
+.iact{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.cl-layout{display:grid;grid-template-columns:1fr 280px;gap:16px}
+@media(max-width:900px){.cl-layout{grid-template-columns:1fr}}
+.chat-main{display:flex;flex-direction:column;background:var(--bg1);border:1px solid var(--border);border-radius:var(--rl);overflow:hidden;height:calc(100vh - 220px);min-height:480px}
+.msgs{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:14px;scrollbar-width:thin;scrollbar-color:var(--border2) transparent}
+.msg{display:flex;flex-direction:column;gap:3px;max-width:88%}
+.msg.u{align-self:flex-end;align-items:flex-end}
+.msg.a{align-self:flex-start}
+.ml{font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;padding:0 3px}
+.mb{padding:9px 13px;border-radius:8px;font-size:13px;line-height:1.6;white-space:pre-wrap;word-break:break-word}
+.msg.u .mb{background:var(--adim2);border:1px solid var(--accent2);color:var(--text);border-bottom-right-radius:3px}
+.msg.a .mb{background:var(--bg2);border:1px solid var(--border);color:var(--text);border-bottom-left-radius:3px}
+.mb.streaming::after{content:'█';animation:blink .8s step-end infinite;color:var(--accent);font-size:10px}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.srcs{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
+.src{display:inline-flex;align-items:center;gap:3px;font-family:var(--mono);font-size:10px;padding:2px 7px;border-radius:20px;border:1px solid;text-decoration:none;transition:background .15s}
+.src.ep{border-color:var(--accent2);color:var(--accent2);background:var(--adim)}.src.ep:hover{background:var(--adim2)}
+.src.cm{border-color:#2a5f3a;color:var(--green);background:var(--gdim)}
+.src.yt{border-color:#c00;color:#ff4444;background:rgba(255,68,68,0.08)}
+.diag-wrap{margin-top:20px;background:var(--bg1);border:1px solid var(--border);border-radius:var(--rl);padding:20px;overflow-x:auto}
+.diag-title{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.diag-title::after{content:'';flex:1;height:1px;background:var(--border)}
+#vp-diagram{width:100%;min-width:680px;display:block}
+.diag-node{cursor:default}
+.diag-node rect,.diag-node path{transition:filter .2s}
+.diag-lbl{font-family:'IBM Plex Mono',monospace;pointer-events:none}
+.diag-conn{stroke-dasharray:4 3;animation:dash 20s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-200}}
+.diag-signal{stroke-dasharray:6 2;animation:sig 3s linear infinite}
+@keyframes sig{to{stroke-dashoffset:-100}}
+.mode-bar{display:flex;align-items:center;gap:0;margin-bottom:22px;border:1px solid var(--border);border-radius:var(--r);overflow:hidden;max-width:380px}
+.mode-btn{flex:1;padding:10px 16px;font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);background:none;border:none;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:7px}
+.mode-btn.on{background:var(--adim2);color:var(--accent)}
+.mode-btn:not(.on):hover{background:var(--bg2);color:var(--text)}
+.mode-sep{width:1px;background:var(--border);flex-shrink:0}
+.mode-icon{font-size:14px}
+.vponly{display:none}.gdonly{display:none}
+.mode-vp .vponly{display:block}.mode-vp .gdonly{display:none}
+.mode-gd .gdonly{display:block}.mode-gd .vponly{display:none}
+.mode-tag{display:inline-flex;align-items:center;padding:1px 6px;border-radius:20px;font-family:var(--mono);font-size:9px;font-weight:500;border:1px solid;margin-left:5px;vertical-align:middle}
+.tag-vp{background:var(--adim2);border-color:var(--accent);color:var(--accent)}
+.tag-gd{background:var(--gdim);border-color:var(--green);color:var(--green)}
+.sind{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--text3);padding:4px 0}
+.dots span{animation:dp 1.2s infinite;display:inline-block}
+.dots span:nth-child(2){animation-delay:.2s}.dots span:nth-child(3){animation-delay:.4s}
+@keyframes dp{0%,80%,100%{opacity:.2}40%{opacity:1}}
+.ci{padding:12px;border-top:1px solid var(--border);display:flex;gap:8px;align-items:flex-end}
+.ci textarea{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-family:var(--mono);font-size:12px;padding:7px 11px;resize:none;min-height:36px;max-height:110px;outline:none;transition:border-color .15s}
+.ci textarea:focus{border-color:var(--accent2)}
+.sbtn{width:36px;height:36px;border-radius:var(--r);background:var(--adim2);border:1px solid var(--accent);color:var(--accent);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;transition:background .15s}
+.sbtn:hover:not(:disabled){background:rgba(0,212,255,.25)}
+.sbtn:disabled{opacity:.3;cursor:not-allowed}
+.sidebar{display:flex;flex-direction:column;gap:12px;overflow-y:auto;height:calc(100vh - 220px)}
+.qa-box{background:var(--bg1);border:1px solid var(--border);border-radius:var(--rl);padding:13px}
+.qa-t{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:9px}
+.qab{display:block;width:100%;text-align:left;padding:7px 9px;font-family:var(--mono);font-size:11px;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;margin-bottom:5px;transition:all .15s;line-height:1.4}
+.qab:hover{border-color:var(--accent2);color:var(--accent);background:var(--adim)}
+.prog-bar{display:flex;align-items:center;gap:12px;padding:9px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);margin-bottom:14px}
+.pn{font-family:var(--mono);font-size:18px;font-weight:500;color:var(--accent)}
+.pl{font-family:var(--mono);font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em}
+.pt{flex:1;height:3px;background:var(--border2);border-radius:2px;overflow:hidden}
+.pf{height:100%;background:var(--green);border-radius:2px;transition:width .3s;box-shadow:0 0 6px var(--green)}
+.cls{margin-bottom:18px}
+.clsh{display:flex;align-items:center;gap:10px;padding:7px 11px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;margin-bottom:5px;transition:border-color .15s}
+.clsh:hover{border-color:var(--border2)}
+.clst{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--text);text-transform:uppercase;letter-spacing:.08em;flex:1}
+.clsp{font-family:var(--mono);font-size:10px;color:var(--text3)}
+.cli{display:flex;align-items:flex-start;gap:9px;padding:8px 11px;border-radius:var(--r);cursor:pointer;transition:background .1s;margin-bottom:2px}
+.cli:hover{background:var(--bg2)}
+.cli.done .clt{color:var(--text3);text-decoration:line-through}
+.clc{width:15px;height:15px;border:1px solid var(--border2);border-radius:3px;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:9px;transition:all .15s}
+.cli.done .clc{background:var(--gdim);border-color:var(--green);color:var(--green)}
+.clt{font-size:13px;color:var(--text);line-height:1.5;flex:1}
+.cln{font-family:var(--mono);font-size:10px;color:var(--text3);margin-top:2px}
+.cltag{font-family:var(--mono);font-size:9px;padding:1px 5px;border-radius:20px;border:1px solid;letter-spacing:.05em;flex-shrink:0;margin-top:2px}
+.tnow{background:var(--adimb);border-color:var(--amber);color:var(--amber)}
+.ttmrw{background:var(--adim);border-color:var(--accent2);color:var(--accent)}
+.taja{background:var(--pdim);border-color:var(--purple);color:var(--purple)}
+.addi{display:flex;gap:7px;margin-top:5px;padding-bottom:7px}
+.addi input{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-family:var(--mono);font-size:12px;padding:6px 11px;outline:none}
+.addi input:focus{border-color:var(--accent2)}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+</style>
+</head>
+<body>
+
+<div id="loading">
+  <div class="spin"></div>
+  <span>Connecting to VP Support Console</span>
+  <span id="lerr" style="color:var(--red);font-size:11px;display:none;text-align:center;max-width:300px"></span>
+</div>
+
+<div id="auth-screen">
+  <div class="auth-box">
+    <div class="auth-logo">
+      <div class="auth-mark">&#9671;</div>
+      <div>
+        <div class="auth-title">VP SUPPORT</div>
+        <div class="auth-sub">Virtual Production Console</div>
+      </div>
+    </div>
+    <div class="tabs">
+      <button class="tab active" id="t-in" onclick="swTab('in')">Sign In</button>
+      <button class="tab" id="t-up" onclick="swTab('up')">Create Account</button>
+    </div>
+    <div class="aerr" id="aerr"></div>
+    <div class="aok" id="aok"></div>
+    <div id="f-in">
+      <div class="afield"><label>Email</label><input type="email" id="li-em" placeholder="you@studio.com" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <div class="afield"><label>Password</label><input type="password" id="li-pw" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <button class="abtn" id="li-btn" onclick="doLogin()">Sign In</button>
+      <div class="alink" onclick="doReset()">Forgot password?</div>
+    </div>
+    <div id="f-up" style="display:none">
+      <div class="afield"><label>Name</label><input type="text" id="su-nm" placeholder="Your name"></div>
+      <div class="afield"><label>Email</label><input type="email" id="su-em" placeholder="you@studio.com" onkeydown="if(event.key==='Enter')doSignUp()"></div>
+      <div class="afield"><label>Password</label><input type="password" id="su-pw" placeholder="Min 6 characters" onkeydown="if(event.key==='Enter')doSignUp()"></div>
+      <button class="abtn" id="su-btn" onclick="doSignUp()">Create Account</button>
+    </div>
+  </div>
+</div>
+
+<div id="app">
+  <div class="hdr">
+    <div class="logo-wrap">
+      <div class="logo-mark">&#9671;</div>
+      <div>
+        <div class="logo-txt">VP SUPPORT</div>
+        <div class="logo-s">Virtual Production Console</div>
+      </div>
+    </div>
+    <div class="hdr-r">
+      <span id="clk" style="font-family:var(--mono);font-size:11px;color:var(--text3)"></span>
+      <div class="upill"><div class="udot"></div><span id="udisp"></span></div>
+      <button class="sobt" onclick="doSignOut()">Sign Out</button>
+    </div>
+  </div>
+  <div class="nav">
+    <button class="nb on" onclick="go('specs',this)">Rig Specs</button>
+    <button class="nb" onclick="go('issues',this)">Issues <span class="nbadge" id="bi">0</span></button>
+    <button class="nb" onclick="go('chat',this)">Support Chat</button>
+    <button class="nb" onclick="go('cl',this)">Daily Checklist <span class="nbadge" id="bc">0</span></button>
+  </div>
+  <div class="main">
+
+    <div class="pnl on" id="pnl-specs">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px">
+        <h1 style="font-family:var(--mono);font-size:15px;font-weight:500">System Configuration</h1>
+        <span class="si" id="ssaved">SAVED</span>
+        <button class="btn bp sm" style="margin-left:auto" onclick="saveSpecs()">Save Config</button>
+      </div>
+      <div class="mode-bar">
+        <button class="mode-btn on" id="mbtn-vp" onclick="setMode('vp')"><span class="mode-icon">&#9671;</span> Virtual Production</button>
+        <div class="mode-sep"></div>
+        <button class="mode-btn" id="mbtn-gd" onclick="setMode('gd')"><span class="mode-icon">&#9654;</span> Game Development</button>
+      </div>
+      <div id="specs-fields">
+
+        <!-- ── VP MODE ─────────────────────────────────────────────── -->
+        <div class="vponly g2">
+          <div>
+            <div class="sh">Compute</div>
+            <div class="card">
+              <div class="ch"><div class="cd"></div><span class="ct">Editor / Primary Node</span></div>
+              <div class="f"><label>Machine</label><input id="s-editor-machine" placeholder="e.g. HP Z8 G4"></div>
+              <div class="f"><label>GPU</label><input id="s-editor-gpu" placeholder="e.g. NVIDIA RTX 4090"></div>
+              <div class="f"><label>RAM</label><input id="s-editor-ram" placeholder="e.g. 128GB DDR4"></div>
+              <div class="f"><label>OS</label><input id="s-editor-os" placeholder="e.g. Windows 11 Pro"></div>
+              <div class="f"><label>Unreal Engine Version</label><input id="s-ue-version" placeholder="e.g. 5.7"></div>
+            </div>
+            <div class="card">
+              <div class="ch"><div class="cd"></div><span class="ct">Display Node 1 (Left)</span></div>
+              <div class="f"><label>Machine</label><input id="s-n1-machine" placeholder="e.g. HP Z8 G4"></div>
+              <div class="f"><label>GPU</label><input id="s-n1-gpu" placeholder="e.g. NVIDIA A6000"></div>
+              <div class="f"><label>Sync Card</label><input id="s-n1-sync" placeholder="e.g. Nvidia Quadro Sync II"></div>
+              <div class="f"><label>Capture Card</label><input id="s-n1-cap" placeholder="e.g. Blackmagic Decklink"></div>
+              <div class="f"><label>SDI Input Format</label><input id="s-n1-sdi" placeholder="e.g. 1080i50"></div>
+            </div>
+            <div class="card">
+              <div class="ch"><div class="cd"></div><span class="ct">Display Node 2 (Right)</span></div>
+              <div class="f"><label>Machine</label><input id="s-n2-machine" placeholder="e.g. HP Z8 G4"></div>
+              <div class="f"><label>GPU</label><input id="s-n2-gpu" placeholder="e.g. NVIDIA A6000"></div>
+              <div class="f"><label>Sync Card</label><input id="s-n2-sync" placeholder="e.g. Nvidia Quadro Sync II"></div>
+              <div class="f"><label>Capture Card</label><input id="s-n2-cap" placeholder="e.g. Blackmagic Decklink"></div>
+              <div class="f"><label>SDI Input Format</label><input id="s-n2-sdi" placeholder="e.g. 1080i50"></div>
+            </div>
+          </div>
+          <div>
+            <div class="sh">Display & LED</div>
+            <div class="card">
+              <div class="ch"><div class="cd"></div><span class="ct">LED Volume</span></div>
+              <div class="f"><label>Wall Width</label><input id="s-wall-w" placeholder="e.g. 15m"></div>
+              <div class="f"><label>Wall Height</label><input id="s-wall-h" placeholder="e.g. 3m"></div>
+              <div class="f"><label>Curvature</label><input id="s-wall-c" placeholder="e.g. 3 degrees"></div>
+              <div class="f"><label>Resolution per Node</label><input id="s-wall-res" placeholder="e.g. 3840x2160 UHD"></div>
+              <div class="f"><label>LED Processor</label><input id="s-led" placeholder="e.g. Novastar"></div>
+              <div class="f"><label>Target FPS</label><input id="s-fps-t" placeholder="e.g. 50fps"></div>
+              <div class="f"><label>Current FPS Cap</label><input id="s-fps-c" placeholder="e.g. 25fps"></div>
+              <div class="f"><label>Wall Refresh Rate</label><input id="s-wall-hz" placeholder="e.g. 50Hz"></div>
+            </div>
+            <div class="sh">Tracking & Camera</div>
+            <div class="card">
+              <div class="ch"><div class="cd"></div><span class="ct">Tracking</span></div>
+              <div class="f"><label>Hardware</label><input id="s-tr-hw" placeholder="e.g. HTC Vive Mars"></div>
+              <div class="f"><label>Receivers</label><input id="s-tr-rx" placeholder="e.g. 4x IR on lighting grid"></div>
+              <div class="f"><label>Integration</label><input id="s-tr-int" placeholder="e.g. LiveLink native"></div>
+              <div class="f"><label>Tracking FPS</label><input id="s-tr-fps" placeholder="e.g. 25fps"></div>
+            </div>
+            <div class="card">
+              <div class="ch"><div class="cd"></div><span class="ct">Camera & Sync</span></div>
+              <div class="f"><label>Camera Model</label><input id="s-cam" placeholder="e.g. Sony HDC-1500"></div>
+              <div class="f"><label>ICVFX Mode</label><input id="s-icvfx" placeholder="e.g. Full ICVFX inner frustum"></div>
+              <div class="f"><label>Network</label><input id="s-net" placeholder="e.g. 10GbE isolated switch"></div>
+              <div class="f"><label>Genlock Source</label><input id="s-genlock" placeholder="e.g. House sync / blackburst"></div>
+              <div class="f"><label>Sync Generator</label><input id="s-syncgen" placeholder="e.g. AJA GEN10"></div>
+              <div class="f"><label>Notes</label><textarea id="s-vp-notes" placeholder="Additional VP notes..."></textarea></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── VP SYSTEM DIAGRAM ──────────────────────────────── -->
+        <div class="vponly diag-wrap">
+          <div class="diag-title">System Architecture Diagram</div>
+          <svg id="vp-diagram" viewBox="0 0 820 520" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <marker id="arr" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L6,3 Z" fill="#2a3f55"/>
+              </marker>
+              <marker id="arr-accent" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L6,3 Z" fill="#00d4ff"/>
+              </marker>
+              <marker id="arr-green" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L6,3 Z" fill="#00ff88"/>
+              </marker>
+              <marker id="arr-amber" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L6,3 Z" fill="#ffb347"/>
+              </marker>
+            </defs>
+
+            <!-- Background grid -->
+            <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+              <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#1e2d3d" stroke-width="0.5"/>
+            </pattern>
+            <rect width="820" height="520" fill="url(#grid)" opacity="0.4" rx="8"/>
+
+            <!-- ── NETWORK SWITCH (centre bottom) ── -->
+            <g id="dg-switch" class="diag-node">
+              <rect x="335" y="430" width="150" height="52" rx="6" fill="#0d1117" stroke="#2a3f55" stroke-width="1.5"/>
+              <rect x="335" y="430" width="150" height="4" rx="3" fill="#2a3f55"/>
+              <text x="410" y="453" text-anchor="middle" class="diag-lbl" font-size="9" fill="#4a5f72" letter-spacing="1">NETWORK</text>
+              <text id="dg-switch-lbl" x="410" y="467" text-anchor="middle" class="diag-lbl" font-size="10" fill="#7a90a4">10GbE Switch</text>
+              <!-- Port lights -->
+              <circle cx="352" cy="475" r="3" fill="#00ff88" opacity="0.8"/>
+              <circle cx="363" cy="475" r="3" fill="#00ff88" opacity="0.8"/>
+              <circle cx="374" cy="475" r="3" fill="#00ff88" opacity="0.6"/>
+              <circle cx="446" cy="475" r="3" fill="#00ff88" opacity="0.8"/>
+              <circle cx="457" cy="475" r="3" fill="#00ff88" opacity="0.8"/>
+              <circle cx="468" cy="475" r="3" fill="#ffb347" opacity="0.7"/>
+            </g>
+
+            <!-- ── EDITOR PC (top centre) ── -->
+            <g id="dg-editor" class="diag-node">
+              <rect x="310" y="30" width="200" height="100" rx="8" fill="#0d1117" stroke="#00d4ff" stroke-width="1.5"/>
+              <rect x="310" y="30" width="200" height="3" rx="2" fill="#00d4ff" opacity="0.6"/>
+              <text x="410" y="52" text-anchor="middle" class="diag-lbl" font-size="9" fill="#4a5f72" letter-spacing="1.5">EDITOR PC</text>
+              <text id="dg-editor-machine" x="410" y="70" text-anchor="middle" class="diag-lbl" font-size="11" fill="#c8d8e8">HP Z8 G4</text>
+              <text id="dg-editor-gpu" x="410" y="86" text-anchor="middle" class="diag-lbl" font-size="10" fill="#7a90a4">RTX 4090</text>
+              <text id="dg-editor-ue" x="410" y="100" text-anchor="middle" class="diag-lbl" font-size="9" fill="#00d4ff">UE 5.7</text>
+              <!-- USB icon -->
+              <text x="395" y="118" class="diag-lbl" font-size="9" fill="#4a5f72">Switchboard</text>
+            </g>
+
+            <!-- ── NODE 1 (left) ── -->
+            <g id="dg-node1" class="diag-node">
+              <rect x="30" y="160" width="190" height="130" rx="8" fill="#0d1117" stroke="#534AB7" stroke-width="1.5"/>
+              <rect x="30" y="160" width="190" height="3" rx="2" fill="#534AB7" opacity="0.7"/>
+              <text x="125" y="182" text-anchor="middle" class="diag-lbl" font-size="9" fill="#4a5f72" letter-spacing="1.5">DISPLAY NODE 1</text>
+              <text x="125" y="197" text-anchor="middle" class="diag-lbl" font-size="8" fill="#7a90a4">LEFT HALF</text>
+              <text id="dg-n1-machine" x="125" y="215" text-anchor="middle" class="diag-lbl" font-size="11" fill="#c8d8e8">HP Z8 G4</text>
+              <text id="dg-n1-gpu" x="125" y="231" text-anchor="middle" class="diag-lbl" font-size="10" fill="#7a90a4">A6000</text>
+              <!-- Sync chip -->
+              <rect x="40" y="243" width="70" height="18" rx="3" fill="#1a2230" stroke="#534AB7" stroke-width="1"/>
+              <text id="dg-n1-sync" x="75" y="255" text-anchor="middle" class="diag-lbl" font-size="8" fill="#AFA9EC">Quadro Sync</text>
+              <!-- Decklink chip -->
+              <rect x="118" y="243" width="92" height="18" rx="3" fill="#1a2230" stroke="#993C1D" stroke-width="1"/>
+              <text id="dg-n1-cap" x="164" y="255" text-anchor="middle" class="diag-lbl" font-size="8" fill="#F0997B">Decklink</text>
+              <!-- SDI label -->
+              <text id="dg-n1-sdi" x="164" y="278" text-anchor="middle" class="diag-lbl" font-size="8" fill="#4a5f72">1080i50</text>
+            </g>
+
+            <!-- ── NODE 2 (right) ── -->
+            <g id="dg-node2" class="diag-node">
+              <rect x="600" y="160" width="190" height="130" rx="8" fill="#0d1117" stroke="#534AB7" stroke-width="1.5"/>
+              <rect x="600" y="160" width="190" height="3" rx="2" fill="#534AB7" opacity="0.7"/>
+              <text x="695" y="182" text-anchor="middle" class="diag-lbl" font-size="9" fill="#4a5f72" letter-spacing="1.5">DISPLAY NODE 2</text>
+              <text x="695" y="197" text-anchor="middle" class="diag-lbl" font-size="8" fill="#7a90a4">RIGHT HALF</text>
+              <text id="dg-n2-machine" x="695" y="215" text-anchor="middle" class="diag-lbl" font-size="11" fill="#c8d8e8">HP Z8 G4</text>
+              <text id="dg-n2-gpu" x="695" y="231" text-anchor="middle" class="diag-lbl" font-size="10" fill="#7a90a4">A6000</text>
+              <rect x="606" y="243" width="70" height="18" rx="3" fill="#1a2230" stroke="#534AB7" stroke-width="1"/>
+              <text id="dg-n2-sync" x="641" y="255" text-anchor="middle" class="diag-lbl" font-size="8" fill="#AFA9EC">Quadro Sync</text>
+              <rect x="684" y="243" width="92" height="18" rx="3" fill="#1a2230" stroke="#993C1D" stroke-width="1"/>
+              <text id="dg-n2-cap" x="730" y="255" text-anchor="middle" class="diag-lbl" font-size="8" fill="#F0997B">Decklink</text>
+              <text id="dg-n2-sdi" x="730" y="278" text-anchor="middle" class="diag-lbl" font-size="8" fill="#4a5f72">1080i50</text>
+            </g>
+
+            <!-- ── LED WALL (bottom left/right panels) ── -->
+            <g id="dg-wall">
+              <!-- Left panel -->
+              <rect x="20" y="370" width="170" height="44" rx="4" fill="#0a0a14" stroke="#534AB7" stroke-width="1.5"/>
+              <text x="105" y="388" text-anchor="middle" class="diag-lbl" font-size="9" fill="#AFA9EC" letter-spacing="1">LED WALL — LEFT</text>
+              <text id="dg-wall-left-res" x="105" y="403" text-anchor="middle" class="diag-lbl" font-size="9" fill="#534AB7">UHD</text>
+              <!-- LED dots -->
+              <circle cx="35" cy="407" r="2" fill="#534AB7" opacity="0.6"/>
+              <circle cx="43" cy="407" r="2" fill="#534AB7" opacity="0.7"/>
+              <circle cx="51" cy="407" r="2" fill="#534AB7" opacity="0.5"/>
+              <!-- Right panel -->
+              <rect x="630" y="370" width="170" height="44" rx="4" fill="#0a0a14" stroke="#534AB7" stroke-width="1.5"/>
+              <text x="715" y="388" text-anchor="middle" class="diag-lbl" font-size="9" fill="#AFA9EC" letter-spacing="1">LED WALL — RIGHT</text>
+              <text id="dg-wall-right-res" x="715" y="403" text-anchor="middle" class="diag-lbl" font-size="9" fill="#534AB7">UHD</text>
+              <circle cx="645" cy="407" r="2" fill="#534AB7" opacity="0.6"/>
+              <circle cx="653" cy="407" r="2" fill="#534AB7" opacity="0.7"/>
+              <circle cx="661" cy="407" r="2" fill="#534AB7" opacity="0.5"/>
+              <!-- Wall info centre -->
+              <text id="dg-wall-size" x="410" y="390" text-anchor="middle" class="diag-lbl" font-size="10" fill="#7a90a4">15m × 3m · 3° curve</text>
+              <text id="dg-led-proc" x="410" y="406" text-anchor="middle" class="diag-lbl" font-size="9" fill="#4a5f72">Novastar</text>
+            </g>
+
+            <!-- ── TRACKING (top left) ── -->
+            <g id="dg-tracking" class="diag-node">
+              <rect x="30" y="30" width="160" height="82" rx="8" fill="#0d1117" stroke="#0F6E56" stroke-width="1.5"/>
+              <rect x="30" y="30" width="160" height="3" rx="2" fill="#0F6E56" opacity="0.7"/>
+              <text x="110" y="51" text-anchor="middle" class="diag-lbl" font-size="9" fill="#4a5f72" letter-spacing="1.5">TRACKING</text>
+              <text id="dg-tr-hw" x="110" y="68" text-anchor="middle" class="diag-lbl" font-size="11" fill="#c8d8e8">Vive Mars</text>
+              <text id="dg-tr-rx" x="110" y="83" text-anchor="middle" class="diag-lbl" font-size="9" fill="#7a90a4">4x IR receivers</text>
+              <text id="dg-tr-fps" x="110" y="98" text-anchor="middle" class="diag-lbl" font-size="9" fill="#1D9E75">25fps</text>
+            </g>
+
+            <!-- ── CAMERA (top right) ── -->
+            <g id="dg-camera" class="diag-node">
+              <rect x="630" y="30" width="160" height="82" rx="8" fill="#0d1117" stroke="#854F0B" stroke-width="1.5"/>
+              <rect x="630" y="30" width="160" height="3" rx="2" fill="#854F0B" opacity="0.7"/>
+              <text x="710" y="51" text-anchor="middle" class="diag-lbl" font-size="9" fill="#4a5f72" letter-spacing="1.5">CAMERA</text>
+              <text id="dg-cam-model" x="710" y="68" text-anchor="middle" class="diag-lbl" font-size="11" fill="#c8d8e8">Sony HDC-1500</text>
+              <text id="dg-cam-sdi" x="710" y="83" text-anchor="middle" class="diag-lbl" font-size="9" fill="#EF9F27">SDI 1080i50</text>
+              <text id="dg-cam-icvfx" x="710" y="97" text-anchor="middle" class="diag-lbl" font-size="8" fill="#7a90a4">Full ICVFX</text>
+            </g>
+
+            <!-- ── SYNC (centre left) ── -->
+            <g id="dg-sync" class="diag-node">
+              <rect x="295" y="200" width="140" height="60" rx="6" fill="#0d1117" stroke="#3B6D11" stroke-width="1.5"/>
+              <rect x="295" y="200" width="140" height="3" rx="2" fill="#3B6D11" opacity="0.7"/>
+              <text x="365" y="220" text-anchor="middle" class="diag-lbl" font-size="9" fill="#4a5f72" letter-spacing="1">GENLOCK / SYNC</text>
+              <text id="dg-genlock" x="365" y="237" text-anchor="middle" class="diag-lbl" font-size="10" fill="#c8d8e8">House sync</text>
+              <text id="dg-syncgen" x="365" y="251" text-anchor="middle" class="diag-lbl" font-size="9" fill="#639922">AJA GEN10</text>
+            </g>
+
+            <!-- ── CONNECTIONS ─────────────────────────────────────────── -->
+            <!-- Editor → Node1 (10GbE) -->
+            <line x1="310" y1="80" x2="220" y2="200" stroke="#2a3f55" stroke-width="1.5" marker-end="url(#arr)" class="diag-conn"/>
+            <!-- Editor → Node2 (10GbE) -->
+            <line x1="510" y1="80" x2="600" y2="200" stroke="#2a3f55" stroke-width="1.5" marker-end="url(#arr)" class="diag-conn"/>
+            <!-- Editor → Switch -->
+            <line x1="410" y1="130" x2="410" y2="430" stroke="#2a3f55" stroke-width="1.5" marker-end="url(#arr)" class="diag-conn"/>
+            <!-- Node1 → Switch -->
+            <line x1="125" y1="290" x2="335" y2="450" stroke="#2a3f55" stroke-width="1" stroke-dasharray="3 3"/>
+            <!-- Node2 → Switch -->
+            <line x1="695" y1="290" x2="485" y2="450" stroke="#2a3f55" stroke-width="1" stroke-dasharray="3 3"/>
+            <!-- Node1 → LED Wall Left (display out) -->
+            <line x1="105" y1="290" x2="105" y2="370" stroke="#534AB7" stroke-width="2" marker-end="url(#arr)"/>
+            <!-- Node2 → LED Wall Right (display out) -->
+            <line x1="695" y1="290" x2="715" y2="370" stroke="#534AB7" stroke-width="2" marker-end="url(#arr)"/>
+            <!-- Sync → Node1 -->
+            <line x1="295" y1="225" x2="220" y2="225" stroke="#3B6D11" stroke-width="1.5" marker-end="url(#arr)" stroke-dasharray="5 3"/>
+            <!-- Sync → Node2 -->
+            <line x1="435" y1="225" x2="600" y2="225" stroke="#3B6D11" stroke-width="1.5" marker-end="url(#arr)" stroke-dasharray="5 3"/>
+            <!-- Camera SDI → Node1 Decklink -->
+            <line x1="630" y1="70" x2="163" y2="250" stroke="#854F0B" stroke-width="1.5" marker-end="url(#arr)" class="diag-signal" stroke-dasharray="5 2"/>
+            <!-- Camera SDI → Node2 Decklink -->
+            <line x1="690" y1="112" x2="690" y2="160" stroke="#854F0B" stroke-width="1.5" marker-end="url(#arr)"/>
+            <!-- Tracking → Editor LiveLink -->
+            <line x1="190" y1="71" x2="310" y2="71" stroke="#0F6E56" stroke-width="1.5" marker-end="url(#arr-green)" stroke-dasharray="5 2"/>
+
+            <!-- ── LABELS ON CONNECTIONS ── -->
+            <rect x="234" y="118" width="56" height="14" rx="3" fill="#080c10"/>
+            <text x="262" y="128" text-anchor="middle" class="diag-lbl" font-size="8" fill="#2a3f55">10GbE</text>
+            <rect x="524" y="118" width="56" height="14" rx="3" fill="#080c10"/>
+            <text x="552" y="128" text-anchor="middle" class="diag-lbl" font-size="8" fill="#2a3f55">10GbE</text>
+            <rect x="224" y="205" width="66" height="14" rx="3" fill="#080c10"/>
+            <text x="257" y="215" text-anchor="middle" class="diag-lbl" font-size="8" fill="#639922">Genlock ref</text>
+            <rect x="440" y="205" width="66" height="14" rx="3" fill="#080c10"/>
+            <text x="473" y="215" text-anchor="middle" class="diag-lbl" font-size="8" fill="#639922">Genlock ref</text>
+            <rect x="74" y="325" width="36" height="14" rx="3" fill="#080c10"/>
+            <text x="92" y="335" text-anchor="middle" class="diag-lbl" font-size="8" fill="#534AB7">DP/HDMI</text>
+            <rect x="678" y="325" width="36" height="14" rx="3" fill="#080c10"/>
+            <text x="696" y="335" text-anchor="middle" class="diag-lbl" font-size="8" fill="#534AB7">DP/HDMI</text>
+            <rect x="200" y="58" width="40" height="14" rx="3" fill="#080c10"/>
+            <text x="220" y="68" text-anchor="middle" class="diag-lbl" font-size="8" fill="#1D9E75">LiveLink</text>
+            <rect x="390" y="340" width="40" height="14" rx="3" fill="#080c10"/>
+            <text x="410" y="350" text-anchor="middle" class="diag-lbl" font-size="8" fill="#2a3f55">Switchboard</text>
+
+            <!-- ── LEGEND ── -->
+            <g transform="translate(580,440)">
+              <rect x="0" y="0" width="220" height="72" rx="6" fill="#0d1117" stroke="#1e2d3d" stroke-width="1"/>
+              <text x="10" y="16" class="diag-lbl" font-size="8" fill="#4a5f72" letter-spacing="1">LEGEND</text>
+              <line x1="10" y1="28" x2="34" y2="28" stroke="#2a3f55" stroke-width="1.5" stroke-dasharray="4 2"/>
+              <text x="40" y="31" class="diag-lbl" font-size="8" fill="#7a90a4">10GbE network</text>
+              <line x1="10" y1="42" x2="34" y2="42" stroke="#534AB7" stroke-width="2"/>
+              <text x="40" y="45" class="diag-lbl" font-size="8" fill="#7a90a4">Display output</text>
+              <line x1="10" y1="56" x2="34" y2="56" stroke="#3B6D11" stroke-width="1.5" stroke-dasharray="5 3"/>
+              <text x="40" y="59" class="diag-lbl" font-size="8" fill="#7a90a4">Genlock / sync ref</text>
+              <line x1="115" y1="28" x2="139" y2="28" stroke="#854F0B" stroke-width="1.5" stroke-dasharray="5 2"/>
+              <text x="145" y="31" class="diag-lbl" font-size="8" fill="#7a90a4">SDI signal</text>
+              <line x1="115" y1="42" x2="139" y2="42" stroke="#0F6E56" stroke-width="1.5" stroke-dasharray="5 2"/>
+              <text x="145" y="45" class="diag-lbl" font-size="8" fill="#7a90a4">LiveLink tracking</text>
+            </g>
+          </svg>
+        </div>
+
+        <!-- ── GAME DEV MODE ───────────────────────────────────────── -->
+        <div class="gdonly g2">
+          <div>
+            <div class="sh">Development Machine</div>
+            <div class="card">
+              <div class="ch"><div class="cd"></div><span class="ct">Primary Dev PC</span></div>
+              <div class="f"><label>Machine / Workstation</label><input id="s-gd-machine" placeholder="e.g. Custom PC / Dell XPS"></div>
+              <div class="f"><label>CPU</label><input id="s-gd-cpu" placeholder="e.g. Intel i9-13900K"></div>
+              <div class="f"><label>GPU</label><input id="s-gd-gpu" placeholder="e.g. NVIDIA RTX 4090"></div>
+              <div class="f"><label>RAM</label><input id="s-gd-ram" placeholder="e.g. 64GB DDR5"></div>
+              <div class="f"><label>Storage</label><input id="s-gd-storage" placeholder="e.g. 2TB NVMe SSD"></div>
+              <div class="f"><label>OS</label><input id="s-gd-os" placeholder="e.g. Windows 11 Pro"></div>
+            </div>
+            <div class="sh">Engine & Project</div>
+            <div class="card">
+              <div class="ch"><div class="cd"></div><span class="ct">Unreal Engine Setup</span></div>
+              <div class="f"><label>Unreal Engine Version</label><input id="s-gd-ue" placeholder="e.g. 5.7"></div>
+              <div class="f"><label>Project Type</label><select id="s-gd-projtype">
+                <option value="">Select type...</option>
+                <option value="open-world">Open World</option>
+                <option value="linear">Linear / Cinematic</option>
+                <option value="multiplayer">Multiplayer</option>
+                <option value="fps">First Person Shooter</option>
+                <option value="tps">Third Person</option>
+                <option value="rts">RTS / Strategy</option>
+                <option value="mobile">Mobile Game</option>
+                <option value="arch-viz">Arch Viz / Sim</option>
+                <option value="other">Other</option>
+              </select></div>
+              <div class="f"><label>Key Plugins</label><input id="s-gd-plugins" placeholder="e.g. Chaos Physics, MetaSounds, PCG"></div>
+              <div class="f"><label>Rendering Path</label><select id="s-gd-render">
+                <option value="">Select...</option>
+                <option value="deferred">Deferred Rendering</option>
+                <option value="forward">Forward Rendering</option>
+                <option value="mobile-deferred">Mobile Deferred</option>
+                <option value="path-tracing">Path Tracing</option>
+              </select></div>
+              <div class="f"><label>Lumen</label><select id="s-gd-lumen">
+                <option value="">Select...</option>
+                <option value="enabled">Enabled</option>
+                <option value="disabled">Disabled</option>
+                <option value="sw">Software Lumen only</option>
+              </select></div>
+              <div class="f"><label>Nanite</label><select id="s-gd-nanite">
+                <option value="">Select...</option>
+                <option value="enabled">Enabled</option>
+                <option value="disabled">Disabled</option>
+              </select></div>
+            </div>
+          </div>
+          <div>
+            <div class="sh">Platform Targets</div>
+            <div class="card">
+              <div class="ch"><div class="cd"></div><span class="ct">Target Platforms</span></div>
+              <div class="f"><label>Primary Platform</label><select id="s-gd-platform">
+                <option value="">Select...</option>
+                <option value="pc-win">PC (Windows)</option>
+                <option value="pc-win-mac">PC (Windows + Mac)</option>
+                <option value="ps5">PlayStation 5</option>
+                <option value="xbox-sx">Xbox Series X/S</option>
+                <option value="switch2">Nintendo Switch 2</option>
+                <option value="mobile-ios">iOS</option>
+                <option value="mobile-android">Android</option>
+                <option value="multi">Multi-platform</option>
+              </select></div>
+              <div class="f"><label>Additional Platforms</label><input id="s-gd-platforms-extra" placeholder="e.g. PS5, Xbox Series X"></div>
+              <div class="f"><label>Target Resolution</label><input id="s-gd-res" placeholder="e.g. 1440p / 4K with TSR"></div>
+              <div class="f"><label>Target Frame Rate</label><input id="s-gd-fps" placeholder="e.g. 60fps"></div>
+              <div class="f"><label>Anti-aliasing Method</label><select id="s-gd-aa">
+                <option value="">Select...</option>
+                <option value="tsr">TSR (Temporal Super Resolution)</option>
+                <option value="taa">TAA</option>
+                <option value="fxaa">FXAA</option>
+                <option value="msaa">MSAA</option>
+                <option value="dlss">DLSS</option>
+                <option value="xess">XeSS</option>
+                <option value="fsr">FSR</option>
+              </select></div>
+            </div>
+            <div class="sh">Version Control & Pipeline</div>
+            <div class="card">
+              <div class="ch"><div class="cd"></div><span class="ct">Pipeline</span></div>
+              <div class="f"><label>Version Control</label><select id="s-gd-vcs">
+                <option value="">Select...</option>
+                <option value="perforce">Perforce Helix Core</option>
+                <option value="git">Git / GitHub</option>
+                <option value="git-lfs">Git LFS</option>
+                <option value="svn">SVN</option>
+                <option value="plastic">PlasticSCM</option>
+                <option value="none">None</option>
+              </select></div>
+              <div class="f"><label>Team Size</label><select id="s-gd-team">
+                <option value="">Select...</option>
+                <option value="solo">Solo developer</option>
+                <option value="small">Small (2–5)</option>
+                <option value="mid">Mid (6–20)</option>
+                <option value="large">Large (20+)</option>
+              </select></div>
+              <div class="f"><label>Current Development Stage</label><select id="s-gd-stage">
+                <option value="">Select...</option>
+                <option value="prototype">Prototype / Proof of concept</option>
+                <option value="preproduction">Pre-production</option>
+                <option value="production">Full production</option>
+                <option value="alpha">Alpha</option>
+                <option value="beta">Beta</option>
+                <option value="ship">Shipping / Live</option>
+              </select></div>
+              <div class="f"><label>Notes</label><textarea id="s-gd-notes" placeholder="Any additional context about your project..."></textarea></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div></div>
+
+    <div class="pnl" id="pnl-issues">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap">
+        <h1 style="font-family:var(--mono);font-size:15px;font-weight:500">Issue Tracker</h1>
+        <div style="display:flex;gap:6px;margin-left:auto">
+          <select id="ifl" style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);color:var(--text2);font-family:var(--mono);font-size:11px;padding:4px 9px;outline:none" onchange="renderIssues()">
+            <option value="all">All</option><option value="open">Open</option><option value="in-progress">In Progress</option><option value="waiting">Waiting</option><option value="resolved">Resolved</option>
+          </select>
+          <button class="btn bp sm" onclick="toggleNewIssue()">+ New Issue</button>
+        </div>
+      </div>
+      <div id="new-issue-form" style="display:none" class="card">
+        <div class="ch"><div class="cd"></div><span class="ct">Log New Issue</span></div>
+        <div class="g2">
+          <div class="f"><label>Title</label><input id="ni-title" placeholder="Short description"></div>
+          <div class="f"><label>Status</label><select id="ni-status"><option value="open">Open</option><option value="in-progress">In Progress</option><option value="waiting">Waiting</option><option value="resolved">Resolved</option></select></div>
+        </div>
+        <div class="f"><label>Description</label><textarea id="ni-desc" placeholder="Describe the issue..."></textarea></div>
+        <div class="f"><label>Component</label>
+          <select id="ni-comp">
+            <optgroup label="Virtual Production">
+            <option value="sync">Sync / Genlock</option>
+            <option value="tracking">Tracking / LiveLink</option>
+            <option value="icvfx">ICVFX / Inner Frustum</option>
+            <option value="ndisplay">nDisplay / Cluster</option>
+            <option value="sdi">SDI / Capture</option>
+            <option value="novastar">Novastar / LED</option>
+          </optgroup>
+          <optgroup label="Game Development">
+            <option value="blueprint">Blueprint / Scripting</option>
+            <option value="cpp">C++ / Programming</option>
+            <option value="rendering">Rendering / Visuals</option>
+            <option value="performance">Performance / Profiling</option>
+            <option value="physics">Physics / Collision</option>
+            <option value="animation">Animation / Sequencer</option>
+            <option value="networking">Multiplayer / Networking</option>
+            <option value="packaging">Build / Packaging / Shipping</option>
+            <option value="ai">AI / Behaviour</option>
+            <option value="audio">Audio</option>
+          </optgroup>
+          <optgroup label="General">
+            <option value="render">Render Performance</option>
+            <option value="other">Other</option>
+          </optgroup>
+          </select>
+        </div>
+        <div style="display:flex;gap:7px"><button class="btn bp sm" onclick="addIssue()">Log Issue</button><button class="btn bg sm" onclick="toggleNewIssue()">Cancel</button></div>
+      </div>
+      <div id="issues-list"></div>
+    </div>
+
+    <div class="pnl" id="pnl-chat">
+      <div class="cl-layout">
+        <div class="chat-main">
+          <div style="padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px">
+            <div class="udot"></div>
+            <span style="font-family:var(--mono);font-size:11px;color:var(--text2)">VP / NDISPLAY SUPPORT — LIVE DOCS SEARCH</span>
+            <button class="btn bg sm" style="margin-left:auto" onclick="saveAsChecklist()">Save as checklist</button>
+          </div>
+          <div class="msgs" id="msgs"></div>
+          <div class="ci">
+            <textarea id="cinput" rows="1" placeholder="Ask about your VP setup..." onkeydown="onChatKey(event)" oninput="autoR(this)"></textarea>
+            <button class="sbtn" id="csend" onclick="sendChat()">&#9654;</button>
+          </div>
+        </div>
+        <div class="sidebar">
+          <div class="qa-box">
+            <div class="qa-t">Quick Queries</div>
+            <button class="qab" onclick="sq('Walk me through the correct nDisplay config for my left/right curved wall split')">nDisplay config for my wall</button>
+            <button class="qab" onclick="sq('How do I configure Nvidia Sync cards with house sync blackburst at 25fps?')">Nvidia Sync + blackburst</button>
+            <button class="qab" onclick="sq('What is causing inner frustum pixelation on wide shots and how do I fix it?')">Inner frustum pixelation</button>
+            <button class="qab" onclick="sq('How do I reduce inner frustum slip on fast camera pans?')">Frustum slip on fast pan</button>
+            <button class="qab" onclick="sq('What render settings to optimise on A6000 nodes for ICVFX at 25fps?')">A6000 render optimisation</button>
+            <button class="qab" onclick="sq('How do I install and configure an AJA sync generator for my VP system?')">AJA sync generator setup</button>
+          </div>
+          <div class="qa-box">
+            <div class="qa-t">Loaded Rig</div>
+            <div id="rig-sum"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pnl" id="pnl-cl">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap">
+        <h1 style="font-family:var(--mono);font-size:15px;font-weight:500">Daily Checklist</h1>
+        <div style="display:flex;gap:6px;margin-left:auto">
+          <button class="btn bg sm" onclick="resetCL()">Reset all</button>
+          <button class="btn bp sm" onclick="toggleNewSection()">+ Section</button>
+        </div>
+      </div>
+      <div class="prog-bar">
+        <div><div class="pl">Done</div><div class="pn" id="cl-done">0</div></div>
+        <div><div class="pl">Total</div><div class="pn" id="cl-tot" style="color:var(--text2)">0</div></div>
+        <div class="pt"><div class="pf" id="cl-fill" style="width:0%"></div></div>
+      </div>
+      <div id="new-sec-form" style="display:none" class="card">
+        <div class="ch"><div class="cd"></div><span class="ct">New Section</span></div>
+        <div class="f"><label>Title</label><input id="ns-title" placeholder="e.g. AJA setup steps"></div>
+        <div style="display:flex;gap:7px"><button class="btn bp sm" onclick="addSection()">Add</button><button class="btn bg sm" onclick="toggleNewSection()">Cancel</button></div>
+      </div>
+      <div id="cl-content"></div>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script>
+var FBCFG = {
+  apiKey:"AIzaSyAtW-rocD37V23HGwA6xqwgxMFjhpRJMg4",
+  authDomain:"unrealsupport.firebaseapp.com",
+  projectId:"unrealsupport",
+  storageBucket:"unrealsupport.firebasestorage.app",
+  messagingSenderId:"527614974337",
+  appId:"1:527614974337:web:8869def2eb03e78e51b080"
+};
+
+var fbapp, fbauth, fbdb;
+var cu = null;
+var specs={}, issues=[], checklist=[], chatHist=[], streaming=false, nextId=1;
+
+window.onerror = function(msg,src,ln,col,err){
+  document.getElementById('lerr').textContent = 'JS Error: ' + msg + ' (line ' + ln + ')';
+  document.getElementById('lerr').style.display = 'block';
+};
+
+function show(id){ document.getElementById(id).style.display='flex'; }
+function hide(id){ document.getElementById(id).style.display='none'; }
+function showBlock(id){ document.getElementById(id).style.display='block'; }
+function el(id){ return document.getElementById(id); }
+
+// Clock
+setInterval(function(){ el('clk').textContent = new Date().toTimeString().slice(0,8); }, 1000);
+
+// Init Firebase using compat SDK v9
+try {
+  fbapp = firebase.initializeApp(FBCFG);
+  fbauth = firebase.auth();
+  fbdb = firebase.firestore();
+} catch(e) {
+  el('lerr').textContent = 'Firebase init error: ' + e.message;
+  el('lerr').style.display = 'block';
+}
+
+// Auth state
+fbauth.onAuthStateChanged(function(user) {
+  hide('loading');
+  if(user) {
+    cu = user;
+    hide('auth-screen');
+    showBlock('app');
+    el('udisp').textContent = user.displayName || user.email;
+    loadData();
+  } else {
+    cu = null;
+    hide('app');
+    show('auth-screen');
+  }
+});
+
+// Default data
+var DS = {
+  'mode':'vp',
+  'editor-machine':'','editor-gpu':'','editor-ram':'','editor-os':'','ue-version':'',
+  'n1-machine':'','n1-gpu':'','n1-sync':'','n1-cap':'','n1-sdi':'',
+  'n2-machine':'','n2-gpu':'','n2-sync':'','n2-cap':'','n2-sdi':'',
+  'wall-w':'','wall-h':'','wall-c':'','wall-res':'','led':'',
+  'fps-t':'','fps-c':'','wall-hz':'',
+  'tr-hw':'','tr-rx':'','tr-int':'','tr-fps':'',
+  'cam':'','icvfx':'','net':'','genlock':'','syncgen':'','vp-notes':'',
+  'gd-machine':'','gd-cpu':'','gd-gpu':'','gd-ram':'','gd-storage':'','gd-os':'',
+  'gd-ue':'','gd-projtype':'','gd-plugins':'','gd-render':'','gd-lumen':'','gd-nanite':'',
+  'gd-platform':'','gd-platforms-extra':'','gd-res':'','gd-fps':'','gd-aa':'',
+  'gd-vcs':'','gd-team':'','gd-stage':'','gd-notes':''
+};
+
+var DI = [
+  {id:1,title:'Inner frustum slip on fast camera movement',status:'in-progress',comp:'icvfx',date:'2025-11-12',
+   desc:'On fast horizontal pans the inner frustum visibly slips against the outer wall. LiveLink over nDisplay confirmed correctly configured. Awaiting AJA sync generator.',
+   steps:[{t:'Confirm LiveLink over nDisplay setup',d:true},{t:'Verify overscan at 1.5',d:true},{t:'Install AJA sync generator',d:false},{t:'Retest after AJA',d:false}]},
+  {id:2,title:'Inner frustum pixelation on wide shots',status:'open',comp:'icvfx',date:'2025-11-12',
+   desc:'When the Sony camera is wide, the inner frustum becomes heavily pixelated. Under investigation.',
+   steps:[{t:'Check Buffer Ratio = 1.0',d:false},{t:'Check r.ScreenPercentage = 100',d:false},{t:'Note Estimated Overscan Resolution',d:false},{t:'Verify Novastar 1:1 pixel mapping',d:false}]},
+  {id:3,title:'System unable to maintain 50fps target',status:'open',comp:'render',date:'2025-11-12',
+   desc:'Currently capped at 25fps. Investigation deferred.',
+   steps:[{t:'Profile GPU vs CPU with stat unit/gpu',d:false},{t:'Investigate render settings',d:false}]}
+];
+
+var DCL = [
+  {id:'cl1',title:'Before you start',open:true,items:[
+    {t:'Note UE frame time (stat unit)',n:'Open UE console with ~',d:false,tag:'now'},
+    {t:'Note GPU time (stat gpu)',n:'',d:false,tag:'now'},
+    {t:'Check r.ScreenPercentage',n:'Type in UE console',d:false,tag:'now'},
+    {t:'Photograph wall at wide shot',n:'Before making any changes',d:false,tag:'tmrw'}
+  ]},
+  {id:'cl2',title:'Inner frustum resolution checks',open:true,items:[
+    {t:'Check Buffer Ratio = 1.0 on ICVFX camera',n:'Values below 1.0 = sub-UHD render upscaled',d:false,tag:'tmrw'},
+    {t:'Note Estimated Overscan Resolution value',n:'',d:false,tag:'tmrw'},
+    {t:'Confirm r.ScreenPercentage = 100',n:'Project Settings > Rendering',d:false,tag:'tmrw'},
+    {t:'Check Adapt Resolution on/off',n:'',d:false,tag:'tmrw'},
+    {t:'Screenshot ICVFX camera details panel',n:'Send for review',d:false,tag:'tmrw'}
+  ]},
+  {id:'cl3',title:'Novastar signal chain',open:false,items:[
+    {t:'Confirm Novastar 1:1 pixel mapping',n:'No additional scaling',d:false,tag:'tmrw'},
+    {t:'Confirm Novastar input = UHD per node',n:'',d:false,tag:'tmrw'},
+    {t:'Note Novastar processing delay value',n:'',d:false,tag:'tmrw'}
+  ]},
+  {id:'cl4',title:'AJA sync generator (when it arrives)',open:false,items:[
+    {t:'Connect house sync to AJA reference input',n:'',d:false,tag:'aja'},
+    {t:'Connect AJA output to both Nvidia Sync cards',n:'',d:false,tag:'aja'},
+    {t:'Connect AJA output to Vive Mars base station',n:'',d:false,tag:'aja'},
+    {t:'Set AJA output format to 1080p25',n:'',d:false,tag:'aja'},
+    {t:'Retest inner frustum slip',n:'',d:false,tag:'aja'}
+  ]}
+];
+
+// Firestore helpers
+function uref(){ return fbdb.collection('users').doc(cu.uid); }
+function dref(name){ return uref().collection('data').doc(name); }
+
+function fsave(name, data){
+  if(!cu) return;
+  dref(name).set(data).catch(function(e){ console.error('Save error',e); });
+}
+
+async function loadData(){
+  try {
+    var sd = await dref('specs').get();
+    specs = sd.exists ? sd.data() : {};
+    if(!sd.exists) dref('specs').set(specs);
+
+    var id = await dref('issues').get();
+    if(id.exists){ issues = id.data().items; nextId = id.data().nextId || 1; }
+    else { issues = []; nextId = 1; dref('issues').set({items:issues,nextId:nextId}); }
+
+    var cd = await dref('checklist').get();
+    checklist = cd.exists ? cd.data().sections : [];
+    if(!cd.exists) dref('checklist').set({sections:checklist});
+
+    var hd = await dref('chat').get();
+    chatHist = hd.exists ? (hd.data().history || []) : [];
+
+    loadSpecFields();
+    renderIssues();
+    renderCL();
+    renderRigSum();
+    buildSysPrompt();
+    initChat();
+    // Live diagram updates as user types in VP spec fields
+    var vpFields = ['editor-machine','editor-gpu','ue-version',
+      'n1-machine','n1-gpu','n1-sync','n1-cap','n1-sdi',
+      'n2-machine','n2-gpu','n2-sync','n2-cap','n2-sdi',
+      'wall-w','wall-h','wall-c','wall-res','led',
+      'fps-t','fps-c','wall-hz','tr-hw','tr-rx','tr-fps',
+      'cam','icvfx','net','genlock','syncgen'];
+    vpFields.forEach(function(k){
+      var e = el('s-'+k);
+      if(e) e.addEventListener('input', function(){
+        specs[k] = e.value;
+        updateDiagram();
+      });
+    });
+  } catch(e) {
+    console.error('Load error', e);
+  }
+}
+
+// Nav
+function go(id, btn){
+  document.querySelectorAll('.pnl').forEach(function(p){ p.classList.remove('on'); });
+  document.querySelectorAll('.nb').forEach(function(b){ b.classList.remove('on'); });
+  el('pnl-'+id).classList.add('on');
+  btn.classList.add('on');
+}
+
+// Auth
+function swTab(t){
+  el('f-in').style.display = t==='in'?'block':'none';
+  el('f-up').style.display = t==='up'?'block':'none';
+  el('t-in').classList.toggle('active', t==='in');
+  el('t-up').classList.toggle('active', t==='up');
+  el('aerr').style.display='none'; el('aok').style.display='none';
+}
+
+function aerr(msg){ el('aerr').textContent=msg; el('aerr').style.display='block'; el('aok').style.display='none'; }
+function aok(msg){ el('aok').textContent=msg; el('aok').style.display='block'; el('aerr').style.display='none'; }
+
+function fae(code){
+  var m={'auth/user-not-found':'No account found with that email.','auth/wrong-password':'Incorrect password.',
+    'auth/email-already-in-use':'An account with that email already exists.','auth/weak-password':'Password must be at least 6 characters.',
+    'auth/invalid-email':'Please enter a valid email address.','auth/invalid-credential':'Incorrect email or password.',
+    'auth/too-many-requests':'Too many attempts. Try again later.'};
+  return m[code] || 'Something went wrong. Please try again.';
+}
+
+function doLogin(){
+  var em=el('li-em').value.trim(), pw=el('li-pw').value;
+  if(!em||!pw){aerr('Please enter your email and password.');return;}
+  el('li-btn').disabled=true; el('li-btn').textContent='Signing in...';
+  fbauth.signInWithEmailAndPassword(em,pw).catch(function(e){
+    aerr(fae(e.code)); el('li-btn').disabled=false; el('li-btn').textContent='Sign In';
+  });
+}
+
+function doSignUp(){
+  var nm=el('su-nm').value.trim(), em=el('su-em').value.trim(), pw=el('su-pw').value;
+  if(!em||!pw){aerr('Please fill in all fields.');return;}
+  el('su-btn').disabled=true; el('su-btn').textContent='Creating...';
+  fbauth.createUserWithEmailAndPassword(em,pw).then(function(c){
+    var p = nm ? c.user.updateProfile({displayName:nm}) : Promise.resolve();
+    return p.then(function(){
+      return uref().set({created:firebase.firestore.FieldValue.serverTimestamp()});
+    });
+  }).catch(function(e){
+    aerr(fae(e.code)); el('su-btn').disabled=false; el('su-btn').textContent='Create Account';
+  });
+}
+
+function doReset(){
+  var em=el('li-em').value.trim();
+  if(!em){aerr('Enter your email address above first.');return;}
+  fbauth.sendPasswordResetEmail(em).then(function(){ aok('Password reset email sent.'); }).catch(function(e){ aerr(fae(e.code)); });
+}
+
+function doSignOut(){ fbauth.signOut(); chatHist=[]; }
+
+// Specs
+function loadSpecFields(){
+  var mode = specs['mode'] || 'vp';
+  setMode(mode, true);
+  Object.keys(DS).forEach(function(k){
+    var e=el('s-'+k); if(e) e.value=specs[k]||'';
+  });
+  updateDiagram();
+}
+
+function saveSpecs(){
+  specs['mode'] = specs['mode'] || 'vp';
+  Object.keys(DS).forEach(function(k){ var e=el('s-'+k); if(e) specs[k]=e.value; });
+  fsave('specs',specs);
+  renderRigSum();
+  updateDiagram();
+  buildSysPrompt();
+  var s=el('ssaved'); s.classList.add('on'); setTimeout(function(){ s.classList.remove('on'); },2000);
+}
+
+function setMode(mode, silent){
+  specs['mode'] = mode;
+  var sf = el('specs-fields');
+  sf.className = mode === 'vp' ? 'mode-vp' : 'mode-gd';
+  el('mbtn-vp').classList.toggle('on', mode==='vp');
+  el('mbtn-gd').classList.toggle('on', mode==='gd');
+  if(!silent){ saveSpecs(); }
+}
+
+function updateDiagram(){
+  if((specs['mode']||'vp') !== 'vp') return;
+  function dtxt(id, val, fallback){
+    var e = document.getElementById(id);
+    if(e) e.textContent = val && val.trim() ? val.trim() : fallback;
+  }
+  // Editor
+  dtxt('dg-editor-machine', specs['editor-machine'], 'Editor PC');
+  dtxt('dg-editor-gpu', specs['editor-gpu'], 'GPU');
+  dtxt('dg-editor-ue', specs['ue-version'] ? 'UE ' + specs['ue-version'] : 'UE —', 'UE —');
+  // Node 1
+  dtxt('dg-n1-machine', specs['n1-machine'], 'Node 1');
+  dtxt('dg-n1-gpu', specs['n1-gpu'], 'GPU');
+  dtxt('dg-n1-sync', specs['n1-sync'] ? specs['n1-sync'].replace('Nvidia ','').replace('Quadro ','') : 'Sync card', 'Sync card');
+  dtxt('dg-n1-cap', specs['n1-cap'] ? specs['n1-cap'].replace('Blackmagic ','') : 'Capture', 'Capture');
+  dtxt('dg-n1-sdi', specs['n1-sdi'], 'SDI');
+  // Node 2
+  dtxt('dg-n2-machine', specs['n2-machine'], 'Node 2');
+  dtxt('dg-n2-gpu', specs['n2-gpu'], 'GPU');
+  dtxt('dg-n2-sync', specs['n2-sync'] ? specs['n2-sync'].replace('Nvidia ','').replace('Quadro ','') : 'Sync card', 'Sync card');
+  dtxt('dg-n2-cap', specs['n2-cap'] ? specs['n2-cap'].replace('Blackmagic ','') : 'Capture', 'Capture');
+  dtxt('dg-n2-sdi', specs['n2-sdi'], 'SDI');
+  // Wall
+  var wallStr = '';
+  if(specs['wall-w']||specs['wall-h']) wallStr = (specs['wall-w']||'?') + ' × ' + (specs['wall-h']||'?');
+  if(specs['wall-c']) wallStr += ' · ' + specs['wall-c'] + ' curve';
+  dtxt('dg-wall-size', wallStr, '— × —');
+  dtxt('dg-led-proc', specs['led'], 'LED Processor');
+  dtxt('dg-wall-left-res', specs['wall-res']||'UHD', 'UHD');
+  dtxt('dg-wall-right-res', specs['wall-res']||'UHD', 'UHD');
+  // Tracking
+  dtxt('dg-tr-hw', specs['tr-hw'], 'Tracking');
+  dtxt('dg-tr-rx', specs['tr-rx'], 'Receivers');
+  dtxt('dg-tr-fps', specs['tr-fps'], '—');
+  // Camera
+  dtxt('dg-cam-model', specs['cam'], 'Camera');
+  dtxt('dg-cam-sdi', 'SDI ' + (specs['n1-sdi']||'—'), 'SDI');
+  dtxt('dg-cam-icvfx', specs['icvfx'] ? specs['icvfx'].replace('Full ','') : '—', '—');
+  // Sync
+  dtxt('dg-genlock', specs['genlock'], 'Genlock source');
+  dtxt('dg-syncgen', specs['syncgen']||'', '');
+  // Network switch label
+  dtxt('dg-switch-lbl', specs['net']||'10GbE Switch', '10GbE Switch');
+}
+
+function buildSysPrompt(){
+  var mode = specs['mode'] || 'vp';
+  if(mode === 'vp'){
+    SYS = getSysVP();
+  } else {
+    SYS = getSysGD();
+  }
+}
+
+function getSysVP(){
+  var s = specs;
+  return 'You are a specialist technical support engineer for virtual production. Deep expertise in Unreal Engine, nDisplay, ICVFX, LED volumes, camera tracking, colour pipeline, VP networking.\n\n'
+  + 'THE USER IS IN VIRTUAL PRODUCTION MODE.\n'
+  + 'THEIR SYSTEM:\n'
+  + 'UE Version: ' + (s['ue-version']||'not set') + '\n'
+  + 'Editor PC: ' + (s['editor-machine']||'not set') + ' / ' + (s['editor-gpu']||'not set') + '\n'
+  + 'Display Node 1 (left): ' + (s['n1-machine']||'not set') + ' / ' + (s['n1-gpu']||'not set') + ' / Sync: ' + (s['n1-sync']||'not set') + ' / Capture: ' + (s['n1-cap']||'not set') + ' / SDI: ' + (s['n1-sdi']||'not set') + '\n'
+  + 'Display Node 2 (right): ' + (s['n2-machine']||'not set') + ' / ' + (s['n2-gpu']||'not set') + ' / Sync: ' + (s['n2-sync']||'not set') + ' / Capture: ' + (s['n2-cap']||'not set') + ' / SDI: ' + (s['n2-sdi']||'not set') + '\n'
+  + 'LED Wall: ' + (s['wall-w']||'?') + ' x ' + (s['wall-h']||'?') + ', ' + (s['wall-c']||'?') + ' curve, ' + (s['wall-res']||'?') + ' per node, ' + (s['led']||'?') + ' processor\n'
+  + 'Frame rate: ' + (s['fps-t']||'?') + ' target, ' + (s['fps-c']||'?') + ' current cap. Wall: ' + (s['wall-hz']||'?') + '\n'
+  + 'Tracking: ' + (s['tr-hw']||'?') + ', ' + (s['tr-rx']||'?') + ', ' + (s['tr-int']||'?') + ', ' + (s['tr-fps']||'?') + '\n'
+  + 'Camera: ' + (s['cam']||'?') + ' / Mode: ' + (s['icvfx']||'?') + '\n'
+  + 'Network: ' + (s['net']||'?') + ' / Genlock: ' + (s['genlock']||'?') + ' / Sync gen: ' + (s['syncgen']||'?') + '\n'
+  + (s['vp-notes'] ? 'Notes: ' + s['vp-notes'] + '\n' : '')
+  + '\nSOURCE PRIORITY:\n1. docs.unrealengine.com\n2. dev.epicgames.com/community and forums.unrealengine.com\n3. Curated VP YouTube (fetch transcripts):\n- nDisplay+Switchboard LED wall: https://www.youtube.com/watch?v=4kVsIagsX50\n- nDisplay config class: https://www.youtube.com/watch?v=0-vUJhBHWfs\n- Vive Mars LiveLink ICVFX: https://www.youtube.com/watch?v=g_6_-htkIzU\n- ICVFX inner frustum resolution: https://www.youtube.com/watch?v=gAkJRcHMg1c\n4. Reddit r/virtualproduction, fxguide.com\n\nFor every question: search docs first, then community, then fetch YouTube transcript if needed.\nEnd every response with:\n===SOURCES===\n[{"title":"...","url":"...","type":"epic or community or youtube"}]\n===END===\nBe direct, technical, practical. Assume a capable VP professional.';
+}
+
+function getSysGD(){
+  var s = specs;
+  return 'You are a specialist Unreal Engine technical support engineer for game development. Deep expertise in UE5 Blueprint, C++, rendering, performance profiling, platform shipping, multiplayer, animation, physics, and the full game dev pipeline.\n\n'
+  + 'THE USER IS IN GAME DEVELOPMENT MODE.\n'
+  + 'THEIR SYSTEM:\n'
+  + 'Machine: ' + (s['gd-machine']||'not set') + ' / CPU: ' + (s['gd-cpu']||'not set') + ' / GPU: ' + (s['gd-gpu']||'not set') + ' / RAM: ' + (s['gd-ram']||'not set') + '\n'
+  + 'OS: ' + (s['gd-os']||'not set') + '\n'
+  + 'UE Version: ' + (s['gd-ue']||'not set') + '\n'
+  + 'Project type: ' + (s['gd-projtype']||'not set') + '\n'
+  + 'Key plugins: ' + (s['gd-plugins']||'not set') + '\n'
+  + 'Rendering path: ' + (s['gd-render']||'not set') + ' / Lumen: ' + (s['gd-lumen']||'not set') + ' / Nanite: ' + (s['gd-nanite']||'not set') + '\n'
+  + 'Target platform: ' + (s['gd-platform']||'not set') + (s['gd-platforms-extra'] ? ' + ' + s['gd-platforms-extra'] : '') + '\n'
+  + 'Target res/fps: ' + (s['gd-res']||'not set') + ' / ' + (s['gd-fps']||'not set') + ' / AA: ' + (s['gd-aa']||'not set') + '\n'
+  + 'Version control: ' + (s['gd-vcs']||'not set') + ' / Team: ' + (s['gd-team']||'not set') + ' / Stage: ' + (s['gd-stage']||'not set') + '\n'
+  + (s['gd-notes'] ? 'Notes: ' + s['gd-notes'] + '\n' : '')
+  + '\nSOURCE PRIORITY:\n1. docs.unrealengine.com\n2. dev.epicgames.com/community and forums.unrealengine.com\n3. YouTube: Unreal Engine official channel, William Faucher (lighting/rendering), Alex Forsythe (UE C++), Gorka Games, Matt Aspland\n4. Reddit r/unrealengine, r/gamedev\n\nFor every question: search docs first, then community sources, then YouTube if needed.\nEnd every response with:\n===SOURCES===\n[{"title":"...","url":"...","type":"epic or community or youtube"}]\n===END===\nBe direct, technical, practical. Tailor all advice to the user\'s specific platform target, project type, and UE version.';
+}
+
+function renderRigSum(){
+  var mode = specs['mode'] || 'vp';
+  var rows;
+  if(mode === 'vp'){
+    rows = [
+      ['Mode','Virtual Production',true],
+      ['UE',specs['ue-version']||'—',false],
+      ['Nodes','2x '+(specs['n1-machine']||'—')+' / '+(specs['n1-gpu']||'—'),false],
+      ['Wall',(specs['wall-w']||'—')+' x '+(specs['wall-h']||'—')+' / '+(specs['led']||'—'),false],
+      ['FPS',(specs['fps-c']||'—')+' cap / '+(specs['wall-hz']||'—'),false],
+      ['Tracking',(specs['tr-hw']||'—'),false],
+      ['Sync',specs['genlock']||'—',false]
+    ];
+  } else {
+    rows = [
+      ['Mode','Game Development',true],
+      ['UE',specs['gd-ue']||'—',false],
+      ['Machine',specs['gd-gpu']||'—',false],
+      ['Project',specs['gd-projtype']||'—',false],
+      ['Platform',specs['gd-platform']||'—',false],
+      ['Target FPS',specs['gd-fps']||'—',false],
+      ['Stage',specs['gd-stage']||'—',false]
+    ];
+  }
+  el('rig-sum').innerHTML = rows.map(function(r){
+    return '<div class="sr"><span class="sk">'+r[0]+'</span><span class="sv'+(r[2]?' ac':'')+'">'+r[1]+'</span></div>';
+  }).join('');
+}
+
+// Issues
+var SL={'open':'Open','in-progress':'In Progress','waiting':'Waiting','resolved':'Resolved'};
+var CL={'sync':'Sync','tracking':'Tracking','icvfx':'ICVFX','render':'Render','ndisplay':'nDisplay','sdi':'SDI','novastar':'Novastar','blueprint':'Blueprint','cpp':'C++','rendering':'Rendering','performance':'Perf','physics':'Physics','animation':'Anim','networking':'Multiplayer','packaging':'Build','ai':'AI','audio':'Audio','other':'Other'};
+var SCL={'open':'bopen','in-progress':'bprog','waiting':'bwait','resolved':'bres'};
+
+function ibadge(){ el('bi').textContent=issues.filter(function(i){return i.status!=='resolved';}).length; }
+
+function toggleNewIssue(){
+  var f=el('new-issue-form'); f.style.display=f.style.display==='none'?'block':'none';
+}
+
+function addIssue(){
+  var t=el('ni-title').value.trim(); if(!t) return;
+  issues.unshift({id:nextId++,title:t,status:el('ni-status').value,comp:el('ni-comp').value,
+    desc:el('ni-desc').value,date:new Date().toISOString().slice(0,10),steps:[],
+    mode:specs['mode']||'vp'});
+  fsave('issues',{items:issues,nextId:nextId});
+  el('ni-title').value=''; el('ni-desc').value='';
+  toggleNewIssue(); renderIssues();
+}
+
+function togIssue(id){
+  var b=el('ib-'+id),c=el('ic-'+id); if(!b) return;
+  b.classList.toggle('on'); c.classList.toggle('ex',b.classList.contains('on'));
+}
+
+function setStatus(id,s){
+  var i=issues.find(function(x){return x.id===id;});
+  if(i){i.status=s;fsave('issues',{items:issues,nextId:nextId});renderIssues();}
+}
+
+function delIssue(id){
+  if(!confirm('Delete this issue?')) return;
+  issues=issues.filter(function(i){return i.id!==id;});
+  fsave('issues',{items:issues,nextId:nextId}); renderIssues();
+}
+
+function togStep(iid,si){
+  var i=issues.find(function(x){return x.id===iid;});
+  if(i&&i.steps[si]){i.steps[si].d=!i.steps[si].d;fsave('issues',{items:issues,nextId:nextId});renderIssues();setTimeout(function(){var b=el('ib-'+iid);if(b)b.classList.add('on');},10);}
+}
+
+function addStep(iid){
+  var inp=el('si-'+iid); if(!inp||!inp.value.trim()) return;
+  var i=issues.find(function(x){return x.id===iid;});
+  if(i){i.steps.push({t:inp.value.trim(),d:false});inp.value='';fsave('issues',{items:issues,nextId:nextId});renderIssues();setTimeout(function(){var b=el('ib-'+iid);if(b)b.classList.add('on');},10);}
+}
+
+function renderIssues(){
+  var fl=el('ifl').value;
+  var filtered=fl==='all'?issues:issues.filter(function(i){return i.status===fl;});
+  var list=el('issues-list');
+  if(!filtered.length){list.innerHTML='<div style="text-align:center;padding:36px;font-family:var(--mono);font-size:12px;color:var(--text3)">No issues found</div>';ibadge();return;}
+  list.innerHTML=filtered.map(function(iss){
+    var sd=iss.steps.filter(function(s){return s.d;}).length, st=iss.steps.length;
+    var stHTML=iss.steps.map(function(s,i){
+      return '<div class="step" onclick="togStep('+iss.id+','+i+');event.stopPropagation()"><div class="sdot'+(s.d?' done':'')+'"></div><span style="'+(s.d?'text-decoration:line-through;color:var(--text3)':'')+'">'+s.t+'</span></div>';
+    }).join('');
+    return '<div class="ic" id="ic-'+iss.id+'" onclick="togIssue('+iss.id+')">'
+      +'<div class="ih"><span class="in">#'+iss.id+'</span><div style="flex:1">'
+      +'<div class="it">'+iss.title+'</div>'
+      +'<div class="im"><span class="badge '+SCL[iss.status]+'">'+SL[iss.status]+'</span>'
+      +'<span class="badge binf">'+(CL[iss.comp]||iss.comp)+'</span>'
+      +(iss.mode?'<span class="mode-tag '+(iss.mode==='vp'?'tag-vp':'tag-gd')+'">'+(iss.mode==='vp'?'VP':'Game Dev')+'</span>':'')
+      +'<span class="id">'+iss.date+'</span>'
+      +(st>0?'<span class="id">'+sd+'/'+st+' steps</span>':'')
+      +'</div></div></div>'
+      +'<div class="ib" id="ib-'+iss.id+'">'
+      +(iss.desc?'<p>'+iss.desc+'</p>':'')
+      +(st>0?'<div style="font-family:var(--mono);font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Progress</div><div class="steps">'+stHTML+'</div>':'')
+      +'<div class="addi" onclick="event.stopPropagation()"><input id="si-'+iss.id+'" placeholder="Add progress step..." onkeydown="if(event.key===\'Enter\')addStep('+iss.id+')"><button class="btn bg sm" onclick="addStep('+iss.id+')">Add</button></div>'
+      +'<div class="iact" onclick="event.stopPropagation()">'
+      +'<button class="btn bg sm" onclick="setStatus('+iss.id+',\'open\')">Open</button>'
+      +'<button class="btn bg sm" onclick="setStatus('+iss.id+',\'in-progress\')">In Progress</button>'
+      +'<button class="btn bg sm" onclick="setStatus('+iss.id+',\'waiting\')">Waiting</button>'
+      +'<button class="btn bs sm" onclick="setStatus('+iss.id+',\'resolved\')">Resolved</button>'
+      +'<button class="btn bd sm" onclick="delIssue('+iss.id+');event.stopPropagation()">Delete</button>'
+      +'</div></div></div>';
+  }).join('');
+  ibadge();
+}
+
+// Chat
+var SYS = ''; // populated by buildSysPrompt()
+
+function initChat(){
+  var m=el('msgs'); m.innerHTML='';
+  if(chatHist.length){
+    chatHist.forEach(function(h){
+      if(h.role==='user'||h.role==='assistant'){
+        addMsg(h.role, h.role==='assistant'?parseSrc(h.content).t:h.content);
+      }
+    });
+  } else {
+    var mode = specs['mode']||'vp';
+    var welcome = mode === 'vp'
+      ? 'Your rig is loaded in Virtual Production mode. Every answer searches official Unreal docs, Epic community sources, and curated VP YouTube videos. Sources are cited below each answer.\n\nWhat do you want to work on?'
+      : 'Your project is loaded in Game Development mode. Every answer searches the official Unreal docs and community sources. Advice is tailored to your platform target and project type.\n\nWhat are you working on?';
+    addMsg('assistant', welcome);
+  }
+}
+
+function addMsg(role, text){
+  var m=el('msgs');
+  var w=document.createElement('div'); w.className='msg '+( role==='user'?'u':'a');
+  var l=document.createElement('span'); l.className='ml'; l.textContent=role==='user'?'You':'Support';
+  var b=document.createElement('div'); b.className='mb'; b.textContent=text;
+  w.appendChild(l); w.appendChild(b); m.appendChild(w);
+  m.scrollTop=m.scrollHeight; return b;
+}
+
+function parseSrc(text){
+  var m=text.match(/===SOURCES===\s*([\s\S]*?)\s*===END===/);
+  if(!m) return{t:text,s:[]};
+  var s=[]; try{s=JSON.parse(m[1]);}catch(e){}
+  return{t:text.replace(/===SOURCES===[\s\S]*?===END===/g,'').trim(),s:s};
+}
+
+function addSrcs(s,wrap){
+  if(!s||!s.length) return;
+  var b=document.createElement('div'); b.className='srcs';
+  s.forEach(function(src){
+    var cls = src.type==='epic'?'ep':src.type==='youtube'?'yt':'cm';
+    var a=document.createElement('a'); a.className='src '+cls;
+    a.href=src.url||'#'; a.target='_blank'; a.rel='noopener'; a.textContent=src.title;
+    b.appendChild(a);
+  });
+  wrap.appendChild(b);
+}
+
+function autoR(e){ e.style.height='auto'; e.style.height=Math.min(e.scrollHeight,110)+'px'; }
+function onChatKey(e){ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendChat();} }
+function sq(t){ el('cinput').value=t; sendChat(); }
+
+function sendChat(){
+  if(streaming) return;
+  var input=el('cinput'), text=input.value.trim(); if(!text) return;
+  input.value=''; input.style.height='auto';
+  el('csend').disabled=true; streaming=true;
+  chatHist.push({role:'user',content:text});
+  addMsg('user',text);
+  var m=el('msgs');
+  var si=document.createElement('div'); si.className='sind'; si.id='sind';
+  si.innerHTML='&#9657; Searching docs &amp; community<span class="dots"><span>.</span><span>.</span><span>.</span></span>';
+  m.appendChild(si); m.scrollTop=m.scrollHeight;
+  fetch('/.netlify/functions/chat',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:SYS,
+      tools:[{type:'web_search_20250305',name:'web_search'}],messages:chatHist})
+  }).then(function(r){
+    return r.text().then(function(text){
+      var si=el('sind'); if(si) si.remove();
+      // Show raw response if we can't parse it
+      if(!text || text.trim()===''){
+        addMsg('assistant','Error: Empty response from server. Check Netlify function logs.');
+        return;
+      }
+      var data;
+      try{ data=JSON.parse(text); }
+      catch(e){
+        // Show first 300 chars of raw response so we can diagnose
+        addMsg('assistant','Server returned non-JSON response:\n\n'+text.slice(0,400));
+        return;
+      }
+      var full='';
+      if(data.content) data.content.forEach(function(b){if(b.type==='text') full+=b.text;});
+      if(!full&&data.error) full='API error: '+(data.error.message||JSON.stringify(data.error));
+      if(!full) full='No response content received.';
+      var ps=parseSrc(full);
+      chatHist.push({role:'assistant',content:full});
+      var bub=addMsg('assistant',ps.t||full);
+      addSrcs(ps.s,bub.parentElement);
+      m.scrollTop=m.scrollHeight;
+      fsave('chat',{history:chatHist.slice(-40)});
+    });
+  }).catch(function(e){
+    var si=el('sind'); if(si) si.remove();
+    addMsg('assistant','Connection error: '+e.message+'\n\nMake sure the Netlify function is deployed and ANTHROPIC_API_KEY is set.');
+  }).finally(function(){
+    streaming=false; el('csend').disabled=false;
+  });
+}
+
+function saveAsChecklist(){
+  var bubbles=document.querySelectorAll('.msg.a .mb');
+  if(!bubbles.length) return;
+  var last=bubbles[bubbles.length-1].textContent;
+  var lines=last.split('\n').filter(function(l){return l.trim().length>10&&l.trim().length<200;});
+  var items=lines.slice(0,8).map(function(l){return{t:l.replace(/^[-*\u2022\d.)\s]+/,'').trim(),d:false,tag:'tmrw'};}).filter(function(i){return i.t.length>5;});
+  if(!items.length){alert('No actionable items found.');return;}
+  var title='Session '+new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+  checklist.push({id:'cl'+Date.now(),title:title,open:true,items:items});
+  fsave('checklist',{sections:checklist});
+  updateCLBadge();
+  if(confirm('Saved '+items.length+' items. Go to checklist?')) document.querySelectorAll('.nb')[3].click();
+}
+
+// Checklist
+function updateCLBadge(){
+  el('bc').textContent=checklist.reduce(function(a,s){return a+s.items.filter(function(i){return !i.d;}).length;},0);
+}
+function updateCLProg(){
+  var tot=checklist.reduce(function(a,s){return a+s.items.length;},0);
+  var done=checklist.reduce(function(a,s){return a+s.items.filter(function(i){return i.d;}).length;},0);
+  el('cl-done').textContent=done; el('cl-tot').textContent=tot;
+  el('cl-fill').style.width=(tot?Math.round(done/tot*100):0)+'%';
+  updateCLBadge();
+}
+function togCLSec(id){
+  var s=checklist.find(function(x){return x.id===id;});
+  if(s){s.open=!s.open;fsave('checklist',{sections:checklist});renderCL();}
+}
+function togCLItem(sid,idx){
+  var s=checklist.find(function(x){return x.id===sid;});
+  if(s&&s.items[idx]){s.items[idx].d=!s.items[idx].d;fsave('checklist',{sections:checklist});renderCL();}
+}
+function addItemInline(sid){
+  var inp=el('cli-'+sid); if(!inp||!inp.value.trim()) return;
+  var s=checklist.find(function(x){return x.id===sid;});
+  if(s){s.items.push({t:inp.value.trim(),d:false,tag:'tmrw'});inp.value='';fsave('checklist',{sections:checklist});renderCL();}
+}
+function toggleNewSection(){
+  var f=el('new-sec-form'); f.style.display=f.style.display==='none'?'block':'none';
+}
+function addSection(){
+  var t=el('ns-title').value.trim(); if(!t) return;
+  checklist.push({id:'cl'+Date.now(),title:t,open:true,items:[]});
+  fsave('checklist',{sections:checklist});
+  el('ns-title').value=''; toggleNewSection(); renderCL();
+}
+function delSection(id){
+  if(!confirm('Delete section?')) return;
+  checklist=checklist.filter(function(s){return s.id!==id;});
+  fsave('checklist',{sections:checklist}); renderCL();
+}
+function resetCL(){
+  if(!confirm('Reset all items?')) return;
+  checklist.forEach(function(s){s.items.forEach(function(i){i.d=false;});});
+  fsave('checklist',{sections:checklist}); renderCL();
+}
+
+var TL={now:'do now',tmrw:'tomorrow',aja:'when AJA arrives'};
+var TC={now:'tnow',tmrw:'ttmrw',aja:'taja'};
+
+function renderCL(){
+  el('cl-content').innerHTML=checklist.map(function(sec){
+    var done=sec.items.filter(function(i){return i.d;}).length, tot=sec.items.length;
+    var ihtml=sec.items.map(function(item,idx){
+      return '<div class="cli'+(item.d?' done':'')+'" onclick="togCLItem(\''+sec.id+'\','+idx+')">'
+        +'<div class="clc">'+(item.d?'&#10003;':'')+'</div>'
+        +'<div style="flex:1"><div class="clt">'+item.t+'</div>'+(item.n?'<div class="cln">'+item.n+'</div>':'')+'</div>'
+        +(item.tag?'<div class="cltag '+(TC[item.tag]||'ttmrw')+'">'+(TL[item.tag]||item.tag)+'</div>':'')
+        +'</div>';
+    }).join('');
+    return '<div class="cls">'
+      +'<div class="clsh" onclick="togCLSec(\''+sec.id+'\')">'
+      +'<span class="clst">'+sec.title+'</span>'
+      +'<span class="clsp">'+done+'/'+tot+'</span>'
+      +'<span style="font-family:var(--mono);font-size:12px;color:var(--text3);margin-left:7px">'+(sec.open?'&#9662;':'&#9658;')+'</span>'
+      +'<button class="btn bg sm" style="margin-left:7px;padding:1px 6px;font-size:9px" onclick="delSection(\''+sec.id+'\');event.stopPropagation()">&#215;</button>'
+      +'</div>'
+      +(sec.open?'<div style="padding-left:10px">'+ihtml
+        +'<div class="addi"><input id="cli-'+sec.id+'" placeholder="Add item..." onkeydown="if(event.key===\'Enter\')addItemInline(\''+sec.id+'\')">'
+        +'<button class="btn bg sm" onclick="addItemInline(\''+sec.id+'\')">Add</button></div></div>':'')
+      +'</div>';
+  }).join('');
+  updateCLProg();
+}
+</script>
+</body>
+</html>

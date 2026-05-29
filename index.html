@@ -109,7 +109,8 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .si{font-size:11px;color:var(--live);opacity:0;transition:opacity .25s;font-family:var(--mono)}
 
 .main-scroll{flex:1;padding:24px;overflow-y:auto}
-.pnl{display:none}.pnl.on{display:block}
+.pnl{display:none}
+.pnl.on{display:block}
 
 /* ── BUTTONS ── */
 .btn{font-size:12px;font-family:var(--sans);font-weight:450;background:var(--el);border:1px solid var(--line2);color:var(--ink2);padding:6px 13px;border-radius:var(--r);cursor:pointer;transition:all .12s;display:inline-flex;align-items:center;gap:7px}
@@ -124,6 +125,12 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .mode-bar{display:inline-flex;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:3px;gap:2px;margin-bottom:24px}
 .mode-btn{font-size:12px;font-family:var(--sans);font-weight:450;color:var(--ink3);background:none;border:none;padding:6px 15px;border-radius:5px;cursor:pointer;transition:all .12s;display:flex;align-items:center;gap:6px}
 .mode-btn.on{background:var(--el2);color:var(--ink);border:1px solid var(--line2)}
+.vponly,.gdonly{display:none}
+.mode-vp .vponly{display:block}
+.mode-gd .gdonly{display:block}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.diag-title{font-size:11px;color:var(--ink3);font-weight:500;margin-bottom:12px;letter-spacing:.06em;text-transform:uppercase}
+.mode-sep{width:1px;height:20px;background:var(--line);margin:0 4px}
 .mode-icon{font-size:10px;opacity:.7}
 
 /* ── SPEC BLOCKS ── */
@@ -232,7 +239,55 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .cd{width:5px;height:5px;border-radius:50%;background:var(--ink4);flex-shrink:0}
 .ct{font-size:12px;font-weight:500;color:var(--ink)}
 .hdr{display:none}
-/* ── FILTER SELECT ── */
+/* ── ISSUES PM SYSTEM ── */
+.iss-status{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:500;min-width:80px;flex-shrink:0}
+.iss-bar{width:3px;height:13px;border-radius:2px;flex-shrink:0}
+.st-open .iss-bar{background:var(--warn)}.st-open{color:var(--warn)}
+.st-prog .iss-bar{background:var(--blue)}.st-prog{color:var(--blue)}
+.st-wait .iss-bar{background:var(--ink3)}.st-wait{color:var(--ink3)}
+.st-res .iss-bar{background:var(--live)}.st-res{color:var(--live)}
+.iss-date{font-family:var(--mono);font-size:10px;color:var(--ink4)}
+.iss-desc{font-size:13px;color:var(--ink2);line-height:1.6;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.iact{display:flex;align-items:center;gap:5px;margin-bottom:12px;flex-wrap:wrap}
+/* Log timeline */
+.issue-log{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.log-entry{padding:9px 11px;border-radius:var(--r);border:1px solid}
+.log-entry-head{display:flex;align-items:center;gap:6px;margin-bottom:4px}
+.log-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.log-lbl{font-size:11px;font-weight:500}
+.log-src{font-size:10px;color:var(--ink3);font-family:var(--mono)}
+.log-date{font-size:10px;color:var(--ink4);font-family:var(--mono);margin-left:auto}
+.log-text{font-size:12px;color:var(--ink2);line-height:1.5}
+.log-fixed{background:var(--live-dim);border-color:rgba(74,222,128,.2)}.log-fixed .log-dot{background:var(--live)}.log-fixed .log-lbl{color:var(--live)}
+.log-no-effect{background:var(--s2);border-color:var(--line)}.log-no-effect .log-dot{background:var(--ink3)}.log-no-effect .log-lbl{color:var(--ink2)}
+.log-worse{background:var(--rdim);border-color:rgba(248,113,113,.2)}.log-worse .log-dot{background:var(--red)}.log-worse .log-lbl{color:var(--red)}
+.log-info{background:var(--s1);border-color:var(--line)}.log-info .log-dot{background:var(--ink3)}.log-info .log-lbl{color:var(--ink3)}
+.log-latest{font-size:10px;font-weight:500;padding:1px 7px;border-radius:3px;border:1px solid}
+.log-latest.log-fixed{color:var(--live);border-color:rgba(74,222,128,.3);background:var(--live-dim)}
+.log-latest.log-no-effect{color:var(--ink3);border-color:var(--line);background:transparent}
+.log-latest.log-worse{color:var(--red);border-color:rgba(248,113,113,.3);background:var(--rdim)}
+.log-latest.log-info{color:var(--ink3);border-color:var(--line);background:transparent}
+.log-add{display:flex;gap:7px;margin-bottom:10px}
+.log-add input{flex:1;background:var(--el);border:1px solid var(--line2);border-radius:var(--r);color:var(--ink);font-size:12px;font-family:var(--sans);padding:6px 9px;outline:none}
+.log-add input:focus{border-color:var(--line3)}
+.issue-steps-head{font-size:10px;color:var(--ink3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;margin-top:4px}
+/* Linked checklist */
+.linked-section{margin-bottom:10px;padding:10px 12px;background:var(--s1);border:1px solid var(--line);border-radius:var(--r)}
+.linked-label{font-size:10px;color:var(--ink3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+.linked-item{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink2);padding:4px 0}
+.linked-item.linked-done{color:var(--ink3);text-decoration:line-through}
+.linked-dot{width:6px;height:6px;border-radius:50%;border:1px solid var(--line3);flex-shrink:0}
+.linked-dot.done{background:var(--live);border-color:var(--live)}
+/* Outcome picker */
+.outcome-picker{background:var(--card);border:1px solid var(--line3);border-radius:var(--rl);padding:14px;margin-bottom:12px}
+.outcome-head{font-size:12px;color:var(--ink2);margin-bottom:10px;line-height:1.5}
+.outcome-head strong{color:var(--ink)}
+.outcome-btns{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.outcome-fixed{color:var(--live);border-color:rgba(74,222,128,.4);background:var(--live-dim)}
+.outcome-no-effect{color:var(--ink2);border-color:var(--line2)}
+.outcome-worse{color:var(--red);border-color:rgba(248,113,113,.4);background:var(--rdim)}
+/* Checklist issue link tag */
+.cl-issue-tag{font-size:10px;color:var(--blue);font-family:var(--mono);margin-top:2px;display:block;opacity:.8}
 .flt-select{background:var(--el);border:1px solid var(--line2);border-radius:var(--r);color:var(--ink2);font-size:12px;font-family:var(--sans);padding:5px 9px;outline:none;cursor:pointer}
 .flt-select:focus{border-color:var(--line3)}
 .flt-select option,.flt-select optgroup{background:var(--bg);color:var(--ink)}
@@ -921,7 +976,7 @@ window.vpUnhover = function() {
         </div>
 
       </div>
-    </div></div>
+    </div>
 
     <!-- API Key Settings Card (shown for non-owner accounts) -->
     <div id="api-key-section" style="display:none;margin-top:8px">
@@ -936,11 +991,12 @@ window.vpUnhover = function() {
           <button class="btn bd sm" onclick="clearApiKey()">Clear Key</button>
         </div>
       </div>
-    </div>
 
     <div class="pnl" id="pnl-issues">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
-        <div style="display:flex;align-items:center;gap:10px">
+
+      <!-- Header row -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+        <div style="display:flex;align-items:center;gap:8px">
           <select id="ifl" class="flt-select" onchange="renderIssues()">
             <option value="all">All issues</option>
             <option value="open">Open</option>
@@ -948,36 +1004,54 @@ window.vpUnhover = function() {
             <option value="waiting">Waiting</option>
             <option value="resolved">Resolved</option>
           </select>
+          <select id="ifl-comp" class="flt-select" onchange="renderIssues()">
+            <option value="all">All areas</option>
+            <option value="sync">Sync</option>
+            <option value="tracking">Tracking</option>
+            <option value="icvfx">ICVFX</option>
+            <option value="ndisplay">nDisplay</option>
+            <option value="novastar">Novastar</option>
+            <option value="sdi">SDI</option>
+            <option value="render">Render</option>
+            <option value="other">Other</option>
+          </select>
         </div>
         <button class="btn bp sm" onclick="toggleNewIssue()">+ New issue</button>
       </div>
+
+      <!-- New issue form -->
       <div id="new-issue-form" style="display:none" class="src">
         <div class="fspan"><div class="f"><label>Title</label><input id="ni-title" placeholder="Short description"></div></div>
-        <div class="f"><label>Status</label><select id="ni-status" class="flt-select"><option value="open">Open</option><option value="in-progress">In progress</option><option value="waiting">Waiting</option><option value="resolved">Resolved</option></select></div>
-        <div class="f"><label>Component</label>
+        <div class="f"><label>Status</label>
+          <select id="ni-status" class="flt-select">
+            <option value="open">Open</option>
+            <option value="in-progress">In progress</option>
+            <option value="waiting">Waiting</option>
+          </select>
+        </div>
+        <div class="f"><label>Area</label>
           <select id="ni-comp" class="flt-select">
             <optgroup label="Virtual Production">
-            <option value="sync">Sync / Genlock</option>
-            <option value="tracking">Tracking / LiveLink</option>
-            <option value="icvfx">ICVFX / Inner Frustum</option>
-            <option value="ndisplay">nDisplay / Cluster</option>
-            <option value="sdi">SDI / Capture</option>
-            <option value="novastar">Novastar / LED</option>
-            </optgroup>
-            <optgroup label="Game Development">
-            <option value="blueprint">Blueprint / Scripting</option>
-            <option value="rendering">Rendering / Visuals</option>
-            <option value="performance">Performance / Profiling</option>
+              <option value="sync">Sync / Genlock</option>
+              <option value="tracking">Tracking / LiveLink</option>
+              <option value="icvfx">ICVFX / Inner Frustum</option>
+              <option value="ndisplay">nDisplay / Cluster</option>
+              <option value="sdi">SDI / Capture</option>
+              <option value="novastar">Novastar / LED</option>
             </optgroup>
             <optgroup label="General">
-            <option value="other">Other</option>
+              <option value="render">Render Performance</option>
+              <option value="other">Other</option>
             </optgroup>
           </select>
         </div>
-        <div class="fspan"><div class="f"><label>Description</label><textarea id="ni-desc" placeholder="Describe the issue..."></textarea></div></div>
+        <div class="fspan"><div class="f"><label>Description</label><textarea id="ni-desc" placeholder="What are you seeing? Any context that will help diagnose it..."></textarea></div></div>
         <div class="fspan" style="display:flex;gap:7px"><button class="btn bp sm" onclick="addIssue()">Log issue</button><button class="btn bd sm" onclick="toggleNewIssue()">Cancel</button></div>
       </div>
+
+      <!-- Issue list (JS rendered) -->
       <div id="issues-list"></div>
+
     </div>
 
     <div class="pnl" id="pnl-chat">
@@ -1496,28 +1570,41 @@ var SCL={'open':'bopen','in-progress':'bprog','waiting':'bwait','resolved':'bres
 
 function ibadge(){ el('bi').textContent=issues.filter(function(i){return i.status!=='resolved';}).length; }
 
+
+// ── ISSUE MANAGEMENT ─────────────────────────────────────────────────────────
+
 function toggleNewIssue(){
-  var f=el('new-issue-form'); f.style.display=f.style.display==='none'?'block':'none';
+  var f=el('new-issue-form');
+  f.style.display=f.style.display==='none'?'grid':'none';
+  if(f.style.display==='grid') el('ni-title').focus();
 }
 
 function addIssue(){
   var t=el('ni-title').value.trim(); if(!t) return;
-  issues.unshift({id:nextId++,title:t,status:el('ni-status').value,comp:el('ni-comp').value,
-    desc:el('ni-desc').value,date:new Date().toISOString().slice(0,10),steps:[],
-    mode:specs['mode']||'vp'});
+  var now=new Date().toISOString().slice(0,10);
+  issues.unshift({
+    id:nextId++, title:t,
+    status:el('ni-status').value,
+    comp:el('ni-comp').value,
+    desc:el('ni-desc').value,
+    date:now, steps:[], log:[],
+    mode:specs['mode']||'vp'
+  });
   fsave('issues',{items:issues,nextId:nextId});
   el('ni-title').value=''; el('ni-desc').value='';
   toggleNewIssue(); renderIssues();
 }
 
-function togIssue(id){
-  var b=el('ib-'+id),c=el('ic-'+id); if(!b) return;
-  b.classList.toggle('on'); c.classList.toggle('ex',b.classList.contains('on'));
-}
-
 function setStatus(id,s){
   var i=issues.find(function(x){return x.id===id;});
-  if(i){i.status=s;fsave('issues',{items:issues,nextId:nextId});renderIssues();}
+  if(!i) return;
+  var oldStatus=i.status;
+  i.status=s;
+  if(s==='resolved' && oldStatus!=='resolved'){
+    if(!i.log) i.log=[];
+    i.log.push({date:new Date().toISOString(),text:'Issue marked as resolved.',outcome:'fixed',source:'manual'});
+  }
+  fsave('issues',{items:issues,nextId:nextId}); renderIssues();
 }
 
 function delIssue(id){
@@ -1526,6 +1613,35 @@ function delIssue(id){
   fsave('issues',{items:issues,nextId:nextId}); renderIssues();
 }
 
+function togIssue(id){
+  var b=el('ib-'+id),c=el('ic-'+id); if(!b) return;
+  var opening=!b.classList.contains('on');
+  // close all others
+  document.querySelectorAll('.ib.on').forEach(function(x){ x.classList.remove('on'); });
+  document.querySelectorAll('.ic.ex').forEach(function(x){ x.classList.remove('ex'); });
+  if(opening){ b.classList.add('on'); c.classList.add('ex'); }
+}
+
+function addManualLog(id){
+  var inp=el('log-inp-'+id); if(!inp||!inp.value.trim()) return;
+  var i=issues.find(function(x){return x.id===id;});
+  if(!i) return;
+  if(!i.log) i.log=[];
+  i.log.push({date:new Date().toISOString(),text:inp.value.trim(),outcome:'info',source:'manual'});
+  inp.value='';
+  fsave('issues',{items:issues,nextId:nextId}); renderIssues();
+  setTimeout(function(){ var b=el('ib-'+id); if(b) b.classList.add('on'); },10);
+}
+
+function addLogNote(id, text, outcome){
+  var i=issues.find(function(x){return x.id===id;});
+  if(!i) return;
+  if(!i.log) i.log=[];
+  i.log.push({date:new Date().toISOString(),text:text,outcome:outcome,source:'checklist'});
+  fsave('issues',{items:issues,nextId:nextId}); renderIssues();
+}
+
+// legacy step support (kept for backward compat)
 function togStep(iid,si){
   var i=issues.find(function(x){return x.id===iid;});
   if(i&&i.steps[si]){i.steps[si].d=!i.steps[si].d;fsave('issues',{items:issues,nextId:nextId});renderIssues();setTimeout(function(){var b=el('ib-'+iid);if(b)b.classList.add('on');},10);}
@@ -1537,39 +1653,141 @@ function addStep(iid){
   if(i){i.steps.push({t:inp.value.trim(),d:false});inp.value='';fsave('issues',{items:issues,nextId:nextId});renderIssues();setTimeout(function(){var b=el('ib-'+iid);if(b)b.classList.add('on');},10);}
 }
 
+function ibadge(){ el('bi').textContent=issues.filter(function(i){return i.status!=='resolved';}).length; }
+
+function logOutcomeClass(outcome){
+  return outcome==='fixed'?'log-fixed':outcome==='no-effect'?'log-no-effect':outcome==='worse'?'log-worse':outcome==='info'?'log-info':'log-info';
+}
+function logOutcomeLabel(outcome){
+  return outcome==='fixed'?'Fixed':outcome==='no-effect'?'No effect':outcome==='worse'?'Made it worse':outcome==='checklist'?'Checklist':'Note';
+}
+
+function relDate(iso){
+  var d=new Date(iso), n=new Date(), diff=n-d;
+  if(diff<60000) return 'just now';
+  if(diff<3600000) return Math.floor(diff/60000)+'m ago';
+  if(diff<86400000) return Math.floor(diff/3600000)+'h ago';
+  if(diff<604800000) return Math.floor(diff/86400000)+'d ago';
+  return d.toISOString().slice(0,10);
+}
+
 function renderIssues(){
-  var fl=el('ifl').value;
-  var filtered=fl==='all'?issues:issues.filter(function(i){return i.status===fl;});
+  var fl=el('ifl') ? el('ifl').value : 'all';
+  var fc=el('ifl-comp') ? el('ifl-comp').value : 'all';
+  var filtered=issues.filter(function(i){
+    if(fl!=='all'&&i.status!==fl) return false;
+    if(fc!=='all'&&i.comp!==fc) return false;
+    return true;
+  });
   var list=el('issues-list');
-  if(!filtered.length){list.innerHTML='<div style="text-align:center;padding:36px;font-family:var(--mono);font-size:12px;color:var(--text3)">No issues found</div>';ibadge();return;}
+  if(!list) return;
+  if(!filtered.length){
+    list.innerHTML='<div style="text-align:center;padding:48px 0;font-size:12px;color:var(--ink3)">No issues found</div>';
+    ibadge(); return;
+  }
+
   list.innerHTML=filtered.map(function(iss){
-    var sd=iss.steps.filter(function(s){return s.d;}).length, st=iss.steps.length;
-    var stHTML=iss.steps.map(function(s,i){
-      return '<div class="step" onclick="togStep('+iss.id+','+i+');event.stopPropagation()"><div class="sdot'+(s.d?' done':'')+'"></div><span style="'+(s.d?'text-decoration:line-through;color:var(--text3)':'')+'">'+s.t+'</span></div>';
-    }).join('');
+    var log=iss.log||[];
+    var steps=iss.steps||[];
+    var latestLog=log.length ? log[log.length-1] : null;
+
+    // Header
+    var statusCls = iss.status==='open'?'st-open':iss.status==='in-progress'?'st-prog':iss.status==='waiting'?'st-wait':'st-res';
+    var statusLabel = SL[iss.status]||iss.status;
+    var areaLabel = CL[iss.comp]||iss.comp;
+
+    // Log timeline HTML
+    var logHTML = '';
+    if(log.length){
+      logHTML = '<div class="issue-log">'
+        + log.slice().reverse().map(function(entry){
+            var cls = logOutcomeClass(entry.outcome);
+            var lbl = logOutcomeLabel(entry.outcome);
+            var src = entry.source==='checklist'?'<span class="log-src">via checklist</span>':'';
+            return '<div class="log-entry '+cls+'">'
+              +'<div class="log-entry-head"><span class="log-dot"></span><span class="log-lbl">'+lbl+'</span>'+src+'<span class="log-date">'+relDate(entry.date)+'</span></div>'
+              +'<div class="log-text">'+entry.text+'</div>'
+              +'</div>';
+          }).join('')
+        + '</div>';
+    }
+
+    // Legacy steps HTML
+    var stepsHTML = '';
+    if(steps.length){
+      var sd=steps.filter(function(s){return s.d;}).length;
+      stepsHTML = '<div class="issue-steps-head">Steps <span class="log-date">'+sd+'/'+steps.length+'</span></div>'
+        + '<div class="steps">'
+        + steps.map(function(s,i){
+            return '<div class="step" onclick="togStep('+iss.id+','+i+');event.stopPropagation()">'
+              +'<div class="sdot'+(s.d?' done':'')+'"></div>'
+              +'<span style="'+(s.d?'text-decoration:line-through;color:var(--ink3)':'')+'">'+s.t+'</span>'
+              +'</div>';
+          }).join('')
+        + '</div>';
+    }
+
+    // Linked checklist items
+    var linked = [];
+    checklist.forEach(function(sec){
+      (sec.items||[]).forEach(function(item){
+        if(item.issueId===iss.id) linked.push({sec:sec.title,item:item});
+      });
+    });
+    var linkedHTML = linked.length
+      ? '<div class="linked-label">Linked checklist items</div>'
+        + linked.map(function(l){
+            var done = l.item.d;
+            return '<div class="linked-item'+(done?' linked-done':'')+'"><span class="linked-dot'+(done?' done':'')+'"></span>'
+              +'<span>'+l.item.t+'</span><span class="log-date">'+l.sec+'</span></div>';
+          }).join('')
+      : '';
+
     return '<div class="ic" id="ic-'+iss.id+'" onclick="togIssue('+iss.id+')">'
-      +'<div class="ih"><span class="in">#'+iss.id+'</span><div style="flex:1">'
+      // ── COLLAPSED ROW ──
+      +'<div class="ih">'
+      +'<div class="iss-status '+statusCls+'"><span class="iss-bar"></span>'+statusLabel+'</div>'
+      +'<div style="flex:1;min-width:0">'
       +'<div class="it">'+iss.title+'</div>'
-      +'<div class="im"><span class="badge '+SCL[iss.status]+'">'+SL[iss.status]+'</span>'
-      +'<span class="badge binf">'+(CL[iss.comp]||iss.comp)+'</span>'
-      +(iss.mode?'<span class="mode-tag '+(iss.mode==='vp'?'tag-vp':'tag-gd')+'">'+(iss.mode==='vp'?'VP':'Game Dev')+'</span>':'')
-      +'<span class="id">'+iss.date+'</span>'
-      +(st>0?'<span class="id">'+sd+'/'+st+' steps</span>':'')
-      +'</div></div></div>'
+      +'<div class="im">'
+      +'<span class="badge binf">'+areaLabel+'</span>'
+      +(log.length?'<span class="badge binf">'+log.length+' '+(log.length===1?'entry':'entries')+'</span>':'')
+      +(latestLog?'<span class="log-latest '+logOutcomeClass(latestLog.outcome)+'">'+logOutcomeLabel(latestLog.outcome)+'</span>':'')
+      +'<span class="iss-date">'+iss.date+'</span>'
+      +'</div>'
+      +'</div>'
+      +'<span style="font-size:11px;color:var(--ink4);padding:0 8px;user-select:none">&#9660;</span>'
+      +'</div>'
+      // ── EXPANDED DETAIL ──
       +'<div class="ib" id="ib-'+iss.id+'">'
-      +(iss.desc?'<p>'+iss.desc+'</p>':'')
-      +(st>0?'<div style="font-family:var(--mono);font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Progress</div><div class="steps">'+stHTML+'</div>':'')
-      +'<div class="addi" onclick="event.stopPropagation()"><input id="si-'+iss.id+'" placeholder="Add progress step..." onkeydown="if(event.key===\'Enter\')addStep('+iss.id+')"><button class="btn bg sm" onclick="addStep('+iss.id+')">Add</button></div>'
+      +(iss.desc?'<p class="iss-desc">'+iss.desc+'</p>':'')
+      // Status buttons
       +'<div class="iact" onclick="event.stopPropagation()">'
-      +'<button class="btn bg sm" onclick="setStatus('+iss.id+',\'open\')">Open</button>'
-      +'<button class="btn bg sm" onclick="setStatus('+iss.id+',\'in-progress\')">In Progress</button>'
-      +'<button class="btn bg sm" onclick="setStatus('+iss.id+',\'waiting\')">Waiting</button>'
-      +'<button class="btn bs sm" onclick="setStatus('+iss.id+',\'resolved\')">Resolved</button>'
-      +'<button class="btn bd sm" onclick="delIssue('+iss.id+');event.stopPropagation()">Delete</button>'
-      +'</div></div></div>';
+      +'<span style="font-size:11px;color:var(--ink3)">Status:</span>'
+      +['open','in-progress','waiting','resolved'].map(function(s){
+          var active=iss.status===s;
+          return '<button class="btn sm'+(active?' bp':'')+'" onclick="setStatus('+iss.id+',''+s+'');event.stopPropagation()">'+SL[s]+'</button>';
+        }).join('')
+      +'<button class="btn bd sm" onclick="delIssue('+iss.id+');event.stopPropagation()" style="margin-left:auto">Delete</button>'
+      +'</div>'
+      // Log timeline
+      +(log.length ? logHTML : '')
+      // Add log note
+      +'<div class="log-add" onclick="event.stopPropagation()">'
+      +'<input id="log-inp-'+iss.id+'" placeholder="Add a note to this issue..." onkeydown="if(event.key==='Enter')addManualLog('+iss.id+')">'
+      +'<button class="btn sm" onclick="addManualLog('+iss.id+')">Add note</button>'
+      +'</div>'
+      // Linked checklist
+      +(linked.length ? '<div class="linked-section" onclick="event.stopPropagation()">'+linkedHTML+'</div>' : '')
+      // Legacy steps
+      +(steps.length ? '<div onclick="event.stopPropagation()">'+stepsHTML+'<div class="addi"><input id="si-'+iss.id+'" placeholder="Add step..." onkeydown="if(event.key==='Enter')addStep('+iss.id+')"><button class="btn bg sm" onclick="addStep('+iss.id+')">Add</button></div></div>' : '')
+      +'</div>'
+      +'</div>';
   }).join('');
   ibadge();
 }
+
+
 
 // Chat
 var SYS = ''; // populated by buildSysPrompt()
@@ -1711,12 +1929,70 @@ function togCLSec(id){
 }
 function togCLItem(sid,idx){
   var s=checklist.find(function(x){return x.id===sid;});
-  if(s&&s.items[idx]){s.items[idx].d=!s.items[idx].d;fsave('checklist',{sections:checklist});renderCL();}
+  if(!s||!s.items[idx]) return;
+  var item=s.items[idx];
+  var wasUnchecked=!item.d;
+  item.d=!item.d;
+  fsave('checklist',{sections:checklist});
+  renderCL();
+  // If just checked AND linked to an issue, show outcome picker
+  if(wasUnchecked && item.issueId){
+    var iss=issues.find(function(x){return x.id===item.issueId;});
+    if(iss && iss.status!=='resolved'){
+      showOutcomePicker(item.issueId, item.t);
+    }
+  }
+  updateCLProg();
+}
+
+function showOutcomePicker(issueId, itemText){
+  var existing=el('outcome-picker');
+  if(existing) existing.remove();
+  var iss=issues.find(function(x){return x.id===issueId;});
+  if(!iss) return;
+  var d=document.createElement('div');
+  d.id='outcome-picker';
+  d.className='outcome-picker';
+  d.innerHTML='<div class="outcome-head">Did "'+itemText.slice(0,50)+'" help with: <strong>'+iss.title.slice(0,50)+'</strong>?</div>'
+    +'<div class="outcome-btns">'
+    +'<button class="btn outcome-fixed" onclick="recordOutcome('+issueId+',\''+itemText.replace(/'/g,"\\'")+'\',' +"'fixed')>&#10003; Fixed it</button>"
+    +'<button class="btn outcome-no-effect" onclick="recordOutcome('+issueId+',\''+itemText.replace(/'/g,"\\'")+'\',' +"'no-effect')>&#8213; No effect</button>"
+    +'<button class="btn outcome-worse" onclick="recordOutcome('+issueId+',\''+itemText.replace(/'/g,"\\'")+'\',' +"'worse')>&#8595; Made it worse</button>"
+    +'<button class="btn bd sm" onclick="el(\'outcome-picker\').remove()" style="margin-left:auto">Skip</button>'
+    +'</div>';
+  var cl=el('cl-content');
+  if(cl) cl.insertBefore(d, cl.firstChild);
+}
+
+function recordOutcome(issueId, itemText, outcome){
+  var iss=issues.find(function(x){return x.id===issueId;});
+  if(!iss) return;
+  var text='"'+itemText+'"';
+  if(outcome==='fixed'){
+    text+=' — resolved the issue.';
+    iss.status='resolved';
+  } else if(outcome==='no-effect'){
+    text+=' — had no effect.';
+  } else if(outcome==='worse'){
+    text+=' — made it worse. Reverted.';
+  }
+  addLogNote(issueId, text, outcome);
+  var p=el('outcome-picker'); if(p) p.remove();
+  renderIssues();
+  renderCL();
 }
 function addItemInline(sid){
   var inp=el('cli-'+sid); if(!inp||!inp.value.trim()) return;
   var s=checklist.find(function(x){return x.id===sid;});
-  if(s){s.items.push({t:inp.value.trim(),d:false,tag:'tmrw'});inp.value='';fsave('checklist',{sections:checklist});renderCL();}
+  if(!s) return;
+  var issueSel=el('cli-issue-'+sid);
+  var issueId=issueSel && issueSel.value ? parseInt(issueSel.value) : null;
+  s.items.push({t:inp.value.trim(),d:false,tag:'tmrw',issueId:issueId});
+  inp.value='';
+  if(issueSel) issueSel.value='';
+  fsave('checklist',{sections:checklist});
+  renderCL();
+  renderIssues();
 }
 function toggleNewSection(){
   var f=el('new-sec-form'); f.style.display=f.style.display==='none'?'block':'none';
@@ -1745,26 +2021,46 @@ function renderCL(){
   el('cl-content').innerHTML=checklist.map(function(sec){
     var done=sec.items.filter(function(i){return i.d;}).length, tot=sec.items.length;
     var ihtml=sec.items.map(function(item,idx){
-      return '<div class="cli'+(item.d?' done':'')+'" onclick="togCLItem(\''+sec.id+'\','+idx+')">'
+      var linkedIssue=item.issueId ? issues.find(function(x){return x.id===item.issueId;}) : null;
+      var issueTag = linkedIssue
+        ? '<span class="cl-issue-tag">'+linkedIssue.title.slice(0,32)+(linkedIssue.title.length>32?'...':'')+'</span>'
+        : '';
+      return '<div class="cli'+(item.d?' done':'')+'" onclick="togCLItem(''+sec.id+'','+idx+')">'
         +'<div class="clc">'+(item.d?'&#10003;':'')+'</div>'
-        +'<div style="flex:1"><div class="clt">'+item.t+'</div>'+(item.n?'<div class="cln">'+item.n+'</div>':'')+'</div>'
+        +'<div style="flex:1;min-width:0">'
+        +'<div class="clt">'+item.t+'</div>'
+        +(item.n?'<div class="cln">'+item.n+'</div>':'')
+        +issueTag
+        +'</div>'
         +(item.tag?'<div class="cltag '+(TC[item.tag]||'ttmrw')+'">'+(TL[item.tag]||item.tag)+'</div>':'')
         +'</div>';
     }).join('');
+    // Add item row with issue linkage
+    var openIssues = issues.filter(function(i){return i.status!=='resolved';});
+    var issueOptions = openIssues.length
+      ? '<select id="cli-issue-'+sec.id+'" class="flt-select" style="font-size:10px;padding:3px 7px"><option value="">No issue link</option>'
+        + openIssues.map(function(i){return '<option value="'+i.id+'">#'+i.id+' '+i.title.slice(0,30)+'</option>';}).join('')
+        + '</select>'
+      : '';
     return '<div class="cls">'
-      +'<div class="clsh" onclick="togCLSec(\''+sec.id+'\')">'
+      +'<div class="clsh" onclick="togCLSec(''+sec.id+'')">'
       +'<span class="clst">'+sec.title+'</span>'
       +'<span class="clsp">'+done+'/'+tot+'</span>'
-      +'<span style="font-family:var(--mono);font-size:12px;color:var(--text3);margin-left:7px">'+(sec.open?'&#9662;':'&#9658;')+'</span>'
-      +'<button class="btn bg sm" style="margin-left:7px;padding:1px 6px;font-size:9px" onclick="delSection(\''+sec.id+'\');event.stopPropagation()">&#215;</button>'
+      +'<span style="font-size:11px;color:var(--ink3);margin-left:7px">'+(sec.open?'&#9662;':'&#9658;')+'</span>'
+      +'<button class="btn bg sm" style="margin-left:7px;padding:1px 6px;font-size:9px" onclick="delSection(''+sec.id+'');event.stopPropagation()">&#215;</button>'
       +'</div>'
       +(sec.open?'<div style="padding-left:10px">'+ihtml
-        +'<div class="addi"><input id="cli-'+sec.id+'" placeholder="Add item..." onkeydown="if(event.key===\'Enter\')addItemInline(\''+sec.id+'\')">'
-        +'<button class="btn bg sm" onclick="addItemInline(\''+sec.id+'\')">Add</button></div></div>':'')
+        +'<div class="addi">'
+        +'<input id="cli-'+sec.id+'" placeholder="Add item..." onkeydown="if(event.key==='Enter')addItemInline(''+sec.id+'')">'
+        +issueOptions
+        +'<button class="btn bg sm" onclick="addItemInline(''+sec.id+'')">Add</button>'
+        +'</div></div>':'')
       +'</div>';
   }).join('');
   updateCLProg();
 }
+
+
 </script>
 </body>
 </html>

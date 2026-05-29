@@ -403,8 +403,8 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
     <div class="aerr" id="aerr"></div>
     <div class="aok" id="aok"></div>
     <div id="f-in">
-      <div class="afield"><label>Email</label><input type="email" id="li-em" placeholder="you@studio.com" onkeydown="if(event.key==='Enter')doLogin()"></div>
-      <div class="afield"><label>Password</label><input type="password" id="li-pw" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <div class="afield"><label>Email</label><input type="email" id="li-em" placeholder="you@studio.com" onkeydown="if(event.keyCode===13)doLogin()"></div>
+      <div class="afield"><label>Password</label><input type="password" id="li-pw" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" onkeydown="if(event.keyCode===13)doLogin()"></div>
       <button class="abtn" id="li-btn" onclick="doLogin()">Sign in</button>
       <div class="alink" onclick="doReset()">Forgot password?</div>
     </div>
@@ -422,7 +422,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
     <h2>API key required</h2>
     <p>This app uses the Anthropic API. Your key is stored only in this browser. Get one at <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a></p>
     <div class="api-modal-err" id="api-modal-err"></div>
-    <div class="afield"><label>Anthropic API key</label><input type="password" id="api-key-input" placeholder="sk-ant-api03-..." autocomplete="off" onkeydown="if(event.key==='Enter')saveApiKey()"></div>
+    <div class="afield"><label>Anthropic API key</label><input type="password" id="api-key-input" placeholder="sk-ant-api03-..." autocomplete="off" onkeydown="if(event.keyCode===13)saveApiKey()"></div>
     <button class="abtn" onclick="saveApiKey()">Save and continue</button>
     <div style="text-align:center;margin-top:10px"><span style="font-size:11px;color:var(--ink3);cursor:pointer;text-decoration:underline" onclick="skipApiKey()">Skip for now</span></div>
   </div>
@@ -1764,23 +1764,23 @@ function renderIssues(){
       // Status buttons
       +'<div class="iact" onclick="event.stopPropagation()">'
       +'<span style="font-size:11px;color:var(--ink3)">Status:</span>'
-      +['open','in-progress','waiting','resolved'].map(function(s){
-          var active=iss.status===s;
-          return '<button class="btn sm'+(active?' bp':'')+'" onclick="setStatus('+iss.id+',''+s+'');event.stopPropagation()">'+SL[s]+'</button>';
-        }).join('')
+      +'<button class="btn sm'+(iss.status==='open'?' bp':'')+'" onclick="setStatus('+iss.id+',\'open\');event.stopPropagation()">Open</button>'
+      +'<button class="btn sm'+(iss.status==='in-progress'?' bp':'')+'" onclick="setStatus('+iss.id+',\'in-progress\');event.stopPropagation()">In progress</button>'
+      +'<button class="btn sm'+(iss.status==='waiting'?' bp':'')+'" onclick="setStatus('+iss.id+',\'waiting\');event.stopPropagation()">Waiting</button>'
+      +'<button class="btn sm'+(iss.status==='resolved'?' bp':'')+'" onclick="setStatus('+iss.id+',\'resolved\');event.stopPropagation()">Resolved</button>'
       +'<button class="btn bd sm" onclick="delIssue('+iss.id+');event.stopPropagation()" style="margin-left:auto">Delete</button>'
       +'</div>'
       // Log timeline
       +(log.length ? logHTML : '')
       // Add log note
       +'<div class="log-add" onclick="event.stopPropagation()">'
-      +'<input id="log-inp-'+iss.id+'" placeholder="Add a note to this issue..." onkeydown="if(event.key==='Enter')addManualLog('+iss.id+')">'
+      +'<input id="log-inp-'+iss.id+'" placeholder="Add a note to this issue..." onkeydown="if(event.keyCode===13)addManualLog('+iss.id+')">'
       +'<button class="btn sm" onclick="addManualLog('+iss.id+')">Add note</button>'
       +'</div>'
       // Linked checklist
       +(linked.length ? '<div class="linked-section" onclick="event.stopPropagation()">'+linkedHTML+'</div>' : '')
       // Legacy steps
-      +(steps.length ? '<div onclick="event.stopPropagation()">'+stepsHTML+'<div class="addi"><input id="si-'+iss.id+'" placeholder="Add step..." onkeydown="if(event.key==='Enter')addStep('+iss.id+')"><button class="btn bg sm" onclick="addStep('+iss.id+')">Add</button></div></div>' : '')
+      +(steps.length ? '<div onclick="event.stopPropagation()">'+stepsHTML+'<div class="addi"><input id="si-'+iss.id+'" placeholder="Add step..." onkeydown="if(event.keyCode===13)addStep('+iss.id+')"><button class="btn bg sm" onclick="addStep('+iss.id+')">Add</button></div></div>' : '')
       +'</div>'
       +'</div>';
   }).join('');
@@ -1953,17 +1953,35 @@ function showOutcomePicker(issueId, itemText){
   var d=document.createElement('div');
   d.id='outcome-picker';
   d.className='outcome-picker';
-  d.innerHTML='<div class="outcome-head">Did "'+itemText.slice(0,50)+'" help with: <strong>'+iss.title.slice(0,50)+'</strong>?</div>'
-    +'<div class="outcome-btns">'
-    +'<button class="btn outcome-fixed" onclick="recordOutcome('+issueId+',\''+itemText.replace(/'/g,"\\'")+'\',' +"'fixed')>&#10003; Fixed it</button>"
-    +'<button class="btn outcome-no-effect" onclick="recordOutcome('+issueId+',\''+itemText.replace(/'/g,"\\'")+'\',' +"'no-effect')>&#8213; No effect</button>"
-    +'<button class="btn outcome-worse" onclick="recordOutcome('+issueId+',\''+itemText.replace(/'/g,"\\'")+'\',' +"'worse')>&#8595; Made it worse</button>"
-    +'<button class="btn bd sm" onclick="el(\'outcome-picker\').remove()" style="margin-left:auto">Skip</button>'
-    +'</div>';
+  var head=document.createElement('div');
+  head.className='outcome-head';
+  head.textContent='Did "'+itemText.slice(0,50)+'" help with this issue?';
+  var issName=document.createElement('strong');
+  issName.textContent=' '+iss.title.slice(0,50);
+  head.appendChild(issName);
+  d.appendChild(head);
+  var btns=document.createElement('div');
+  btns.className='outcome-btns';
+  [{cls:'outcome-fixed',label:'Fixed it',val:'fixed'},
+   {cls:'outcome-no-effect',label:'No effect',val:'no-effect'},
+   {cls:'outcome-worse',label:'Made it worse',val:'worse'}
+  ].forEach(function(o){
+    var b=document.createElement('button');
+    b.className='btn '+o.cls;
+    b.textContent=o.label;
+    b.onclick=(function(v){ return function(){ recordOutcome(issueId,itemText,v); }; })(o.val);
+    btns.appendChild(b);
+  });
+  var skip=document.createElement('button');
+  skip.className='btn bd sm';
+  skip.textContent='Skip';
+  skip.style.marginLeft='auto';
+  skip.onclick=function(){ d.remove(); };
+  btns.appendChild(skip);
+  d.appendChild(btns);
   var cl=el('cl-content');
   if(cl) cl.insertBefore(d, cl.firstChild);
 }
-
 function recordOutcome(issueId, itemText, outcome){
   var iss=issues.find(function(x){return x.id===issueId;});
   if(!iss) return;
@@ -2020,12 +2038,11 @@ var TC={now:'tnow',tmrw:'ttmrw',aja:'taja'};
 function renderCL(){
   el('cl-content').innerHTML=checklist.map(function(sec){
     var done=sec.items.filter(function(i){return i.d;}).length, tot=sec.items.length;
+    var openIssues=issues.filter(function(i){return i.status!=='resolved';});
     var ihtml=sec.items.map(function(item,idx){
-      var linkedIssue=item.issueId ? issues.find(function(x){return x.id===item.issueId;}) : null;
-      var issueTag = linkedIssue
-        ? '<span class="cl-issue-tag">'+linkedIssue.title.slice(0,32)+(linkedIssue.title.length>32?'...':'')+'</span>'
-        : '';
-      return '<div class="cli'+(item.d?' done':'')+'" onclick="togCLItem(''+sec.id+'','+idx+')">'
+      var linkedIssue=item.issueId?issues.find(function(x){return x.id===item.issueId;}):null;
+      var issueTag=linkedIssue?'<span class="cl-issue-tag">'+linkedIssue.title.slice(0,32)+(linkedIssue.title.length>32?'...':'')+'</span>':'';
+      return '<div class="cli'+(item.d?' done':'')+'" data-sec="'+sec.id+'" data-idx="'+idx+'" onclick="clItemClick(this)">'
         +'<div class="clc">'+(item.d?'&#10003;':'')+'</div>'
         +'<div style="flex:1;min-width:0">'
         +'<div class="clt">'+item.t+'</div>'
@@ -2035,29 +2052,47 @@ function renderCL(){
         +(item.tag?'<div class="cltag '+(TC[item.tag]||'ttmrw')+'">'+(TL[item.tag]||item.tag)+'</div>':'')
         +'</div>';
     }).join('');
-    // Add item row with issue linkage
-    var openIssues = issues.filter(function(i){return i.status!=='resolved';});
-    var issueOptions = openIssues.length
-      ? '<select id="cli-issue-'+sec.id+'" class="flt-select" style="font-size:10px;padding:3px 7px"><option value="">No issue link</option>'
-        + openIssues.map(function(i){return '<option value="'+i.id+'">#'+i.id+' '+i.title.slice(0,30)+'</option>';}).join('')
-        + '</select>'
-      : '';
+    var issueOptions=openIssues.length
+      ?'<select id="cli-issue-'+sec.id+'" class="flt-select" style="font-size:10px;padding:3px 7px"><option value="">Link to issue...</option>'
+        +openIssues.map(function(i){return '<option value="'+i.id+'">#'+i.id+' '+i.title.slice(0,30)+'</option>';}).join('')+'</select>'
+      :'';
     return '<div class="cls">'
-      +'<div class="clsh" onclick="togCLSec(''+sec.id+'')">'
+      +'<div class="clsh" data-sec="'+sec.id+'" onclick="clSecClick(this)">'
       +'<span class="clst">'+sec.title+'</span>'
       +'<span class="clsp">'+done+'/'+tot+'</span>'
       +'<span style="font-size:11px;color:var(--ink3);margin-left:7px">'+(sec.open?'&#9662;':'&#9658;')+'</span>'
-      +'<button class="btn bg sm" style="margin-left:7px;padding:1px 6px;font-size:9px" onclick="delSection(''+sec.id+'');event.stopPropagation()">&#215;</button>'
+      +'<button class="btn bg sm" data-delsec="'+sec.id+'" style="margin-left:7px;padding:1px 6px;font-size:9px" onclick="clDelSec(this)">&#215;</button>'
       +'</div>'
       +(sec.open?'<div style="padding-left:10px">'+ihtml
         +'<div class="addi">'
-        +'<input id="cli-'+sec.id+'" placeholder="Add item..." onkeydown="if(event.key==='Enter')addItemInline(''+sec.id+'')">'
+        +'<input id="cli-'+sec.id+'" placeholder="Add item...">'
         +issueOptions
-        +'<button class="btn bg sm" onclick="addItemInline(''+sec.id+'')">Add</button>'
+        +'<button class="btn bg sm" data-addsec="'+sec.id+'" onclick="clAddItem(this)">Add</button>'
         +'</div></div>':'')
       +'</div>';
   }).join('');
   updateCLProg();
+  // Wire Enter key for add-item inputs (post-render)
+  document.querySelectorAll('[id^="cli-"]:not([id*="issue"])').forEach(function(inp){
+    inp.onkeydown=function(e){ if(e.keyCode===13){ clAddItem(inp.nextElementSibling || inp.parentElement.querySelector('[data-addsec]')); }};
+  });
+}
+
+function clItemClick(el){
+  var sid=el.dataset.sec, idx=parseInt(el.dataset.idx);
+  togCLItem(sid,idx);
+}
+function clSecClick(el){
+  togCLSec(el.dataset.sec);
+}
+function clDelSec(el){
+  event.stopPropagation();
+  delSection(el.dataset.delsec);
+}
+function clAddItem(el){
+  var sid=el.dataset.addsec;
+  if(!sid) sid=el.closest('.addi').querySelector('[id^="cli-"]:not([id*="issue"])').id.replace('cli-','');
+  addItemInline(sid);
 }
 
 

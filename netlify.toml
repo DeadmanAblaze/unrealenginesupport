@@ -7,3 +7,5 @@
 
 [functions."chat"]
   timeout = 26
+
+# Trigger deploy

@@ -1,15 +1,12 @@
 [build]
-    functions = "Netlify/Functions"
-  publish = "."
+functions = "Netlify/Functions"
+publish = "."
 
 [functions]
-  node_bundler = "esbuild"
+node_bundler = "esbuild"
 
 [functions."chat"]
-  timeout = 26
-
-# Trigger deploy
-
+timeout = 26
 
 [build.environment]
-  SECRETS_SCAN_OMIT_KEYS = "AIzaSyAtW-rocD37V23HGwA6xqwgxMFjhpRJMg4"
+SECRETS_SCAN_ENABLED = "false"

@@ -335,6 +335,58 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .ctrl-row-r{margin-left:auto;display:flex;align-items:center;gap:12px}
 .si{font-size:10px;font-family:var(--mono);color:var(--ink4);letter-spacing:.05em;opacity:0;transition:opacity .2s}
 .si.on{opacity:1;color:var(--live)}
+/* ── PORTS & CONNECTIONS ── */
+.ports-section{border-top:1px solid var(--line);padding:8px 12px 10px;display:flex;flex-direction:column;gap:5px}
+.ports-head{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.ports-label{font-size:10px;font-weight:500;color:var(--ink3);text-transform:uppercase;letter-spacing:.08em;flex:1}
+.port-add-btn{font-size:10px;color:var(--brand1);background:none;border:1px solid rgba(91,157,255,.3);border-radius:4px;padding:2px 8px;cursor:pointer;font-family:var(--sans);transition:all .12s}
+.port-add-btn:hover{background:var(--brand-dim)}
+.cauto-btn{font-size:10px;color:var(--ink3);background:none;border:1px solid var(--line2);border-radius:4px;padding:2px 9px;cursor:pointer;font-family:var(--sans);transition:all .12s}
+.cauto-btn:hover{color:var(--ink);border-color:var(--line3)}
+.port-row-edit{display:flex;align-items:center;gap:5px;padding:4px 0;border-bottom:1px solid var(--line)}
+.port-row-edit:last-child{border-bottom:none}
+.port-sel{background:var(--el);border:1px solid var(--line2);border-radius:4px;color:var(--ink2);font-size:11px;font-family:var(--mono);padding:3px 5px;cursor:pointer;outline:none}
+.port-sig-sel{max-width:130px}
+.port-label-inp{flex:1;background:var(--el);border:1px solid var(--line2);border-radius:4px;color:var(--ink);font-size:11px;font-family:var(--mono);padding:3px 7px;outline:none;min-width:0}
+.port-label-inp:focus{border-color:var(--brand1)}
+.port-conn-count{font-size:10px;color:var(--ink3);font-family:var(--mono);white-space:nowrap}
+/* port badges (read mode) */
+.ports-compact{flex-direction:row;flex-wrap:wrap;gap:5px;border-top:1px solid var(--line);padding:8px 12px 10px}
+.port-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:5px;border:1px solid;background:transparent;cursor:pointer;font-size:10px;font-family:var(--mono);color:var(--ink2);transition:all .12s}
+.port-badge:hover{background:rgba(255,255,255,.04)}
+.port-badge.port-selected{background:rgba(91,157,255,.12)}
+.port-badge.port-target{animation:portpulse 1.2s ease-in-out infinite}
+@keyframes portpulse{0%,100%{opacity:.7}50%{opacity:1;transform:scale(1.02)}}
+.port-sig-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.port-badge-label{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:90px}
+.port-dir-tag{font-size:10px;color:inherit;opacity:.6}
+.port-conn-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.port-target-hint{font-size:10px;color:var(--brand1);font-family:var(--mono);animation:portpulse 1.2s ease-in-out infinite}
+.strip-pending{border-color:rgba(91,157,255,.4)!important}
+/* auto-detect suggestions */
+.detect-suggest{background:var(--el2);border:1px solid var(--line2);border-radius:6px;padding:9px 11px;margin-bottom:6px}
+.detect-conf{font-size:9px;font-weight:600;font-family:var(--mono);letter-spacing:.08em;padding:2px 7px;border-radius:3px;margin-right:7px}
+.detect-conf.high{color:var(--live);background:var(--live-dim)}.detect-conf.medium{color:var(--warn);background:var(--warn-dim)}.detect-conf.low{color:var(--ink3);background:var(--el)}
+.detect-note{font-size:11px;color:var(--ink3);font-style:italic}
+.detect-fields{margin-top:6px;display:flex;flex-wrap:wrap;gap:4px}
+.suggest-pill{font-size:10px;background:var(--el);border:1px solid var(--line2);border-radius:4px;padding:2px 8px;color:var(--ink2);font-family:var(--mono)}
+/* routing view */
+.route-empty{font-size:12px;color:var(--ink4);text-align:center;padding:16px;border:1px dashed var(--line2);border-radius:7px}
+.rsig-group{margin-bottom:12px}
+.rsig-head{display:flex;align-items:center;gap:8px;padding:7px 11px;border-radius:6px;border-left:3px solid;background:rgba(255,255,255,.025);margin-bottom:5px}
+.rsig-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.rsig-label{font-size:11px;font-weight:500;color:var(--ink);font-family:var(--mono)}
+.rsig-count{font-size:10px;color:var(--ink3);margin-left:auto;font-family:var(--mono)}
+.rconn{display:flex;align-items:center;gap:9px;padding:7px 11px;border-radius:5px;font-size:12px;transition:background .1s}
+.rconn:hover{background:var(--el)}
+.rconn-from,.rconn-to{display:flex;align-items:center;gap:6px;color:var(--ink2)}
+.rconn-port{font-family:var(--mono);font-size:10px;color:var(--ink3);background:var(--el);padding:1px 6px;border-radius:3px;margin-left:4px}
+.rconn-arrow{color:var(--ink4);font-size:16px}
+.rconn-warn .rconn-arrow{color:var(--warn)}
+.rconn-warn-tag{color:var(--warn);margin-left:4px;font-size:12px}
+.rconn-del{margin-left:auto;background:none;border:none;color:var(--ink4);cursor:pointer;font-size:14px;padding:2px 6px;border-radius:4px;transition:all .12s}
+.rconn-del:hover{color:var(--crit);background:var(--rdim)}
+
 /* ── COMPOSABLE COMPONENTS ── */
 .csec{display:flex;align-items:center;gap:9px;margin:24px 0 12px}
 .csec:first-child{margin-top:4px}
@@ -818,258 +870,20 @@ select.cv-edit{text-align:left;cursor:pointer}
         <!-- ── VP MODE ─────────────────────────────────────────────── -->
         <div id="components-host" class="vponly"></div>
 
+        <!-- ── SIGNAL ROUTING VIEW ────────────────────────────────── -->
+        <div class="vponly" id="routing-section" style="margin-top:0">
+          <div class="csec">
+            <span class="ctick"></span>
+            <span class="csl">Signal routing</span>
+            <span class="csec-rule"></span>
+          </div>
+          <div id="routing-host"><div class="route-empty">No connections defined yet.</div></div>
+        </div>
+
         <!-- ── VP SYSTEM DIAGRAM ──────────────────────────────── -->
         <div class="vponly diag-wrap">
           <div class="diag-title">System Architecture Diagram</div>
-          <svg id="vp-diagram" viewBox="0 0 820 660" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">
-<style>
-#vp-diagram .nd{transition:opacity .18s ease}
-#vp-diagram .cn{transition:opacity .18s ease, stroke-width .18s ease}
-#vp-diagram .dimmed{opacity:0.06}
-#vp-diagram .conn-dim{opacity:0.04}
-@keyframes vp-flow{to{stroke-dashoffset:-12}}
-#vp-diagram .flowing{animation:vp-flow .55s linear infinite}
-</style>
-<defs>
-  <marker id="vpa" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
-    <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-  </marker>
-</defs>
-
-<!-- ── COLUMN HEADERS ── -->
-<rect x="72" y="16" width="96" height="22" rx="11" fill="#ffffff" fill-opacity="0.04"/>
-<text x="120" y="27" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#646469" font-family="inherit" letter-spacing="0.04em">Video in</text>
-<rect x="358" y="16" width="104" height="22" rx="11" fill="#ffffff" fill-opacity="0.04"/>
-<text x="410" y="27" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#646469" font-family="inherit" letter-spacing="0.04em">Compute</text>
-<rect x="626" y="16" width="104" height="22" rx="11" fill="#ffffff" fill-opacity="0.04"/>
-<text x="678" y="27" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#646469" font-family="inherit" letter-spacing="0.04em">Display out</text>
-
-<!-- Column tints -->
-<rect x="64" y="50" width="112" height="440" rx="8" fill="#ffffff" fill-opacity="0.012"/>
-<rect x="350" y="50" width="120" height="440" rx="8" fill="#ffffff" fill-opacity="0.012"/>
-<rect x="616" y="50" width="120" height="440" rx="8" fill="#ffffff" fill-opacity="0.012"/>
-
-<!-- ════════════════════════════════
-     CONNECTIONS — drawn before nodes
-     ════════════════════════════════ -->
-
-<!-- Camera SDI → Display Node 1 (primary ICVFX feed via Decklink) -->
-<path id="dg-cn-cam-n1" class="cn" d="M120 124 L120 152 L180 152 L180 244 L350 244" fill="none" stroke="#854F0B" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#vpa)" opacity="0.55"/>
-
-<!-- Camera SDI → Display Node 2 (same feed, split) -->
-<path id="dg-cn-cam-n2" class="cn" d="M120 124 L120 152 L180 152 L180 344 L350 344" fill="none" stroke="#854F0B" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#vpa)" opacity="0.4"/>
-
-<!-- Camera SDI → Editor (timecode / Switchboard ref) -->
-<path id="dg-cn-cam-editor" class="cn" d="M176 96 L240 96 L240 154 L350 154" fill="none" stroke="#854F0B" stroke-width="0.75" stroke-dasharray="3 4" marker-end="url(#vpa)" opacity="0.3"/>
-
-<!-- Tracking LiveLink → Editor (over network) -->
-<path id="dg-cn-track-editor" class="cn" d="M176 232 L240 232 L240 174 L350 174" fill="none" stroke="#085041" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#vpa)" opacity="0.55"/>
-
-<!-- Editor nDisplay → Node 1 (10GbE cluster) -->
-<path id="dg-cn-editor-n1" class="cn" d="M410 212 L410 228" fill="none" stroke="#9b9b9f" stroke-width="1" marker-end="url(#vpa)" opacity="0.35"/>
-
-<!-- Editor nDisplay → Node 2 (L-route left of node1) -->
-<path id="dg-cn-editor-n2" class="cn" d="M350 190 L330 190 L330 330 L350 330" fill="none" stroke="#9b9b9f" stroke-width="1" marker-end="url(#vpa)" opacity="0.35"/>
-
-<!-- Node 1 DP/HDMI → Wall Left (via Novastar) -->
-<path id="dg-cn-n1-wall1" class="cn" d="M470 258 L616 258" fill="none" stroke="#534AB7" stroke-width="1.5" marker-end="url(#vpa)" opacity="0.75"/>
-
-<!-- Node 2 DP/HDMI → Wall Right -->
-<path id="dg-cn-n2-wall2" class="cn" d="M470 358 L616 358" fill="none" stroke="#534AB7" stroke-width="1.5" marker-end="url(#vpa)" opacity="0.75"/>
-
-<!-- Genlock sync ref → Node 1 (Quadro Sync II) -->
-<path id="dg-cn-sync-n1" class="cn" d="M400 488 L320 488 L320 278 L350 278" fill="none" stroke="#3B6D11" stroke-width="0.75" stroke-dasharray="4 3" marker-end="url(#vpa)" opacity="0.5"/>
-
-<!-- Genlock sync ref → Node 2 (Quadro Sync II) -->
-<path id="dg-cn-sync-n2" class="cn" d="M420 488 L500 488 L500 378 L470 378" fill="none" stroke="#3B6D11" stroke-width="0.75" stroke-dasharray="4 3" marker-end="url(#vpa)" opacity="0.5"/>
-
-<!-- Genlock → Camera (house sync lock) -->
-<path id="dg-cn-sync-cam" class="cn" d="M400 480 L64 480 L64 110 L80 110" fill="none" stroke="#3B6D11" stroke-width="0.75" stroke-dasharray="4 3" marker-end="url(#vpa)" opacity="0.35"/>
-
-<!-- Network → Editor -->
-<path id="dg-cn-net-editor" class="cn" d="M410 548 L410 212" fill="none" stroke="#9b9b9f" stroke-width="0.5" stroke-dasharray="2 4" opacity="0.2"/>
-
-<!-- Network → Node 1 -->
-<path id="dg-cn-net-n1" class="cn" d="M390 548 L310 548 L310 280" fill="none" stroke="#9b9b9f" stroke-width="0.5" stroke-dasharray="2 4" opacity="0.2"/>
-
-<!-- Network → Node 2 -->
-<path id="dg-cn-net-n2" class="cn" d="M430 548 L510 548 L510 376" fill="none" stroke="#9b9b9f" stroke-width="0.5" stroke-dasharray="2 4" opacity="0.2"/>
-
-<!-- Network → Camera -->
-<path id="dg-cn-net-cam" class="cn" d="M380 556 L120 556 L120 124" fill="none" stroke="#9b9b9f" stroke-width="0.5" stroke-dasharray="2 4" opacity="0.2"/>
-
-<!-- Network → Tracking -->
-<path id="dg-cn-net-track" class="cn" d="M382 560 L120 560 L120 264" fill="none" stroke="#9b9b9f" stroke-width="0.5" stroke-dasharray="2 4" opacity="0.2"/>
-
-<!-- DP/HDMI edge labels -->
-<text id="dg-lbl-dp1" x="543" y="250" text-anchor="middle" font-size="10" fill="#646469" font-family="inherit" opacity="0.5">DP/HDMI</text>
-<text id="dg-lbl-dp2" x="543" y="350" text-anchor="middle" font-size="10" fill="#646469" font-family="inherit" opacity="0.5">DP/HDMI</text>
-
-<!-- ════════════════════════════════
-     NODES
-     ════════════════════════════════ -->
-
-<!-- Camera -->
-<g id="dg-nd-cam" class="nd" style="cursor:pointer"
-   onmouseenter="vpHover('cam')" onmouseleave="vpUnhover()">
-  <rect x="72" y="62" width="96" height="62" rx="6" fill="#1a1205" stroke="#854F0B" stroke-width="1"/>
-  <rect x="72" y="62" width="96" height="3" rx="1.5" fill="#854F0B" opacity="0.8"/>
-  <text x="120" y="86" text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="500" fill="#ededee" font-family="inherit">Camera</text>
-  <text id="dg-cam-model" x="120" y="104" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#9b9b9f" font-family="inherit">Sony HDC-1500</text>
-  <text id="dg-cam-sdi" x="120" y="118" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#EF9F27" font-family="inherit" opacity="0.8">SDI 1080i50</text>
-</g>
-
-<!-- Tracking -->
-<g id="dg-nd-track" class="nd" style="cursor:pointer"
-   onmouseenter="vpHover('track')" onmouseleave="vpUnhover()">
-  <rect x="72" y="190" width="96" height="74" rx="6" fill="#04120d" stroke="#0F6E56" stroke-width="1"/>
-  <rect x="72" y="190" width="96" height="3" rx="1.5" fill="#0F6E56" opacity="0.8"/>
-  <text x="120" y="214" text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="500" fill="#ededee" font-family="inherit">Tracking</text>
-  <text id="dg-tr-hw" x="120" y="232" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#9b9b9f" font-family="inherit">HTC Vive Mars</text>
-  <text id="dg-tr-fps" x="120" y="248" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#1D9E75" font-family="inherit">LiveLink · network</text>
-</g>
-
-<!-- Editor PC -->
-<g id="dg-nd-editor" class="nd" style="cursor:pointer"
-   onmouseenter="vpHover('editor')" onmouseleave="vpUnhover()">
-  <rect x="350" y="130" width="120" height="82" rx="7" fill="#0e0e10" stroke="#4a9eff" stroke-width="1"/>
-  <rect x="350" y="130" width="120" height="3" rx="1.5" fill="#4a9eff" opacity="0.7"/>
-  <text x="410" y="156" text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="500" fill="#ededee" font-family="inherit">Editor PC</text>
-  <text id="dg-editor-machine" x="410" y="174" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#9b9b9f" font-family="inherit">HP Z8 G4</text>
-  <text id="dg-editor-gpu" x="410" y="190" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#9b9b9f" font-family="inherit">RTX 4090</text>
-  <text id="dg-editor-ue" x="410" y="204" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#4a9eff" font-family="inherit">UE 5.7</text>
-</g>
-
-<!-- Display Node 1 -->
-<g id="dg-nd-n1" class="nd" style="cursor:pointer"
-   onmouseenter="vpHover('n1')" onmouseleave="vpUnhover()">
-  <rect x="350" y="228" width="120" height="82" rx="6" fill="#100f1c" stroke="#534AB7" stroke-width="1"/>
-  <rect x="350" y="228" width="120" height="3" rx="1.5" fill="#534AB7" opacity="0.8"/>
-  <text x="410" y="252" text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="500" fill="#ededee" font-family="inherit">Display node 1</text>
-  <text id="dg-n1-machine" x="410" y="270" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#9b9b9f" font-family="inherit">HP Z8 G4</text>
-  <text id="dg-n1-gpu" x="410" y="286" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#9b9b9f" font-family="inherit">NVIDIA A6000</text>
-  <text id="dg-n1-sync" x="410" y="300" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#AFA9EC" font-family="inherit">Sync II · Decklink</text>
-</g>
-
-<!-- Display Node 2 -->
-<g id="dg-nd-n2" class="nd" style="cursor:pointer"
-   onmouseenter="vpHover('n2')" onmouseleave="vpUnhover()">
-  <rect x="350" y="328" width="120" height="82" rx="6" fill="#100f1c" stroke="#534AB7" stroke-width="1"/>
-  <rect x="350" y="328" width="120" height="3" rx="1.5" fill="#534AB7" opacity="0.8"/>
-  <text x="410" y="352" text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="500" fill="#ededee" font-family="inherit">Display node 2</text>
-  <text id="dg-n2-machine" x="410" y="370" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#9b9b9f" font-family="inherit">HP Z8 G4</text>
-  <text id="dg-n2-gpu" x="410" y="386" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#9b9b9f" font-family="inherit">NVIDIA A6000</text>
-  <text id="dg-n2-sync" x="410" y="400" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#AFA9EC" font-family="inherit">Sync II · Decklink</text>
-</g>
-
-<!-- LED Wall Left -->
-<g id="dg-nd-wall1" class="nd" style="cursor:pointer"
-   onmouseenter="vpHover('wall1')" onmouseleave="vpUnhover()">
-  <rect x="616" y="228" width="120" height="60" rx="6" fill="#0d0c1a" stroke="#534AB7" stroke-width="1"/>
-  <rect x="616" y="228" width="120" height="3" rx="1.5" fill="#534AB7" opacity="0.6"/>
-  <text x="676" y="252" text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="500" fill="#ededee" font-family="inherit">LED wall, left</text>
-  <text id="dg-wall-left-res" x="676" y="272" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#AFA9EC" font-family="inherit">3840x2160 UHD</text>
-</g>
-
-<!-- LED Wall Right -->
-<g id="dg-nd-wall2" class="nd" style="cursor:pointer"
-   onmouseenter="vpHover('wall2')" onmouseleave="vpUnhover()">
-  <rect x="616" y="328" width="120" height="60" rx="6" fill="#0d0c1a" stroke="#534AB7" stroke-width="1"/>
-  <rect x="616" y="328" width="120" height="3" rx="1.5" fill="#534AB7" opacity="0.6"/>
-  <text x="676" y="352" text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="500" fill="#ededee" font-family="inherit">LED wall, right</text>
-  <text id="dg-wall-right-res" x="676" y="372" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#AFA9EC" font-family="inherit">3840x2160 UHD</text>
-</g>
-
-<!-- Wall info -->
-<text id="dg-wall-size" x="676" y="404" text-anchor="middle" font-size="10" fill="#646469" font-family="inherit">15m x 3m · 3° curve</text>
-<text id="dg-led-proc" x="676" y="418" text-anchor="middle" font-size="10" fill="#646469" font-family="inherit">Novastar · 50Hz</text>
-
-<!-- ── SYNC BAND ── -->
-<rect x="56" y="464" width="704" height="52" rx="8" fill="none" stroke="#3B6D11" stroke-width="0.5" stroke-dasharray="4 4" opacity="0.2"/>
-<text x="74" y="490" dominant-baseline="central" font-size="10" fill="#646469" font-family="inherit" opacity="0.5">Sync</text>
-<g id="dg-nd-sync" class="nd" style="cursor:pointer"
-   onmouseenter="vpHover('sync')" onmouseleave="vpUnhover()">
-  <rect x="350" y="468" width="120" height="44" rx="5" fill="#061008" stroke="#3B6D11" stroke-width="1"/>
-  <text x="410" y="484" text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="500" fill="#ededee" font-family="inherit">Genlock / sync</text>
-  <text id="dg-genlock" x="410" y="500" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#1D9E75" font-family="inherit">House blackburst</text>
-</g>
-<text id="dg-syncgen" x="410" y="522" text-anchor="middle" font-size="10" fill="#646469" font-family="inherit"></text>
-
-<!-- ── NETWORK BAND ── -->
-<rect x="56" y="534" width="704" height="44" rx="8" fill="none" stroke="#ffffff" stroke-width="0.5" opacity="0.06"/>
-<text x="74" y="556" dominant-baseline="central" font-size="10" fill="#646469" font-family="inherit" opacity="0.5">Network</text>
-<g id="dg-nd-net" class="nd" style="cursor:pointer"
-   onmouseenter="vpHover('net')" onmouseleave="vpUnhover()">
-  <rect x="350" y="538" width="120" height="36" rx="5" fill="#111113" stroke="#3a3a3d" stroke-width="1"/>
-  <text id="dg-switch-lbl" x="410" y="552" text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="500" fill="#ededee" font-family="inherit">10GbE switch</text>
-  <text x="410" y="566" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#9b9b9f" font-family="inherit">All devices</text>
-</g>
-
-<!-- ── LEGEND ── -->
-<line x1="64" y1="612" x2="84" y2="612" stroke="#854F0B" stroke-width="1" stroke-dasharray="5 3" opacity="0.7"/>
-<text x="90" y="612" dominant-baseline="central" font-size="10" fill="#646469" font-family="inherit">SDI</text>
-<line x1="130" y1="612" x2="150" y2="612" stroke="#085041" stroke-width="1" stroke-dasharray="5 3" opacity="0.7"/>
-<text x="156" y="612" dominant-baseline="central" font-size="10" fill="#646469" font-family="inherit">LiveLink</text>
-<line x1="224" y1="612" x2="244" y2="612" stroke="#9b9b9f" stroke-width="1" opacity="0.5"/>
-<text x="250" y="612" dominant-baseline="central" font-size="10" fill="#646469" font-family="inherit">nDisplay / 10GbE</text>
-<line x1="370" y1="612" x2="390" y2="612" stroke="#534AB7" stroke-width="1.5" opacity="0.7"/>
-<text x="396" y="612" dominant-baseline="central" font-size="10" fill="#646469" font-family="inherit">DP/HDMI</text>
-<line x1="468" y1="612" x2="488" y2="612" stroke="#3B6D11" stroke-width="1" stroke-dasharray="4 3" opacity="0.7"/>
-<text x="494" y="612" dominant-baseline="central" font-size="10" fill="#646469" font-family="inherit">Sync ref</text>
-<line x1="562" y1="612" x2="582" y2="612" stroke="#9b9b9f" stroke-width="0.5" stroke-dasharray="2 4" opacity="0.5"/>
-<text x="588" y="612" dominant-baseline="central" font-size="10" fill="#646469" font-family="inherit">Network</text>
-
-<!-- ════════════════════════════════
-     HOVER INTERACTION SCRIPT
-     ════════════════════════════════ -->
-<script>
-(function(){
-var MAP = {
-  cam:    { nodes:['dg-nd-cam','dg-nd-editor'],
-            conns:['dg-cn-cam-editor'] },
-  track:  { nodes:['dg-nd-track','dg-nd-net'],
-            conns:['dg-cn-track-net'] },
-  editor: { nodes:['dg-nd-editor','dg-nd-cam','dg-nd-n1','dg-nd-n2','dg-nd-net'],
-            conns:['dg-cn-cam-editor','dg-cn-editor-n1','dg-cn-editor-n2','dg-cn-editor-n1-sdi','dg-cn-editor-n2-sdi','dg-cn-net-editor'] },
-  n1:     { nodes:['dg-nd-n1','dg-nd-editor','dg-nd-wall1','dg-nd-sync','dg-nd-net'],
-            conns:['dg-cn-editor-n1','dg-cn-editor-n1-sdi','dg-cn-n1-wall1','dg-cn-sync-n1','dg-cn-net-n1'] },
-  n2:     { nodes:['dg-nd-n2','dg-nd-editor','dg-nd-wall2','dg-nd-sync','dg-nd-net'],
-            conns:['dg-cn-editor-n2','dg-cn-editor-n2-sdi','dg-cn-n2-wall2','dg-cn-sync-n2','dg-cn-net-n2'] },
-  wall1:  { nodes:['dg-nd-wall1','dg-nd-n1'],
-            conns:['dg-cn-n1-wall1'] },
-  wall2:  { nodes:['dg-nd-wall2','dg-nd-n2'],
-            conns:['dg-cn-n2-wall2'] },
-  sync:   { nodes:['dg-nd-sync','dg-nd-n1','dg-nd-n2','dg-nd-cam'],
-            conns:['dg-cn-sync-n1','dg-cn-sync-n2','dg-cn-sync-cam'] },
-  net:    { nodes:['dg-nd-net','dg-nd-editor','dg-nd-n1','dg-nd-n2','dg-nd-cam','dg-nd-track'],
-            conns:['dg-cn-net-editor','dg-cn-net-n1','dg-cn-net-n2','dg-cn-net-cam','dg-cn-net-track','dg-cn-track-net'] }
-};
-var ALL_NODES = ['dg-nd-cam','dg-nd-track','dg-nd-editor','dg-nd-n1','dg-nd-n2','dg-nd-wall1','dg-nd-wall2','dg-nd-sync','dg-nd-net'];
-var ALL_CONNS = ['dg-cn-cam-editor','dg-cn-editor-n1-sdi','dg-cn-editor-n2-sdi','dg-cn-track-net','dg-cn-editor-n1','dg-cn-editor-n2','dg-cn-n1-wall1','dg-cn-n2-wall2','dg-cn-sync-n1','dg-cn-sync-n2','dg-cn-sync-cam','dg-cn-net-editor','dg-cn-net-n1','dg-cn-net-n2','dg-cn-net-cam','dg-cn-net-track'];
-
-window.vpHover = function(id) {
-  var a = MAP[id];
-  ALL_NODES.forEach(function(n){
-    var el = document.getElementById(n);
-    if(!el) return;
-    el.classList.toggle('dimmed', a.nodes.indexOf(n) === -1);
-  });
-  ALL_CONNS.forEach(function(c){
-    var el = document.getElementById(c);
-    if(!el) return;
-    var active = a.conns.indexOf(c) !== -1;
-    el.classList.toggle('conn-dim', !active);
-    if(active){ el.classList.add('flowing'); el.style.opacity='1'; }
-    else { el.classList.remove('flowing'); }
-  });
-};
-window.vpUnhover = function() {
-  ALL_NODES.forEach(function(n){ var el=document.getElementById(n); if(el) el.classList.remove('dimmed'); });
-  ALL_CONNS.forEach(function(c){ var el=document.getElementById(c); if(!el) return; el.classList.remove('conn-dim','flowing'); el.style.opacity=''; });
-};
-})();
-</script>
-</svg>
+          <svg id="vp-diagram" viewBox="0 0 820 400" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block"><text x="410" y="200" text-anchor="middle" fill="#3a3a3d" font-size="12">Loading diagram...</text></svg>
         </div>
 
         <!-- ── GAME DEV MODE ───────────────────────────────────────── -->
@@ -1618,7 +1432,7 @@ function compName(comp){
 
 function saveComponents(){
   fsave('components',{items:components,nextId:compNextId});
-  renderComponents(); renderRigSum(); updateRigMini(); buildSysPrompt();
+  renderComponents(); renderRigSum(); updateRigMini(); buildSysPrompt(); updateDiagram();
 }
 
 function addComponent(type){
@@ -1710,6 +1524,60 @@ function renderStrip(comp){
     if(!body) body = '<div class="crow"><span class="ck" style="color:var(--ink4)">Not configured</span></div>';
     if((comp.notes||'').trim()) body += '<div class="cnote-disp">'+esc(comp.notes)+'</div>';
   }
+  // ── PORTS SECTION ─────────────────────────────────────────────
+  var ports = comp.ports||[];
+  var portsHTML = '';
+  if(editing){
+    portsHTML = '<div class="ports-section">'
+      + '<div class="ports-head">'
+      + '<span class="ports-label">Ports &amp; connections</span>'
+      + '<button class="port-add-btn" onclick="addPort('+comp.id+')">+ Add port</button>'
+      + '<button class="cauto-btn" data-autodetect="'+comp.id+'" onclick="autoDetectPorts('+comp.id+')">&#10022; Auto-detect</button>'
+      + '</div>';
+    if(comp.pendingSuggestions && Object.keys(comp.pendingSuggestions).length){
+      portsHTML += '<div class="detect-suggest">'
+        + '<span class="detect-conf '+(comp.detectConfidence||'low')+'">'+((comp.detectConfidence||'').toUpperCase())+' CONFIDENCE</span>'
+        + (comp.detectNote?'<span class="detect-note">'+esc(comp.detectNote)+'</span>':'')
+        + '<div class="detect-fields">'
+        + Object.keys(comp.pendingSuggestions).map(function(k){return '<span class="suggest-pill">'+esc(k)+': '+esc(comp.pendingSuggestions[k])+'</span>';}).join('')
+        + '</div><button class="btn bd sm" style="font-size:10px;margin-top:5px" onclick="clearSuggestions('+comp.id+')">Dismiss</button>'
+        + '</div>';
+    }
+    portsHTML += ports.map(function(p){
+      var conns=portConnections(comp.id,p.id), col=SIGNAL_COLOR[p.signal]||'#9b9b9f';
+      return '<div class="port-row-edit">'
+        + '<select class="port-sel" onchange="setPortField('+comp.id+','+p.id+',\'dir\',this.value)">'
+        + ['out','in'].map(function(d){return '<option'+(p.dir===d?' selected':'')+'>'+d+'</option>';}).join('')+'</select>'
+        + '<select class="port-sel port-sig-sel" onchange="setPortField('+comp.id+','+p.id+',\'signal\',this.value)" style="border-left:2px solid '+col+'">'
+        + SIGNALS.map(function(s){return '<option'+(p.signal===s?' selected':'')+'>'+s+'</option>';}).join('')+'</select>'
+        + '<input class="port-label-inp" placeholder="e.g. SDI OUT 1" value="'+esc(p.label||'')+'" oninput="setPortField('+comp.id+','+p.id+',\'label\',this.value)">'
+        + (conns.length?'<span class="port-conn-count">'+conns.length+'&#8652;</span>':'')
+        + '<button class="cact cact-del" onclick="removePort('+comp.id+','+p.id+')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M5 7h14M9 7V5h6v2M7 7l1 13h8l1-13"/></svg></button>'
+        + '</div>';
+    }).join('');
+    portsHTML += '</div>';
+  } else if(ports.length){
+    var isPending=pendingPort&&pendingPort.compId===comp.id;
+    portsHTML='<div class="ports-section ports-compact">';
+    portsHTML+=ports.map(function(p){
+      var conns=portConnections(comp.id,p.id), col=SIGNAL_COLOR[p.signal]||'#9b9b9f';
+      var isSelected=pendingPort&&pendingPort.compId===comp.id&&pendingPort.portId===p.id;
+      var isTarget=pendingPort&&pendingPort.compId!==comp.id;
+      var dots=conns.map(function(){return '<span class="port-conn-dot" style="background:'+col+'"></span>';}).join('');
+      return '<button class="port-badge'+(p.dir==='in'?' port-in':' port-out')+(isSelected?' port-selected':'')+(isTarget?' port-target':'')+'"'
+        +' style="border-color:'+col+(isSelected?';box-shadow:0 0 0 2px '+col:'')+';"'
+        +' onclick="portClickConnect('+comp.id+','+p.id+')"'
+        +' title="'+esc(p.dir==='out'?'OUT':'IN')+': '+esc(p.label||p.signal)+'">'
+        +'<span class="port-sig-dot" style="background:'+col+'"></span>'
+        +'<span class="port-badge-label">'+esc(p.label||p.signal)+'</span>'
+        +(p.dir==='out'?'<span class="port-dir-tag out">&#8594;</span>':'<span class="port-dir-tag in">&#8592;</span>')
+        +dots+'</button>';
+    }).join('');
+    if(pendingPort&&!isPending) portsHTML+='<div class="port-target-hint">&#9654; Click a port on this device to connect</div>';
+    if(isPending) portsHTML+='<button class="btn bd sm" style="font-size:10px;margin-top:5px" onclick="cancelPendingPort()">Cancel</button>';
+    portsHTML+='</div>';
+  }
+
   return '<div class="strip'+(led==='b'?' primary':'')+(editing?' editing':'')+'">'
     + '<div class="csh">'
     +   '<span class="led '+led+'"></span>'
@@ -1719,8 +1587,17 @@ function renderStrip(comp){
     +   '<button class="cact cact-del" title="Remove" onclick="removeComponent('+comp.id+')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M5 7h14M9 7V5h6v2M7 7l1 13h8l1-13"/></svg></button>'
     + '</div>'
     + '<div class="csbody">'+body+'</div>'
+    + '</div>'
+    + portsHTML
     + '</div>';
 }
+
+function clearSuggestions(compId){
+  var c=components.find(function(x){return x.id===compId;}); if(!c) return;
+  delete c.pendingSuggestions; delete c.detectConfidence; delete c.detectNote;
+  fsave('components',{items:components,nextId:compNextId}); renderComponents();
+}
+
 
 function toggleAddMenu(secId){
   var m = el('addmenu-'+secId); if(!m) return;
@@ -2131,54 +2008,342 @@ function setMode(mode, silent){
   if(!silent){ saveSpecs(); }
 }
 
+// ── DYNAMIC DIAGRAM GENERATOR ─────────────────────────────────────────────
+// Replaces the static SVG with a fully component-driven signal-flow diagram.
+// Layout: columns (Video In / Compute / Display & LED) + horizontal bands (Sync, Network, Power)
+
+var DIAG_W = 820, DIAG_H = 660;
+var COL_LEFT = 100,  COL_LEFT_W = 120;   // Video in
+var COL_MID  = 350,  COL_MID_W  = 120;   // Compute
+var COL_RIGHT= 616,  COL_RIGHT_W= 120;   // Display & LED
+var NODE_W = 120, NODE_H_BASE = 60, NODE_LINE_H = 16;
+var BAND_Y_SYNC = 468, BAND_Y_NET = 538, BAND_Y_POWER = 608;
+
+// Signal colour map (matches SIGNAL_COLOR in ports JS)
+var DC = {
+  'SDI':'#854F0B','12G-SDI':'#7c3aed','HDMI':'#be185d',
+  'DisplayPort':'#065f46','Ethernet/10GbE':'#92400e','Fiber':'#0e7490',
+  'Genlock/Ref':'#5b21b6','Timecode':'#c2410c','USB':'#475569',
+  'Power':'#991b1b','Audio':'#166534','Other':'#374151',
+  // legacy diagram colours
+  'nDisplay':'#374151','LiveLink':'#065f46'
+};
+
+function nodeH(lines){ return NODE_H_BASE + Math.max(0, lines-2) * NODE_LINE_H; }
+
+function dgRect(x, y, w, h, stroke, fill, rx){
+  rx = rx||8;
+  return '<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="'+rx+'"'
+    +' fill="'+(fill||'rgba(0,0,0,0.55)')+'" stroke="'+(stroke||'#3a3a3d')+'" stroke-width="1"/>';
+}
+
+function dgText(x, y, txt, size, fill, anchor, weight){
+  return '<text x="'+x+'" y="'+y+'"'
+    +' text-anchor="'+(anchor||'middle')+'"'
+    +' dominant-baseline="central"'
+    +' font-size="'+(size||11)+'"'
+    +' fill="'+(fill||'#ededee')+'"'
+    +' font-weight="'+(weight||'normal')+'"'
+    +' font-family="inherit">'+dgEsc(txt)+'</text>';
+}
+
+function dgEsc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function drawNode(x, y, w, lines, title, stroke, titleColor){
+  var h = nodeH(lines.length);
+  var cx = x + w/2;
+  var html = dgRect(x, y, w, h, stroke||'#3a3a3d', 'rgba(20,20,22,0.92)');
+  // Title
+  html += dgText(cx, y+14, title, 11, titleColor||'#ededee', 'middle', '500');
+  // separator line
+  html += '<line x1="'+(x+6)+'" y1="'+(y+22)+'" x2="'+(x+w-6)+'" y2="'+(y+22)+'" stroke="rgba(255,255,255,0.07)" stroke-width="0.5"/>';
+  // Lines
+  lines.forEach(function(l, i){
+    html += dgText(cx, y+32+(i*NODE_LINE_H), l.text, 10, l.color||'#9b9b9f', 'middle');
+  });
+  return {html:html, cx:cx, cy:y+h/2, top:y, bottom:y+h, left:x, right:x+w, h:h};
+}
+
+function arrow(x1,y1,x2,y2,col,dash,opacity,thick){
+  var pts = 'M'+x1+' '+y1+' L'+x2+' '+y2;
+  return '<path d="'+pts+'" fill="none" stroke="'+col+'"'
+    +' stroke-width="'+(thick||1)+'"'
+    +(dash?' stroke-dasharray="'+dash+'"':'')
+    +' marker-end="url(#vpa)" opacity="'+(opacity||0.6)+'"/>';
+}
+
+function elbowPath(x1,y1,x2,y2,col,dash,opacity){
+  // Draw an elbow path: horizontal then vertical then horizontal
+  var mx = (x1+x2)/2;
+  var d = 'M'+x1+' '+y1+' L'+mx+' '+y1+' L'+mx+' '+y2+' L'+x2+' '+y2;
+  return '<path d="'+d+'" fill="none" stroke="'+col+'"'
+    +' stroke-width="1" '+(dash?'stroke-dasharray="'+dash+'"':'')
+    +' marker-end="url(#vpa)" opacity="'+(opacity||0.55)+'"/>';
+}
+
 function updateDiagram(){
   if((specs['mode']||'vp') !== 'vp') return;
-  function dtxt(id, val, fallback){
-    var e = document.getElementById(id);
-    if(e) e.textContent = val && (''+val).trim() ? (''+val).trim() : fallback;
-  }
-  function cf(c,k){ return c && c.fields ? (c.fields[k]||'') : ''; }
+  var host = document.getElementById('vp-diagram');
+  if(!host) return;
+
+  // ── Gather components by role ──────────────────────────────────────────
   var ws = components.filter(function(c){return c.type==='workstation';});
   var editor = ws.find(function(c){return c.fields.role==='Editor';}) || ws[0];
-  var nodes = ws.filter(function(c){return c.fields.role==='Display Node';});
-  if(!nodes.length) nodes = ws.filter(function(c){return c!==editor;});
-  var n1 = nodes[0], n2 = nodes[1];
+  var dispNodes = ws.filter(function(c){return c.fields.role==='Display Node';});
+  if(!dispNodes.length) dispNodes = ws.filter(function(c){return c!==editor;});
   var wall = components.find(function(c){return c.type==='ledwall';});
   var proc = components.find(function(c){return c.type==='ledproc';});
-  var trk = components.find(function(c){return c.type==='tracking';});
-  var cam = components.find(function(c){return c.type==='camera';});
-  var syn = components.find(function(c){return c.type==='sync';});
-  var net = components.find(function(c){return c.type==='network';});
+  var cams = components.filter(function(c){return c.type==='camera';});
+  var trks = components.filter(function(c){return c.type==='tracking';});
+  var syns = components.filter(function(c){return c.type==='sync';});
+  var nets = components.filter(function(c){return c.type==='network';});
+  var pwrs = components.filter(function(c){return c.type==='power';});
 
-  dtxt('dg-editor-machine', cf(editor,'machine'), 'Editor PC');
-  dtxt('dg-editor-gpu', cf(editor,'gpu'), 'GPU');
-  dtxt('dg-editor-ue', cf(editor,'ue') ? 'UE ' + cf(editor,'ue') : 'UE 5.7', 'UE 5.7');
-  dtxt('dg-n1-machine', cf(n1,'machine'), 'Node 1');
-  dtxt('dg-n1-gpu', cf(n1,'gpu'), 'GPU');
-  var n1sync=(cf(n1,'sync')||'Sync II').replace(/Nvidia |Quadro /g,'');
-  var n1cap=(cf(n1,'capture')||'Decklink').replace('Blackmagic ','');
-  dtxt('dg-n1-sync', n1sync+' · '+n1cap, 'Sync II · Decklink');
-  dtxt('dg-n2-machine', cf(n2,'machine'), 'Node 2');
-  dtxt('dg-n2-gpu', cf(n2,'gpu'), 'GPU');
-  var n2sync=(cf(n2,'sync')||'Sync II').replace(/Nvidia |Quadro /g,'');
-  var n2cap=(cf(n2,'capture')||'Decklink').replace('Blackmagic ','');
-  dtxt('dg-n2-sync', n2sync+' · '+n2cap, 'Sync II · Decklink');
-  var wallStr = cf(wall,'size') || '— × —';
-  if(cf(wall,'curve')) wallStr += ' · '+cf(wall,'curve')+' curve';
-  dtxt('dg-wall-size', wallStr, '— × —');
-  dtxt('dg-led-proc', cf(proc,'mfr')||cf(proc,'model'), 'LED Processor');
-  dtxt('dg-wall-left-res', cf(wall,'res')||'UHD', 'UHD');
-  dtxt('dg-wall-right-res', cf(wall,'res')||'UHD', 'UHD');
-  dtxt('dg-tr-hw', cf(trk,'system'), 'Tracking');
-  dtxt('dg-tr-rx', cf(trk,'receivers')||cf(trk,'cameras')||cf(trk,'markers'), 'Receivers');
-  dtxt('dg-tr-fps', cf(trk,'transport')||'LiveLink · network', 'LiveLink · network');
-  dtxt('dg-cam-model', cf(cam,'body'), 'Camera');
-  dtxt('dg-cam-sdi', 'SDI '+(cf(cam,'output')||cf(n1,'sdi')||'—'), 'SDI');
-  dtxt('dg-cam-icvfx', '—', '—');
-  dtxt('dg-genlock', cf(syn,'source')||cf(syn,'type'), 'Genlock source');
-  dtxt('dg-syncgen', cf(syn,'model')||'', '');
-  dtxt('dg-switch-lbl', cf(net,'model')||cf(net,'speed')||'10GbE Switch', '10GbE Switch');
+  function cf(c,k){ return c&&c.fields?(c.fields[k]||''):''; }
+  function sh(s,n){ return s && s.length>n ? s.slice(0,n)+'…' : s; }
+
+  // ── Layout calculation ─────────────────────────────────────────────────
+  var nodes = {};   // id → {html, cx, cy, top, bottom, left, right}
+  var svgParts = [];
+  var usedH = 50;   // current Y cursor for left column
+  var midY  = 50;   // Y cursor for compute column
+  var rightY= 50;   // Y cursor for display column
+
+  // ── Left column: cameras then tracking ────────────────────────────────
+  var leftY = 50;
+
+  cams.forEach(function(cam, i){
+    var body = cf(cam,'body')||'Camera';
+    var out  = cf(cam,'output')||cf(cam,'sdi')||'';
+    var n = drawNode(COL_LEFT-NODE_W/2+10, leftY, NODE_W,
+      [{text:sh(body,16)},{text:sh(out,16),color:'#60a5fa'}],
+      'Camera', '#1e40af', '#93c5fd');
+    nodes['cam'+i] = n; svgParts.push(n.html);
+    leftY += n.h + 12;
+  });
+  if(!cams.length){ leftY += 12; }
+
+  trks.forEach(function(trk, i){
+    var sys  = cf(trk,'system')||'Tracking';
+    var tport= cf(trk,'transport')||'LiveLink';
+    var n = drawNode(COL_LEFT-NODE_W/2+10, leftY, NODE_W,
+      [{text:sh(sys,16)},{text:sh(tport,16),color:'#4ade80'}],
+      'Tracking', '#166534', '#86efac');
+    nodes['trk'+i] = n; svgParts.push(n.html);
+    leftY += n.h + 12;
+  });
+
+  // ── Middle column: editor then display nodes ───────────────────────────
+  midY = 50;
+  if(editor){
+    var eMachine = cf(editor,'machine');
+    var eGpu = cf(editor,'gpu');
+    var eUe = cf(editor,'ue') ? 'UE '+cf(editor,'ue') : '';
+    var eLines = [];
+    if(eMachine) eLines.push({text:sh(eMachine,17)});
+    if(eGpu) eLines.push({text:sh(eGpu,17)});
+    if(eUe) eLines.push({text:eUe, color:'#60a5fa'});
+    var n = drawNode(COL_MID, midY, NODE_W, eLines.length?eLines:[{text:'Editor'}],
+      'Editor', '#1e3a8a', '#93c5fd');
+    nodes['editor'] = n; svgParts.push(n.html);
+    midY += n.h + 10;
+  }
+
+  dispNodes.forEach(function(dn, i){
+    var dnMachine = cf(dn,'machine');
+    var dnGpu = cf(dn,'gpu');
+    var dnSync = (cf(dn,'sync')||'').replace(/Nvidia |Quadro /g,'');
+    var dnCap  = (cf(dn,'capture')||'').replace('Blackmagic ','');
+    var syncStr = [dnSync,dnCap].filter(Boolean).join(' · ');
+    var eLines = [];
+    if(dnMachine) eLines.push({text:sh(dnMachine,17)});
+    if(dnGpu) eLines.push({text:sh(dnGpu,17)});
+    if(syncStr) eLines.push({text:sh(syncStr,17),color:'#60a5fa'});
+    var n = drawNode(COL_MID, midY, NODE_W, eLines.length?eLines:[{text:'Display Node'}],
+      'Node '+(i+1), '#1e3a8a', '#93c5fd');
+    nodes['dn'+i] = n; svgParts.push(n.html);
+    midY += n.h + 10;
+  });
+
+  // ── Right column: LED wall + LED processor ────────────────────────────
+  rightY = nodes['dn0'] ? nodes['dn0'].top : nodes['editor'] ? nodes['editor'].top : 50;
+
+  if(wall){
+    var wallSize = cf(wall,'size') || (cf(wall,'width')&&cf(wall,'height') ? cf(wall,'width')+'x'+cf(wall,'height') : '');
+    var wallRes  = cf(wall,'res')||'';
+    var wallHz   = cf(wall,'refresh')||'';
+    var wallLines= [];
+    if(wallSize) wallLines.push({text:sh(wallSize,17)});
+    if(wallRes)  wallLines.push({text:sh(wallRes,17),color:'#60a5fa'});
+    if(wallHz)   wallLines.push({text:wallHz,color:'#9b9b9f'});
+    var nwall = drawNode(COL_RIGHT, rightY, NODE_W, wallLines.length?wallLines:[{text:'LED Wall'}],
+      'LED Wall', '#312e81', '#a5b4fc');
+    nodes['wall'] = nwall; svgParts.push(nwall.html);
+    rightY += nwall.h + 10;
+  }
+
+  if(proc){
+    var pMfr   = cf(proc,'mfr')||'LED Processor';
+    var pModel = cf(proc,'model')||'';
+    var pMap   = cf(proc,'mapping')||'';
+    var pLines = [];
+    if(pModel) pLines.push({text:sh(pModel,17)});
+    if(pMap)   pLines.push({text:sh(pMap,17),color:'#9b9b9f'});
+    var nproc = drawNode(COL_RIGHT, rightY, NODE_W, pLines.length?pLines:[{text:pMfr}],
+      pMfr||'Processor', '#312e81', '#a5b4fc');
+    nodes['proc'] = nproc; svgParts.push(nproc.html);
+    rightY += nproc.h + 10;
+  }
+
+  // ── Horizontal bands: Sync, Network, Power ────────────────────────────
+  var bandY = Math.max(midY, leftY, rightY) + 20;
+
+  syns.forEach(function(syn, i){
+    var synSrc  = cf(syn,'source')||cf(syn,'type')||'Sync';
+    var synModel= cf(syn,'model')||'';
+    var synLines= [{text:sh(synSrc,18), color:'#4ade80'}];
+    if(synModel) synLines.push({text:sh(synModel,18), color:'#9b9b9f'});
+    var n = drawNode(COL_MID, bandY, NODE_W, synLines, 'Genlock / Sync', '#14532d', '#86efac');
+    nodes['syn'+i] = n; svgParts.push(n.html);
+    // Band label
+    svgParts.push(dgText(COL_MID-NODE_W/2+10-30, bandY + n.h/2, 'Sync', 10, '#3a3a3d', 'end'));
+    bandY += n.h + 10;
+  });
+
+  nets.forEach(function(net, i){
+    var netModel = cf(net,'model')||cf(net,'type')||'Network';
+    var netSpeed = cf(net,'speed')||'';
+    var netLines = [{text:sh(netModel,18)}];
+    if(netSpeed) netLines.push({text:netSpeed, color:'#9b9b9f'});
+    var n = drawNode(COL_MID, bandY, NODE_W, netLines, 'Network', '#1c1c1f', '#646469');
+    nodes['net'+i] = n; svgParts.push(n.html);
+    svgParts.push(dgText(COL_MID-NODE_W/2+10-30, bandY + n.h/2, 'Network', 10, '#3a3a3d', 'end'));
+    bandY += n.h + 10;
+  });
+
+  pwrs.forEach(function(pwr, i){
+    var pwrType  = cf(pwr,'type')||'Power';
+    var pwrModel = cf(pwr,'model')||'';
+    var pwrLines = [{text:sh(pwrType,18)}];
+    if(pwrModel) pwrLines.push({text:sh(pwrModel,18),color:'#9b9b9f'});
+    var n = drawNode(COL_MID, bandY, NODE_W, pwrLines, 'Power', '#1c1c1f', '#646469');
+    nodes['pwr'+i] = n; svgParts.push(n.html);
+    bandY += n.h + 10;
+  });
+
+  // ── CONNECTIONS ────────────────────────────────────────────────────────
+  var connParts = [];
+
+  // Draw user-defined port connections
+  connections.forEach(function(cn){
+    var fc = components.find(function(x){return x.id===cn.fromCompId;});
+    var tc = components.find(function(x){return x.id===cn.toCompId;});
+    if(!fc||!tc) return;
+    var fp = (fc.ports||[]).find(function(p){return p.id===cn.fromPortId;});
+    var tp = (tc.ports||[]).find(function(p){return p.id===cn.toPortId;});
+    if(!fp||!tp) return;
+    // Find the node boxes for fromComp and toComp
+    var fNode = getNodeForComp(fc, nodes);
+    var tNode = getNodeForComp(tc, nodes);
+    if(!fNode||!tNode) return;
+    var col = SIGNAL_COLOR[fp.signal]||DC[fp.signal]||'#9b9b9f';
+    var dash = fp.signal==='Ethernet/10GbE'?'':'4 3';
+    connParts.push(elbowPath(fNode.right, fNode.cy, tNode.left, tNode.cy, col, dash, 0.7));
+  });
+
+  // Fall back to logical connections if no user connections defined
+  if(!connections.length){
+    // Camera → Editor (SDI)
+    if(nodes.cam0 && nodes.editor){
+      connParts.push(elbowPath(nodes.cam0.right, nodes.cam0.cy, nodes.editor.left, nodes.editor.cy, DC.SDI, '5 3', 0.55));
+    }
+    // Editor → display nodes (nDisplay/10GbE)
+    dispNodes.forEach(function(dn, i){
+      if(nodes.editor && nodes['dn'+i]){
+        connParts.push(elbowPath(nodes.editor.right, nodes.editor.cy, nodes['dn'+i].left, nodes['dn'+i].cy, DC.nDisplay, '', 0.45));
+      }
+    });
+    // Display nodes → wall (DP/HDMI)
+    dispNodes.forEach(function(dn, i){
+      if(nodes['dn'+i] && nodes.wall){
+        connParts.push(elbowPath(nodes['dn'+i].right, nodes['dn'+i].cy, nodes.wall.left, nodes.wall.cy, DC.DisplayPort, '', 0.6));
+      }
+    });
+    // Tracking → Editor (LiveLink)
+    if(nodes.trk0 && nodes.editor){
+      connParts.push(elbowPath(nodes.trk0.right, nodes.trk0.cy, nodes.editor.left, nodes.editor.cy+14, DC.LiveLink, '5 3', 0.5));
+    }
+    // Sync → display nodes
+    if(nodes.syn0){
+      dispNodes.forEach(function(dn, i){
+        if(nodes['dn'+i]){
+          connParts.push('<line x1="'+nodes.syn0.cx+'" y1="'+nodes.syn0.top+'" x2="'+nodes['dn'+i].cx+'" y2="'+nodes['dn'+i].bottom+'"'
+            +' stroke="'+DC['Genlock/Ref']+'" stroke-width="0.75" stroke-dasharray="3 4" opacity="0.4"/>');
+        }
+      });
+    }
+  }
+
+  // ── Column headers ─────────────────────────────────────────────────────
+  var totalH = Math.max(bandY + 20, 400);
+  var headers = [
+    dgRect(64,12,112,20,null,'rgba(255,255,255,0.035)',10)
+      + dgText(120,22,'Video in',10,'#646469'),
+    dgRect(344,12,132,20,null,'rgba(255,255,255,0.035)',10)
+      + dgText(410,22,'Compute',10,'#646469'),
+    dgRect(608,12,136,20,null,'rgba(255,255,255,0.035)',10)
+      + dgText(676,22,'Display & LED',10,'#646469'),
+  ];
+
+  // ── Legend ────────────────────────────────────────────────────────────
+  var legendY = totalH - 28;
+  var legendItems = [
+    {col:DC.SDI, label:'SDI', dash:'5 3'},
+    {col:DC.LiveLink, label:'LiveLink', dash:'5 3'},
+    {col:DC.nDisplay, label:'nDisplay/10GbE', dash:''},
+    {col:DC.DisplayPort, label:'DP/HDMI', dash:''},
+    {col:DC['Genlock/Ref'], label:'Sync ref', dash:'3 4'},
+  ];
+  var lx = 40;
+  var legendSvg = '';
+  legendItems.forEach(function(li){
+    legendSvg += '<line x1="'+lx+'" y1="'+legendY+'" x2="'+(lx+22)+'" y2="'+legendY+'"'
+      +' stroke="'+li.col+'" stroke-width="1.5" '+(li.dash?'stroke-dasharray="'+li.dash+'"':'')+' opacity="0.8"/>';
+    legendSvg += dgText(lx+27, legendY, li.label, 9, '#646469', 'start');
+    lx += 22 + 8 + li.label.length*5.5 + 14;
+  });
+
+  // ── Assemble final SVG ─────────────────────────────────────────────────
+  var newSvg = '<svg id="vp-diagram" viewBox="0 0 820 '+totalH+'" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">'
+    + '<style>#vp-diagram text{font-family:inherit}</style>'
+    + '<defs><marker id="vpa" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">'
+    +   '<path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>'
+    + '</marker></defs>'
+    + headers.join('')
+    + connParts.join('\n')    // connections behind nodes
+    + svgParts.join('\n')     // nodes on top
+    + legendSvg
+    + '</svg>';
+
+  host.outerHTML = newSvg;
 }
+
+function getNodeForComp(comp, nodes){
+  // Map component to its diagram node
+  if(comp.type==='workstation'){
+    if(comp.fields.role==='Editor') return nodes.editor;
+    var dispIdx = components.filter(function(c){return c.type==='workstation'&&c.fields.role==='Display Node';}).indexOf(comp);
+    return nodes['dn'+dispIdx];
+  }
+  if(comp.type==='ledwall') return nodes.wall;
+  if(comp.type==='ledproc') return nodes.proc;
+  if(comp.type==='camera') return nodes['cam'+components.filter(function(c){return c.type==='camera';}).indexOf(comp)];
+  if(comp.type==='tracking') return nodes['trk'+components.filter(function(c){return c.type==='tracking';}).indexOf(comp)];
+  if(comp.type==='sync') return nodes['syn'+components.filter(function(c){return c.type==='sync';}).indexOf(comp)];
+  if(comp.type==='network') return nodes['net'+components.filter(function(c){return c.type==='network';}).indexOf(comp)];
+  return null;
+}
+
 
 function buildSysPrompt(){
   var mode = specs['mode'] || 'vp';
@@ -2217,6 +2382,235 @@ function getSysGD(){
   + '\nSOURCE PRIORITY:\n1. docs.unrealengine.com\n2. dev.epicgames.com/community and forums.unrealengine.com\n3. YouTube: Unreal Engine official channel, William Faucher (lighting/rendering), Alex Forsythe (UE C++), Gorka Games, Matt Aspland\n4. Reddit r/unrealengine, r/gamedev\n\nFor every question: search docs first, then community sources, then YouTube if needed.\nEnd every response with:\n===SOURCES===\n[{"title":"...","url":"...","type":"epic or community or youtube"}]\n===END===\nBe direct, technical, practical. Tailor all advice to the user\'s specific platform target, project type, and UE version.';
 }
 
+
+// ── PORTS & CONNECTIONS ────────────────────────────────────────────────────
+var SIGNALS = ['SDI','12G-SDI','HDMI','DisplayPort','Ethernet/10GbE','Fiber',
+               'Genlock/Ref','Timecode','USB','Power','Audio','Other'];
+var SIGNAL_COLOR = {
+  'SDI':'#60a5fa','12G-SDI':'#818cf8','HDMI':'#f472b6',
+  'DisplayPort':'#34d399','Ethernet/10GbE':'#fbbf24','Fiber':'#22d3ee',
+  'Genlock/Ref':'#a78bfa','Timecode':'#fb923c','USB':'#94a3b8',
+  'Power':'#f87171','Audio':'#4ade80','Other':'#9b9b9f'
+};
+
+// State
+var connections = [], connNextId = 1;
+var pendingPort = null; // {compId, portId} waiting to be connected
+
+function saveConnections(){
+  fsave('connections',{items:connections,nextId:connNextId});
+  renderComponents();
+  renderRoutingView();
+  updateDiagram();
+}
+
+// ── PORT CRUD ─────────────────────────────────────────────────────────────
+function addPort(compId){
+  var c = components.find(function(x){return x.id===compId;}); if(!c) return;
+  if(!c.ports) c.ports = [];
+  c.ports.push({id: Date.now(), dir:'out', signal:'SDI', label:'', notes:''});
+  fsave('components',{items:components,nextId:compNextId});
+  renderComponents();
+}
+
+function removePort(compId, portId){
+  var c = components.find(function(x){return x.id===compId;}); if(!c) return;
+  c.ports = (c.ports||[]).filter(function(p){return p.id!==portId;});
+  // Remove connections that reference this port
+  connections = connections.filter(function(cn){
+    return !(cn.fromCompId===compId && cn.fromPortId===portId) &&
+           !(cn.toCompId===compId && cn.toPortId===portId);
+  });
+  fsave('components',{items:components,nextId:compNextId});
+  fsave('connections',{items:connections,nextId:connNextId});
+  renderComponents();
+  renderRoutingView();
+}
+
+function setPortField(compId, portId, key, val){
+  var c = components.find(function(x){return x.id===compId;}); if(!c) return;
+  var p = (c.ports||[]).find(function(x){return x.id===portId;}); if(!p) return;
+  p[key] = val;
+  fsave('components',{items:components,nextId:compNextId});
+  renderComponents();
+  renderRoutingView();
+}
+
+// ── CONNECTION LOGIC ──────────────────────────────────────────────────────
+function portClickConnect(compId, portId){
+  if(!pendingPort){
+    // Start connection - first port selected
+    pendingPort = {compId:compId, portId:portId};
+    renderComponents(); // shows pending state highlight
+    return;
+  }
+  // Second port selected - complete connection
+  var from = pendingPort, to = {compId:compId, portId:portId};
+  pendingPort = null;
+  if(from.compId===to.compId && from.portId===to.portId){
+    renderComponents(); return; // same port, cancel
+  }
+  // Determine direction: find an out→in pair
+  var fromComp = components.find(function(x){return x.id===from.compId;});
+  var toComp = components.find(function(x){return x.id===to.compId;});
+  if(!fromComp||!toComp) return;
+  var fromPort = (fromComp.ports||[]).find(function(p){return p.id===from.portId;});
+  var toPort = (toComp.ports||[]).find(function(p){return p.id===to.portId;});
+  if(!fromPort||!toPort) return;
+  // Auto-swap if needed so OUT→IN
+  if(fromPort.dir==='in' && toPort.dir==='out'){
+    var tmp=from; from=to; to=tmp;
+    var tp=fromPort; fromPort=toPort; toPort=tp;
+  }
+  // Warn if signal mismatch but allow it
+  var mismatch = fromPort.signal!==toPort.signal;
+  // Check for duplicate
+  var dup = connections.find(function(cn){
+    return cn.fromCompId===from.compId && cn.fromPortId===from.portId &&
+           cn.toCompId===to.compId && cn.toPortId===to.portId;
+  });
+  if(dup){ renderComponents(); return; }
+  connections.push({
+    id:connNextId++,
+    fromCompId:from.compId, fromPortId:from.portId,
+    toCompId:to.compId, toPortId:to.portId,
+    mismatch:mismatch
+  });
+  saveConnections();
+}
+
+function removeConnection(connId){
+  connections = connections.filter(function(c){return c.id!==connId;});
+  saveConnections();
+}
+
+function cancelPendingPort(){ pendingPort=null; renderComponents(); }
+
+// Get connections for a specific port
+function portConnections(compId, portId){
+  return connections.filter(function(cn){
+    return (cn.fromCompId===compId && cn.fromPortId===portId) ||
+           (cn.toCompId===compId && cn.toPortId===portId);
+  });
+}
+
+// Port name helpers
+function compShortName(compId){
+  var c=components.find(function(x){return x.id===compId;}); return c?compName(c):'?';
+}
+function portLabel(compId, portId){
+  var c=components.find(function(x){return x.id===compId;}); if(!c) return '?';
+  var p=(c.ports||[]).find(function(x){return x.id===portId;}); return p?(p.label||p.signal):'?';
+}
+
+// ── AUTO-DETECT via Claude API ────────────────────────────────────────────
+function autoDetectPorts(compId){
+  var c=components.find(function(x){return x.id===compId;}); if(!c) return;
+  var mfr='', model='';
+  var def=CTYPES[c.type];
+  // Try to get manufacturer + model from fields
+  if(c.type==='camera'){ mfr=''; model=c.fields.body||''; }
+  else if(c.type==='workstation'){ mfr=''; model=(c.fields.machine||'')+' '+(c.fields.gpu||''); }
+  else if(c.type==='ledwall'){ mfr=c.fields.mfr||''; model=c.fields.model||''; }
+  else if(c.type==='ledproc'){ mfr=c.fields.mfr||''; model=c.fields.model||''; }
+  else if(c.type==='sync'){ mfr=''; model=c.fields.model||''; }
+  else if(c.type==='network'){ mfr=''; model=c.fields.model||''; }
+  else { mfr=''; model=c.fields.model||c.fields.body||c.fields.system||''; }
+  var query = [mfr,model].filter(Boolean).join(' ');
+  if(!query.trim()){ alert('Please fill in the manufacturer/model fields first.'); return; }
+
+  // Show loading state on the card
+  var btn=document.querySelector('[data-autodetect="'+compId+'"]');
+  if(btn){ btn.textContent='Detecting...'; btn.disabled=true; }
+
+  fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      model:'claude-sonnet-4-20250514',
+      max_tokens:1000,
+      tools:[{type:'web_search_20250305',name:'web_search'}],
+      system:'You are a broadcast/AV technical database. Given a device name, search for and return its I/O ports and key specs as JSON. Respond ONLY with valid JSON, no markdown fences, no explanation.',
+      messages:[{role:'user',content:'Research the physical inputs and outputs of the device: "'+query+'". Return JSON exactly matching this schema: {"ports":[{"dir":"in"|"out","signal":"SDI|12G-SDI|HDMI|DisplayPort|Ethernet/10GbE|Fiber|Genlock/Ref|Timecode|USB|Power|Audio|Other","label":"e.g. SDI IN 1","count":1}],"suggestedFields":{"key":"value"},"confidence":"high|medium|low","sourceNote":"brief note on source quality"}. Include every physical port. For repeated ports (e.g. 4x SDI IN) use count. Signal must be exactly one of the enum values.'}]
+    })
+  }).then(function(r){return r.json();})
+  .then(function(data){
+    // Extract text content from response
+    var text='';
+    (data.content||[]).forEach(function(b){ if(b.type==='text') text+=b.text; });
+    try{
+      var result=JSON.parse(text.trim());
+      applyAutoDetect(compId, result);
+    } catch(e){
+      alert('Could not parse device data. Try adding ports manually.');
+    }
+    if(btn){ btn.textContent='\u2736 Auto-detect'; btn.disabled=false; }
+  }).catch(function(){
+    if(btn){ btn.textContent='\u2736 Auto-detect'; btn.disabled=false; }
+    alert('Auto-detect failed. Check your connection.');
+  });
+}
+
+function applyAutoDetect(compId, result){
+  var c=components.find(function(x){return x.id===compId;}); if(!c) return;
+  if(!c.ports) c.ports=[];
+  // Expand port count into individual ports
+  (result.ports||[]).forEach(function(p){
+    var count=p.count||1;
+    for(var i=0;i<count;i++){
+      var label=count>1?(p.label+' '+(i+1)):p.label;
+      // Avoid adding duplicate ports
+      var sig=p.signal; if(SIGNALS.indexOf(sig)<0) sig='Other';
+      c.ports.push({id:Date.now()+Math.random(),dir:p.dir,signal:sig,label:label,notes:''});
+    }
+  });
+  // Suggested fields - store as pending review
+  c.pendingSuggestions = result.suggestedFields||{};
+  c.detectConfidence = result.confidence||'low';
+  c.detectNote = result.sourceNote||'';
+  fsave('components',{items:components,nextId:compNextId});
+  renderComponents();
+  // If editing is not open, open this card for review
+  compEditId=compId; renderComponents();
+}
+
+// ── ROUTING VIEW ─────────────────────────────────────────────────────────
+function renderRoutingView(){
+  var host=el('routing-host'); if(!host) return;
+  if(!connections.length){
+    host.innerHTML='<div class="route-empty">No signal connections defined yet. Click a port to start connecting.</div>';
+    return;
+  }
+  var bySignal={};
+  connections.forEach(function(cn){
+    var fromComp=components.find(function(x){return x.id===cn.fromCompId;});
+    var fromPort=fromComp?(fromComp.ports||[]).find(function(p){return p.id===cn.fromPortId;}):null;
+    var sig=fromPort?fromPort.signal:'Other';
+    if(!bySignal[sig]) bySignal[sig]=[];
+    bySignal[sig].push(cn);
+  });
+  host.innerHTML=Object.keys(bySignal).map(function(sig){
+    var col=SIGNAL_COLOR[sig]||'#9b9b9f';
+    return '<div class="rsig-group">'
+      +'<div class="rsig-head" style="border-color:'+col+'">'
+      +'<span class="rsig-dot" style="background:'+col+'"></span>'
+      +'<span class="rsig-label">'+sig+'</span>'
+      +'<span class="rsig-count">'+bySignal[sig].length+' connection'+(bySignal[sig].length>1?'s':'')+'</span>'
+      +'</div>'
+      +bySignal[sig].map(function(cn){
+        var fc=compShortName(cn.fromCompId), fl=portLabel(cn.fromCompId,cn.fromPortId);
+        var tc=compShortName(cn.toCompId), tl=portLabel(cn.toCompId,cn.toPortId);
+        return '<div class="rconn'+(cn.mismatch?' rconn-warn':'')+'">'+
+          '<span class="rconn-from">'+esc(fc)+'<span class="rconn-port">'+esc(fl)+'</span></span>'+
+          '<span class="rconn-arrow">&#8594;</span>'+
+          '<span class="rconn-to">'+esc(tc)+'<span class="rconn-port">'+esc(tl)+'</span></span>'+
+          +(cn.mismatch?'<span class="rconn-warn-tag" title="Signal type mismatch">&#9888;</span>':'')+
+          '<button class="rconn-del" onclick="removeConnection('+cn.id+')">&#215;</button>'+
+          '</div>';
+      }).join('')
+      +'</div>';
+  }).join('');
+}
 
 // Issues
 var SL={'open':'Open','in-progress':'In Progress','waiting':'Waiting','resolved':'Resolved'};

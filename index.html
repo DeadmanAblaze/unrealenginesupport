@@ -332,7 +332,10 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .hdr{display:none}
 /* ── SPECS CONTROL ROW ── */
 .ctrl-row{display:flex;align-items:center;gap:12px;margin-bottom:8px}
-.ctrl-row-r{margin-left:auto;display:flex;align-items:center;gap:12px}
+.ctrl-row-r{margin-left:auto;display:flex;align-items:center;gap:10px}
+.export-btn{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:var(--ink2);background:var(--el);border:1px solid var(--line2);border-radius:7px;padding:6px 13px;cursor:pointer;font-family:var(--sans);transition:all .14s}
+.export-btn svg{width:14px;height:14px;flex-shrink:0}
+.export-btn:hover{color:var(--ink);border-color:var(--line3);background:var(--el2)}
 .si{font-size:10px;font-family:var(--mono);color:var(--ink4);letter-spacing:.05em;opacity:0;transition:opacity .2s}
 .si.on{opacity:1;color:var(--live)}
 /* ── PORTS & CONNECTIONS ── */
@@ -424,18 +427,22 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .strip{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;transition:border-color .14s}
 .strip:hover{border-color:var(--line2)}
 .strip.primary{border-color:rgba(91,157,255,.25)}
-.strip.editing{border-color:var(--line3)}
+.strip.editing{border-color:rgba(91,157,255,.5);box-shadow:0 0 0 1px rgba(91,157,255,.15)}
+.strip.editing .csh{background:rgba(91,157,255,.07);border-bottom-color:rgba(91,157,255,.25)}
 .csh{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--line)}
 .led{width:6px;height:6px;border-radius:50%;flex-shrink:0}
 .led.g{background:var(--live);box-shadow:0 0 6px rgba(74,222,128,.55)}
 .led.b{background:var(--brand1);box-shadow:0 0 6px rgba(91,157,255,.6)}
 .led.a{background:var(--warn);box-shadow:0 0 6px rgba(251,191,36,.5)}
 .csn{font-size:12.5px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.editing-badge{font-size:9px;font-family:var(--mono);color:var(--brand1);letter-spacing:.06em;opacity:.85;white-space:nowrap;flex-shrink:0}
 .csr{margin-left:auto;font-family:var(--mono);font-size:8.5px;letter-spacing:.06em;color:var(--ink3);text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px}
 .cact{background:none;border:none;color:var(--ink4);cursor:pointer;padding:3px;border-radius:4px;display:flex;align-items:center;flex-shrink:0;transition:all .12s}
 .cact svg{width:14px;height:14px}
 .cact:hover{color:var(--ink2);background:var(--el2)}
 .cact-del:hover{color:var(--crit);background:var(--rdim)}
+.cact-done{background:linear-gradient(135deg,var(--brand1),var(--brand2));color:#06141f!important;border-radius:5px;padding:3px 11px!important;font-size:11px;font-weight:600;font-family:var(--sans)}
+.cact-done:hover{opacity:.9;background:linear-gradient(135deg,var(--brand1),var(--brand2))!important;color:#06141f!important}
 .csbody{padding:3px 12px 9px}
 .crow{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--line)}
 .crow:last-child{border-bottom:none}
@@ -867,6 +874,10 @@ select.cv-edit{text-align:left;cursor:pointer}
         <div class="ctrl-row-r">
           <span class="si" id="ssaved">Saved</span>
           <button class="btn bp sm gdonly" onclick="saveSpecs()">Save</button>
+                  <button class="export-btn vponly" onclick="exportRigPDF()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Export PDF
+          </button>
         </div>
       </div>
       <div id="specs-fields">
@@ -1554,7 +1565,10 @@ function renderStrip(comp){
         + ['out','in'].map(function(d){return '<option'+(p.dir===d?' selected':'')+'>'+d+'</option>';}).join('')+'</select>'
         + '<select class="port-sel port-sig-sel" onchange="setPortField('+comp.id+','+p.id+',\'signal\',this.value)" style="border-left:2px solid '+col+'">'
         + SIGNALS.map(function(s){return '<option'+(p.signal===s?' selected':'')+'>'+s+'</option>';}).join('')+'</select>'
-        + '<input class="port-label-inp" placeholder="e.g. SDI OUT 1" value="'+esc(p.label||'')+'" oninput="setPortField('+comp.id+','+p.id+',\'label\',this.value)">'
+        + '<input class="port-label-inp" placeholder="e.g. SDI OUT 1" value="'+esc(p.label||'')+'"'
+        + ' oninput="setPortField('+comp.id+','+p.id+',\'label\',this.value,true)"'
+        + ' onblur="setPortField('+comp.id+','+p.id+',\'label\',this.value)"'
+        + ' onkeydown="if(event.keyCode===13)this.blur()">'
         + (conns.length?'<span class="port-conn-count">'+conns.length+'&#8652;</span>':'')
         + '<button class="cact cact-del" onclick="removePort('+comp.id+','+p.id+')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M5 7h14M9 7V5h6v2M7 7l1 13h8l1-13"/></svg></button>'
         + '</div>';
@@ -1582,7 +1596,10 @@ function renderStrip(comp){
     +   '<span class="led '+led+'"></span>'
     +   '<span class="csn">'+esc(compName(comp))+'</span>'
     +   '<span class="csr">'+esc(compTag(comp))+'</span>'
-    +   '<button class="cact" title="Edit" onclick="editComponent('+comp.id+')">'+(editing?'<span style=\"font-size:11px\">Done</span>':'<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 20h4l10.5-10.5a2.1 2.1 0 0 0-3-3L5 17z\"/></svg>')+'</button>'
+    +(editing?'<span class="editing-badge">● Editing</span>':'')
+    +   (editing
+    ? '<button class="cact cact-done" onclick="editComponent('+comp.id+')" title="Save &amp; close">Done</button>'
+    : '<button class="cact" title="Edit" onclick="editComponent('+comp.id+')"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 20h4l10.5-10.5a2.1 2.1 0 0 0-3-3L5 17z\"/></svg></button>')
     +   '<button class="cact cact-del" title="Remove" onclick="removeComponent('+comp.id+')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M5 7h14M9 7V5h6v2M7 7l1 13h8l1-13"/></svg></button>'
     + '</div>'
     + '<div class="csbody">'+body+'</div>'
@@ -2423,13 +2440,12 @@ function removePort(compId, portId){
   renderRoutingView();
 }
 
-function setPortField(compId, portId, key, val){
+function setPortField(compId, portId, key, val, noRender){
   var c = components.find(function(x){return x.id===compId;}); if(!c) return;
   var p = (c.ports||[]).find(function(x){return x.id===portId;}); if(!p) return;
   p[key] = val;
   fsave('components',{items:components,nextId:compNextId});
-  renderComponents();
-  renderRoutingView();
+  if(!noRender){ renderComponents(); renderRoutingView(); }
 }
 
 // ── CONNECTION LOGIC ──────────────────────────────────────────────────────
@@ -2801,6 +2817,139 @@ function relDate(iso){
 }
 
 function ibadge(){ var b=el('bi'); if(b) b.textContent=issues.filter(function(i){return i.status!=='resolved';}).length; }
+
+function exportRigPDF(){
+  var svgEl = document.getElementById('vp-diagram');
+  var svgHTML = svgEl ? svgEl.outerHTML : '<p>No diagram generated</p>';
+
+  // Build component sections HTML
+  var sectionsHTML = '';
+  CSECTIONS.forEach(function(sec){
+    var items = components.filter(function(c){ return CTYPES[c.type] && CTYPES[c.type].section===sec.id; });
+    if(!items.length) return;
+    sectionsHTML += '<div class="section"><div class="section-head"><span class="section-tick"></span>'+sec.label+'<span class="section-count">'+items.length+' unit'+(items.length>1?'s':'')+'</span></div>';
+    sectionsHTML += '<div class="cards">';
+    items.forEach(function(comp){
+      var def = CTYPES[comp.type];
+      var fs = compFieldset(comp.type, comp);
+      var rows = fs.filter(function(fl){ return (comp.fields[fl.k]||'').trim(); }).map(function(fl){
+        return '<tr><td class="k">'+fl.l+'</td><td class="v">'+comp.fields[fl.k]+'</td></tr>';
+      }).join('');
+      var ports = (comp.ports||[]);
+      var portsHTML = '';
+      if(ports.length){
+        portsHTML = '<tr><td class="k">Ports</td><td class="v ports-list">'
+          + ports.map(function(p){ return '<span class="port-pill '+(p.dir==='out'?'out':'in')+'">'+p.dir.toUpperCase()+' '+p.signal+(p.label?' · '+p.label:'')+'</span>'; }).join('')
+          + '</td></tr>';
+      }
+      var notes = (comp.notes||'').trim();
+      var notesHTML = notes ? '<tr><td class="k">Notes</td><td class="v notes">'+notes+'</td></tr>' : '';
+      sectionsHTML += '<div class="card">'
+        +'<div class="card-head"><span class="led '+(comp.fields.role==='Editor'?'b':'g')+'"></span>'+compName(comp)+'<span class="card-tag">'+compTag(comp)+'</span></div>'
+        +'<table>'+rows+portsHTML+notesHTML+'</table>'
+        +'</div>';
+    });
+    sectionsHTML += '</div></div>';
+  });
+
+  // Build connections section if any exist
+  var connHTML = '';
+  if(connections.length){
+    connHTML = '<div class="section"><div class="section-head"><span class="section-tick"></span>Signal Routing<span class="section-count">'+connections.length+' connection'+(connections.length>1?'s':'')+'</span></div>';
+    connHTML += '<table class="conn-table"><thead><tr><th>From device</th><th>Output port</th><th></th><th>To device</th><th>Input port</th><th>Signal</th></tr></thead><tbody>';
+    connections.forEach(function(cn){
+      var fc=components.find(function(x){return x.id===cn.fromCompId;});
+      var tc=components.find(function(x){return x.id===cn.toCompId;});
+      var fp=fc?(fc.ports||[]).find(function(p){return p.id===cn.fromPortId;}):null;
+      var tp=tc?(tc.ports||[]).find(function(p){return p.id===cn.toPortId;}):null;
+      connHTML += '<tr>'
+        +'<td>'+(fc?compName(fc):'?')+'</td>'
+        +'<td class="mono">'+(fp?fp.label||fp.signal:'?')+'</td>'
+        +'<td class="arrow">→</td>'
+        +'<td>'+(tc?compName(tc):'?')+'</td>'
+        +'<td class="mono">'+(tp?tp.label||tp.signal:'?')+'</td>'
+        +'<td class="mono">'+(fp?fp.signal:'?')+(cn.mismatch?' ⚠':'')+'</td>'
+        +'</tr>';
+    });
+    connHTML += '</tbody></table></div>';
+  }
+
+  var exportDate = new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+  var editorComp = components.find(function(c){return c.type==='workstation'&&c.fields.role==='Editor';});
+  var ueVersion = editorComp ? (editorComp.fields.ue||'') : '';
+
+  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8">'
+    +'<title>Rig Configuration Export</title>'
+    +'<style>'
+    +'*{margin:0;padding:0;box-sizing:border-box}'
+    +'body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:11px;color:#1a1a1a;background:#fff;line-height:1.5}'
+    +'@page{size:A4;margin:18mm 16mm 18mm 16mm}'
+    +'.page-header{display:flex;align-items:center;justify-content:space-between;padding-bottom:14px;border-bottom:2px solid #0b0b0c;margin-bottom:22px}'
+    +'.brand{display:flex;align-items:center;gap:10px}'
+    +'.brand-name{font-size:15px;font-weight:700;letter-spacing:-.02em;color:#0b0b0c}'
+    +'.brand-sub{font-size:10px;color:#888;letter-spacing:.04em;text-transform:uppercase}'
+    +'.export-meta{text-align:right;font-size:10px;color:#666}'
+    +'.export-meta strong{display:block;font-size:12px;color:#1a1a1a;margin-bottom:2px}'
+    +'.section{margin-bottom:24px;break-inside:avoid-page}'
+    +'.section-head{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:#444;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #e8e8e8}'
+    +'.section-tick{width:3px;height:12px;border-radius:2px;background:linear-gradient(#4a7af5,#1ab8d4);flex-shrink:0}'
+    +'.section-count{font-size:9px;color:#999;font-weight:400;margin-left:auto;letter-spacing:.04em}'
+    +'.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}'
+    +'.card{border:1px solid #e4e4e4;border-radius:8px;overflow:hidden;break-inside:avoid}'
+    +'.card-head{display:flex;align-items:center;gap:7px;padding:8px 11px;background:#f8f8f8;border-bottom:1px solid #e8e8e8;font-size:11px;font-weight:600}'
+    +'.card-tag{margin-left:auto;font-size:8.5px;color:#888;text-transform:uppercase;letter-spacing:.05em;font-family:ui-monospace,monospace}'
+    +'.led{width:6px;height:6px;border-radius:50%;flex-shrink:0}'
+    +'.led.g{background:#22c55e}.led.b{background:#4a7af5}'
+    +'table{width:100%;border-collapse:collapse}'
+    +'td{padding:5px 11px;border-bottom:1px solid #f0f0f0;vertical-align:top}'
+    +'tr:last-child td{border-bottom:none}'
+    +'.k{color:#777;width:38%;white-space:nowrap;font-size:10px}'
+    +'.v{color:#1a1a1a;font-size:10.5px}'
+    +'.mono{font-family:ui-monospace,monospace;font-size:10px}'
+    +'.notes{color:#555;font-style:italic;font-size:10px}'
+    +'.ports-list{display:flex;flex-wrap:wrap;gap:3px}'
+    +'.port-pill{font-size:9px;font-family:ui-monospace,monospace;padding:1px 5px;border-radius:3px;border:1px solid #ddd;color:#555}'
+    +'.port-pill.out{border-color:#4a7af5;color:#4a7af5;background:#f0f4ff}'
+    +'.port-pill.in{border-color:#1ab8d4;color:#1ab8d4;background:#f0fbfd}'
+    +'.diagram-section{margin-bottom:24px}'
+    +'.diagram-section h3{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:#444;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #e8e8e8;display:flex;align-items:center;gap:7px}'
+    +'.diagram-wrap{border:1px solid #e4e4e4;border-radius:8px;padding:16px;background:#f8f8f8}'
+    +'.diagram-wrap svg{width:100%;height:auto;display:block}'
+    +'.conn-table{width:100%;border-collapse:collapse;margin-top:2px}'
+    +'.conn-table th{text-align:left;font-size:9.5px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.06em;padding:5px 10px;border-bottom:1px solid #e8e8e8;background:#f8f8f8}'
+    +'.conn-table td{padding:5px 10px;border-bottom:1px solid #f0f0f0;font-size:10.5px}'
+    +'.conn-table .arrow{color:#999;text-align:center}'
+    +'@media print{'
+    +'  body{-webkit-print-color-adjust:exact;print-color-adjust:exact}'
+    +'  .no-print{display:none}'
+    +'  .section{break-inside:auto}'
+    +'  .card{break-inside:avoid}'
+    +'}'
+    +'</style></head><body>'
+    +'<div class="no-print" style="background:#f0f4ff;border:1px solid #4a7af5;border-radius:8px;padding:12px 16px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between">'
+    +'<span style="font-size:12px;color:#1a1a1a"><strong>Rig Configuration Export</strong> — Use your browser\'s Print function (Ctrl/Cmd+P) and choose "Save as PDF"</span>'
+    +'<button onclick="window.print()" style="background:#4a7af5;color:#fff;border:none;border-radius:6px;padding:7px 16px;font-size:12px;font-weight:600;cursor:pointer">Print / Save as PDF</button>'
+    +'</div>'
+    +'<div class="page-header">'
+    +'<div class="brand">'
+    +'<svg width="28" height="30" viewBox="0 0 48 52"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4a7af5"/><stop offset="1" stop-color="#1ab8d4"/></linearGradient></defs><path d="M13 32 A10 10 0 0 0 33 32 L33 18 A6.3 6.3 0 0 0 20.4 18 L20.4 26" fill="none" stroke="url(#g)" stroke-width="4.6" stroke-linecap="round"/><path d="M13 32 L13 16" fill="none" stroke="url(#g)" stroke-width="4.6" stroke-linecap="round"/></svg>'
+    +'<div><div class="brand-name">Unreal Support</div><div class="brand-sub">Rig Configuration Export</div></div>'
+    +'</div>'
+    +'<div class="export-meta"><strong>Virtual Production Configuration</strong>'+(ueVersion?'Unreal Engine '+ueVersion+'<br>':'')+'Exported '+exportDate+'</div>'
+    +'</div>'
+    + sectionsHTML
+    + connHTML
+    +'<div class="diagram-section"><h3><span class="section-tick"></span>System Architecture Diagram</h3>'
+    +'<div class="diagram-wrap">'+svgHTML+'</div></div>'
+    +'</body></html>';
+
+  var win = window.open('', '_blank');
+  if(!win){ alert('Please allow popups for this site to export.'); return; }
+  win.document.write(html);
+  win.document.close();
+  // Small delay to let fonts/SVG render before print dialog
+  setTimeout(function(){ win.focus(); }, 400);
+}
 
 var activeIssueId = null;
 

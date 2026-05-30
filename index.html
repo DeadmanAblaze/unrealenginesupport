@@ -2829,15 +2829,18 @@ function autoDetectPorts(compId){
   var btn=document.querySelector('[data-autodetect="'+compId+'"]');
   if(btn){ btn.textContent='Detecting...'; btn.disabled=true; }
 
-  fetch('https://api.anthropic.com/v1/messages',{
+  var storedKey=localStorage.getItem('vp_anthropic_key')||'';
+  var autoPrompt='Research the physical inputs and outputs of the device: "'+query+'". Return JSON exactly matching this schema: {"ports":[{"dir":"in or out","signal":"SDI or 12G-SDI or HDMI or DisplayPort or Ethernet/10GbE or Fiber or Genlock/Ref or Timecode or USB or Power or Audio or Other","label":"e.g. SDI IN 1","count":1}],"suggestedFields":{"key":"value"},"confidence":"high or medium or low","sourceNote":"brief note on source quality"}. Include every physical port. For repeated ports (e.g. 4x SDI IN) use count. Signal must be exactly one of the enum values. Respond ONLY with valid JSON.';
+  fetch('/.netlify/functions/chat',{
     method:'POST',
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify({
       model:'claude-sonnet-4-20250514',
-      max_tokens:1000,
-      tools:[{type:'web_search_20250305',name:'web_search'}],
-      system:'You are a broadcast/AV technical database. Given a device name, search for and return its I/O ports and key specs as JSON. Respond ONLY with valid JSON, no markdown fences, no explanation.',
-      messages:[{role:'user',content:'Research the physical inputs and outputs of the device: "'+query+'". Return JSON exactly matching this schema: {"ports":[{"dir":"in"|"out","signal":"SDI|12G-SDI|HDMI|DisplayPort|Ethernet/10GbE|Fiber|Genlock/Ref|Timecode|USB|Power|Audio|Other","label":"e.g. SDI IN 1","count":1}],"suggestedFields":{"key":"value"},"confidence":"high|medium|low","sourceNote":"brief note on source quality"}. Include every physical port. For repeated ports (e.g. 4x SDI IN) use count. Signal must be exactly one of the enum values.'}]
+      max_tokens:800,
+      system:'You are a broadcast/AV technical database. Given a device name, research and return its I/O ports as JSON. Respond ONLY with valid JSON, no markdown fences, no explanation.',
+      messages:[{role:'user',content:autoPrompt}],
+      userEmail:cu?cu.email:'',
+      userApiKey:storedKey
     })
   }).then(function(r){return r.json();})
   .then(function(data){
@@ -3518,17 +3521,14 @@ function buildWallSVG(wall){
   var hasLeft = dns[0], hasRight = dns[1];
 
   // ── SVG canvas 780×280 ──────────────────────────────────────────
-  var SW=780, SH=280;
-  // Front view: x=28 y=50 w=370 h=160
-  var FX=28, FY=50, FW=370, FH=160;
-  // Plan view: x=450 y=50 w=300 h=160
-  var PX=450, PY=50, PW=300, PH=160;
-  var FCX=PX+PW/2, FCY=PY+20; // plan view center top
+  var SW=540, SH=260;
+  // Front view: x=28 y=45 w=480 h=160
+  var FX=28, FY=45, FW=480, FH=160;
+  var PX=0, PY=0, PW=0, PH=0, FCX=0, FCY=0; // plan view removed
 
   var s='<svg viewBox="0 0 '+SW+' '+SH+'" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;background:#0b0b0c">';
 
-  // ── Section divider ─────────────────────────────────────────────
-  s+='<line x1="'+(PX-18)+'" y1="20" x2="'+(PX-18)+'" y2="'+(SH-20)+'" stroke="#111113" stroke-width="1"/>';
+  // No plan view — front view only
 
   // ── FRONT VIEW label ────────────────────────────────────────────
   s+='<text x="'+(FX+FW/2)+'" y="16" text-anchor="middle" font-family="inherit" font-size="8.5" fill="#202028" letter-spacing="0.14em">FRONT VIEW</text>';
@@ -3583,67 +3583,6 @@ function buildWallSVG(wall){
       s+='<circle cx="'+(FX+40+pi*(halfW*2-80)/4)+'" cy="'+(FY+30+pj*(FH-60)/3)+'" r="1" fill="#1e2535" opacity="0.6"/>';
     }
   }
-
-  // ── PLAN VIEW label ──────────────────────────────────────────────
-  s+='<text x="'+(PX+PW/2)+'" y="16" text-anchor="middle" font-family="inherit" font-size="8.5" fill="#202028" letter-spacing="0.14em">PLAN VIEW</text>';
-
-  // Arc representing curved wall
-  // At curv degrees, the arc from camera perspective
-  var arcHalfAng = (curv/2)*Math.PI/180;
-  var arcR = PW*0.5; // display radius for vis
-  var arcY  = FCY+30;
-  var arcX1 = FCX - arcR*Math.sin(arcHalfAng);
-  var arcX2 = FCX + arcR*Math.sin(arcHalfAng);
-  var sagPx = Math.max(curv*0.8, 1.5);
-  var midX  = FCX;
-  var midY  = arcY - sagPx;
-
-  // L half arc
-  s+='<path d="M '+arcX1+' '+arcY+' Q '+(FCX*0.5+arcX1*0.5)+' '+(midY+sagPx*0.5)+' '+midX+' '+midY+'" fill="none" stroke="#5b9dff" stroke-width="4" stroke-linecap="round" opacity="0.75"/>';
-  // R half arc
-  s+='<path d="M '+midX+' '+midY+' Q '+(FCX*0.5+arcX2*0.5)+' '+(midY+sagPx*0.5)+' '+arcX2+' '+arcY+'" fill="none" stroke="#22d3ee" stroke-width="4" stroke-linecap="round" opacity="0.75"/>';
-
-  // Center tick on arc
-  s+='<circle cx="'+midX+'" cy="'+midY+'" r="2.5" fill="#5b9dff" opacity="0.6"/>';
-
-  // Camera (triangle below)
-  var camY=FCY+120, camR=11;
-  s+='<polygon points="'+midX+','+(camY-camR)+' '+(midX-camR)+','+(camY+camR/2)+' '+(midX+camR)+','+(camY+camR/2)+'" fill="none" stroke="#fbbf24" stroke-width="1.5"/>';
-  s+='<circle cx="'+midX+'" cy="'+camY+'" r="2" fill="#fbbf24" opacity="0.4"/>';
-  s+='<text x="'+midX+'" y="'+(camY+camR+12)+'" text-anchor="middle" font-family="inherit" font-size="7.5" fill="#443820" letter-spacing="0.1em">CAMERA</text>';
-
-  // FoV lines from camera to wall ends
-  s+='<line x1="'+midX+'" y1="'+(camY-camR)+'" x2="'+arcX1+'" y2="'+arcY+'" stroke="#fbbf24" stroke-width="0.75" stroke-dasharray="4 3" opacity="0.3"/>';
-  s+='<line x1="'+midX+'" y1="'+(camY-camR)+'" x2="'+arcX2+'" y2="'+arcY+'" stroke="#fbbf24" stroke-width="0.75" stroke-dasharray="4 3" opacity="0.3"/>';
-
-  // Wall width annotation
-  s+='<line x1="'+arcX1+'" y1="'+(arcY-14)+'" x2="'+arcX2+'" y2="'+(arcY-14)+'" stroke="#202028" stroke-width="0.75"/>';
-  s+='<text x="'+FCX+'" y="'+(arcY-20)+'" text-anchor="middle" font-family="inherit" font-size="8.5" fill="#252530">'+W+'m</text>';
-
-  // Curve label
-  s+='<text x="'+(arcX2+10)+'" y="'+(arcY+2)+'" font-family="inherit" font-size="8" fill="#202028">'+curv+'° curve</text>';
-
-  // Viewing distance estimate (approx for VP stages)
-  var viewDist=Math.round(W*0.6);
-  s+='<line x1="'+midX+'" y1="'+arcY+'" x2="'+midX+'" y2="'+(camY-camR)+'" stroke="#252530" stroke-width="0.5" stroke-dasharray="2 3" opacity="0.5"/>';
-  s+='<text x="'+(midX+6)+'" y="'+(arcY+(camY-camR-arcY)/2)+'" font-family="inherit" font-size="7.5" fill="#1a1a28">~'+viewDist+'m</text>';
-
-  // Bottom info strip
-  var infoY=SH-16;
-  s+='<line x1="28" y1="'+(SH-28)+'" x2="'+(SW-28)+'" y2="'+(SH-28)+'" stroke="#111113" stroke-width="0.5"/>';
-  var tags=[
-    {k:'Wall',v:(W+'m × '+H+'m')},
-    {k:'Curvature',v:(curv+'°')},
-    {k:'Resolution',v:(res||'—')},
-    {k:'Refresh',v:(hz||'—')},
-    {k:'Processor',v:(proc?proc.fields.mfr||'—':'—')},
-    {k:'Split',v:(split||'—')}
-  ];
-  var tagX=28, tagStep=(SW-56)/tags.length;
-  tags.forEach(function(t,i){
-    s+='<text x="'+(tagX+i*tagStep)+'" y="'+infoY+'" font-family="inherit" font-size="7.5" fill="#1a1a26">'+t.k+'</text>';
-    s+='<text x="'+(tagX+i*tagStep)+'" y="'+(infoY+10)+'" font-family="inherit" font-size="8.5" fill="#303038">'+t.v+'</text>';
-  });
 
   s+='</svg>';
   return s;
@@ -3712,23 +3651,32 @@ function findLinksForComp(compId){
   comp._findingLinks = true;
   renderGear();
 
-  fetch('https://api.anthropic.com/v1/messages',{
+  var storedKey=localStorage.getItem('vp_anthropic_key')||'';
+  var linkPrompt='Find official web URLs for this piece of equipment: "'+query+'". Return JSON with this structure (omit keys if no reliable URL found): {"manufacturer":"https://...","product":"https://...","docs":"https://...","specs":"https://..."} Rules: manufacturer=company homepage, product=specific product page on manufacturer site, docs=manual or documentation, specs=technical specs. Real URLs only. Respond ONLY with valid JSON, no markdown.';
+  fetch('/.netlify/functions/chat',{
     method:'POST',
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify({
       model:'claude-sonnet-4-20250514',
-      max_tokens:500,
-      tools:[{type:'web_search_20250305',name:'web_search'}],
-      system:'You are a hardware research assistant. Find official manufacturer and product page URLs for broadcast/AV/production equipment. Respond ONLY with valid JSON, no markdown, no explanation.',
-      messages:[{role:'user',content:'Find official web URLs for this piece of equipment: "'+query+'". Return JSON with this exact structure (omit keys where no reliable URL found): {"manufacturer":"https://...", "product":"https://...", "docs":"https://...", "specs":"https://..."}\nRules: manufacturer = company homepage only, product = specific product page on manufacturer site, docs = manual or documentation page, specs = technical specifications page. Use real URLs only, no placeholders.'}]
+      max_tokens:400,
+      system:'You are a hardware research assistant. Find official manufacturer and product URLs for broadcast/AV equipment. Respond ONLY with valid JSON, no markdown.',
+      messages:[{role:'user',content:linkPrompt}],
+      userEmail:cu?cu.email:'',
+      userApiKey:storedKey
     })
   }).then(function(r){return r.json();})
   .then(function(data){
     var text='';
     (data.content||[]).forEach(function(b){if(b.type==='text') text+=b.text;});
+    if(data.error){ comp._findingLinks=false; renderGear(); return; }
     try{
-      var result=JSON.parse(text.trim().replace(/```json|```/g,''));
-      comp.links = result;
+      var clean=text.trim().replace(/```json|```/g,'');
+      var result=JSON.parse(clean);
+      var valid={};
+      ['manufacturer','product','docs','specs'].forEach(function(k){
+        if(result[k]&&typeof result[k]==='string'&&result[k].startsWith('http')) valid[k]=result[k];
+      });
+      comp.links=valid;
     }catch(e){ comp.links={}; }
     comp._findingLinks=false;
     fsave('components',{items:components,nextId:compNextId});
@@ -3736,7 +3684,6 @@ function findLinksForComp(compId){
   }).catch(function(){
     comp._findingLinks=false;
     renderGear();
-    alert('Could not find links for this component. Check your API key.');
   });
 }
 

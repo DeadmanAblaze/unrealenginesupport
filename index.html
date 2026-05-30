@@ -108,14 +108,16 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 /* ── RAIL ── */
 .rail{background:var(--rail);border-right:1px solid var(--line);display:flex;flex-direction:column;padding:14px 10px;height:100vh;overflow-y:auto}
 .rail-brand{display:flex;align-items:center;gap:9px;padding:4px 8px 18px}
-.rail-logo{width:26px;height:26px;border-radius:7px;background:var(--el2);border:1px solid var(--line3);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--ink);flex-shrink:0}
+.rail-logo{width:28px;height:28px;border-radius:8px;background:linear-gradient(150deg,rgba(91,157,255,0.14),rgba(34,211,238,0.07));border:1px solid rgba(91,157,255,0.22);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .rail-brand-name{font-size:13px;font-weight:600;letter-spacing:-.01em;color:var(--ink);display:block}
 .rail-brand-sub{font-size:10px;color:var(--ink4);display:block;margin-top:1px}
 .rail-nav{display:flex;flex-direction:column;gap:1px}
-.nb{display:flex;align-items:center;gap:10px;padding:8px 9px;border-radius:7px;cursor:pointer;color:var(--ink3);background:none;border:none;font-family:var(--sans);font-size:13px;font-weight:450;width:100%;text-align:left;transition:color .12s,background .12s}
+.nb{position:relative;display:flex;align-items:center;gap:10px;padding:8px 9px;border-radius:7px;cursor:pointer;color:var(--ink3);background:none;border:none;font-family:var(--sans);font-size:13px;font-weight:450;width:100%;text-align:left;transition:color .12s,background .12s}
 .nb:hover{color:var(--ink2);background:rgba(255,255,255,0.025)}
 .nb.on{color:var(--ink);background:rgba(255,255,255,0.05)}
+.nb.on::before{content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);width:2.5px;height:15px;border-radius:2px;background:linear-gradient(var(--brand1),var(--brand2))}
 .nb svg{width:16px;height:16px;flex-shrink:0;stroke-width:1.6;stroke:currentColor;fill:none}
+.nb.on svg{color:var(--brand1)}
 .nb-label{flex:1}
 .nbadge{font-family:var(--mono);font-size:11px;color:var(--ink4)}
 .nb.on .nbadge{color:var(--ink2)}
@@ -155,8 +157,8 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .btn{font-size:12px;font-family:var(--sans);font-weight:450;background:var(--el);border:1px solid var(--line2);color:var(--ink2);padding:6px 13px;border-radius:var(--r);cursor:pointer;transition:all .12s;display:inline-flex;align-items:center;gap:7px}
 .btn:hover{background:var(--el2);color:var(--ink);border-color:var(--line3)}
 .btn svg{width:14px;height:14px;stroke-width:1.7;stroke:currentColor;fill:none}
-.btn.bp{background:var(--ink);color:var(--bg);border-color:var(--ink);font-weight:600}
-.btn.bp:hover{opacity:.88}
+.btn.bp{background:linear-gradient(135deg,var(--brand1),var(--brand2));color:#06141f;border-color:transparent;font-weight:600}
+.btn.bp:hover{opacity:.92}
 .btn.bd{background:transparent}
 .btn.sm{font-size:11px;padding:4px 10px}
 
@@ -189,9 +191,9 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .f label{font-size:11px;color:var(--ink3);font-weight:400}
 .f input{background:var(--el);border:1px solid var(--line2);border-radius:var(--r);color:var(--ink);font-size:12px;font-family:var(--sans);padding:7px 10px;outline:none;transition:all .12s;width:100%}
 .f input:hover{border-color:var(--line3)}
-.f input:focus{border-color:var(--ink4);background:var(--el2)}
+.f input:focus{border-color:var(--brand1);background:var(--el2);box-shadow:0 0 0 3px var(--brand-dim)}
 .f textarea{background:var(--el);border:1px solid var(--line2);border-radius:var(--r);color:var(--ink);font-size:12px;font-family:var(--sans);padding:7px 10px;outline:none;resize:vertical;width:100%;transition:all .12s}
-.f textarea:focus{border-color:var(--ink4)}
+.f textarea:focus{border-color:var(--brand1);background:var(--el2);box-shadow:0 0 0 3px var(--brand-dim)}
 .fspan{grid-column:1/-1}
 
 /* ── ISSUES ── */
@@ -263,7 +265,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .chat-compose{display:flex;gap:8px;padding:12px 13px;border-top:1px solid var(--line)}
 .chat-compose input{flex:1;background:var(--el);border:1px solid var(--line2);border-radius:var(--r);color:var(--ink);font-size:13px;font-family:var(--sans);padding:8px 12px;outline:none;transition:all .12s}
 .chat-compose input::placeholder{color:var(--ink4)}
-.chat-compose input:focus{border-color:var(--ink4);background:var(--el2)}
+.chat-compose input:focus{border-color:var(--brand1);background:var(--el2);box-shadow:0 0 0 3px var(--brand-dim)}
 .csend{background:var(--ink);color:var(--bg);border:none;border-radius:var(--r);padding:0 14px;cursor:pointer;font-family:var(--sans);font-size:12px;font-weight:600;transition:opacity .12s;display:flex;align-items:center;gap:6px;white-space:nowrap}
 .csend:hover{opacity:.85}
 .csend svg{width:14px;height:14px;stroke:currentColor;stroke-width:2;fill:none}
@@ -293,11 +295,12 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 #vp-diagram{width:100%;min-width:680px;display:block}
 .diag-node{cursor:default}
 .diag-node rect,.diag-node polygon{transition:filter .15s}
-.sh{font-size:11px;color:var(--ink3);font-weight:500;margin-bottom:10px;margin-top:16px}
+.sh{font-size:10px;color:var(--ink3);font-weight:500;margin-bottom:11px;margin-top:18px;text-transform:uppercase;letter-spacing:.09em}
 .sh:first-child{margin-top:0}
-.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:8px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:8px;transition:border-color .14s}
+.card:hover{border-color:var(--line2)}
 .ch{display:flex;align-items:center;gap:8px;margin-bottom:10px}
-.cd{width:5px;height:5px;border-radius:50%;background:var(--ink4);flex-shrink:0}
+.cd{width:5px;height:5px;border-radius:50%;background:var(--brand1);box-shadow:0 0 6px rgba(91,157,255,0.5);flex-shrink:0}
 .ct{font-size:12px;font-weight:500;color:var(--ink)}
 .hdr{display:none}
 /* ── ISSUES SPLIT PANEL ── */
@@ -368,7 +371,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 /* Note composer */
 .iss-compose{display:flex;gap:8px;align-items:flex-start}
 .iss-compose textarea{flex:1;background:var(--el);border:1px solid var(--line2);border-radius:var(--r);color:var(--ink);font-size:12px;font-family:var(--sans);padding:8px 11px;resize:none;height:36px;outline:none;transition:height .15s,border .12s;line-height:1.45}
-.iss-compose textarea:focus{height:72px;border-color:var(--line3);background:var(--el2)}
+.iss-compose textarea:focus{height:72px;border-color:var(--brand1);background:var(--el2);box-shadow:0 0 0 3px var(--brand-dim)}
 .iss-compose textarea::placeholder{color:var(--ink4)}
 .compose-btns{display:flex;flex-direction:column;gap:4px}
 .cb{font-size:11px;padding:5px 11px;border-radius:var(--r);border:1px solid var(--line2);cursor:pointer;font-family:var(--sans);background:var(--el);color:var(--ink2);white-space:nowrap;transition:all .12s}
@@ -417,7 +420,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .log-latest.log-info{color:var(--ink3);border-color:var(--line);background:transparent}
 .log-add{display:flex;gap:7px;margin-bottom:10px}
 .log-add input{flex:1;background:var(--el);border:1px solid var(--line2);border-radius:var(--r);color:var(--ink);font-size:12px;font-family:var(--sans);padding:6px 9px;outline:none}
-.log-add input:focus{border-color:var(--line3)}
+.log-add input:focus{border-color:var(--brand1);box-shadow:0 0 0 3px var(--brand-dim)}
 .issue-steps-head{font-size:10px;color:var(--ink3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;margin-top:4px}
 /* Linked checklist */
 .linked-section{margin-bottom:10px;padding:10px 12px;background:var(--s1);border:1px solid var(--line);border-radius:var(--r)}
@@ -437,7 +440,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 /* Checklist issue link tag */
 .cl-issue-tag{font-size:10px;color:var(--blue);font-family:var(--mono);margin-top:2px;display:block;opacity:.8}
 .flt-select{background:var(--el);border:1px solid var(--line2);border-radius:var(--r);color:var(--ink2);font-size:12px;font-family:var(--sans);padding:5px 9px;outline:none;cursor:pointer}
-.flt-select:focus{border-color:var(--line3)}
+.flt-select:focus{border-color:var(--brand1);box-shadow:0 0 0 3px var(--brand-dim)}
 .flt-select option,.flt-select optgroup{background:var(--bg);color:var(--ink)}
 
 /* ── ISSUES JS-RENDERED ── */
@@ -564,7 +567,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
           <div class="abl-sub">Virtual Production Console</div>
         </div>
       </div>
-      <h1 class="auth-headline">Technical support that knows<br>your stage inside out.</h1>
+      <h1 class="auth-headline">Technical support that knows your stage inside out.</h1>
       <p class="auth-lede">Unreal Support loads your exact ICVFX rig — nodes, LED volume, tracking and sync — then answers every question from official Unreal documentation and real-world stage experience.</p>
       <div class="auth-feats">
         <div class="auth-feat">

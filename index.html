@@ -795,6 +795,123 @@ select.cv-edit{text-align:left;cursor:pointer}
 .btn.bg{background:transparent;color:var(--ink3)}
 .btn.bg:hover{background:var(--el);color:var(--ink2)}
 
+
+/* ── HOME PAGE ── */
+.home-wrap{max-width:860px;padding:0}
+.home-header{padding:28px 0 24px;border-bottom:1px solid #111113;margin-bottom:22px}
+.home-date{font-family:var(--mono);font-size:9px;color:#252530;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}
+.home-greeting{font-family:'Barlow Condensed',var(--sans);font-weight:900;font-size:32px;letter-spacing:-.01em;color:#c0c0cc;margin-bottom:5px}
+.home-sub{font-size:12px;color:#303038}
+.home-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid #111113;margin-bottom:24px}
+.home-stat{padding:14px 16px;border-right:1px solid #111113}
+.home-stat:last-child{border-right:none}
+.home-stat-val{font-family:'Barlow Condensed',var(--sans);font-weight:900;font-size:26px;color:#5b9dff;letter-spacing:-.01em;margin-bottom:3px}
+.home-stat-warn .home-stat-val{color:#fbbf24}
+.home-stat-lbl{font-family:var(--mono);font-size:8.5px;color:#252530;text-transform:uppercase;letter-spacing:.1em}
+.home-body{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.home-col{}
+.home-section-head{display:flex;align-items:center;gap:8px;margin-bottom:12px;font-family:'Barlow Condensed',var(--sans);font-weight:900;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#303038}
+.home-tick{width:3px;height:13px;background:var(--brand1);flex-shrink:0;border-radius:0}
+.home-nav-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.home-nav-btn{background:#0e0e10;border:1px solid #111113;padding:14px;display:flex;flex-direction:column;align-items:flex-start;gap:5px;cursor:pointer;text-align:left;transition:border-color .12s;font-family:var(--sans)}
+.home-nav-btn:hover{border-color:rgba(91,157,255,.3);background:#0f0f13}
+.home-nav-btn svg{width:16px;height:16px;color:#303038;margin-bottom:3px}
+.home-nav-btn-name{font-family:'Barlow Condensed',var(--sans);font-weight:900;font-size:13px;letter-spacing:.04em;color:#909098}
+.home-nav-btn-sub{font-family:var(--mono);font-size:9px;color:#252530;letter-spacing:.04em}
+.home-event-list{display:flex;flex-direction:column;gap:1px}
+.home-event{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #0d0d0f}
+.home-event-date{font-family:var(--mono);font-size:10px;color:#303038;width:42px;flex-shrink:0}
+.home-event-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.home-event-title{font-size:12px;color:#686874;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.home-event-type{font-family:var(--mono);font-size:9px;color:#202028;flex-shrink:0}
+.home-issue-list{display:flex;flex-direction:column;gap:1px}
+.home-issue{padding:10px 11px;background:#0e0e10;border:1px solid #111113;border-bottom:none;cursor:pointer;transition:background .1s}
+.home-issue:last-child{border-bottom:1px solid #111113}
+.home-issue:hover{background:#0f0f13}
+.home-issue-top{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.home-issue-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.home-issue-title{font-size:12px;color:#686874;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.home-issue-meta{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:9px}
+.home-issue-status{text-transform:uppercase;letter-spacing:.06em}
+.home-issue-date{color:#202028}
+.home-issue-area{font-family:var(--mono);font-size:8.5px;color:#1e1e26;background:#0a0a0b;padding:1px 5px;margin-top:4px;display:inline-block;letter-spacing:.06em;text-transform:uppercase}
+.home-no-issues{font-family:var(--mono);font-size:11px;color:#1e1e26;padding:16px 0;letter-spacing:.04em}
+
+/* ── CALENDAR / PLANNER ── */
+.cal-shell{display:grid;grid-template-columns:1fr 260px;height:100%;gap:0}
+.cal-main{display:flex;flex-direction:column;border-right:1px solid #111113;padding:18px 20px}
+.cal-nav{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+.cal-arrow{background:#0e0e10;border:1px solid #111113;color:#505058;font-size:14px;width:28px;height:28px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .12s;border-radius:0}
+.cal-arrow:hover{color:var(--brand1);border-color:rgba(91,157,255,.3)}
+.cal-month-label{font-family:'Barlow Condensed',var(--sans);font-weight:900;font-size:16px;letter-spacing:.06em;text-transform:uppercase;color:#686874}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:#000}
+.cal-dh{background:#0a0a0b;text-align:center;font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:#202028;padding:6px 0}
+.cal-cell{background:#0b0b0c;min-height:58px;padding:6px 7px;cursor:pointer;position:relative;transition:background .1s}
+.cal-cell:hover{background:#0e0e10}
+.cal-empty{background:#08080a;cursor:default}
+.cal-today{background:#0d1220}
+.cal-today .cal-day-num{color:var(--brand1)}
+.cal-selected{background:#0e1628!important;outline:1px solid rgba(91,157,255,.4)}
+.cal-day-num{font-family:var(--mono);font-size:11px;color:#303038;display:block}
+.cal-today .cal-day-num{color:var(--brand1)}
+.cal-dots{display:flex;flex-wrap:wrap;gap:2px;margin-top:4px}
+.cal-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.cal-sidebar{background:#0d0d0f;display:flex;flex-direction:column;overflow:hidden}
+.cal-side-head{padding:14px 14px 12px;border-bottom:1px solid #111113;flex-shrink:0}
+.cal-side-date{font-family:'Barlow Condensed',var(--sans);font-weight:900;font-size:14px;letter-spacing:.04em;color:#606068}
+.cal-side-events{flex:1;overflow-y:auto;padding:10px 14px}
+.cal-no-events{font-family:var(--mono);font-size:10px;color:#1e1e26;padding:12px 0;letter-spacing:.04em}
+.cal-ev{background:#0e0e10;border:1px solid #111113;padding:10px 11px;margin-bottom:6px}
+.cal-ev-done{opacity:.45}
+.cal-ev-head{display:flex;align-items:center;gap:7px;margin-bottom:6px}
+.cal-ev-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.cal-ev-label{font-family:var(--mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#303038;flex:1}
+.cal-ev-done-btn,.cal-ev-del{background:none;border:none;color:#252530;cursor:pointer;font-size:12px;padding:0 3px;transition:color .1s}
+.cal-ev-done-btn:hover{color:var(--live)}.cal-ev-del:hover{color:var(--crit)}
+.cal-ev-title{font-size:12px;color:#686874}
+.cal-ev-meta{font-size:11px;color:#303038;margin-top:3px;line-height:1.4}
+.cal-add-plan{border-top:1px solid #111113;padding:12px 14px;flex-shrink:0;display:flex;flex-direction:column;gap:6px}
+.cal-add-title{font-family:'Barlow Condensed',var(--sans);font-weight:900;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#303038;margin-bottom:2px}
+.plan-input{background:#0a0a0b;border:1px solid #111113;border-radius:0;color:var(--ink2);font-family:var(--mono);font-size:11px;padding:6px 9px;outline:none;width:100%;transition:border .12s;font-family:var(--sans)}
+.plan-input:focus{border-color:var(--brand1)}
+.plan-save-btn{font-family:'Barlow Condensed',var(--sans);font-weight:900;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#060d1a;background:var(--brand1);border:none;padding:7px;cursor:pointer;transition:opacity .12s}
+.plan-save-btn:hover{opacity:.9}
+#pnl-cal.on{height:100%;overflow:hidden;margin:-20px -22px;padding:0!important}
+
+/* ── LED WALL VISUALIZER ── */
+#wall-viz-host{border:1px solid #111113;overflow:hidden;margin-bottom:20px}
+#wall-viz-host svg text{font-family:'Barlow',system-ui,sans-serif}
+
+/* ── EQUIPMENT / GEAR PAGE ── */
+.gear-wrap{max-width:960px}
+.gear-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:22px;padding-bottom:16px;border-bottom:1px solid #111113}
+.gear-head-left{}
+.gear-head-title{font-family:'Barlow Condensed',var(--sans);font-weight:900;font-size:18px;letter-spacing:.04em;color:#808090;margin-bottom:4px}
+.gear-head-sub{font-family:var(--mono);font-size:9px;color:#202028;letter-spacing:.08em;text-transform:uppercase}
+.gear-scan-all{font-family:'Barlow Condensed',var(--sans);font-weight:900;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#383844;background:#0e0e10;border:1px solid #141416;border-radius:0;padding:8px 16px;cursor:pointer;transition:all .14s}
+.gear-scan-all:hover{color:var(--brand1);border-color:rgba(91,157,255,.3)}
+.gear-row{display:grid;grid-template-columns:130px 200px 140px 1fr auto;align-items:center;gap:0;border-bottom:1px solid #0d0d0f;padding:11px 0;transition:background .1s}
+.gear-row:hover{background:rgba(255,255,255,.015)}
+.gear-row:first-child{border-top:1px solid #111113}
+.gear-type{display:flex;align-items:center;gap:7px}
+.gear-type-dot{width:5px;height:5px;border-radius:50%;background:#252530;flex-shrink:0}
+.gear-type-label{font-family:'Barlow Condensed',var(--sans);font-weight:800;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#252530}
+.gear-name{font-size:12.5px;color:#686874;display:flex;flex-direction:column;gap:3px}
+.gear-tag{font-family:var(--mono);font-size:8px;color:#1e1e26;text-transform:uppercase;letter-spacing:.06em}
+.gear-mfr{font-size:11.5px;color:#383844}
+.gear-model{font-family:var(--mono);font-size:10.5px;color:#404050;padding-right:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gear-links{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end;padding-right:4px}
+.gear-link{font-family:'Barlow Condensed',var(--sans);font-weight:800;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:0;text-decoration:none;transition:all .12s}
+.gear-link.mfr{color:#5b9dff;border:1px solid rgba(91,157,255,.25);background:rgba(91,157,255,.06)}
+.gear-link.product{color:#22d3ee;border:1px solid rgba(34,211,238,.25);background:rgba(34,211,238,.06)}
+.gear-link.docs{color:#4ade80;border:1px solid rgba(74,222,128,.2);background:rgba(74,222,128,.05)}
+.gear-link.specs{color:#a78bfa;border:1px solid rgba(167,139,250,.2);background:rgba(167,139,250,.05)}
+.gear-link:hover{opacity:.75}
+.gear-find-btn{font-family:'Barlow Condensed',var(--sans);font-weight:800;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:#252530;background:none;border:1px solid #141416;border-radius:0;padding:3px 9px;cursor:pointer;transition:all .12s;white-space:nowrap}
+.gear-find-btn:hover{color:var(--brand1);border-color:rgba(91,157,255,.3)}
+.gear-finding{font-family:var(--mono);font-size:9px;color:#252530;letter-spacing:.08em;animation:gearfind 1.2s ease-in-out infinite}
+@keyframes gearfind{0%,100%{opacity:.4}50%{opacity:1}}
+.gear-empty{font-family:var(--mono);font-size:11px;color:#1e1e26;padding:24px 0;letter-spacing:.04em}
 </style>
 </head>
 <body>
@@ -920,7 +1037,11 @@ select.cv-edit{text-align:left;cursor:pointer}
       </div>
     </div>
     <div class="rail-nav-section">// Nav</div><nav class="rail-nav">
-      <button class="nb on" onclick="go('specs',this)">
+      <button class="nb on" onclick="go('home',this)">
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span class="nb-label">Home</span>
+      </button>
+      <button class="nb" onclick="go('specs',this)">
         <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>
         <span class="nb-label">Rig specs</span>
       </button>
@@ -937,6 +1058,14 @@ select.cv-edit{text-align:left;cursor:pointer}
         <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
         <span class="nb-label">Checklist</span>
         <span class="nbadge" id="bc">0</span>
+      </button>
+      <button class="nb" onclick="go('cal',this)">
+        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span class="nb-label">Planner</span>
+      </button>
+      <button class="nb" onclick="go('gear',this)">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span class="nb-label">Equipment</span>
       </button>
     </nav>
     <div class="rail-spacer"></div>
@@ -960,7 +1089,54 @@ select.cv-edit{text-align:left;cursor:pointer}
         <span class="si" id="ssaved">Saved</span>
       </div>
     </div>
-    <div class="main-scroll"><div class="pnl on" id="pnl-specs">
+    <div class="main-scroll"><div class="pnl on" id="pnl-home"></div>
+
+    <div class="pnl" id="pnl-gear">
+      <div class="gear-wrap">
+        <div class="gear-head">
+          <div class="gear-head-left">
+            <div class="gear-head-title">Equipment manifest</div>
+            <div class="gear-head-sub">All rig components with manufacturer and product links</div>
+          </div>
+          <button class="gear-scan-all" onclick="findAllLinks()">&#10022; Find all links</button>
+        </div>
+        <div id="gear-list"></div>
+      </div>
+    </div>
+
+    <div class="pnl" id="pnl-cal">
+      <div class="cal-shell">
+        <div class="cal-main">
+          <div class="cal-nav">
+            <button class="cal-arrow" onclick="calPrevMonth()">&#8592;</button>
+            <span class="cal-month-label" id="cal-month-label">Month Year</span>
+            <button class="cal-arrow" onclick="calNextMonth()">&#8594;</button>
+          </div>
+          <div class="cal-grid" id="cal-grid"></div>
+        </div>
+        <div class="cal-sidebar">
+          <div class="cal-side-head" id="cal-side-head">
+            <span class="cal-side-date" id="cal-side-date">Select a date</span>
+          </div>
+          <div class="cal-side-events" id="cal-side-events"></div>
+          <div class="cal-add-plan" id="cal-add-plan">
+            <div class="cal-add-title">+ Plan new event</div>
+            <input id="plan-title" class="plan-input" placeholder="Title e.g. Shoot day / Maintenance">
+            <select id="plan-type" class="plan-input">
+              <option value="shoot">Shoot day</option>
+              <option value="maintenance">Maintenance</option>
+              <option value="setup">Kit setup / teardown</option>
+              <option value="test">System test</option>
+              <option value="other">Other</option>
+            </select>
+            <textarea id="plan-notes" class="plan-input" rows="2" placeholder="Notes (optional)"></textarea>
+            <button class="plan-save-btn" onclick="addPlan()">Save plan</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pnl" id="pnl-specs">
       <div class="ctrl-row">
         <div class="mode-bar">
           <button class="mode-btn on" id="mbtn-vp" onclick="setMode('vp')"><span class="mode-icon">&#9671;</span> Virtual Production</button>
@@ -980,6 +1156,16 @@ select.cv-edit{text-align:left;cursor:pointer}
 
         <!-- ── VP MODE ─────────────────────────────────────────────── -->
         <div id="components-host" class="vponly"></div>
+
+        <!-- ── LED WALL VISUALIZER ───────────────────────────────── -->
+        <div class="vponly" id="wall-viz-section" style="display:none">
+          <div class="csec">
+            <span class="ctick"></span>
+            <span class="csl">LED wall visualizer</span>
+            <span class="csec-rule"></span>
+          </div>
+          <div id="wall-viz-host"></div>
+        </div>
 
         <!-- ── SIGNAL ROUTING VIEW ────────────────────────────────── -->
         <div class="vponly" id="routing-section" style="margin-top:0">
@@ -1939,6 +2125,9 @@ async function loadData(){
     var hd = await dref('chat').get();
     chatHist = hd.exists ? (hd.data().history || []) : [];
 
+    var pland = await dref('plans').get();
+    if(pland.exists && pland.data().items){ plans=pland.data().items; planNextId=pland.data().nextId||1; }
+
     var connd = await dref('connections').get();
     if(connd.exists && connd.data().items){
       connections = connd.data().items;
@@ -1957,6 +2146,7 @@ async function loadData(){
 
     loadSpecFields();
     renderComponents();
+    updateWallViz();
     renderRoutingView();
     renderIssues();
     renderCL();
@@ -1967,6 +2157,8 @@ async function loadData(){
     updateRigMini();
     updateDiagram();
     updateStatusFooter();
+    renderHome();
+    renderGear();
   } catch(e) {
     console.error('Load error', e);
   }
@@ -2044,7 +2236,10 @@ function go(id, btn){
   document.querySelectorAll('.nb').forEach(function(b){ b.classList.remove('on'); });
   el('pnl-'+id).classList.add('on');
   btn.classList.add('on');
-  var t={'specs':['Rig specs','Virtual production configuration'],'issues':['Issues','Open and recent stage issues'],'chat':['Support','VP and nDisplay assistance'],'cl':['Checklist','Daily session readiness']};
+  if(id==='home') renderHome();
+  if(id==='cal') renderCalendar();
+  if(id==='gear') renderGear();
+  var t={'home':['Home','Welcome to Unreal Support'],'specs':['Rig specs','Virtual production configuration'],'issues':['Issues','Open and recent stage issues'],'chat':['Support','VP and nDisplay assistance'],'cl':['Checklist','Daily session readiness'],'cal':['Planner','Schedule and stage activity'],'gear':['Equipment','Component manifest and product links']};
   if(t[id]&&el('tb-title')){el('tb-title').textContent=t[id][0];el('tb-meta').textContent=t[id][1];}
 }
 
@@ -3054,6 +3249,507 @@ function updateStatusFooter(){
   var se=el('sf-engine'); if(se){ var ed=components.find(function(c){return c.type==='workstation'&&c.fields.role==='Editor';}); se.textContent='UE '+(ed&&ed.fields.ue||'—'); }
   var sc=el('sf-comps'); if(sc) sc.textContent=components.length+' component'+(components.length!==1?'s':'');
   var sn=el('sf-conn'); if(sn) sn.textContent=connections.length+' connection'+(connections.length!==1?'s':'');
+}
+
+// ── PLANS DATA ─────────────────────────────────────────────────────────────
+var plans = [], planNextId = 1, calYear = new Date().getFullYear(), calMonth = new Date().getMonth(), calSelectedDate = null;
+
+var PLAN_COLORS = {shoot:'#5b9dff',maintenance:'#fbbf24',setup:'#4ade80',test:'#a78bfa',other:'#9b9b9f'};
+var PLAN_LABELS = {shoot:'Shoot day',maintenance:'Maintenance',setup:'Kit setup',test:'System test',other:'Other'};
+
+function savePlans(){ fsave('plans',{items:plans,nextId:planNextId}); }
+
+function addPlan(){
+  var title = el('plan-title').value.trim();
+  var type  = el('plan-type').value;
+  var notes = el('plan-notes').value.trim();
+  if(!title || !calSelectedDate){ alert('Select a date on the calendar first, then add a title.'); return; }
+  plans.push({id:planNextId++, date:calSelectedDate, title:title, type:type, notes:notes, done:false});
+  savePlans();
+  el('plan-title').value=''; el('plan-notes').value='';
+  renderCalendar();
+  selectCalDate(calSelectedDate);
+}
+
+function togglePlanDone(id){
+  var p = plans.find(function(x){return x.id===id;}); if(!p) return;
+  p.done = !p.done;
+  savePlans();
+  selectCalDate(calSelectedDate);
+}
+
+function deletePlan(id){
+  plans = plans.filter(function(x){return x.id!==id;});
+  savePlans();
+  renderCalendar();
+  selectCalDate(calSelectedDate);
+}
+
+// ── CALENDAR ────────────────────────────────────────────────────────────────
+function calPrevMonth(){ calMonth--; if(calMonth<0){calMonth=11;calYear--;} renderCalendar(); }
+function calNextMonth(){ calMonth++; if(calMonth>11){calMonth=0;calYear++;} renderCalendar(); }
+
+function renderCalendar(){
+  var grid = el('cal-grid'); if(!grid) return;
+  var lbl  = el('cal-month-label'); if(lbl) lbl.textContent = ['January','February','March','April','May','June','July','August','September','October','November','December'][calMonth]+' '+calYear;
+
+  // Build event map: date string → array of {type, color, label, source}
+  var eventMap = {};
+  function addEvt(dateStr, type, color, label, source){
+    if(!dateStr) return;
+    var d = dateStr.slice(0,10);
+    if(!eventMap[d]) eventMap[d]=[];
+    eventMap[d].push({type:type,color:color,label:label,source:source});
+  }
+  // Issues → dots
+  issues.forEach(function(iss){
+    if(iss.date) addEvt(iss.date,'issue','#fbbf24',iss.title,'issue');
+  });
+  // Plans → dots
+  plans.forEach(function(pl){
+    addEvt(pl.date,'plan',PLAN_COLORS[pl.type]||'#9b9b9f',pl.title,'plan');
+  });
+
+  var today = new Date(); var todayStr = today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')+'-'+String(today.getDate()).padStart(2,'0');
+  var firstDay = new Date(calYear, calMonth, 1).getDay(); // 0=Sun
+  var daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
+
+  // Day headers
+  var html = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(function(d){
+    return '<div class="cal-dh">'+d+'</div>';
+  }).join('');
+
+  // Empty cells before first day
+  for(var i=0;i<firstDay;i++) html+='<div class="cal-cell cal-empty"></div>';
+
+  for(var d=1;d<=daysInMonth;d++){
+    var dateStr = calYear+'-'+String(calMonth+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    var evts = eventMap[dateStr]||[];
+    var isToday = dateStr===todayStr;
+    var isSel   = dateStr===calSelectedDate;
+    var dots = evts.slice(0,4).map(function(e){ return '<span class="cal-dot" style="background:'+e.color+'"></span>'; }).join('');
+    html += '<div class="cal-cell'+(isToday?' cal-today':'')+(isSel?' cal-selected':'')+'" onclick="selectCalDate(\''+dateStr+'\')">'
+      +'<span class="cal-day-num">'+d+'</span>'
+      +(dots?'<div class="cal-dots">'+dots+'</div>':'')
+      +'</div>';
+  }
+  grid.innerHTML = html;
+
+  if(calSelectedDate) selectCalDate(calSelectedDate);
+}
+
+function selectCalDate(dateStr){
+  calSelectedDate = dateStr;
+  // Update selected state
+  document.querySelectorAll('.cal-cell').forEach(function(c){ c.classList.remove('cal-selected'); });
+  var d = parseInt(dateStr.split('-')[2]);
+  var cells = document.querySelectorAll('.cal-cell:not(.cal-empty)');
+  var firstDay = new Date(calYear, calMonth, 1).getDay();
+  var cellIdx = d - 1;
+  if(cells[cellIdx]) cells[cellIdx].classList.add('cal-selected');
+
+  var dateLabel = el('cal-side-date');
+  if(dateLabel){
+    var parts = dateStr.split('-');
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    dateLabel.textContent = months[parseInt(parts[1])-1]+' '+parseInt(parts[2])+', '+parts[0];
+  }
+
+  // Gather events for this date
+  var dayIssues = issues.filter(function(iss){ return iss.date && iss.date.slice(0,10)===dateStr; });
+  var dayPlans  = plans.filter(function(pl){ return pl.date===dateStr; });
+
+  var evHTML = '';
+  if(!dayIssues.length && !dayPlans.length){
+    evHTML = '<div class="cal-no-events">No events on this date</div>';
+  }
+  dayIssues.forEach(function(iss){
+    var statusColor = {open:'#fbbf24','in-progress':'#60a5fa',waiting:'#9b9b9f',resolved:'#4ade80'};
+    evHTML += '<div class="cal-ev cal-ev-issue">'
+      +'<div class="cal-ev-head"><span class="cal-ev-dot" style="background:#fbbf24"></span><span class="cal-ev-label">Issue</span></div>'
+      +'<div class="cal-ev-title">'+esc(iss.title)+'</div>'
+      +(iss.status?'<div class="cal-ev-meta" style="color:'+(statusColor[iss.status]||'#9b9b9f')+'">'+iss.status+'</div>':'')
+      +'</div>';
+  });
+  dayPlans.forEach(function(pl){
+    evHTML += '<div class="cal-ev cal-ev-plan'+(pl.done?' cal-ev-done':'')+'">'
+      +'<div class="cal-ev-head">'
+      +'<span class="cal-ev-dot" style="background:'+(PLAN_COLORS[pl.type]||'#9b9b9f')+'"></span>'
+      +'<span class="cal-ev-label">'+esc(PLAN_LABELS[pl.type]||'Event')+'</span>'
+      +'<button class="cal-ev-done-btn" onclick="togglePlanDone('+pl.id+')" title="'+(pl.done?'Mark undone':'Mark done')+'">'+( pl.done?'↩':'✓')+'</button>'
+      +'<button class="cal-ev-del" onclick="deletePlan('+pl.id+')" title="Delete">×</button>'
+      +'</div>'
+      +'<div class="cal-ev-title">'+esc(pl.title)+'</div>'
+      +(pl.notes?'<div class="cal-ev-meta">'+esc(pl.notes)+'</div>':'')
+      +'</div>';
+  });
+
+  var se = el('cal-side-events');
+  if(se) se.innerHTML = evHTML;
+}
+
+// ── WELCOME / HOME ──────────────────────────────────────────────────────────
+function renderHome(){
+  var host = el('pnl-home'); if(!host) return;
+  var today = new Date();
+  var days  = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  var months= ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var dateStr = days[today.getDay()]+', '+months[today.getMonth()]+' '+today.getDate()+', '+today.getFullYear();
+
+  var openIssues = issues.filter(function(i){return i.status==='open'||i.status==='in-progress';});
+  var editor = components.find(function(c){return c.type==='workstation'&&c.fields.role==='Editor';});
+  var ue = editor ? (editor.fields.ue||'—') : '—';
+
+  // Upcoming plans (next 30 days)
+  var todayISO = today.toISOString().slice(0,10);
+  var in30 = new Date(today); in30.setDate(in30.getDate()+30);
+  var in30ISO = in30.toISOString().slice(0,10);
+  var upcoming = plans.filter(function(p){ return p.date>=todayISO && p.date<=in30ISO && !p.done; }).sort(function(a,b){return a.date<b.date?-1:1;});
+
+  // Recent issues (last 3)
+  var recentIssues = issues.slice().sort(function(a,b){return (b.date||'')>(a.date||'')?1:-1;}).slice(0,3);
+
+  var statusColor = {open:'#fbbf24','in-progress':'#5b9dff',waiting:'#9b9b9f',resolved:'#4ade80'};
+
+  host.innerHTML = '<div class="home-wrap">'
+
+    // Header
+    +'<div class="home-header">'
+    +'<div class="home-date">'+esc(dateStr)+'</div>'
+    +'<div class="home-greeting">Good to see you, <span style="color:var(--brand1)">Matt</span></div>'
+    +'<div class="home-sub">Your virtual production console is ready.</div>'
+    +'</div>'
+
+    // Stat grid
+    +'<div class="home-stats">'
+    +'<div class="home-stat"><div class="home-stat-val">'+components.length+'</div><div class="home-stat-lbl">Components</div></div>'
+    +'<div class="home-stat"><div class="home-stat-val">'+connections.length+'</div><div class="home-stat-lbl">Connections</div></div>'
+    +'<div class="home-stat'+(openIssues.length?' home-stat-warn':'')+'"><div class="home-stat-val">'+openIssues.length+'</div><div class="home-stat-lbl">Open issues</div></div>'
+    +'<div class="home-stat"><div class="home-stat-val">'+esc('UE '+ue)+'</div><div class="home-stat-lbl">Engine</div></div>'
+    +'</div>'
+
+    // Two-col body
+    +'<div class="home-body">'
+
+    // Left: quick nav
+    +'<div class="home-col">'
+    +'<div class="home-section-head"><span class="home-tick"></span>Quick access</div>'
+    +'<div class="home-nav-grid">'
+    +'<button class="home-nav-btn" onclick="go(\'specs\',document.querySelector(\'.nb[onclick*=specs]\')">'
+    +'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>'
+    +'<span class="home-nav-btn-name">Rig specs</span><span class="home-nav-btn-sub">'+components.length+' components</span></button>'
+    +'<button class="home-nav-btn" onclick="go(\'issues\',document.querySelector(\'.nb[onclick*=issues]\')">'
+    +'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>'
+    +'<span class="home-nav-btn-name">Issues</span><span class="home-nav-btn-sub">'+openIssues.length+' open</span></button>'
+    +'<button class="home-nav-btn" onclick="go(\'chat\',document.querySelector(\'.nb[onclick*=chat]\')">'
+    +'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>'
+    +'<span class="home-nav-btn-name">Support</span><span class="home-nav-btn-sub">AI assistant</span></button>'
+    +'<button class="home-nav-btn" onclick="go(\'cal\',document.querySelector(\'.nb[onclick*=cal]\')">'
+    +'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>'
+    +'<span class="home-nav-btn-name">Planner</span><span class="home-nav-btn-sub">'+upcoming.length+' upcoming</span></button>'
+    +'</div>'
+
+    // Upcoming plans
+    +(upcoming.length?
+      '<div class="home-section-head" style="margin-top:22px"><span class="home-tick"></span>Upcoming (30 days)</div>'
+      +'<div class="home-event-list">'
+      +upcoming.slice(0,5).map(function(pl){
+        var d = new Date(pl.date+'T00:00:00'); var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        return '<div class="home-event">'
+          +'<div class="home-event-date">'+months[d.getMonth()]+' '+d.getDate()+'</div>'
+          +'<div class="home-event-dot" style="background:'+(PLAN_COLORS[pl.type]||'#9b9b9f')+'"></div>'
+          +'<div class="home-event-title">'+esc(pl.title)+'</div>'
+          +'<div class="home-event-type">'+esc(PLAN_LABELS[pl.type]||'')+'</div>'
+          +'</div>';
+      }).join('')
+      +'</div>'
+    :'')
+
+    +'</div>'
+
+    // Right: recent issues
+    +'<div class="home-col">'
+    +'<div class="home-section-head"><span class="home-tick"></span>Recent issues</div>'
+    +(recentIssues.length
+      ? '<div class="home-issue-list">'
+        +recentIssues.map(function(iss){
+          var sc = statusColor[iss.status]||'#9b9b9f';
+          return '<div class="home-issue" onclick="go(\'issues\',document.querySelector(\'.nb[onclick*=issues]\'));setTimeout(function(){openIssue('+iss.id+');},80)">'
+            +'<div class="home-issue-top"><span class="home-issue-dot" style="background:'+sc+'"></span><span class="home-issue-title">'+esc(iss.title)+'</span></div>'
+            +'<div class="home-issue-meta"><span class="home-issue-status" style="color:'+sc+'">'+esc(iss.status||'open')+'</span><span class="home-issue-date">'+esc(iss.date||'')+'</span></div>'
+            +(iss.comp?'<span class="home-issue-area">'+esc(iss.comp)+'</span>':'')
+            +'</div>';
+        }).join('')
+        +'</div>'
+      : '<div class="home-no-issues">No issues logged. Good rig.</div>'
+    )
+    +'</div>'
+
+    +'</div>' // home-body
+    +'</div>'; // home-wrap
+}
+
+
+// ── LED WALL VISUALIZER ────────────────────────────────────────────────────
+function updateWallViz(){
+  var wall = components.find(function(c){return c.type==='ledwall';});
+  var sec  = el('wall-viz-section');
+  var host = el('wall-viz-host');
+  if(!sec||!host) return;
+  if(!wall){ sec.style.display='none'; return; }
+  sec.style.display='';
+  host.innerHTML = buildWallSVG(wall);
+}
+
+function buildWallSVG(wall){
+  var f = wall.fields||{};
+  // Parse size e.g. "15m x 3m"
+  var sm = (f.size||'').match(/(\d+(?:\.\d+)?)\s*[mx×x]\s*(\d+(?:\.\d+)?)/i);
+  var W = sm?parseFloat(sm[1]):15, H = sm?parseFloat(sm[2]):3;
+  // Parse curvature
+  var cm = (f.curve||'0').match(/(\d+(?:\.\d+)?)/);
+  var curv = cm?parseFloat(cm[1]):0;
+  // Other fields
+  var res = f.res||'', hz = f.refresh||'';
+  // Find display nodes and proc
+  var dns = components.filter(function(c){return c.type==='workstation'&&c.fields.role==='Display Node';});
+  var proc = components.find(function(c){return c.type==='ledproc';});
+  var split = proc?proc.fields.mapping:'L/R split';
+  var hasLeft = dns[0], hasRight = dns[1];
+
+  // ── SVG canvas 780×280 ──────────────────────────────────────────
+  var SW=780, SH=280;
+  // Front view: x=28 y=50 w=370 h=160
+  var FX=28, FY=50, FW=370, FH=160;
+  // Plan view: x=450 y=50 w=300 h=160
+  var PX=450, PY=50, PW=300, PH=160;
+  var FCX=PX+PW/2, FCY=PY+20; // plan view center top
+
+  var s='<svg viewBox="0 0 '+SW+' '+SH+'" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;background:#0b0b0c">';
+
+  // ── Section divider ─────────────────────────────────────────────
+  s+='<line x1="'+(PX-18)+'" y1="20" x2="'+(PX-18)+'" y2="'+(SH-20)+'" stroke="#111113" stroke-width="1"/>';
+
+  // ── FRONT VIEW label ────────────────────────────────────────────
+  s+='<text x="'+(FX+FW/2)+'" y="16" text-anchor="middle" font-family="inherit" font-size="8.5" fill="#202028" letter-spacing="0.14em">FRONT VIEW</text>';
+
+  // Wall panels (L half and R half)
+  var halfW=FW/2;
+  // L half
+  s+='<rect x="'+FX+'" y="'+FY+'" width="'+halfW+'" height="'+FH+'" fill="rgba(91,157,255,0.06)" stroke="#1e3050" stroke-width="1"/>';
+  // L label
+  s+='<text x="'+(FX+halfW/2)+'" y="'+(FY+FH/2-8)+'" text-anchor="middle" dominant-baseline="central" font-family="inherit" font-size="24" fill="#1e3050" letter-spacing="0.04em" font-weight="bold">L</text>';
+  s+='<text x="'+(FX+halfW/2)+'" y="'+(FY+FH/2+14)+'" text-anchor="middle" font-family="inherit" font-size="8" fill="#1e2e44">'+(hasLeft?'Display Node 1':'')+'</text>';
+  if(hasLeft&&hasLeft.fields.gpu) s+='<text x="'+(FX+halfW/2)+'" y="'+(FY+FH/2+26)+'" text-anchor="middle" font-family="inherit" font-size="7.5" fill="#162030">'+(hasLeft.fields.gpu.replace('NVIDIA ','').replace('RTX ',''))+'</text>';
+
+  // R half
+  s+='<rect x="'+(FX+halfW)+'" y="'+FY+'" width="'+halfW+'" height="'+FH+'" fill="rgba(34,211,238,0.04)" stroke="#1e3050" stroke-width="1"/>';
+  s+='<text x="'+(FX+halfW+halfW/2)+'" y="'+(FY+FH/2-8)+'" text-anchor="middle" dominant-baseline="central" font-family="inherit" font-size="24" fill="#1e3050" letter-spacing="0.04em" font-weight="bold">R</text>';
+  s+='<text x="'+(FX+halfW+halfW/2)+'" y="'+(FY+FH/2+14)+'" text-anchor="middle" font-family="inherit" font-size="8" fill="#1e2e44">'+(hasRight?'Display Node 2':'')+'</text>';
+  if(hasRight&&hasRight.fields.gpu) s+='<text x="'+(FX+halfW+halfW/2)+'" y="'+(FY+FH/2+26)+'" text-anchor="middle" font-family="inherit" font-size="7.5" fill="#162030">'+(hasRight.fields.gpu.replace('NVIDIA ','').replace('RTX ',''))+'</text>';
+
+  // Centre split
+  s+='<line x1="'+(FX+halfW)+'" y1="'+FY+'" x2="'+(FX+halfW)+'" y2="'+(FY+FH)+'" stroke="#5b9dff" stroke-width="0.75" stroke-dasharray="4 3" opacity="0.5"/>';
+
+  // Outer border
+  s+='<rect x="'+FX+'" y="'+FY+'" width="'+FW+'" height="'+FH+'" fill="none" stroke="#2a3050" stroke-width="1.5"/>';
+
+  // Width dim (bottom)
+  var dy=FY+FH+18;
+  s+='<line x1="'+FX+'" y1="'+dy+'" x2="'+(FX+FW)+'" y2="'+dy+'" stroke="#202028" stroke-width="0.75"/>';
+  s+='<line x1="'+FX+'" y1="'+(dy-4)+'" x2="'+FX+'" y2="'+(dy+4)+'" stroke="#202028" stroke-width="0.75"/>';
+  s+='<line x1="'+(FX+FW)+'" y1="'+(dy-4)+'" x2="'+(FX+FW)+'" y2="'+(dy+4)+'" stroke="#202028" stroke-width="0.75"/>';
+  s+='<text x="'+(FX+FW/2)+'" y="'+(dy+13)+'" text-anchor="middle" font-family="inherit" font-size="9" fill="#303038">'+W+'m</text>';
+
+  // Half-width dim (top)
+  var ty=FY-12;
+  s+='<text x="'+(FX+halfW/2)+'" y="'+ty+'" text-anchor="middle" font-family="inherit" font-size="8" fill="#1a1a28">'+Math.round(W/2*10)/10+'m</text>';
+  s+='<text x="'+(FX+halfW+halfW/2)+'" y="'+ty+'" text-anchor="middle" font-family="inherit" font-size="8" fill="#1a1a28">'+Math.round(W/2*10)/10+'m</text>';
+
+  // Height dim (right)
+  var rx=FX+FW+16;
+  s+='<line x1="'+rx+'" y1="'+FY+'" x2="'+rx+'" y2="'+(FY+FH)+'" stroke="#202028" stroke-width="0.75"/>';
+  s+='<line x1="'+(rx-4)+'" y1="'+FY+'" x2="'+(rx+4)+'" y2="'+FY+'" stroke="#202028" stroke-width="0.75"/>';
+  s+='<line x1="'+(rx-4)+'" y1="'+(FY+FH)+'" x2="'+(rx+4)+'" y2="'+(FY+FH)+'" stroke="#202028" stroke-width="0.75"/>';
+  s+='<text x="'+(rx+12)+'" y="'+(FY+FH/2)+'" text-anchor="start" dominant-baseline="central" font-family="inherit" font-size="9" fill="#303038">'+H+'m</text>';
+
+  // Tags (res and hz)
+  if(res) s+='<text x="'+FX+'" y="'+(FY-28)+'" font-family="inherit" font-size="8" fill="#1a1a28">'+res+'</text>';
+  if(hz) s+='<text x="'+(FX+FW)+'" y="'+(FY-28)+'" text-anchor="end" font-family="inherit" font-size="8" fill="#1a1a28">'+hz+'</text>';
+
+  // Pixel pitch decoration — subtle dot grid on the wall face
+  for(var pi=0;pi<5;pi++){
+    for(var pj=0;pj<4;pj++){
+      s+='<circle cx="'+(FX+40+pi*(halfW*2-80)/4)+'" cy="'+(FY+30+pj*(FH-60)/3)+'" r="1" fill="#1e2535" opacity="0.6"/>';
+    }
+  }
+
+  // ── PLAN VIEW label ──────────────────────────────────────────────
+  s+='<text x="'+(PX+PW/2)+'" y="16" text-anchor="middle" font-family="inherit" font-size="8.5" fill="#202028" letter-spacing="0.14em">PLAN VIEW</text>';
+
+  // Arc representing curved wall
+  // At curv degrees, the arc from camera perspective
+  var arcHalfAng = (curv/2)*Math.PI/180;
+  var arcR = PW*0.5; // display radius for vis
+  var arcY  = FCY+30;
+  var arcX1 = FCX - arcR*Math.sin(arcHalfAng);
+  var arcX2 = FCX + arcR*Math.sin(arcHalfAng);
+  var sagPx = Math.max(curv*0.8, 1.5);
+  var midX  = FCX;
+  var midY  = arcY - sagPx;
+
+  // L half arc
+  s+='<path d="M '+arcX1+' '+arcY+' Q '+(FCX*0.5+arcX1*0.5)+' '+(midY+sagPx*0.5)+' '+midX+' '+midY+'" fill="none" stroke="#5b9dff" stroke-width="4" stroke-linecap="round" opacity="0.75"/>';
+  // R half arc
+  s+='<path d="M '+midX+' '+midY+' Q '+(FCX*0.5+arcX2*0.5)+' '+(midY+sagPx*0.5)+' '+arcX2+' '+arcY+'" fill="none" stroke="#22d3ee" stroke-width="4" stroke-linecap="round" opacity="0.75"/>';
+
+  // Center tick on arc
+  s+='<circle cx="'+midX+'" cy="'+midY+'" r="2.5" fill="#5b9dff" opacity="0.6"/>';
+
+  // Camera (triangle below)
+  var camY=FCY+120, camR=11;
+  s+='<polygon points="'+midX+','+(camY-camR)+' '+(midX-camR)+','+(camY+camR/2)+' '+(midX+camR)+','+(camY+camR/2)+'" fill="none" stroke="#fbbf24" stroke-width="1.5"/>';
+  s+='<circle cx="'+midX+'" cy="'+camY+'" r="2" fill="#fbbf24" opacity="0.4"/>';
+  s+='<text x="'+midX+'" y="'+(camY+camR+12)+'" text-anchor="middle" font-family="inherit" font-size="7.5" fill="#443820" letter-spacing="0.1em">CAMERA</text>';
+
+  // FoV lines from camera to wall ends
+  s+='<line x1="'+midX+'" y1="'+(camY-camR)+'" x2="'+arcX1+'" y2="'+arcY+'" stroke="#fbbf24" stroke-width="0.75" stroke-dasharray="4 3" opacity="0.3"/>';
+  s+='<line x1="'+midX+'" y1="'+(camY-camR)+'" x2="'+arcX2+'" y2="'+arcY+'" stroke="#fbbf24" stroke-width="0.75" stroke-dasharray="4 3" opacity="0.3"/>';
+
+  // Wall width annotation
+  s+='<line x1="'+arcX1+'" y1="'+(arcY-14)+'" x2="'+arcX2+'" y2="'+(arcY-14)+'" stroke="#202028" stroke-width="0.75"/>';
+  s+='<text x="'+FCX+'" y="'+(arcY-20)+'" text-anchor="middle" font-family="inherit" font-size="8.5" fill="#252530">'+W+'m</text>';
+
+  // Curve label
+  s+='<text x="'+(arcX2+10)+'" y="'+(arcY+2)+'" font-family="inherit" font-size="8" fill="#202028">'+curv+'° curve</text>';
+
+  // Viewing distance estimate (approx for VP stages)
+  var viewDist=Math.round(W*0.6);
+  s+='<line x1="'+midX+'" y1="'+arcY+'" x2="'+midX+'" y2="'+(camY-camR)+'" stroke="#252530" stroke-width="0.5" stroke-dasharray="2 3" opacity="0.5"/>';
+  s+='<text x="'+(midX+6)+'" y="'+(arcY+(camY-camR-arcY)/2)+'" font-family="inherit" font-size="7.5" fill="#1a1a28">~'+viewDist+'m</text>';
+
+  // Bottom info strip
+  var infoY=SH-16;
+  s+='<line x1="28" y1="'+(SH-28)+'" x2="'+(SW-28)+'" y2="'+(SH-28)+'" stroke="#111113" stroke-width="0.5"/>';
+  var tags=[
+    {k:'Wall',v:(W+'m × '+H+'m')},
+    {k:'Curvature',v:(curv+'°')},
+    {k:'Resolution',v:(res||'—')},
+    {k:'Refresh',v:(hz||'—')},
+    {k:'Processor',v:(proc?proc.fields.mfr||'—':'—')},
+    {k:'Split',v:(split||'—')}
+  ];
+  var tagX=28, tagStep=(SW-56)/tags.length;
+  tags.forEach(function(t,i){
+    s+='<text x="'+(tagX+i*tagStep)+'" y="'+infoY+'" font-family="inherit" font-size="7.5" fill="#1a1a26">'+t.k+'</text>';
+    s+='<text x="'+(tagX+i*tagStep)+'" y="'+(infoY+10)+'" font-family="inherit" font-size="8.5" fill="#303038">'+t.v+'</text>';
+  });
+
+  s+='</svg>';
+  return s;
+}
+
+// Hook into saveComponents to re-render wall viz
+var _origSaveComponents = saveComponents;
+function saveComponents(){
+  _origSaveComponents();
+  updateWallViz();
+}
+
+// ── EQUIPMENT / GEAR PAGE ──────────────────────────────────────────────────
+function renderGear(){
+  var host = el('gear-list'); if(!host) return;
+  if(!components.length){
+    host.innerHTML='<div class="gear-empty">No components defined. Add components on the Rig specs page.</div>';
+    return;
+  }
+  host.innerHTML = components.map(function(comp){
+    var def = CTYPES[comp.type]||{label:comp.type};
+    var f = comp.fields||{};
+    var links = comp.links||{};
+    var mfr = f.mfr||f.machine||f.body||f.system||'—';
+    var model = f.model||f.body||f.gpu||f.system||f.type||'—';
+    var name = compName(comp);
+    var tag = compTag(comp);
+    var isLoading = comp._findingLinks;
+
+    var linkBadges = '';
+    if(links.manufacturer) linkBadges+='<a href="'+esc(links.manufacturer)+'" target="_blank" class="gear-link mfr">Manufacturer ↗</a>';
+    if(links.product) linkBadges+='<a href="'+esc(links.product)+'" target="_blank" class="gear-link product">Product ↗</a>';
+    if(links.docs) linkBadges+='<a href="'+esc(links.docs)+'" target="_blank" class="gear-link docs">Docs ↗</a>';
+    if(links.specs) linkBadges+='<a href="'+esc(links.specs)+'" target="_blank" class="gear-link specs">Specs ↗</a>';
+
+    return '<div class="gear-row" id="gear-row-'+comp.id+'">'
+      +'<div class="gear-type">'
+      +'<span class="gear-type-dot"></span>'
+      +'<span class="gear-type-label">'+esc(def.label||comp.type)+'</span>'
+      +'</div>'
+      +'<div class="gear-name">'+esc(name)+'<span class="gear-tag">'+esc(tag)+'</span></div>'
+      +'<div class="gear-mfr">'+esc(mfr!==model?mfr:'—')+'</div>'
+      +'<div class="gear-model">'+esc(model)+'</div>'
+      +'<div class="gear-links">'
+      + linkBadges
+      +(isLoading
+        ?'<span class="gear-finding">Researching...</span>'
+        :'<button class="gear-find-btn" onclick="findLinksForComp('+comp.id+')" title="Search for official manufacturer and product links">&#10022; Find links</button>'
+      )
+      +'</div>'
+      +'</div>';
+  }).join('');
+}
+
+function findLinksForComp(compId){
+  var comp = components.find(function(c){return c.id===compId;}); if(!comp) return;
+  var f = comp.fields||{};
+  var query = [
+    compName(comp),
+    f.mfr||'', f.machine||'', f.model||'', f.body||'', f.gpu||'', f.system||'',
+    CTYPES[comp.type]?CTYPES[comp.type].label:comp.type
+  ].filter(Boolean).join(' ').trim();
+
+  if(!query){ alert('Not enough component data to search. Fill in the manufacturer/model fields first.'); return; }
+
+  comp._findingLinks = true;
+  renderGear();
+
+  fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      model:'claude-sonnet-4-20250514',
+      max_tokens:500,
+      tools:[{type:'web_search_20250305',name:'web_search'}],
+      system:'You are a hardware research assistant. Find official manufacturer and product page URLs for broadcast/AV/production equipment. Respond ONLY with valid JSON, no markdown, no explanation.',
+      messages:[{role:'user',content:'Find official web URLs for this piece of equipment: "'+query+'". Return JSON with this exact structure (omit keys where no reliable URL found): {"manufacturer":"https://...", "product":"https://...", "docs":"https://...", "specs":"https://..."}\nRules: manufacturer = company homepage only, product = specific product page on manufacturer site, docs = manual or documentation page, specs = technical specifications page. Use real URLs only, no placeholders.'}]
+    })
+  }).then(function(r){return r.json();})
+  .then(function(data){
+    var text='';
+    (data.content||[]).forEach(function(b){if(b.type==='text') text+=b.text;});
+    try{
+      var result=JSON.parse(text.trim().replace(/```json|```/g,''));
+      comp.links = result;
+    }catch(e){ comp.links={}; }
+    comp._findingLinks=false;
+    fsave('components',{items:components,nextId:compNextId});
+    renderGear();
+  }).catch(function(){
+    comp._findingLinks=false;
+    renderGear();
+    alert('Could not find links for this component. Check your API key.');
+  });
+}
+
+function findAllLinks(){
+  var needLinks = components.filter(function(c){
+    var l=c.links||{};
+    return !l.manufacturer && !l.product && !c._findingLinks;
+  });
+  if(!needLinks.length){ alert('All components already have links.'); return; }
+  // Stagger requests to avoid rate limiting
+  needLinks.forEach(function(c,i){
+    setTimeout(function(){ findLinksForComp(c.id); }, i*1200);
+  });
 }
 
 var activeIssueId = null;

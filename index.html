@@ -837,16 +837,7 @@ select.cv-edit{text-align:left;cursor:pointer}
       </button>
     </nav>
     <div class="rail-spacer"></div>
-    <div class="rig-mini">
-      <div class="rig-mini-top">
-        <span class="rig-mini-label">Stage status</span>
-        <span class="live-tag"><span class="live-pulse"></span>LIVE</span>
-      </div>
-      <div class="rig-row"><span class="rig-k">Engine</span><span class="rig-v" id="rm-ue">UE 5.7</span></div>
-      <div class="rig-row"><span class="rig-k">Frame rate</span><span class="rig-v warn" id="rm-fps">25/50</span></div>
-      <div class="rig-row"><span class="rig-k">Sync</span><span class="rig-v warn" id="rm-sync">Blackburst</span></div>
-      <div class="rig-row"><span class="rig-k">Nodes</span><span class="rig-v" id="rm-nodes">2x DN</span></div>
-    </div>
+
     <div class="rail-user">
       <div class="rail-av" id="uav">M</div>
       <div style="flex:1">
@@ -863,7 +854,6 @@ select.cv-edit{text-align:left;cursor:pointer}
         <span class="tb-meta" id="tb-meta">Virtual production configuration</span>
       </div>
       <div class="tb-right">
-        <span id="clk"></span>
         <span class="si" id="ssaved">Saved</span>
       </div>
     </div>
@@ -1725,7 +1715,7 @@ function showBlock(id){ document.getElementById(id).style.display='block'; }
 function el(id){ return document.getElementById(id); }
 
 // Clock
-setInterval(function(){ el('clk').textContent = new Date().toTimeString().slice(0,8); }, 1000);
+
 
 // Init Firebase using compat SDK v9
 try {
@@ -2057,19 +2047,35 @@ function dgText(x, y, txt, size, fill, anchor, weight){
 
 function dgEsc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
+var _nodeIdCounter = 0;
 function drawNode(x, y, w, lines, title, stroke, titleColor){
   var h = nodeH(lines.length);
   var cx = x + w/2;
-  var html = dgRect(x, y, w, h, stroke||'#3a3a3d', 'rgba(20,20,22,0.92)');
-  // Title
-  html += dgText(cx, y+14, title, 11, titleColor||'#ededee', 'middle', '500');
-  // separator line
-  html += '<line x1="'+(x+6)+'" y1="'+(y+22)+'" x2="'+(x+w-6)+'" y2="'+(y+22)+'" stroke="rgba(255,255,255,0.07)" stroke-width="0.5"/>';
-  // Lines
+  var nid = 'dg-nd-'+(++_nodeIdCounter);
+  var inner = dgRect(x, y, w, h, stroke||'#3a3a3d', 'rgba(20,20,22,0.92)');
+  inner += dgText(cx, y+14, title, 11, titleColor||'#ededee', 'middle', '500');
+  inner += '<line x1="'+(x+6)+'" y1="'+(y+22)+'" x2="'+(x+w-6)+'" y2="'+(y+22)+'" stroke="rgba(255,255,255,0.07)" stroke-width="0.5"/>';
   lines.forEach(function(l, i){
-    html += dgText(cx, y+32+(i*NODE_LINE_H), l.text, 10, l.color||'#9b9b9f', 'middle');
+    inner += dgText(cx, y+32+(i*NODE_LINE_H), l.text, 10, l.color||'#9b9b9f', 'middle');
   });
+  var html = '<g class="nd" id="'+nid+'" style="cursor:default"'
+    +' onmouseenter="dgHover(this.id)"'
+    +' onmouseleave="dgUnhover()">'
+    + inner + '</g>';
   return {html:html, cx:cx, cy:y+h/2, top:y, bottom:y+h, left:x, right:x+w, h:h};
+}
+
+function dgHover(nid){
+  var svg=document.getElementById('vp-diagram'); if(!svg) return;
+  svg.querySelectorAll('.nd').forEach(function(g){
+    g.classList.toggle('dimmed', g.id!==nid);
+  });
+  svg.querySelectorAll('.cn').forEach(function(p){ p.classList.add('conn-dim'); });
+}
+function dgUnhover(){
+  var svg=document.getElementById('vp-diagram'); if(!svg) return;
+  svg.querySelectorAll('.nd').forEach(function(g){ g.classList.remove('dimmed'); });
+  svg.querySelectorAll('.cn').forEach(function(p){ p.classList.remove('conn-dim'); });
 }
 
 function arrow(x1,y1,x2,y2,col,dash,opacity,thick){
@@ -2081,16 +2087,16 @@ function arrow(x1,y1,x2,y2,col,dash,opacity,thick){
 }
 
 function elbowPath(x1,y1,x2,y2,col,dash,opacity){
-  // Draw an elbow path: horizontal then vertical then horizontal
   var mx = (x1+x2)/2;
   var d = 'M'+x1+' '+y1+' L'+mx+' '+y1+' L'+mx+' '+y2+' L'+x2+' '+y2;
-  return '<path d="'+d+'" fill="none" stroke="'+col+'"'
-    +' stroke-width="1" '+(dash?'stroke-dasharray="'+dash+'"':'')
+  return '<path class="cn" d="'+d+'" fill="none" stroke="'+col+'"'
+    +' stroke-width="1.2" '+(dash?'stroke-dasharray="'+dash+'"':'')
     +' marker-end="url(#vpa)" opacity="'+(opacity||0.55)+'"/>';
 }
 
 function updateDiagram(){
   if((specs['mode']||'vp') !== 'vp') return;
+  _nodeIdCounter = 0;
   var host = document.getElementById('vp-diagram');
   if(!host) return;
 
@@ -2259,38 +2265,7 @@ function updateDiagram(){
     connParts.push(elbowPath(fNode.right, fNode.cy, tNode.left, tNode.cy, col, dash, 0.7));
   });
 
-  // Fall back to logical connections if no user connections defined
-  if(!connections.length){
-    // Camera → Editor (SDI)
-    if(nodes.cam0 && nodes.editor){
-      connParts.push(elbowPath(nodes.cam0.right, nodes.cam0.cy, nodes.editor.left, nodes.editor.cy, DC.SDI, '5 3', 0.55));
-    }
-    // Editor → display nodes (nDisplay/10GbE)
-    dispNodes.forEach(function(dn, i){
-      if(nodes.editor && nodes['dn'+i]){
-        connParts.push(elbowPath(nodes.editor.right, nodes.editor.cy, nodes['dn'+i].left, nodes['dn'+i].cy, DC.nDisplay, '', 0.45));
-      }
-    });
-    // Display nodes → wall (DP/HDMI)
-    dispNodes.forEach(function(dn, i){
-      if(nodes['dn'+i] && nodes.wall){
-        connParts.push(elbowPath(nodes['dn'+i].right, nodes['dn'+i].cy, nodes.wall.left, nodes.wall.cy, DC.DisplayPort, '', 0.6));
-      }
-    });
-    // Tracking → Editor (LiveLink)
-    if(nodes.trk0 && nodes.editor){
-      connParts.push(elbowPath(nodes.trk0.right, nodes.trk0.cy, nodes.editor.left, nodes.editor.cy+14, DC.LiveLink, '5 3', 0.5));
-    }
-    // Sync → display nodes
-    if(nodes.syn0){
-      dispNodes.forEach(function(dn, i){
-        if(nodes['dn'+i]){
-          connParts.push('<line x1="'+nodes.syn0.cx+'" y1="'+nodes.syn0.top+'" x2="'+nodes['dn'+i].cx+'" y2="'+nodes['dn'+i].bottom+'"'
-            +' stroke="'+DC['Genlock/Ref']+'" stroke-width="0.75" stroke-dasharray="3 4" opacity="0.4"/>');
-        }
-      });
-    }
-  }
+  // No fallback connections — user defines routing explicitly in Signal Routing section
 
   // ── Column headers ─────────────────────────────────────────────────────
   var totalH = Math.max(bandY + 20, 400);
@@ -2323,7 +2298,13 @@ function updateDiagram(){
 
   // ── Assemble final SVG ─────────────────────────────────────────────────
   var newSvg = '<svg id="vp-diagram" viewBox="0 0 820 '+totalH+'" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">'
-    + '<style>#vp-diagram text{font-family:inherit}</style>'
+    + '<style>'
+    + '#vp-diagram text{font-family:inherit}'
+    + '#vp-diagram .nd{transition:opacity .18s}'
+    + '#vp-diagram .nd.dimmed{opacity:0.08}'
+    + '#vp-diagram .cn{transition:opacity .18s}'
+    + '#vp-diagram .cn.conn-dim{opacity:0.06}'
+    + '</style>'
     + '<defs><marker id="vpa" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">'
     +   '<path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>'
     + '</marker></defs>'
@@ -3387,4 +3368,3 @@ function clAddItem(el){
 
 </script>
 </body>
-</html>

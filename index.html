@@ -111,6 +111,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .main-scroll{flex:1;padding:24px;overflow-y:auto}
 .pnl{display:none}
 .pnl.on{display:block}
+#pnl-issues.on{display:flex;flex-direction:column;height:100%;padding:0!important;margin:-24px}
 
 /* ── BUTTONS ── */
 .btn{font-size:12px;font-family:var(--sans);font-weight:450;background:var(--el);border:1px solid var(--line2);color:var(--ink2);padding:6px 13px;border-radius:var(--r);cursor:pointer;transition:all .12s;display:inline-flex;align-items:center;gap:7px}
@@ -239,7 +240,89 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .cd{width:5px;height:5px;border-radius:50%;background:var(--ink4);flex-shrink:0}
 .ct{font-size:12px;font-weight:500;color:var(--ink)}
 .hdr{display:none}
-/* ── ISSUES PM SYSTEM ── */
+/* ── ISSUES SPLIT PANEL ── */
+.iss-shell{display:grid;grid-template-columns:280px 1fr;height:100%;min-height:0}
+.iss-list-col{border-right:1px solid var(--line);display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.iss-list-hdr{padding:14px 14px 10px;border-bottom:1px solid var(--line);flex-shrink:0}
+.iss-list-body{flex:1;overflow-y:auto}
+.iss-detail-col{display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.iss-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--ink3);font-size:12px;height:100%}
+
+/* Issue list items */
+.iss-row{padding:11px 14px;border-bottom:1px solid var(--line);cursor:pointer;transition:background .1s;display:flex;flex-direction:column;gap:5px}
+.iss-row:hover{background:var(--el)}
+.iss-row.active{background:var(--el);border-left:2px solid var(--blue)}
+.iss-row-top{display:flex;align-items:flex-start;gap:8px}
+.iss-pip{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.pip-open{background:var(--warn)}.pip-prog{background:var(--blue)}.pip-wait{background:var(--ink3)}.pip-res{background:var(--live)}
+.iss-row-title{font-size:13px;font-weight:500;color:var(--ink);line-height:1.35;flex:1}
+.iss-row-meta{display:flex;align-items:center;gap:6px;padding-left:15px}
+.iss-last-outcome{font-size:10px;padding:1px 6px;border-radius:3px;font-weight:500}
+.lo-fixed{color:var(--live);background:var(--live-dim)}.lo-no-effect{color:var(--ink3);background:var(--el)}.lo-worse{color:var(--crit);background:var(--rdim)}.lo-info{color:var(--blue);background:var(--blue-dim)}
+
+/* Detail panel */
+.iss-det-hdr{padding:16px 18px 12px;border-bottom:1px solid var(--line);flex-shrink:0}
+.iss-det-title{font-size:15px;font-weight:600;color:var(--ink);line-height:1.3;margin-bottom:10px;letter-spacing:-.01em}
+.iss-det-props{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.iss-prop{font-size:11px;padding:3px 9px;border-radius:20px;border:1px solid var(--line2);background:var(--el);color:var(--ink2);display:flex;align-items:center;gap:4px}
+.iss-status-row{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.iss-sbt{font-size:11px;padding:4px 11px;border-radius:20px;border:1px solid var(--line);background:transparent;color:var(--ink3);cursor:pointer;font-family:var(--sans);transition:all .12s}
+.iss-sbt:hover{border-color:var(--line2);color:var(--ink2)}
+.iss-sbt.sbt-open.on{background:var(--warn-dim);border-color:rgba(251,191,36,.4);color:var(--warn)}
+.iss-sbt.sbt-prog.on{background:var(--blue-dim);border-color:rgba(96,165,250,.4);color:var(--blue)}
+.iss-sbt.sbt-wait.on{background:var(--el2);border-color:var(--line2);color:var(--ink2)}
+.iss-sbt.sbt-res.on{background:var(--live-dim);border-color:rgba(74,222,128,.4);color:var(--live)}
+.iss-prog-row{display:flex;align-items:center;gap:10px;margin-top:10px}
+.iss-prog-track{flex:1;height:2px;background:var(--line);border-radius:2px;overflow:hidden}
+.iss-prog-fill{height:100%;border-radius:2px;background:var(--live);transition:width .4s}
+.iss-prog-lbl{font-size:10px;color:var(--ink3);font-family:var(--mono);white-space:nowrap}
+
+.iss-det-body{flex:1;padding:16px 18px;overflow-y:auto;display:flex;flex-direction:column;gap:18px}
+.iss-sec-label{font-size:10px;font-weight:500;color:var(--ink3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+.iss-desc{font-size:13px;color:var(--ink2);line-height:1.65}
+
+/* Timeline */
+.tl-wrap{position:relative;padding-left:22px}
+.tl-spine{position:absolute;left:7px;top:10px;bottom:16px;width:1px;background:var(--line)}
+.tl-entry{position:relative;margin-bottom:14px}
+.tl-node{position:absolute;left:-19px;top:5px;width:9px;height:9px;border-radius:50%;border:1.5px solid var(--line2);background:var(--bg)}
+.tl-node.fixed{background:var(--live);border-color:var(--live)}
+.tl-node.no-effect{background:var(--el2);border-color:var(--line2)}
+.tl-node.worse{background:var(--crit);border-color:var(--crit)}
+.tl-node.info{background:var(--blue);border-color:var(--blue)}
+.tl-node.open-ev{background:var(--warn);border-color:var(--warn)}
+.tl-entry-head{display:flex;align-items:center;gap:6px;margin-bottom:3px}
+.tl-badge{font-size:10px;font-weight:500;padding:1px 7px;border-radius:3px}
+.tb-fixed{color:var(--live);background:var(--live-dim)}
+.tb-no-effect{color:var(--ink2);background:var(--el2)}
+.tb-worse{color:var(--crit);background:var(--rdim)}
+.tb-info{color:var(--blue);background:var(--blue-dim)}
+.tb-open{color:var(--warn);background:var(--warn-dim)}
+.tl-src-tag{font-size:10px;color:var(--ink3);font-family:var(--mono)}
+.tl-age{font-size:10px;color:var(--ink4);font-family:var(--mono);margin-left:auto}
+.tl-text{font-size:12px;color:var(--ink2);line-height:1.55}
+
+/* Note composer */
+.iss-compose{display:flex;gap:8px;align-items:flex-start}
+.iss-compose textarea{flex:1;background:var(--el);border:1px solid var(--line2);border-radius:var(--r);color:var(--ink);font-size:12px;font-family:var(--sans);padding:8px 11px;resize:none;height:36px;outline:none;transition:height .15s,border .12s;line-height:1.45}
+.iss-compose textarea:focus{height:72px;border-color:var(--line3);background:var(--el2)}
+.iss-compose textarea::placeholder{color:var(--ink4)}
+.compose-btns{display:flex;flex-direction:column;gap:4px}
+.cb{font-size:11px;padding:5px 11px;border-radius:var(--r);border:1px solid var(--line2);cursor:pointer;font-family:var(--sans);background:var(--el);color:var(--ink2);white-space:nowrap;transition:all .12s}
+.cb:hover{border-color:var(--line3);color:var(--ink)}
+.cb.cb-fixed{border-color:rgba(74,222,128,.35);color:var(--live);background:var(--live-dim)}
+.cb.cb-fixed:hover{background:rgba(74,222,128,.2)}
+.cb.cb-worse{border-color:rgba(248,113,113,.35);color:var(--crit);background:var(--rdim)}
+.cb.cb-worse:hover{background:rgba(248,113,113,.2)}
+
+/* Linked checklist in detail */
+.iss-linked{display:flex;flex-direction:column;gap:5px}
+.iss-linked-item{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink2);padding:6px 10px;border-radius:var(--r);border:1px solid var(--line);background:var(--el)}
+.lnk-dot{width:7px;height:7px;border-radius:50%;border:1.5px solid var(--line2);flex-shrink:0}
+.lnk-dot.done{background:var(--live);border-color:var(--live)}
+.lnk-sec{font-size:10px;color:var(--ink3);margin-left:auto;font-family:var(--mono)}
+.iss-del-btn{font-size:11px;color:var(--crit);background:none;border:none;cursor:pointer;font-family:var(--sans);margin-left:auto;padding:2px 6px;border-radius:4px;opacity:.6}
+.iss-del-btn:hover{opacity:1;background:var(--rdim)}
 .iss-status{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:500;min-width:80px;flex-shrink:0}
 .iss-bar{width:3px;height:13px;border-radius:2px;flex-shrink:0}
 .st-open .iss-bar{background:var(--warn)}.st-open{color:var(--warn)}
@@ -995,41 +1078,55 @@ window.vpUnhover = function() {
     </div>
 
     <div class="pnl" id="pnl-issues">
+      <div class="iss-shell">
 
-      <!-- Header row -->
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
-        <div style="display:flex;align-items:center;gap:8px">
-          <select id="ifl" class="flt-select" onchange="renderIssues()">
-            <option value="all">All issues</option>
-            <option value="open">Open</option>
-            <option value="in-progress">In progress</option>
-            <option value="waiting">Waiting</option>
-            <option value="resolved">Resolved</option>
-          </select>
-          <select id="ifl-comp" class="flt-select" onchange="renderIssues()">
-            <option value="all">All areas</option>
-            <option value="sync">Sync</option>
-            <option value="tracking">Tracking</option>
-            <option value="icvfx">ICVFX</option>
-            <option value="ndisplay">nDisplay</option>
-            <option value="novastar">Novastar</option>
-            <option value="sdi">SDI</option>
-            <option value="render">Render</option>
-            <option value="other">Other</option>
-          </select>
+        <!-- LEFT: issue list -->
+        <div class="iss-list-col">
+          <div class="iss-list-hdr">
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px">
+              <span style="font-size:11px;font-weight:500;color:var(--ink3);letter-spacing:.06em;text-transform:uppercase;flex:1">Issues</span>
+              <button class="btn bp sm" onclick="toggleNewIssue()">+ New</button>
+            </div>
+            <div style="display:flex;gap:5px">
+              <select id="ifl" class="flt-select" onchange="renderIssues()" style="flex:1">
+                <option value="all">All status</option>
+                <option value="open">Open</option>
+                <option value="in-progress">In progress</option>
+                <option value="waiting">Waiting</option>
+                <option value="resolved">Resolved</option>
+              </select>
+              <select id="ifl-comp" class="flt-select" onchange="renderIssues()" style="flex:1">
+                <option value="all">All areas</option>
+                <option value="sync">Sync</option>
+                <option value="tracking">Tracking</option>
+                <option value="icvfx">ICVFX</option>
+                <option value="ndisplay">nDisplay</option>
+                <option value="novastar">Novastar</option>
+                <option value="sdi">SDI</option>
+                <option value="render">Render</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+          </div>
+          <div id="issues-list" class="iss-list-body"></div>
         </div>
-        <button class="btn bp sm" onclick="toggleNewIssue()">+ New issue</button>
+
+        <!-- RIGHT: detail panel -->
+        <div class="iss-detail-col" id="iss-detail-col">
+          <div class="iss-empty" id="iss-empty">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" style="color:var(--ink4);margin-bottom:10px"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
+            <span>Select an issue to investigate</span>
+          </div>
+          <div id="iss-detail" style="display:none;height:100%;overflow-y:auto"></div>
+        </div>
+
       </div>
 
-      <!-- New issue form -->
-      <div id="new-issue-form" style="display:none" class="src">
-        <div class="fspan"><div class="f"><label>Title</label><input id="ni-title" placeholder="Short description"></div></div>
+      <!-- New issue form (full width, slides in above) -->
+      <div id="new-issue-form" style="display:none" class="src" onclick="event.stopPropagation()">
+        <div class="fspan"><div class="f"><label>Title</label><input id="ni-title" placeholder="Short description of the issue"></div></div>
         <div class="f"><label>Status</label>
-          <select id="ni-status" class="flt-select">
-            <option value="open">Open</option>
-            <option value="in-progress">In progress</option>
-            <option value="waiting">Waiting</option>
-          </select>
+          <select id="ni-status" class="flt-select"><option value="open">Open</option><option value="in-progress">In progress</option><option value="waiting">Waiting</option></select>
         </div>
         <div class="f"><label>Area</label>
           <select id="ni-comp" class="flt-select">
@@ -1047,12 +1144,12 @@ window.vpUnhover = function() {
             </optgroup>
           </select>
         </div>
-        <div class="fspan"><div class="f"><label>Description</label><textarea id="ni-desc" placeholder="What are you seeing? Any context that will help diagnose it..."></textarea></div></div>
-        <div class="fspan" style="display:flex;gap:7px"><button class="btn bp sm" onclick="addIssue()">Log issue</button><button class="btn bd sm" onclick="toggleNewIssue()">Cancel</button></div>
+        <div class="fspan"><div class="f"><label>Description</label><textarea id="ni-desc" placeholder="What are you seeing? Include context that will help diagnose it..."></textarea></div></div>
+        <div class="fspan" style="display:flex;gap:7px">
+          <button class="btn bp sm" onclick="addIssue()">Log issue</button>
+          <button class="btn bd sm" onclick="toggleNewIssue()">Cancel</button>
+        </div>
       </div>
-
-      <!-- Issue list (JS rendered) -->
-      <div id="issues-list"></div>
 
     </div>
 
@@ -1577,8 +1674,11 @@ function ibadge(){ el('bi').textContent=issues.filter(function(i){return i.statu
 
 function toggleNewIssue(){
   var f=el('new-issue-form');
-  f.style.display=f.style.display==='none'?'grid':'none';
-  if(f.style.display==='grid') el('ni-title').focus();
+  var isOpen=f.style.display==='grid';
+  f.style.display=isOpen?'none':'grid';
+  var shell=document.querySelector('.iss-shell');
+  if(shell) shell.style.display=isOpen?'grid':'none';
+  if(!isOpen) el('ni-title').focus();
 }
 
 function addIssue(){
@@ -1673,9 +1773,13 @@ function relDate(iso){
   return d.toISOString().slice(0,10);
 }
 
+function ibadge(){ var b=el('bi'); if(b) b.textContent=issues.filter(function(i){return i.status!=='resolved';}).length; }
+
+var activeIssueId = null;
+
 function renderIssues(){
-  var fl=el('ifl') ? el('ifl').value : 'all';
-  var fc=el('ifl-comp') ? el('ifl-comp').value : 'all';
+  var fl=el('ifl')?el('ifl').value:'all';
+  var fc=el('ifl-comp')?el('ifl-comp').value:'all';
   var filtered=issues.filter(function(i){
     if(fl!=='all'&&i.status!==fl) return false;
     if(fc!=='all'&&i.comp!==fc) return false;
@@ -1683,112 +1787,154 @@ function renderIssues(){
   });
   var list=el('issues-list');
   if(!list) return;
+
   if(!filtered.length){
-    list.innerHTML='<div style="text-align:center;padding:48px 0;font-size:12px;color:var(--ink3)">No issues found</div>';
+    list.innerHTML='<div style="padding:32px 16px;text-align:center;font-size:12px;color:var(--ink3)">No issues found</div>';
     ibadge(); return;
   }
 
+  var pipMap={'open':'pip-open','in-progress':'pip-prog','waiting':'pip-wait','resolved':'pip-res'};
+  var areaMap={sync:'Sync',tracking:'Tracking',icvfx:'ICVFX',ndisplay:'nDisplay',novastar:'Novastar',sdi:'SDI',render:'Render',blueprint:'Blueprint',rendering:'Rendering',performance:'Perf',other:'Other'};
+  var outcomeStyle={fixed:'lo-fixed','no-effect':'lo-no-effect',worse:'lo-worse',info:'lo-info'};
+  var outcomeLabel={fixed:'Fixed','no-effect':'No effect',worse:'Worse',info:'Note'};
+
   list.innerHTML=filtered.map(function(iss){
     var log=iss.log||[];
-    var steps=iss.steps||[];
-    var latestLog=log.length ? log[log.length-1] : null;
-
-    // Header
-    var statusCls = iss.status==='open'?'st-open':iss.status==='in-progress'?'st-prog':iss.status==='waiting'?'st-wait':'st-res';
-    var statusLabel = SL[iss.status]||iss.status;
-    var areaLabel = CL[iss.comp]||iss.comp;
-
-    // Log timeline HTML
-    var logHTML = '';
-    if(log.length){
-      logHTML = '<div class="issue-log">'
-        + log.slice().reverse().map(function(entry){
-            var cls = logOutcomeClass(entry.outcome);
-            var lbl = logOutcomeLabel(entry.outcome);
-            var src = entry.source==='checklist'?'<span class="log-src">via checklist</span>':'';
-            return '<div class="log-entry '+cls+'">'
-              +'<div class="log-entry-head"><span class="log-dot"></span><span class="log-lbl">'+lbl+'</span>'+src+'<span class="log-date">'+relDate(entry.date)+'</span></div>'
-              +'<div class="log-text">'+entry.text+'</div>'
-              +'</div>';
-          }).join('')
-        + '</div>';
-    }
-
-    // Legacy steps HTML
-    var stepsHTML = '';
-    if(steps.length){
-      var sd=steps.filter(function(s){return s.d;}).length;
-      stepsHTML = '<div class="issue-steps-head">Steps <span class="log-date">'+sd+'/'+steps.length+'</span></div>'
-        + '<div class="steps">'
-        + steps.map(function(s,i){
-            return '<div class="step" onclick="togStep('+iss.id+','+i+');event.stopPropagation()">'
-              +'<div class="sdot'+(s.d?' done':'')+'"></div>'
-              +'<span style="'+(s.d?'text-decoration:line-through;color:var(--ink3)':'')+'">'+s.t+'</span>'
-              +'</div>';
-          }).join('')
-        + '</div>';
-    }
-
-    // Linked checklist items
-    var linked = [];
-    checklist.forEach(function(sec){
-      (sec.items||[]).forEach(function(item){
-        if(item.issueId===iss.id) linked.push({sec:sec.title,item:item});
-      });
-    });
-    var linkedHTML = linked.length
-      ? '<div class="linked-label">Linked checklist items</div>'
-        + linked.map(function(l){
-            var done = l.item.d;
-            return '<div class="linked-item'+(done?' linked-done':'')+'"><span class="linked-dot'+(done?' done':'')+'"></span>'
-              +'<span>'+l.item.t+'</span><span class="log-date">'+l.sec+'</span></div>';
-          }).join('')
-      : '';
-
-    return '<div class="ic" id="ic-'+iss.id+'" onclick="togIssue('+iss.id+')">'
-      // ── COLLAPSED ROW ──
-      +'<div class="ih">'
-      +'<div class="iss-status '+statusCls+'"><span class="iss-bar"></span>'+statusLabel+'</div>'
-      +'<div style="flex:1;min-width:0">'
-      +'<div class="it">'+iss.title+'</div>'
-      +'<div class="im">'
-      +'<span class="badge binf">'+areaLabel+'</span>'
-      +(log.length?'<span class="badge binf">'+log.length+' '+(log.length===1?'entry':'entries')+'</span>':'')
-      +(latestLog?'<span class="log-latest '+logOutcomeClass(latestLog.outcome)+'">'+logOutcomeLabel(latestLog.outcome)+'</span>':'')
-      +'<span class="iss-date">'+iss.date+'</span>'
+    var last=log.length?log[log.length-1]:null;
+    var active=iss.id===activeIssueId?' active':'';
+    return '<div class="iss-row'+active+'" data-id="'+iss.id+'" onclick="openIssue('+iss.id+')">'
+      +'<div class="iss-row-top">'
+      +'<div class="iss-pip '+(pipMap[iss.status]||'pip-open')+'"></div>'
+      +'<span class="iss-row-title">'+iss.title+'</span>'
       +'</div>'
-      +'</div>'
-      +'<span style="font-size:11px;color:var(--ink4);padding:0 8px;user-select:none">&#9660;</span>'
-      +'</div>'
-      // ── EXPANDED DETAIL ──
-      +'<div class="ib" id="ib-'+iss.id+'">'
-      +(iss.desc?'<p class="iss-desc">'+iss.desc+'</p>':'')
-      // Status buttons
-      +'<div class="iact" onclick="event.stopPropagation()">'
-      +'<span style="font-size:11px;color:var(--ink3)">Status:</span>'
-      +'<button class="btn sm'+(iss.status==='open'?' bp':'')+'" onclick="setStatus('+iss.id+',\'open\');event.stopPropagation()">Open</button>'
-      +'<button class="btn sm'+(iss.status==='in-progress'?' bp':'')+'" onclick="setStatus('+iss.id+',\'in-progress\');event.stopPropagation()">In progress</button>'
-      +'<button class="btn sm'+(iss.status==='waiting'?' bp':'')+'" onclick="setStatus('+iss.id+',\'waiting\');event.stopPropagation()">Waiting</button>'
-      +'<button class="btn sm'+(iss.status==='resolved'?' bp':'')+'" onclick="setStatus('+iss.id+',\'resolved\');event.stopPropagation()">Resolved</button>'
-      +'<button class="btn bd sm" onclick="delIssue('+iss.id+');event.stopPropagation()" style="margin-left:auto">Delete</button>'
-      +'</div>'
-      // Log timeline
-      +(log.length ? logHTML : '')
-      // Add log note
-      +'<div class="log-add" onclick="event.stopPropagation()">'
-      +'<input id="log-inp-'+iss.id+'" placeholder="Add a note to this issue..." onkeydown="if(event.keyCode===13)addManualLog('+iss.id+')">'
-      +'<button class="btn sm" onclick="addManualLog('+iss.id+')">Add note</button>'
-      +'</div>'
-      // Linked checklist
-      +(linked.length ? '<div class="linked-section" onclick="event.stopPropagation()">'+linkedHTML+'</div>' : '')
-      // Legacy steps
-      +(steps.length ? '<div onclick="event.stopPropagation()">'+stepsHTML+'<div class="addi"><input id="si-'+iss.id+'" placeholder="Add step..." onkeydown="if(event.keyCode===13)addStep('+iss.id+')"><button class="btn bg sm" onclick="addStep('+iss.id+')">Add</button></div></div>' : '')
+      +'<div class="iss-row-meta">'
+      +'<span style="font-size:10px;padding:1px 6px;border-radius:3px;background:var(--el2);color:var(--ink3)">'+(areaMap[iss.comp]||iss.comp)+'</span>'
+      +'<span style="font-size:10px;color:var(--ink4);font-family:var(--mono)">'+iss.date+'</span>'
+      +(log.length?'<span style="font-size:10px;color:var(--ink4)">'+log.length+' entr'+(log.length===1?'y':'ies')+'</span>':'')
+      +(last&&last.outcome&&last.outcome!=='info'?'<span class="iss-last-outcome '+(outcomeStyle[last.outcome]||'lo-info')+'">'+(outcomeLabel[last.outcome]||'Note')+'</span>':'')
       +'</div>'
       +'</div>';
   }).join('');
   ibadge();
 }
 
+function openIssue(id){
+  activeIssueId=id;
+  var iss=issues.find(function(x){return x.id===id;});
+  var empty=el('iss-empty'), detail=el('iss-detail');
+  if(!iss||!empty||!detail) return;
+
+  empty.style.display='none';
+  detail.style.display='block';
+
+  var log=iss.log||[];
+  var areaMap={sync:'Sync',tracking:'Tracking',icvfx:'ICVFX',ndisplay:'nDisplay',novastar:'Novastar',sdi:'SDI',render:'Render',other:'Other'};
+  var attempts=log.filter(function(e){return e.outcome!=='info'&&e.outcome!=='open';}).length;
+  var prog=iss.status==='resolved'?100:Math.min(90,Math.round(attempts/Math.max(log.length,1)*100));
+
+  var statusMap={'open':'Open','in-progress':'In progress','waiting':'Waiting','resolved':'Resolved'};
+  var sbCls={'open':'sbt-open','in-progress':'sbt-prog','waiting':'sbt-wait','resolved':'sbt-res'};
+  var statusBtns=['open','in-progress','waiting','resolved'].map(function(s){
+    return '<button class="iss-sbt '+sbCls[s]+(iss.status===s?' on':'')+'" data-s="'+s+'" data-id="'+id+'" onclick="issSetStatus(this)">'+(statusMap[s]||s)+'</button>';
+  }).join('');
+
+  var tlEntries=log.slice().reverse().map(function(entry){
+    var outcomeNode={fixed:'fixed','no-effect':'no-effect',worse:'worse',info:'info',open:'open-ev'}[entry.outcome]||'info';
+    var badgeCls={fixed:'tb-fixed','no-effect':'tb-no-effect',worse:'tb-worse',info:'tb-info',open:'tb-open'}[entry.outcome]||'tb-info';
+    var badgeLabel={fixed:'Fixed it','no-effect':'No effect',worse:'Made it worse',info:'Note',open:'Opened'}[entry.outcome]||'Note';
+    var src=entry.source==='checklist'?'<span class="tl-src-tag">checklist</span>':'';
+    return '<div class="tl-entry">'
+      +'<div class="tl-node '+outcomeNode+'"></div>'
+      +'<div class="tl-entry-head">'
+      +'<span class="tl-badge '+badgeCls+'">'+badgeLabel+'</span>'
+      +src
+      +'<span class="tl-age">'+relDate(entry.date)+'</span>'
+      +'</div>'
+      +'<div class="tl-text">'+entry.text+'</div>'
+      +'</div>';
+  }).join('');
+
+  var linked=[];
+  checklist.forEach(function(sec){
+    (sec.items||[]).forEach(function(item){
+      if(item.issueId===id) linked.push({sec:sec.title,item:item});
+    });
+  });
+  var linkedHTML=linked.length
+    ?'<div class="iss-sec-label">Linked checklist items</div><div class="iss-linked">'
+      +linked.map(function(l){
+        return '<div class="iss-linked-item">'
+          +'<span class="lnk-dot'+(l.item.d?' done':'')+'"></span>'
+          +'<span>'+l.item.t+'</span>'
+          +'<span class="lnk-sec">'+l.sec+'</span>'
+          +'</div>';
+      }).join('')+'</div>'
+    :'';
+
+  detail.innerHTML=''
+    +'<div class="iss-det-hdr">'
+    +'<div class="iss-det-title">'+iss.title+'</div>'
+    +'<div class="iss-det-props">'
+    +'<span class="iss-prop">'+( areaMap[iss.comp]||iss.comp)+'</span>'
+    +'<span class="iss-prop">'+iss.date+'</span>'
+    +'</div>'
+    +'<div class="iss-status-row">'+statusBtns+'<button class="iss-del-btn" data-id="'+id+'" onclick="issDelete(this)">Delete</button></div>'
+    +'<div class="iss-prog-row">'
+    +'<div class="iss-prog-track"><div class="iss-prog-fill" style="width:'+prog+'%"></div></div>'
+    +'<span class="iss-prog-lbl">'+attempts+' attempt'+(attempts===1?'':'s')+' &middot; '+log.length+' entr'+(log.length===1?'y':'ies')+'</span>'
+    +'</div>'
+    +'</div>'
+    +'<div class="iss-det-body">'
+    +(iss.desc?'<div><div class="iss-sec-label">Description</div><div class="iss-desc">'+iss.desc+'</div></div>':'')
+    +'<div>'
+    +'<div class="iss-sec-label">Investigation timeline</div>'
+    +'<div class="tl-wrap"><div class="tl-spine"></div>'
+    +tlEntries
+    +'<div class="tl-entry">'
+    +'<div class="tl-node" style="background:var(--el2)"></div>'
+    +'<div class="iss-compose">'
+    +'<textarea id="iss-note-inp" placeholder="What did you try? What happened?"></textarea>'
+    +'<div class="compose-btns">'
+    +'<button class="cb" data-id="'+id+'" data-o="no-effect" onclick="issAddNote(this)">No effect</button>'
+    +'<button class="cb cb-worse" data-id="'+id+'" data-o="worse" onclick="issAddNote(this)">Worse</button>'
+    +'<button class="cb cb-fixed" data-id="'+id+'" data-o="fixed" onclick="issAddNote(this)">Fixed it</button>'
+    +'</div>'
+    +'</div>'
+    +'</div>'
+    +'</div>'
+    +'</div>'
+    +(linkedHTML?'<div>'+linkedHTML+'</div>':'')
+    +'</div>';
+
+  renderIssues();
+}
+
+function issSetStatus(btn){
+  var id=parseInt(btn.dataset.id), s=btn.dataset.s;
+  setStatus(id,s);
+  openIssue(id);
+}
+
+function issDelete(btn){
+  delIssue(parseInt(btn.dataset.id));
+  activeIssueId=null;
+  el('iss-empty').style.display='flex';
+  el('iss-detail').style.display='none';
+}
+
+function issAddNote(btn){
+  var id=parseInt(btn.dataset.id), outcome=btn.dataset.o;
+  var inp=el('iss-note-inp');
+  var text=inp?inp.value.trim():'';
+  if(!text) return;
+  var i=issues.find(function(x){return x.id===id;});
+  if(!i) return;
+  if(!i.log) i.log=[];
+  i.log.push({date:new Date().toISOString(),text:text,outcome:outcome,source:'manual'});
+  if(outcome==='fixed') i.status='resolved';
+  fsave('issues',{items:issues,nextId:nextId});
+  openIssue(id);
+}
 
 
 // Chat

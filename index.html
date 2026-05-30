@@ -1825,6 +1825,12 @@ async function loadData(){
     var hd = await dref('chat').get();
     chatHist = hd.exists ? (hd.data().history || []) : [];
 
+    var connd = await dref('connections').get();
+    if(connd.exists && connd.data().items){
+      connections = connd.data().items;
+      connNextId = connd.data().nextId || 1;
+    }
+
     var compd = await dref('components').get();
     if(compd.exists && compd.data().items && compd.data().items.length){
       components = compd.data().items;
@@ -1837,6 +1843,7 @@ async function loadData(){
 
     loadSpecFields();
     renderComponents();
+    renderRoutingView();
     renderIssues();
     renderCL();
     renderRigSum();

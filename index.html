@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VP Support Console</title>
+<title>Unreal Support — Virtual Production Console</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='11' fill='%230b0b0c'/%3E%3Cpath d='M15 30 A9 9 0 0 0 33 30 L33 18 A6 6 0 0 0 21 18 L21 25' fill='none' stroke='%2347b8e8' stroke-width='4.2' stroke-linecap='round'/%3E%3Cpath d='M15 30 L15 15' fill='none' stroke='%235b9dff' stroke-width='4.2' stroke-linecap='round'/%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;450;500;600&family=Geist+Mono:wght@400;450&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -20,6 +21,7 @@
   --border:rgba(255,255,255,0.055);--border2:rgba(255,255,255,0.085);
   --text:#ededee;--text2:#9b9b9f;--text3:#646469;
   --sans:'Geist',system-ui,sans-serif;--mono:'Geist Mono',ui-monospace,monospace;
+  --brand1:#5b9dff;--brand2:#22d3ee;--brand-glow:rgba(74,160,230,0.16);--brand-dim:rgba(74,160,230,0.1);
   --r:6px;--rl:8px
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -27,31 +29,67 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:13p
 body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent,rgba(0,0,0,.03) 1px,rgba(0,0,0,.03) 1px);pointer-events:none;z-index:0}
 
 /* ── LOADING ── */
-#loading{display:flex;align-items:center;justify-content:center;min-height:100vh;flex-direction:column;gap:16px}
+#loading{display:flex;align-items:center;justify-content:center;min-height:100vh;flex-direction:column;gap:13px}
+.load-mark{animation:loadpulse 2.2s ease-in-out infinite}
+@keyframes loadpulse{0%,100%{opacity:.55;transform:translateY(0)}50%{opacity:1;transform:translateY(-3px)}}
+.load-name{font-size:15px;font-weight:600;color:var(--ink);letter-spacing:-.01em}
+.load-status{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--ink3);font-family:var(--mono);letter-spacing:.05em}
+.load-dot{width:5px;height:5px;border-radius:50%;background:var(--brand1);animation:loaddot 1.4s ease-in-out infinite}
+@keyframes loaddot{0%,100%{opacity:.25}50%{opacity:1}}
 .spin{width:20px;height:20px;border:2px solid var(--line2);border-top-color:var(--ink3);border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* ── AUTH ── */
-#auth-screen{display:none;align-items:center;justify-content:center;min-height:100vh;padding:24px}
-.auth-box{width:100%;max-width:360px;background:var(--card);border:1px solid var(--line2);border-radius:14px;padding:32px}
-.auth-logo{display:flex;align-items:center;gap:11px;margin-bottom:28px}
-.auth-mark{width:32px;height:32px;border-radius:8px;background:var(--el2);border:1px solid var(--line3);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--ink)}
-.auth-title{font-size:15px;font-weight:600;color:var(--ink);letter-spacing:-.01em}
-.auth-sub{font-size:11px;color:var(--ink3);font-weight:400;margin-top:2px}
+/* ── AUTH (cinematic split) ── */
+#auth-screen{display:none;min-height:100vh;width:100%;overflow-y:auto}
+/* Left brand panel */
+.auth-brand{flex:1.25;position:relative;overflow:hidden;background:radial-gradient(125% 90% at 18% -10%, #14161d 0%, #0b0b0c 58%);border-right:1px solid var(--line);display:flex;align-items:center;min-height:100vh}
+.auth-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.022) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.022) 1px,transparent 1px);background-size:48px 48px;-webkit-mask-image:radial-gradient(90% 85% at 28% 22%,#000 0%,transparent 78%);mask-image:radial-gradient(90% 85% at 28% 22%,#000 0%,transparent 78%)}
+.auth-glow{position:absolute;width:600px;height:600px;left:-140px;top:-160px;border-radius:50%;background:radial-gradient(circle, var(--brand-glow) 0%, transparent 64%);animation:authglow 7.5s ease-in-out infinite;pointer-events:none}
+@keyframes authglow{0%,100%{opacity:.65;transform:scale(1)}50%{opacity:1;transform:scale(1.09)}}
+.auth-watermark{position:absolute;right:-100px;bottom:-130px;width:540px;height:auto;opacity:.05;pointer-events:none}
+.auth-brand-inner{position:relative;z-index:2;padding:0 7vw;max-width:580px}
+.auth-brand-logo{display:flex;align-items:center;gap:12px;margin-bottom:46px}
+.abl-name{font-size:16px;font-weight:600;color:var(--ink);letter-spacing:-.01em}
+.abl-sub{font-size:11px;color:var(--ink3);margin-top:1px}
+.auth-headline{font-size:33px;font-weight:600;color:var(--ink);letter-spacing:-.025em;line-height:1.16;margin-bottom:18px}
+.auth-lede{font-size:14px;color:var(--ink2);line-height:1.65;max-width:440px;margin-bottom:38px}
+.auth-feats{display:flex;flex-direction:column;gap:17px;margin-bottom:40px}
+.auth-feat{display:flex;gap:13px;align-items:flex-start}
+.auth-feat-ic{width:34px;height:34px;border-radius:9px;background:var(--brand-dim);border:1px solid rgba(91,157,255,0.22);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--brand1)}
+.auth-feat-ic svg{width:17px;height:17px;stroke:currentColor;stroke-width:1.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.aft{font-size:13px;font-weight:500;color:var(--ink);margin-bottom:2px}
+.afd{font-size:12px;color:var(--ink3);line-height:1.5;max-width:350px}
+.auth-foot{font-size:11px;color:var(--ink4);font-family:var(--mono);letter-spacing:.02em}
+/* Right form panel */
+.auth-form-panel{width:440px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;background:var(--bg);min-height:100vh}
+.auth-box{width:100%;max-width:320px}
+.auth-mobile-brand{display:none;align-items:center;gap:9px;margin-bottom:28px;justify-content:center}
+.auth-mobile-brand span{font-size:15px;font-weight:600;color:var(--ink);letter-spacing:-.01em}
+.auth-box-head{margin-bottom:22px}
+.auth-title{font-size:20px;font-weight:600;color:var(--ink);letter-spacing:-.015em}
+.auth-sub{font-size:13px;color:var(--ink3);margin-top:4px}
 .tabs{display:flex;background:var(--el);border:1px solid var(--line);border-radius:8px;padding:3px;gap:2px;margin-bottom:20px}
-.tab{flex:1;font-size:12px;font-family:var(--sans);color:var(--ink3);background:none;border:none;padding:6px;border-radius:5px;cursor:pointer;transition:all .12s}
+.tab{flex:1;font-size:12px;font-family:var(--sans);color:var(--ink3);background:none;border:none;padding:7px;border-radius:5px;cursor:pointer;transition:all .12s}
 .tab.active{background:var(--el2);color:var(--ink);border:1px solid var(--line2)}
 .afield{margin-bottom:13px}
 .afield label{display:block;font-size:11px;color:var(--ink3);margin-bottom:5px}
-.afield input{width:100%;background:var(--el);border:1px solid var(--line2);border-radius:var(--r);color:var(--ink);font-size:13px;font-family:var(--sans);padding:8px 11px;outline:none;transition:border .12s}
-.afield input:focus{border-color:var(--line3)}
-.abtn{width:100%;padding:10px;background:var(--ink);color:var(--bg);border:none;border-radius:var(--r);font-size:13px;font-weight:600;font-family:var(--sans);cursor:pointer;transition:opacity .12s;margin-top:4px}
-.abtn:hover{opacity:.88}
-.abtn:disabled{opacity:.4;cursor:not-allowed}
-.alink{font-size:12px;color:var(--ink3);text-align:center;cursor:pointer;margin-top:12px;transition:color .12s}
-.alink:hover{color:var(--ink2)}
+.afield input{width:100%;background:var(--el);border:1px solid var(--line2);border-radius:var(--r);color:var(--ink);font-size:13px;font-family:var(--sans);padding:9px 11px;outline:none;transition:border .12s,box-shadow .12s}
+.afield input:focus{border-color:var(--brand1);box-shadow:0 0 0 3px var(--brand-dim)}
+.abtn{width:100%;padding:11px;background:linear-gradient(135deg,var(--brand1),var(--brand2));color:#06141f;border:none;border-radius:var(--r);font-size:13px;font-weight:600;font-family:var(--sans);cursor:pointer;transition:opacity .12s,transform .05s;margin-top:6px}
+.abtn:hover{opacity:.92}
+.abtn:active{transform:translateY(1px)}
+.abtn:disabled{opacity:.5;cursor:not-allowed}
+.alink{font-size:12px;color:var(--ink3);text-align:center;cursor:pointer;margin-top:14px;transition:color .12s}
+.alink:hover{color:var(--brand1)}
 .aerr{font-size:12px;color:var(--crit);background:var(--rdim);border:1px solid rgba(248,113,113,.2);border-radius:var(--r);padding:8px 11px;margin-bottom:12px;display:none}
 .aok{font-size:12px;color:var(--live);background:var(--live-dim);border:1px solid rgba(74,222,128,.2);border-radius:var(--r);padding:8px 11px;margin-bottom:12px;display:none}
+.auth-legal{font-size:11px;color:var(--ink4);text-align:center;margin-top:26px;line-height:1.5}
+@media(max-width:900px){
+  #auth-screen{flex-direction:column}
+  .auth-brand{display:none}
+  .auth-form-panel{width:100%;min-height:100vh}
+  .auth-mobile-brand{display:flex}
+}
 
 /* ── API MODAL ── */
 .api-modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:10000;align-items:center;justify-content:center;padding:24px}
@@ -493,39 +531,95 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 <body>
 
 <div id="loading">
-  <div class="spin"></div>
-  <span style="font-size:12px;color:var(--ink3)">Connecting</span>
+  <svg class="load-mark" viewBox="0 0 48 52" width="46" height="50" aria-hidden="true">
+    <defs><linearGradient id="ulgLoad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5b9dff"/><stop offset="1" stop-color="#22d3ee"/></linearGradient></defs>
+    <path d="M13 32 A10 10 0 0 0 33 32 L33 18 A6.3 6.3 0 0 0 20.4 18 L20.4 26" fill="none" stroke="url(#ulgLoad)" stroke-width="4.3" stroke-linecap="round"/>
+    <path d="M13 32 L13 16" fill="none" stroke="url(#ulgLoad)" stroke-width="4.3" stroke-linecap="round"/>
+    <circle cx="20.4" cy="26" r="2.3" fill="#22d3ee"/>
+  </svg>
+  <div class="load-name">Unreal Support</div>
+  <div class="load-status"><span class="load-dot"></span>Connecting</div>
   <span id="lerr" style="color:var(--crit);font-size:11px;display:none;text-align:center;max-width:300px"></span>
 </div>
 
 <div id="auth-screen">
-  <div class="auth-box">
-    <div class="auth-logo">
-      <div class="auth-mark">VP</div>
-      <div>
-        <div class="auth-title">VP Support</div>
-        <div class="auth-sub">Virtual Production Console</div>
+
+  <div class="auth-brand">
+    <div class="auth-grid"></div>
+    <div class="auth-glow"></div>
+    <svg class="auth-watermark" viewBox="0 0 48 52" aria-hidden="true">
+      <path d="M13 32 A10 10 0 0 0 33 32 L33 18 A6.3 6.3 0 0 0 20.4 18 L20.4 26" fill="none" stroke="#5b9dff" stroke-width="3" stroke-linecap="round"/>
+      <path d="M13 32 L13 16" fill="none" stroke="#5b9dff" stroke-width="3" stroke-linecap="round"/>
+    </svg>
+    <div class="auth-brand-inner">
+      <div class="auth-brand-logo">
+        <svg viewBox="0 0 48 52" width="34" height="37" aria-hidden="true">
+          <defs><linearGradient id="ulgAuth" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5b9dff"/><stop offset="1" stop-color="#22d3ee"/></linearGradient></defs>
+          <path d="M13 32 A10 10 0 0 0 33 32 L33 18 A6.3 6.3 0 0 0 20.4 18 L20.4 26" fill="none" stroke="url(#ulgAuth)" stroke-width="4.3" stroke-linecap="round"/>
+          <path d="M13 32 L13 16" fill="none" stroke="url(#ulgAuth)" stroke-width="4.3" stroke-linecap="round"/>
+          <circle cx="20.4" cy="26" r="2.3" fill="#22d3ee"/>
+        </svg>
+        <div>
+          <div class="abl-name">Unreal Support</div>
+          <div class="abl-sub">Virtual Production Console</div>
+        </div>
       </div>
-    </div>
-    <div class="tabs">
-      <button class="tab active" id="t-in" onclick="swTab('in')">Sign in</button>
-      <button class="tab" id="t-up" onclick="swTab('up')">Create account</button>
-    </div>
-    <div class="aerr" id="aerr"></div>
-    <div class="aok" id="aok"></div>
-    <div id="f-in">
-      <div class="afield"><label>Email</label><input type="email" id="li-em" placeholder="you@studio.com" onkeydown="if(event.keyCode===13)doLogin()"></div>
-      <div class="afield"><label>Password</label><input type="password" id="li-pw" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" onkeydown="if(event.keyCode===13)doLogin()"></div>
-      <button class="abtn" id="li-btn" onclick="doLogin()">Sign in</button>
-      <div class="alink" onclick="doReset()">Forgot password?</div>
-    </div>
-    <div id="f-up" style="display:none">
-      <div class="afield"><label>Name</label><input type="text" id="su-nm" placeholder="Your name"></div>
-      <div class="afield"><label>Email</label><input type="email" id="su-em" placeholder="you@studio.com"></div>
-      <div class="afield"><label>Password</label><input type="password" id="su-pw" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"></div>
-      <button class="abtn" id="su-btn" onclick="doSignUp()">Create account</button>
+      <h1 class="auth-headline">Technical support that knows<br>your stage inside out.</h1>
+      <p class="auth-lede">Unreal Support loads your exact ICVFX rig — nodes, LED volume, tracking and sync — then answers every question from official Unreal documentation and real-world stage experience.</p>
+      <div class="auth-feats">
+        <div class="auth-feat">
+          <div class="auth-feat-ic"><svg viewBox="0 0 24 24"><rect x="4.5" y="4.5" width="15" height="15" rx="2.5"/><rect x="9" y="9" width="6" height="6" rx="1"/><path d="M9 4.5V2.2M15 4.5V2.2M9 21.8v-2.3M15 21.8v-2.3M4.5 9H2.2M4.5 15H2.2M21.8 9h-2.3M21.8 15h-2.3"/></svg></div>
+          <div><div class="aft">Rig-aware answers</div><div class="afd">Every reply is grounded in your real nodes, wall, tracking and sync.</div></div>
+        </div>
+        <div class="auth-feat">
+          <div class="auth-feat-ic"><svg viewBox="0 0 24 24"><path d="M12 3 3 7.5 12 12l9-4.5L12 3Z"/><path d="M3 12l9 4.5L21 12M3 16.5 12 21l9-4.5"/></svg></div>
+          <div><div class="aft">Documentation, plus the field</div><div class="afd">Sourced from official Unreal docs and real-world experience, with a confidence split on every answer.</div></div>
+        </div>
+        <div class="auth-feat">
+          <div class="auth-feat-ic"><svg viewBox="0 0 24 24"><path d="M3 12h4l2.5 7 5-14 2.5 7H21"/></svg></div>
+          <div><div class="aft">Investigation tracking</div><div class="afd">Log issues and record what worked, what didn't — project management for your stage.</div></div>
+        </div>
+      </div>
+      <div class="auth-foot">ICVFX &middot; nDisplay &middot; LED volumes &middot; Genlock &amp; sync</div>
     </div>
   </div>
+
+  <div class="auth-form-panel">
+    <div class="auth-box">
+      <div class="auth-mobile-brand">
+        <svg viewBox="0 0 48 52" width="26" height="28" aria-hidden="true">
+          <defs><linearGradient id="ulgMob" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5b9dff"/><stop offset="1" stop-color="#22d3ee"/></linearGradient></defs>
+          <path d="M13 32 A10 10 0 0 0 33 32 L33 18 A6.3 6.3 0 0 0 20.4 18 L20.4 26" fill="none" stroke="url(#ulgMob)" stroke-width="4.6" stroke-linecap="round"/>
+          <path d="M13 32 L13 16" fill="none" stroke="url(#ulgMob)" stroke-width="4.6" stroke-linecap="round"/>
+        </svg>
+        <span>Unreal Support</span>
+      </div>
+      <div class="auth-box-head">
+        <div class="auth-title">Welcome back</div>
+        <div class="auth-sub">Sign in to your production console.</div>
+      </div>
+      <div class="tabs">
+        <button class="tab active" id="t-in" onclick="swTab('in')">Sign in</button>
+        <button class="tab" id="t-up" onclick="swTab('up')">Create account</button>
+      </div>
+      <div class="aerr" id="aerr"></div>
+      <div class="aok" id="aok"></div>
+      <div id="f-in">
+        <div class="afield"><label>Email</label><input type="email" id="li-em" placeholder="you@studio.com" onkeydown="if(event.keyCode===13)doLogin()"></div>
+        <div class="afield"><label>Password</label><input type="password" id="li-pw" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" onkeydown="if(event.keyCode===13)doLogin()"></div>
+        <button class="abtn" id="li-btn" onclick="doLogin()">Sign in</button>
+        <div class="alink" onclick="doReset()">Forgot password?</div>
+      </div>
+      <div id="f-up" style="display:none">
+        <div class="afield"><label>Name</label><input type="text" id="su-nm" placeholder="Your name"></div>
+        <div class="afield"><label>Email</label><input type="email" id="su-em" placeholder="you@studio.com"></div>
+        <div class="afield"><label>Password</label><input type="password" id="su-pw" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"></div>
+        <button class="abtn" id="su-btn" onclick="doSignUp()">Create account</button>
+      </div>
+      <div class="auth-legal">Invite-only access &middot; Your workspace data stays private to you.</div>
+    </div>
+  </div>
+
 </div>
 
 <div class="api-modal-bg" id="api-modal-bg">
@@ -544,9 +638,15 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 
   <aside class="rail">
     <div class="rail-brand">
-      <div class="rail-logo">VP</div>
+      <div class="rail-logo">
+        <svg viewBox="0 0 48 52" width="20" height="22" aria-hidden="true">
+          <defs><linearGradient id="ulgRail" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5b9dff"/><stop offset="1" stop-color="#22d3ee"/></linearGradient></defs>
+          <path d="M13 32 A10 10 0 0 0 33 32 L33 18 A6.3 6.3 0 0 0 20.4 18 L20.4 26" fill="none" stroke="url(#ulgRail)" stroke-width="4.6" stroke-linecap="round"/>
+          <path d="M13 32 L13 16" fill="none" stroke="url(#ulgRail)" stroke-width="4.6" stroke-linecap="round"/>
+        </svg>
+      </div>
       <div>
-        <span class="rail-brand-name">VP Support</span>
+        <span class="rail-brand-name">Unreal Support</span>
         <span class="rail-brand-sub">Production console</span>
       </div>
     </div>

@@ -193,9 +193,9 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .mode-bar{display:inline-flex;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:3px;gap:2px;margin-bottom:24px}
 .mode-btn{font-size:12px;font-family:var(--sans);font-weight:450;color:var(--ink3);background:none;border:none;padding:6px 15px;border-radius:5px;cursor:pointer;transition:all .12s;display:flex;align-items:center;gap:6px}
 .mode-btn.on{background:var(--el2);color:var(--ink);border:1px solid var(--line2)}
-.vponly,.gdonly{display:none}
-.mode-vp .vponly{display:block}
-.mode-gd .gdonly{display:block}
+#specs-fields .vponly,#specs-fields .gdonly{display:none}
+#specs-fields.mode-vp .vponly{display:block}
+#specs-fields.mode-gd .gdonly{display:block}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .diag-title{font-size:11px;color:var(--ink3);font-weight:500;margin-bottom:12px;letter-spacing:.06em;text-transform:uppercase}
 .mode-sep{width:1px;height:20px;background:var(--line);margin:0 4px}
@@ -348,7 +348,12 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .iss-row-title{font-size:13px;font-weight:500;color:var(--ink);line-height:1.35;flex:1}
 .iss-row-meta{display:flex;align-items:center;gap:6px;padding-left:15px}
 .iss-last-outcome{font-size:10px;padding:1px 6px;border-radius:3px;font-weight:500}
-.lo-fixed{color:var(--live);background:var(--live-dim)}.lo-no-effect{color:var(--ink3);background:var(--el)}.lo-worse{color:var(--crit);background:var(--rdim)}.lo-info{color:var(--blue);background:var(--blue-dim)}
+.lo-fixed{color:var(--live);background:var(--live-dim)}.lo-no-effect{color:var(--ink3);background:var(--el)}.lo-worse{color:var(--crit);background:var(--rdim)}.lo-info{color:var(--blue);background:var(--blue-dim)}.lo-improved{color:var(--blue);background:var(--blue-dim)}
+.iss-stat-badge{font-size:10px;padding:1px 7px;border-radius:3px;font-weight:500}
+.sb-open{color:var(--warn);background:var(--warn-dim)}
+.sb-prog{color:var(--blue);background:var(--blue-dim)}
+.sb-wait{color:var(--ink3);background:var(--el)}
+.sb-res{color:var(--live);background:var(--live-dim)}
 .lo-improved{color:var(--blue);background:var(--blue-dim)}
 
 /* Detail panel */
@@ -1968,12 +1973,11 @@ function renderIssues(){
 
   var pipMap={'open':'pip-open','in-progress':'pip-prog','waiting':'pip-wait','resolved':'pip-res'};
   var areaMap={sync:'Sync',tracking:'Tracking',icvfx:'ICVFX',ndisplay:'nDisplay',novastar:'Novastar',sdi:'SDI',render:'Render',blueprint:'Blueprint',rendering:'Rendering',performance:'Perf',other:'Other'};
-  var outcomeStyle={fixed:'lo-fixed','no-effect':'lo-no-effect',worse:'lo-worse',improved:'lo-improved',info:'lo-info'};
-  var outcomeLabel={fixed:'Fixed','no-effect':'No effect',worse:'Worse',improved:'Improved',info:'Note'};
+  var statusBadge={'open':'sb-open','in-progress':'sb-prog','waiting':'sb-wait','resolved':'sb-res'};
+  var statusLbl={'open':'Open','in-progress':'In progress','waiting':'Waiting','resolved':'Resolved'};
 
   list.innerHTML=filtered.map(function(iss){
     var log=iss.log||[];
-    var last=log.length?log[log.length-1]:null;
     var active=iss.id===activeIssueId?' active':'';
     return '<div class="iss-row'+active+'" data-id="'+iss.id+'" onclick="openIssue('+iss.id+')">'
       +'<div class="iss-row-top">'
@@ -1981,10 +1985,10 @@ function renderIssues(){
       +'<span class="iss-row-title">'+iss.title+'</span>'
       +'</div>'
       +'<div class="iss-row-meta">'
+      +'<span class="iss-stat-badge '+(statusBadge[iss.status]||'sb-open')+'">'+(statusLbl[iss.status]||iss.status)+'</span>'
       +'<span style="font-size:10px;padding:1px 6px;border-radius:3px;background:var(--el2);color:var(--ink3)">'+(areaMap[iss.comp]||iss.comp)+'</span>'
       +'<span style="font-size:10px;color:var(--ink4);font-family:var(--mono)">'+iss.date+'</span>'
       +(log.length?'<span style="font-size:10px;color:var(--ink4)">'+log.length+' entr'+(log.length===1?'y':'ies')+'</span>':'')
-      +(last&&last.outcome&&last.outcome!=='info'?'<span class="iss-last-outcome '+(outcomeStyle[last.outcome]||'lo-info')+'">'+(outcomeLabel[last.outcome]||'Note')+'</span>':'')
       +'</div>'
       +'</div>';
   }).join('');

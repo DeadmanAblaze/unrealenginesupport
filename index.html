@@ -1730,7 +1730,7 @@ function compName(comp){
 
 function saveComponents(){
   fsave('components',{items:components,nextId:compNextId});
-  renderComponents(); renderRigSum(); updateRigMini(); buildSysPrompt(); updateDiagram(); updateStatusFooter();
+  renderComponents(); renderRigSum(); updateRigMini(); buildSysPrompt(); updateDiagram(); updateWallViz(); updateStatusFooter();
 }
 
 function addComponent(type){
@@ -2835,16 +2835,16 @@ function autoDetectPorts(compId){
     method:'POST',
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify({
-      model:'claude-sonnet-4-20250514',
+      model:'claude-haiku-4-5-20251001',
       max_tokens:800,
       system:'You are a broadcast/AV technical database. Given a device name, research and return its I/O ports as JSON. Respond ONLY with valid JSON, no markdown fences, no explanation.',
       messages:[{role:'user',content:autoPrompt}],
       userEmail:cu?cu.email:'',
       userApiKey:storedKey
     })
-  }).then(function(r){return r.json();})
-  .then(function(data){
-    // Extract text content from response
+  }).then(function(r){ return r.text(); })
+  .then(function(rawAuto){
+    var data; try{ data=JSON.parse(rawAuto); } catch(e){ if(btn){ btn.textContent='\u2736 Auto-detect'; btn.disabled=false; } return; }
     var text='';
     (data.content||[]).forEach(function(b){ if(b.type==='text') text+=b.text; });
     try{
@@ -3588,12 +3588,7 @@ function buildWallSVG(wall){
   return s;
 }
 
-// Hook into saveComponents to re-render wall viz
-var _origSaveComponents = saveComponents;
-function saveComponents(){
-  _origSaveComponents();
-  updateWallViz();
-}
+// updateWallViz is called directly within saveComponents
 
 // ── EQUIPMENT / GEAR PAGE ──────────────────────────────────────────────────
 function renderGear(){
@@ -3646,44 +3641,50 @@ function findLinksForComp(compId){
     CTYPES[comp.type]?CTYPES[comp.type].label:comp.type
   ].filter(Boolean).join(' ').trim();
 
-  if(!query){ alert('Not enough component data to search. Fill in the manufacturer/model fields first.'); return; }
+  if(!query){ alert('Fill in the manufacturer/model fields first.'); return; }
 
   comp._findingLinks = true;
   renderGear();
 
   var storedKey=localStorage.getItem('vp_anthropic_key')||'';
-  var linkPrompt='Find official web URLs for this piece of equipment: "'+query+'". Return JSON with this structure (omit keys if no reliable URL found): {"manufacturer":"https://...","product":"https://...","docs":"https://...","specs":"https://..."} Rules: manufacturer=company homepage, product=specific product page on manufacturer site, docs=manual or documentation, specs=technical specs. Real URLs only. Respond ONLY with valid JSON, no markdown.';
+  var linkPrompt='Find the official manufacturer website and product page URL for this broadcast/AV equipment: "'+query+'". Respond ONLY with a valid JSON object, no markdown, no explanation. Use this exact structure and omit any key where you are not confident of the URL: {"manufacturer":"https://...","product":"https://...","docs":"https://...","specs":"https://..."}';
+
   fetch('/.netlify/functions/chat',{
     method:'POST',
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify({
-      model:'claude-sonnet-4-20250514',
-      max_tokens:400,
-      system:'You are a hardware research assistant. Find official manufacturer and product URLs for broadcast/AV equipment. Respond ONLY with valid JSON, no markdown.',
+      model:'claude-haiku-4-5-20251001',
+      max_tokens:300,
+      system:'You are a hardware research assistant for broadcast and virtual production equipment. When given a device name, return its official URLs as JSON only.',
       messages:[{role:'user',content:linkPrompt}],
       userEmail:cu?cu.email:'',
       userApiKey:storedKey
     })
-  }).then(function(r){return r.json();})
-  .then(function(data){
-    var text='';
-    (data.content||[]).forEach(function(b){if(b.type==='text') text+=b.text;});
-    if(data.error){ comp._findingLinks=false; renderGear(); return; }
-    try{
-      var clean=text.trim().replace(/```json|```/g,'');
-      var result=JSON.parse(clean);
-      var valid={};
-      ['manufacturer','product','docs','specs'].forEach(function(k){
-        if(result[k]&&typeof result[k]==='string'&&result[k].startsWith('http')) valid[k]=result[k];
-      });
-      comp.links=valid;
-    }catch(e){ comp.links={}; }
+  })
+  .then(function(r){ return r.text(); })
+  .then(function(text){
+    var data;
+    try{ data=JSON.parse(text); } catch(e){ throw new Error('Bad JSON from server: '+text.slice(0,120)); }
+    if(data.error){ throw new Error(data.error.message||JSON.stringify(data.error)); }
+    var content='';
+    (data.content||[]).forEach(function(b){ if(b.type==='text') content+=b.text; });
+    if(!content) throw new Error('No content in response');
+    var clean=content.trim().replace(/```json|```/g,'').trim();
+    var result;
+    try{ result=JSON.parse(clean); } catch(e){ throw new Error('Could not parse response as JSON'); }
+    var valid={};
+    ['manufacturer','product','docs','specs'].forEach(function(k){
+      if(result[k]&&typeof result[k]==='string'&&result[k].startsWith('http')) valid[k]=result[k];
+    });
+    comp.links=valid;
     comp._findingLinks=false;
     fsave('components',{items:components,nextId:compNextId});
     renderGear();
-  }).catch(function(){
+  })
+  .catch(function(err){
     comp._findingLinks=false;
     renderGear();
+    alert('Link search failed: '+(err&&err.message?err.message:'Unknown error'));
   });
 }
 

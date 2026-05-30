@@ -330,6 +330,61 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .cd{width:5px;height:5px;border-radius:50%;background:var(--brand1);box-shadow:0 0 6px rgba(91,157,255,0.5);flex-shrink:0}
 .ct{font-size:12px;font-weight:500;color:var(--ink)}
 .hdr{display:none}
+/* ── SPECS CONTROL ROW ── */
+.ctrl-row{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.ctrl-row-r{margin-left:auto;display:flex;align-items:center;gap:12px}
+.si{font-size:10px;font-family:var(--mono);color:var(--ink4);letter-spacing:.05em;opacity:0;transition:opacity .2s}
+.si.on{opacity:1;color:var(--live)}
+/* ── COMPOSABLE COMPONENTS ── */
+.csec{display:flex;align-items:center;gap:9px;margin:24px 0 12px}
+.csec:first-child{margin-top:4px}
+.ctick{width:2.5px;height:12px;border-radius:2px;background:linear-gradient(var(--brand1),var(--brand2));flex-shrink:0}
+.csl{font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink2)}
+.csc{font-family:var(--mono);font-size:10px;color:var(--ink4);letter-spacing:.06em}
+.csec-rule{flex:1;height:1px;background:var(--line)}
+.cadd-wrap{position:relative}
+.cadd{font-size:11px;font-family:var(--sans);color:var(--ink3);background:var(--el);border:1px solid var(--line2);border-radius:6px;padding:4px 11px;cursor:pointer;transition:all .12s}
+.cadd:hover{color:var(--ink);border-color:var(--line3);background:var(--el2)}
+.cadd-menu{position:absolute;right:0;top:calc(100% + 5px);z-index:30;background:var(--card);border:1px solid var(--line2);border-radius:9px;padding:5px;min-width:190px;display:none;box-shadow:0 12px 32px rgba(0,0,0,.5)}
+.cadd-menu.open{display:block}
+.cadd-opt{display:flex;align-items:center;gap:10px;width:100%;text-align:left;font-size:12px;font-family:var(--sans);color:var(--ink2);background:none;border:none;padding:8px 10px;border-radius:6px;cursor:pointer;transition:all .1s}
+.cadd-opt:hover{background:var(--el2);color:var(--ink)}
+.cadd-opt svg{width:15px;height:15px;color:var(--brand1);flex-shrink:0}
+.cempty{font-size:12px;color:var(--ink4);padding:14px 16px;border:1px dashed var(--line2);border-radius:9px;text-align:center;background:rgba(255,255,255,.012)}
+.cgrid{display:grid;gap:10px}
+.csg-3{grid-template-columns:repeat(3,1fr)}
+.csg-2{grid-template-columns:repeat(2,1fr)}
+/* strip (component card) */
+.strip{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;transition:border-color .14s}
+.strip:hover{border-color:var(--line2)}
+.strip.primary{border-color:rgba(91,157,255,.25)}
+.strip.editing{border-color:var(--line3)}
+.csh{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--line)}
+.led{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.led.g{background:var(--live);box-shadow:0 0 6px rgba(74,222,128,.55)}
+.led.b{background:var(--brand1);box-shadow:0 0 6px rgba(91,157,255,.6)}
+.led.a{background:var(--warn);box-shadow:0 0 6px rgba(251,191,36,.5)}
+.csn{font-size:12.5px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.csr{margin-left:auto;font-family:var(--mono);font-size:8.5px;letter-spacing:.06em;color:var(--ink3);text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px}
+.cact{background:none;border:none;color:var(--ink4);cursor:pointer;padding:3px;border-radius:4px;display:flex;align-items:center;flex-shrink:0;transition:all .12s}
+.cact svg{width:14px;height:14px}
+.cact:hover{color:var(--ink2);background:var(--el2)}
+.cact-del:hover{color:var(--crit);background:var(--rdim)}
+.csbody{padding:3px 12px 9px}
+.crow{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--line)}
+.crow:last-child{border-bottom:none}
+.ck{font-size:11px;color:var(--ink3);flex-shrink:0}
+.cv{font-family:var(--mono);font-size:12px;color:var(--ink);text-align:right;word-break:break-word}
+.cv-edit{background:var(--el);border:1px solid var(--line2);border-radius:5px;padding:4px 8px;color:var(--ink);outline:none;font-family:var(--mono);font-size:11.5px;width:150px;text-align:right;transition:all .12s}
+.cv-edit:focus{border-color:var(--brand1);box-shadow:0 0 0 3px var(--brand-dim);background:var(--el2)}
+select.cv-edit{text-align:left;cursor:pointer}
+.cnotes-row{border-bottom:none;padding-bottom:2px}
+.cnotes{width:100%;background:var(--el);border:1px solid var(--line2);border-radius:6px;color:var(--ink2);font-family:var(--sans);font-size:11.5px;padding:7px 9px;outline:none;resize:vertical;min-height:46px;line-height:1.5;margin-top:2px;transition:all .12s}
+.cnotes:focus{border-color:var(--brand1);box-shadow:0 0 0 3px var(--brand-dim);color:var(--ink)}
+.cnotes::placeholder{color:var(--ink4)}
+.cnote-disp{font-size:11px;color:var(--ink3);line-height:1.5;padding:8px 0 2px;font-style:italic;border-top:1px solid var(--line);margin-top:4px}
+@media(max-width:760px){.csg-3,.csg-2{grid-template-columns:1fr}}
+
 /* ── ISSUES SPLIT PANEL ── */
 .iss-shell{display:grid;grid-template-columns:280px 1fr;height:100%;min-height:0}
 .iss-list-col{border-right:1px solid var(--line);display:flex;flex-direction:column;min-height:0;overflow:hidden}
@@ -747,123 +802,21 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
       </div>
     </div>
     <div class="main-scroll"><div class="pnl on" id="pnl-specs">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px">
-        <h1 style="font-family:var(--mono);font-size:15px;font-weight:500">System Configuration</h1>
-        <span class="si" id="ssaved">SAVED</span>
-        <button class="btn bp sm" style="margin-left:auto" onclick="saveSpecs()">Save Config</button>
-      </div>
-      <div class="mode-bar">
-        <button class="mode-btn on" id="mbtn-vp" onclick="setMode('vp')"><span class="mode-icon">&#9671;</span> Virtual Production</button>
-        <div class="mode-sep"></div>
-        <button class="mode-btn" id="mbtn-gd" onclick="setMode('gd')"><span class="mode-icon">&#9654;</span> Game Development</button>
+      <div class="ctrl-row">
+        <div class="mode-bar">
+          <button class="mode-btn on" id="mbtn-vp" onclick="setMode('vp')"><span class="mode-icon">&#9671;</span> Virtual Production</button>
+          <div class="mode-sep"></div>
+          <button class="mode-btn" id="mbtn-gd" onclick="setMode('gd')"><span class="mode-icon">&#9654;</span> Game Development</button>
+        </div>
+        <div class="ctrl-row-r">
+          <span class="si" id="ssaved">Saved</span>
+          <button class="btn bp sm gdonly" onclick="saveSpecs()">Save</button>
+        </div>
       </div>
       <div id="specs-fields">
 
         <!-- ── VP MODE ─────────────────────────────────────────────── -->
-        <div class="vponly g2">
-          <div>
-            <div class="sh">Compute</div>
-            <div class="card">
-              <div class="ch"><div class="cd"></div><span class="ct">Editor / Primary Node</span></div>
-              <div class="f"><label>Machine</label><input id="s-editor-machine" placeholder="e.g. HP Z8 G4"></div>
-              <div class="f"><label>GPU</label><input id="s-editor-gpu" placeholder="e.g. NVIDIA RTX 4090"></div>
-              <div class="f"><label>RAM</label><input id="s-editor-ram" placeholder="e.g. 128GB DDR4"></div>
-              <div class="f"><label>OS</label><input id="s-editor-os" placeholder="e.g. Windows 11 Pro"></div>
-              <div class="f"><label>Unreal Engine Version</label><input id="s-ue-version" placeholder="e.g. 5.7"></div>
-            </div>
-            <div class="card">
-              <div class="ch"><div class="cd"></div><span class="ct">Display Node 1 (Left)</span></div>
-              <div class="f"><label>Machine</label><input id="s-n1-machine" placeholder="e.g. HP Z8 G4"></div>
-              <div class="f"><label>GPU</label><input id="s-n1-gpu" placeholder="e.g. NVIDIA A6000"></div>
-              <div class="f"><label>Sync Card</label><input id="s-n1-sync" placeholder="e.g. Nvidia Quadro Sync II"></div>
-              <div class="f"><label>Capture Card</label><input id="s-n1-cap" placeholder="e.g. Blackmagic Decklink"></div>
-              <div class="f"><label>SDI Input Format</label><input id="s-n1-sdi" placeholder="e.g. 1080i50"></div>
-            </div>
-            <div class="card">
-              <div class="ch"><div class="cd"></div><span class="ct">Display Node 2 (Right)</span></div>
-              <div class="f"><label>Machine</label><input id="s-n2-machine" placeholder="e.g. HP Z8 G4"></div>
-              <div class="f"><label>GPU</label><input id="s-n2-gpu" placeholder="e.g. NVIDIA A6000"></div>
-              <div class="f"><label>Sync Card</label><input id="s-n2-sync" placeholder="e.g. Nvidia Quadro Sync II"></div>
-              <div class="f"><label>Capture Card</label><input id="s-n2-cap" placeholder="e.g. Blackmagic Decklink"></div>
-              <div class="f"><label>SDI Input Format</label><input id="s-n2-sdi" placeholder="e.g. 1080i50"></div>
-            </div>
-          </div>
-          <div>
-            <div class="sh">Display & LED</div>
-            <div class="card">
-              <div class="ch"><div class="cd"></div><span class="ct">LED Volume</span></div>
-              <div class="f"><label>Wall Width</label><input id="s-wall-w" placeholder="e.g. 15m"></div>
-              <div class="f"><label>Wall Height</label><input id="s-wall-h" placeholder="e.g. 3m"></div>
-              <div class="f"><label>Curvature</label><input id="s-wall-c" placeholder="e.g. 3 degrees"></div>
-              <div class="f"><label>Resolution per Node</label><input id="s-wall-res" placeholder="e.g. 3840x2160 UHD"></div>
-              <div class="f"><label>LED Processor</label><input id="s-led" placeholder="e.g. Novastar"></div>
-              <div class="f"><label>Target FPS</label><input id="s-fps-t" placeholder="e.g. 50fps"></div>
-              <div class="f"><label>Current FPS Cap</label><input id="s-fps-c" placeholder="e.g. 25fps"></div>
-              <div class="f"><label>Wall Refresh Rate</label><input id="s-wall-hz" placeholder="e.g. 50Hz"></div>
-            </div>
-            <div class="sh">Tracking & Camera</div>
-            <div class="card">
-              <div class="ch"><div class="cd"></div><span class="ct">Tracking</span></div>
-              <div class="f"><label>Hardware</label><input id="s-tr-hw" placeholder="e.g. HTC Vive Mars"></div>
-              <div class="f"><label>Receivers</label><input id="s-tr-rx" placeholder="e.g. 4x IR on lighting grid"></div>
-              <div class="f"><label>Integration</label><input id="s-tr-int" placeholder="e.g. LiveLink native"></div>
-              <div class="f"><label>Tracking FPS</label><input id="s-tr-fps" placeholder="e.g. 25fps"></div>
-            </div>
-            <div class="card">
-              <div class="ch"><div class="cd"></div><span class="ct">Camera</span></div>
-              <div class="f"><label>Camera model</label><input id="s-cam" placeholder="e.g. Sony HDC-1500"></div>
-              <div class="f"><label>ICVFX mode</label><input id="s-icvfx" placeholder="e.g. Full ICVFX inner frustum"></div>
-              <div class="f"><label>Notes</label><textarea id="s-vp-notes" placeholder="Additional VP notes..."></textarea></div>
-            </div>
-
-            <div class="sh">Network</div>
-            <div class="node-card">
-              <div class="node-card-head">
-                <span class="node-num">01</span>
-                <span class="node-name">Primary switch</span>
-              </div>
-              <div class="node-fields">
-                <div class="f"><label>Switch model</label><input id="s-sw1-model" placeholder="e.g. Netgear M4250"></div>
-                <div class="f"><label>Speed</label><input id="s-sw1-speed" placeholder="e.g. 10GbE"></div>
-                <div class="f fspan"><label>Connected devices</label><input id="s-sw1-devices" placeholder="e.g. Editor PC, Display Node 1, Display Node 2, Camera, Tracking"></div>
-              </div>
-            </div>
-            <div class="node-card">
-              <div class="node-card-head">
-                <span class="node-num">02</span>
-                <span class="node-name">Secondary switch (optional)</span>
-              </div>
-              <div class="node-fields">
-                <div class="f"><label>Switch model</label><input id="s-sw2-model" placeholder="e.g. Unmanaged gigabit switch"></div>
-                <div class="f"><label>Speed</label><input id="s-sw2-speed" placeholder="e.g. 1GbE"></div>
-                <div class="f fspan"><label>Connected devices</label><input id="s-sw2-devices" placeholder="e.g. Novastar, Stage PC, Craft monitor"></div>
-              </div>
-            </div>
-
-            <div class="sh">Genlock</div>
-            <div class="node-card">
-              <div class="node-card-head">
-                <span class="node-num">&#9676;</span>
-                <span class="node-name">Sync source</span>
-              </div>
-              <div class="node-fields">
-                <div class="f"><label>Genlock source</label><input id="s-genlock" placeholder="e.g. House sync / blackburst"></div>
-                <div class="f"><label>Signal format</label><input id="s-genlock-fmt" placeholder="e.g. Blackburst, Tri-level, 1080i50"></div>
-              </div>
-            </div>
-            <div class="node-card">
-              <div class="node-card-head">
-                <span class="node-num">&#9676;</span>
-                <span class="node-name">Sync generator</span>
-              </div>
-              <div class="node-fields">
-                <div class="f"><label>Generator model</label><input id="s-syncgen" placeholder="e.g. AJA GEN10"></div>
-                <div class="f"><label>Output format</label><input id="s-syncgen-fmt" placeholder="e.g. 1080p25, blackburst"></div>
-                <div class="f fspan"><label>Devices receiving sync</label><input id="s-syncgen-devices" placeholder="e.g. Display Node 1, Display Node 2, Vive Mars base stations"></div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <div id="components-host" class="vponly"></div>
 
         <!-- ── VP SYSTEM DIAGRAM ──────────────────────────────── -->
         <div class="vponly diag-wrap">
@@ -1405,6 +1358,476 @@ var FBCFG = {
 var fbapp, fbauth, fbdb;
 var cu = null;
 var specs={}, issues=[], checklist=[], chatHist=[], streaming=false, nextId=1;
+// ═══════════════════════════════════════════════════════════════════════════
+// COMPOSABLE RIG COMPONENT SYSTEM
+// ═══════════════════════════════════════════════════════════════════════════
+
+// Component type catalogue. Each type defines: label, icon, section, accent role,
+// and an ordered list of fields. Field = {k:key, l:label, ph:placeholder, opts:[...] for selects}
+var CTYPES = {
+  workstation: {
+    label:'Workstation', section:'compute', icon:'cpu',
+    roleField:'role',
+    fields:[
+      {k:'role', l:'Role', sel:['Editor','Display Node','Render Node','Utility','Other']},
+      {k:'machine', l:'Machine', ph:'HP Z8 G4'},
+      {k:'cpu', l:'CPU', ph:'Xeon W-2295'},
+      {k:'gpu', l:'GPU', ph:'RTX 4090'},
+      {k:'ram', l:'RAM', ph:'128GB DDR4'},
+      {k:'os', l:'OS', ph:'Windows 11 Pro'},
+      {k:'ue', l:'Unreal Engine', ph:'5.7'},
+      {k:'sync', l:'Sync card', ph:'Quadro Sync II'},
+      {k:'capture', l:'Capture card', ph:'Decklink 8K Pro'},
+      {k:'sdi', l:'SDI format', ph:'1080i50'}
+    ]
+  },
+  ledwall: {
+    label:'LED Wall', section:'display', icon:'wall',
+    fields:[
+      {k:'mfr', l:'Manufacturer', ph:'ROE / Brompton-driven'},
+      {k:'model', l:'Panel model', ph:'Black Pearl BP2V2'},
+      {k:'pitch', l:'Pixel pitch', ph:'2.8mm'},
+      {k:'size', l:'Size (W x H)', ph:'15m x 3m'},
+      {k:'curve', l:'Curvature', ph:'3 degrees'},
+      {k:'res', l:'Resolution', ph:'3840x2160 / node'},
+      {k:'refresh', l:'Refresh rate', ph:'50Hz'}
+    ]
+  },
+  ledproc: {
+    label:'LED Processor', section:'display', icon:'proc',
+    fields:[
+      {k:'mfr', l:'Manufacturer', sel:['Novastar','Brompton','Megapixel','Colorlight','Other']},
+      {k:'model', l:'Model', ph:'MX40 Pro'},
+      {k:'inputs', l:'Inputs', ph:'2x 12G-SDI / HDMI 2.0'},
+      {k:'mapping', l:'Output mapping', ph:'L/R split, UHD per node'},
+      {k:'firmware', l:'Firmware', ph:'v4.7.1'}
+    ]
+  },
+  camera: {
+    label:'Camera', section:'camera', icon:'cam',
+    fields:[
+      {k:'body', l:'Body', ph:'Sony HDC-1500'},
+      {k:'sensor', l:'Sensor', ph:'2/3" CCD'},
+      {k:'mount', l:'Lens mount', ph:'B4'},
+      {k:'output', l:'Output format', ph:'1080i50 SDI'},
+      {k:'routing', l:'Routing', ph:'SDI to Editor node'}
+    ]
+  },
+  lens: {
+    label:'Lens', section:'camera', icon:'lens',
+    fields:[
+      {k:'model', l:'Model', ph:'Fujinon HA18x7.6'},
+      {k:'range', l:'Focal range', ph:'7.6-137mm'},
+      {k:'mount', l:'Mount', ph:'B4'},
+      {k:'aperture', l:'Max aperture', ph:'T1.9'}
+    ]
+  },
+  fiz: {
+    label:'FIZ / Lens Encoder', section:'camera', icon:'fiz',
+    fields:[
+      {k:'system', l:'System', ph:'Preston FIZ / cmotion'},
+      {k:'motors', l:'Motors (F/I/Z)', ph:'Focus + Zoom'},
+      {k:'protocol', l:'Protocol', ph:'FreeD / Mo-Sys'},
+      {k:'calib', l:'Calibration', ph:'Lens file mapped'}
+    ]
+  },
+  tracking: {
+    label:'Tracking System', section:'tracking', icon:'track',
+    systemField:'system',
+    fields:[
+      {k:'system', l:'System', sel:[
+        'HTC Vive Mars','Mo-Sys StarTracker','stYpe RedSpy','stYpe Follower',
+        'Ncam','Vicon','OptiTrack','Antilatency','RoboJib / Encoded head','Other'
+      ]}
+    ],
+    // Per-system extra fields keyed by the system value
+    systemFields:{
+      'HTC Vive Mars':[
+        {k:'basestations', l:'Base stations', ph:'2x SteamVR 2.0'},
+        {k:'receivers', l:'IR receivers', ph:'4x on lighting grid'},
+        {k:'transport', l:'Transport', ph:'LiveLink / 10GbE'},
+        {k:'calib', l:'Calibration', ph:'Room-scale aligned'}
+      ],
+      'Mo-Sys StarTracker':[
+        {k:'sensor', l:'Sensor mount', ph:'Camera-top, upward'},
+        {k:'starmap', l:'Star map', ph:'Ceiling retro-reflective'},
+        {k:'sw', l:'Software', ph:'VP Pro'},
+        {k:'transport', l:'Transport', ph:'FreeD / LiveLink'}
+      ],
+      'stYpe RedSpy':[
+        {k:'sensor', l:'Sensor mount', ph:'Camera-top (inside-out)'},
+        {k:'markers', l:'Markers', ph:'Ceiling reflective'},
+        {k:'transport', l:'Transport', ph:'FreeD / LiveLink'},
+        {k:'calib', l:'Calibration', ph:'Mapped'}
+      ],
+      'stYpe Follower':[
+        {k:'cameras', l:'Witness cameras', ph:'Outside-in around stage'},
+        {k:'markers', l:'Markers', ph:'IR LED on stage'},
+        {k:'transport', l:'Transport', ph:'FreeD / LiveLink'}
+      ],
+      'Ncam':[
+        {k:'sensorbar', l:'Sensor bar', ph:'Camera-mounted'},
+        {k:'server', l:'Server', ph:'Ncam Reality / MK2'},
+        {k:'transport', l:'Transport', ph:'LiveLink'},
+        {k:'calib', l:'Calibration', ph:'Markerless'}
+      ],
+      'Vicon':[
+        {k:'cameras', l:'Mocap cameras', ph:'Valkyrie / Vero'},
+        {k:'markers', l:'Markers', ph:'Active Crown (IR LED)'},
+        {k:'sw', l:'Software', ph:'Shogun / Tracker'},
+        {k:'transport', l:'Transport', ph:'LiveLink'}
+      ],
+      'OptiTrack':[
+        {k:'cameras', l:'Cameras', ph:'PrimeX 41 x8'},
+        {k:'markers', l:'Markers', ph:'Passive retro-reflective'},
+        {k:'sw', l:'Software', ph:'Motive'},
+        {k:'transport', l:'Transport', ph:'LiveLink / VRPN'}
+      ],
+      'Antilatency':[
+        {k:'trackers', l:'Trackers', ph:'Alt sockets'},
+        {k:'floor', l:'Reference', ph:'IR floor / bracers'},
+        {k:'transport', l:'Transport', ph:'LiveLink'}
+      ],
+      'RoboJib / Encoded head':[
+        {k:'head', l:'Head / arm', ph:'Encoded crane'},
+        {k:'encoders', l:'Encoders', ph:'Pan/tilt/height'},
+        {k:'transport', l:'Transport', ph:'FreeD'}
+      ],
+      'Other':[
+        {k:'detail', l:'System detail', ph:'Describe the tracking method'},
+        {k:'transport', l:'Transport', ph:'LiveLink / FreeD'}
+      ]
+    },
+    commonFields:[
+      {k:'mount', l:'Camera mount', ph:'Top plate'},
+      {k:'calibstatus', l:'Calibration', sel:['Calibrated','Needs calibration','Not set']}
+    ]
+  },
+  sync: {
+    label:'Sync / Genlock', section:'syncnet', icon:'sync',
+    fields:[
+      {k:'type', l:'Type', sel:['House sync','Sync generator','Master clock','Other']},
+      {k:'source', l:'Reference', sel:['Blackburst','Tri-level','Word clock','PTP','Other']},
+      {k:'model', l:'Generator model', ph:'AJA GEN10'},
+      {k:'rate', l:'Rate / format', ph:'1080p25'},
+      {k:'dist', l:'Distribution', ph:'DA to all nodes + camera'}
+    ]
+  },
+  network: {
+    label:'Network Device', section:'syncnet', icon:'net',
+    fields:[
+      {k:'type', l:'Type', sel:['Switch','Router','Media converter','NIC','Other']},
+      {k:'model', l:'Model', ph:'Cisco / Netgear M4300'},
+      {k:'speed', l:'Speed', ph:'10GbE'},
+      {k:'ports', l:'Ports', ph:'24x SFP+'}
+    ]
+  },
+  power: {
+    label:'Power', section:'power', icon:'power',
+    fields:[
+      {k:'type', l:'Type', sel:['UPS','PDU','Generator','Isolation transformer','Other']},
+      {k:'model', l:'Model', ph:'APC SRT5KRMXLI'},
+      {k:'capacity', l:'Capacity', ph:'5kVA'},
+      {k:'runtime', l:'Runtime', ph:'12 min full load'},
+      {k:'circuits', l:'Circuits', ph:'2x 32A'}
+    ]
+  }
+};
+
+// Section definitions (render order + labels)
+var CSECTIONS = [
+  {id:'compute', label:'Compute', types:['workstation']},
+  {id:'display', label:'Display & LED', types:['ledwall','ledproc']},
+  {id:'camera', label:'Camera & Lens', types:['camera','lens','fiz']},
+  {id:'tracking', label:'Tracking', types:['tracking']},
+  {id:'syncnet', label:'Sync & Network', types:['sync','network']},
+  {id:'power', label:'Power', types:['power']}
+];
+
+
+// ── COMPONENT STATE ──────────────────────────────────────────────────────
+// components: array of {id, type, fields:{...}, notes}
+var components = [], compNextId = 1, compEditId = null;
+
+function compIcon(name){
+  var svgs = {
+    cpu:'<rect x="4.5" y="4.5" width="15" height="15" rx="2.5"/><rect x="9" y="9" width="6" height="6" rx="1"/><path d="M9 4.5V2.2M15 4.5V2.2M9 21.8v-2.3M15 21.8v-2.3M4.5 9H2.2M4.5 15H2.2M21.8 9h-2.3M21.8 15h-2.3"/>',
+    wall:'<rect x="3" y="5" width="18" height="12" rx="1"/><path d="M3 11h18M9 5v12M15 5v12M8 21h8"/>',
+    proc:'<rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 10h.01M7 14h4M17 10l-2 2 2 2"/>',
+    cam:'<path d="M3 8a2 2 0 0 1 2-2h2l1.5-2h7L19 6h0a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><circle cx="12" cy="12.5" r="3.2"/>',
+    lens:'<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="3.5"/><path d="M12 3.5v3M12 17.5v3"/>',
+    fiz:'<circle cx="12" cy="12" r="8"/><path d="M12 12l4-2M12 4v3M20 12h-3"/>',
+    track:'<path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/>',
+    sync:'<circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3 2"/>',
+    net:'<rect x="3" y="14" width="18" height="6" rx="1.5"/><path d="M7 14V9h10v5M12 9V5M7 17h.01M11 17h.01"/>',
+    power:'<path d="M12 3v9M7.5 6.5a7 7 0 1 0 9 0"/>'
+  };
+  return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">'+(svgs[name]||svgs.cpu)+'</svg>';
+}
+
+// Field set for a component (handles dynamic tracking fields)
+function compFieldset(type, comp){
+  var def = CTYPES[type];
+  if(!def) return [];
+  var fs = def.fields.slice();
+  if(type==='tracking'){
+    var sys = (comp && comp.fields && comp.fields.system) || def.fields[0].sel[0];
+    fs = fs.concat(def.systemFields[sys]||[]);
+    fs = fs.concat(def.commonFields||[]);
+  }
+  return fs;
+}
+
+// Status LED for a component (green default; blue for Editor; amber if pending/needs)
+function compLed(comp){
+  var f = comp.fields||{};
+  if(comp.type==='workstation' && f.role==='Editor') return 'b';
+  var vals = Object.keys(f).map(function(k){return (f[k]||'').toLowerCase();}).join(' ');
+  if(vals.indexOf('pending')>=0 || vals.indexOf('needs')>=0 || vals.indexOf('not set')>=0) return 'a';
+  return 'g';
+}
+
+// Short role/type tag shown top-right of a strip
+function compTag(comp){
+  var def = CTYPES[comp.type]; var f = comp.fields||{};
+  if(comp.type==='workstation') return ((f.role||'Node')+' / '+(f.gpu||'—')).toUpperCase();
+  if(comp.type==='tracking') return (f.system||'TRACKING').toUpperCase();
+  if(comp.type==='ledwall') return (f.size||'LED WALL').toUpperCase();
+  if(comp.type==='ledproc') return (f.mfr||'PROCESSOR').toUpperCase();
+  if(comp.type==='camera') return (f.body||'CAMERA').toUpperCase();
+  if(comp.type==='sync') return (f.source||f.type||'SYNC').toUpperCase();
+  if(comp.type==='network') return (f.speed||f.type||'NETWORK').toUpperCase();
+  if(comp.type==='power') return (f.type||'POWER').toUpperCase();
+  return def.label.toUpperCase();
+}
+
+function compName(comp){
+  var def = CTYPES[comp.type]; var f = comp.fields||{};
+  if(comp.type==='workstation') return f.role || def.label;
+  if(comp.type==='camera') return f.body || def.label;
+  if(comp.type==='lens') return f.model || def.label;
+  if(comp.type==='ledwall') return def.label;
+  if(comp.type==='ledproc') return f.model || def.label;
+  if(comp.type==='tracking') return f.system || def.label;
+  if(comp.type==='network') return f.type || def.label;
+  if(comp.type==='power') return f.type || def.label;
+  if(comp.type==='sync') return f.type || def.label;
+  if(comp.type==='fiz') return def.label;
+  return def.label;
+}
+
+function saveComponents(){
+  fsave('components',{items:components,nextId:compNextId});
+  renderComponents(); renderRigSum(); updateRigMini(); buildSysPrompt();
+}
+
+function addComponent(type){
+  var def = CTYPES[type]; if(!def) return;
+  var c = {id:compNextId++, type:type, fields:{}, notes:''};
+  // seed selects with first option
+  compFieldset(type, c).forEach(function(fl){ if(fl.sel) c.fields[fl.k]=fl.sel[0]; });
+  components.push(c);
+  compEditId = c.id;
+  saveComponents();
+}
+
+function removeComponent(id){
+  if(!confirm('Remove this component?')) return;
+  components = components.filter(function(c){return c.id!==id;});
+  if(compEditId===id) compEditId=null;
+  saveComponents();
+}
+
+function editComponent(id){ compEditId = (compEditId===id?null:id); renderComponents(); }
+
+function setCompField(id, key, val){
+  var c = components.find(function(x){return x.id===id;}); if(!c) return;
+  c.fields[key] = val;
+  // tracking system change rebuilds fieldset → re-render in place
+  if(c.type==='tracking' && key==='system'){ saveComponents(); }
+  else { fsave('components',{items:components,nextId:compNextId}); renderRigSum(); updateRigMini(); buildSysPrompt(); }
+}
+function setCompNotes(id, val){
+  var c = components.find(function(x){return x.id===id;}); if(!c) return;
+  c.notes = val;
+  fsave('components',{items:components,nextId:compNextId}); buildSysPrompt();
+}
+
+// ── RENDER ───────────────────────────────────────────────────────────────
+function renderComponents(){
+  var host = el('components-host'); if(!host) return;
+  var html = '';
+  CSECTIONS.forEach(function(sec){
+    var items = components.filter(function(c){ return CTYPES[c.type] && CTYPES[c.type].section===sec.id; });
+    var count = items.length;
+    html += '<div class="csec">'
+      + '<span class="ctick"></span>'
+      + '<span class="csl">'+sec.label+'</span>'
+      + (count?'<span class="csc">'+count+' unit'+(count>1?'s':'')+'</span>':'')
+      + '<span class="csec-rule"></span>'
+      + '<div class="cadd-wrap">'
+      +   '<button class="cadd" onclick="toggleAddMenu('+"'"+sec.id+"'"+')">+ Add</button>'
+      +   '<div class="cadd-menu" id="addmenu-'+sec.id+'">'
+      +     sec.types.map(function(t){return '<button class="cadd-opt" onclick="addComponent('+"'"+t+"'"+');closeAddMenus()">'+compIcon(CTYPES[t].icon)+'<span>'+CTYPES[t].label+'</span></button>';}).join('')
+      +   '</div>'
+      + '</div>'
+      + '</div>';
+    if(!count){
+      html += '<div class="cempty">No '+sec.label.toLowerCase()+' components yet. Click <span style="color:var(--ink2)">+ Add</span> to start.</div>';
+    } else {
+      var cols = (sec.id==='compute') ? 'csg-3' : (sec.id==='display'||sec.id==='camera'||sec.id==='syncnet') ? 'csg-2' : 'csg-2';
+      html += '<div class="cgrid '+cols+'">' + items.map(renderStrip).join('') + '</div>';
+    }
+  });
+  host.innerHTML = html;
+}
+
+function renderStrip(comp){
+  var def = CTYPES[comp.type];
+  var editing = (comp.id===compEditId);
+  var led = compLed(comp);
+  var fs = compFieldset(comp.type, comp);
+  var body;
+  if(editing){
+    body = fs.map(function(fl){
+      var val = comp.fields[fl.k]||'';
+      var input;
+      if(fl.sel){
+        input = '<select class="cv-edit" onchange="setCompField('+comp.id+',\''+fl.k+'\',this.value)">'
+          + fl.sel.map(function(o){return '<option'+(o===val?' selected':'')+'>'+o+'</option>';}).join('')
+          + '</select>';
+      } else {
+        input = '<input class="cv-edit" value="'+esc(val)+'" placeholder="'+(fl.ph||'')+'" oninput="setCompField('+comp.id+',\''+fl.k+'\',this.value)">';
+      }
+      return '<div class="crow"><span class="ck">'+fl.l+'</span>'+input+'</div>';
+    }).join('');
+    body += '<div class="crow cnotes-row"><span class="ck">Notes</span></div>'
+      + '<textarea class="cnotes" placeholder="Anything the support assistant should know about this unit..." oninput="setCompNotes('+comp.id+',this.value)">'+esc(comp.notes||'')+'</textarea>';
+  } else {
+    body = fs.filter(function(fl){return (comp.fields[fl.k]||'').trim();}).map(function(fl){
+      return '<div class="crow"><span class="ck">'+fl.l+'</span><span class="cv">'+esc(comp.fields[fl.k])+'</span></div>';
+    }).join('');
+    if(!body) body = '<div class="crow"><span class="ck" style="color:var(--ink4)">Not configured</span></div>';
+    if((comp.notes||'').trim()) body += '<div class="cnote-disp">'+esc(comp.notes)+'</div>';
+  }
+  return '<div class="strip'+(led==='b'?' primary':'')+(editing?' editing':'')+'">'
+    + '<div class="csh">'
+    +   '<span class="led '+led+'"></span>'
+    +   '<span class="csn">'+esc(compName(comp))+'</span>'
+    +   '<span class="csr">'+esc(compTag(comp))+'</span>'
+    +   '<button class="cact" title="Edit" onclick="editComponent('+comp.id+')">'+(editing?'<span style=\"font-size:11px\">Done</span>':'<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 20h4l10.5-10.5a2.1 2.1 0 0 0-3-3L5 17z\"/></svg>')+'</button>'
+    +   '<button class="cact cact-del" title="Remove" onclick="removeComponent('+comp.id+')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M5 7h14M9 7V5h6v2M7 7l1 13h8l1-13"/></svg></button>'
+    + '</div>'
+    + '<div class="csbody">'+body+'</div>'
+    + '</div>';
+}
+
+function toggleAddMenu(secId){
+  var m = el('addmenu-'+secId); if(!m) return;
+  var wasOpen = m.classList.contains('open');
+  closeAddMenus();
+  if(!wasOpen) m.classList.add('open');
+}
+function closeAddMenus(){ document.querySelectorAll('.cadd-menu.open').forEach(function(m){m.classList.remove('open');}); }
+document.addEventListener('click', function(e){ if(!e.target.closest('.cadd-wrap')) closeAddMenus(); });
+
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+
+// ── MIGRATION: convert legacy flat specs → components (one-time) ──────────
+function migrateSpecsToComponents(){
+  var s = specs||{}; var made = [];
+  function add(type, fields, notes){ made.push({id:compNextId++, type:type, fields:fields, notes:notes||''}); }
+  // Editor
+  if(s['editor-machine']||s['editor-gpu']) add('workstation',{role:'Editor',machine:s['editor-machine']||'',gpu:s['editor-gpu']||'',ram:s['editor-ram']||'',os:s['editor-os']||'',ue:s['ue-version']||''});
+  // Display nodes
+  if(s['n1-machine']||s['n1-gpu']) add('workstation',{role:'Display Node',machine:s['n1-machine']||'',gpu:s['n1-gpu']||'',sync:s['n1-sync']||'',capture:s['n1-cap']||'',sdi:s['n1-sdi']||''});
+  if(s['n2-machine']||s['n2-gpu']) add('workstation',{role:'Display Node',machine:s['n2-machine']||'',gpu:s['n2-gpu']||'',sync:s['n2-sync']||'',capture:s['n2-cap']||'',sdi:s['n2-sdi']||''});
+  // LED wall
+  if(s['wall-w']||s['wall-h']||s['wall-res']) add('ledwall',{size:((s['wall-w']||'')+(s['wall-h']?' x '+s['wall-h']:'')),curve:s['wall-c']||'',res:s['wall-res']||'',refresh:s['wall-hz']||''});
+  // LED processor (split out)
+  if(s['led']) add('ledproc',{mfr:s['led']||'',mapping:'L/R split, UHD per node'});
+  // Camera
+  if(s['cam']) add('camera',{body:s['cam']||'',output:s['n1-sdi']||'1080i50',routing:'SDI to Editor node'});
+  // Tracking
+  if(s['tr-hw']){
+    var sys = /vive|mars/i.test(s['tr-hw']) ? 'HTC Vive Mars' : /startracker|mo-?sys/i.test(s['tr-hw']) ? 'Mo-Sys StarTracker' : /redspy|stype/i.test(s['tr-hw']) ? 'stYpe RedSpy' : /ncam/i.test(s['tr-hw']) ? 'Ncam' : /vicon/i.test(s['tr-hw']) ? 'Vicon' : /optitrack/i.test(s['tr-hw']) ? 'OptiTrack' : 'Other';
+    var tf = {system:sys, transport:s['tr-int']||'LiveLink / 10GbE'};
+    if(sys==='HTC Vive Mars'){ tf.receivers=s['tr-rx']||''; }
+    else { tf.detail=s['tr-hw']; }
+    add('tracking', tf);
+  }
+  // Sync / genlock
+  if(s['genlock']||s['syncgen']) add('sync',{type:'House sync',source:s['genlock']||'Blackburst',model:s['syncgen']||'',rate:s['syncgen-fmt']||'',dist:'DA to nodes + camera'});
+  // Network
+  if(s['net']||s['sw1-model']) add('network',{type:'Switch',model:s['sw1-model']||s['net']||'',speed:s['sw1-speed']||'10GbE',ports:s['sw1-devices']||''});
+  if(s['sw2-model']) add('network',{type:'Switch',model:s['sw2-model']||'',speed:s['sw2-speed']||'',ports:s['sw2-devices']||''});
+  // carry legacy notes onto first component
+  if(s['vp-notes'] && made.length) made[0].notes = s['vp-notes'];
+  return made;
+}
+
+// ── RIG SUMMARY (sidebar) from components ────────────────────────────────
+function renderRigSum(){
+  var sumEl = el('rig-sum'); if(!sumEl) return;
+  var ws = components.filter(function(c){return c.type==='workstation';});
+  var wall = components.find(function(c){return c.type==='ledwall';});
+  var proc = components.find(function(c){return c.type==='ledproc';});
+  var trk = components.find(function(c){return c.type==='tracking';});
+  var syn = components.find(function(c){return c.type==='sync';});
+  var cam = components.find(function(c){return c.type==='camera';});
+  function v(x){return x&&x.trim?x.trim():'';}
+  var rows = [
+    ['Components', components.length+' total', true],
+    ['Workstations', ws.length?ws.length+' nodes':'—', false],
+    ['Wall', wall?(v(wall.fields.size)||'set'):'—', false],
+    ['Processor', proc?(v(proc.fields.mfr)||v(proc.fields.model)||'set'):'—', false],
+    ['Tracking', trk?(v(trk.fields.system)||'set'):'—', false],
+    ['Camera', cam?(v(cam.fields.body)||'set'):'—', false],
+    ['Sync', syn?(v(syn.fields.source)||v(syn.fields.type)||'set'):'—', false]
+  ];
+  sumEl.innerHTML = rows.map(function(r){
+    return '<div class="sr"><span class="sk">'+r[0]+'</span><span class="sv'+(r[2]?' ac':'')+'">'+esc(r[1])+'</span></div>';
+  }).join('');
+}
+
+// ── RIG MINI (rail) from components ──────────────────────────────────────
+function updateRigMini(){
+  var ws = components.filter(function(c){return c.type==='workstation';});
+  var dn = ws.filter(function(c){return c.fields.role==='Display Node';});
+  var sync = components.find(function(c){return c.type==='sync';});
+  var wall = components.find(function(c){return c.type==='ledwall';});
+  var ed=ws.find(function(c){return c.fields.role==='Editor';}); var rm=el('rm-ue'); if(rm) rm.textContent='UE '+((ed&&ed.fields.ue)||'5.7');
+  var editor = ws.find(function(c){return c.fields.role==='Editor';});
+  var rf=el('rm-fps'); if(rf){ var hz=wall?wall.fields.refresh:''; rf.textContent=hz||'25/50'; rf.className='rig-v'+(hz&&/50/.test(hz)?' warn':' warn'); }
+  var rs=el('rm-sync'); if(rs){ var src=sync?(sync.fields.source||sync.fields.type):''; rs.textContent=src||'Blackburst'; rs.className='rig-v warn'; }
+  var rn=el('rm-nodes'); if(rn) rn.textContent=(dn.length||ws.length)+'x '+(dn.length?'DN':'WS');
+  if(typeof cu!=='undefined' && cu){ var av=el('uav'); if(av && cu.displayName) av.textContent=cu.displayName.charAt(0).toUpperCase(); }
+}
+
+// ── AI SERIALIZATION: components → context block (notes included) ─────────
+function componentsToContext(){
+  if(!components.length) return 'No components configured yet.\n';
+  var out = '';
+  CSECTIONS.forEach(function(sec){
+    var items = components.filter(function(c){return CTYPES[c.type]&&CTYPES[c.type].section===sec.id;});
+    if(!items.length) return;
+    out += '\n['+sec.label.toUpperCase()+']\n';
+    items.forEach(function(c){
+      var def = CTYPES[c.type];
+      var parts = [];
+      compFieldset(c.type,c).forEach(function(fl){
+        var val=(c.fields[fl.k]||'').trim();
+        if(val) parts.push(fl.l+': '+val);
+      });
+      out += '- '+def.label+' ['+compName(c)+']: '+parts.join(', ')+'\n';
+      if((c.notes||'').trim()) out += '    NOTE: '+c.notes.trim()+'\n';
+    });
+  });
+  return out;
+}
+
+
 
 window.onerror = function(msg,src,ln,col,err){
   document.getElementById('lerr').textContent = 'JS Error: ' + msg + ' (line ' + ln + ')';
@@ -1527,7 +1950,18 @@ async function loadData(){
     var hd = await dref('chat').get();
     chatHist = hd.exists ? (hd.data().history || []) : [];
 
+    var compd = await dref('components').get();
+    if(compd.exists && compd.data().items && compd.data().items.length){
+      components = compd.data().items;
+      compNextId = compd.data().nextId || (components.length+1);
+    } else {
+      components = migrateSpecsToComponents();
+      compNextId = components.length ? Math.max.apply(null, components.map(function(c){return c.id;}))+1 : 1;
+      dref('components').set({items:components,nextId:compNextId});
+    }
+
     loadSpecFields();
+    renderComponents();
     renderIssues();
     renderCL();
     renderRigSum();
@@ -1535,20 +1969,7 @@ async function loadData(){
     initChat();
     checkApiKeyOnLogin();
     updateRigMini();
-    // Live diagram updates as user types in VP spec fields
-    var vpFields = ['editor-machine','editor-gpu','ue-version',
-      'n1-machine','n1-gpu','n1-sync','n1-cap','n1-sdi',
-      'n2-machine','n2-gpu','n2-sync','n2-cap','n2-sdi',
-      'wall-w','wall-h','wall-c','wall-res','led',
-      'fps-t','fps-c','wall-hz','tr-hw','tr-rx','tr-fps',
-      'cam','icvfx','net','genlock','syncgen'];
-    vpFields.forEach(function(k){
-      var e = el('s-'+k);
-      if(e) e.addEventListener('input', function(){
-        specs[k] = e.value;
-        updateDiagram();
-      });
-    });
+    updateDiagram();
   } catch(e) {
     console.error('Load error', e);
   }
@@ -1714,58 +2135,51 @@ function updateDiagram(){
   if((specs['mode']||'vp') !== 'vp') return;
   function dtxt(id, val, fallback){
     var e = document.getElementById(id);
-    if(e) e.textContent = val && val.trim() ? val.trim() : fallback;
+    if(e) e.textContent = val && (''+val).trim() ? (''+val).trim() : fallback;
   }
-  // Editor
-  dtxt('dg-editor-machine', specs['editor-machine'], 'Editor PC');
-  dtxt('dg-editor-gpu', specs['editor-gpu'], 'GPU');
-  dtxt('dg-editor-ue', specs['ue-version'] ? 'UE ' + specs['ue-version'] : 'UE —', 'UE —');
-  // Node 1
-  dtxt('dg-n1-machine', specs['n1-machine'], 'Node 1');
-  dtxt('dg-n1-gpu', specs['n1-gpu'], 'GPU');
-  var n1sync = specs['n1-sync'] ? specs['n1-sync'].replace('Nvidia ','').replace('Nvidia Quadro ','').replace('Quadro ','') : 'Sync II';
-  var n1cap = specs['n1-cap'] ? specs['n1-cap'].replace('Blackmagic ','') : 'Decklink';
-  dtxt('dg-n1-sync', n1sync + ' · ' + n1cap, 'Sync II · Decklink');
-  // Node 2
-  dtxt('dg-n2-machine', specs['n2-machine'], 'Node 2');
-  dtxt('dg-n2-gpu', specs['n2-gpu'], 'GPU');
-  var n2sync = specs['n2-sync'] ? specs['n2-sync'].replace('Nvidia ','').replace('Nvidia Quadro ','').replace('Quadro ','') : 'Sync II';
-  var n2cap = specs['n2-cap'] ? specs['n2-cap'].replace('Blackmagic ','') : 'Decklink';
-  dtxt('dg-n2-sync', n2sync + ' · ' + n2cap, 'Sync II · Decklink');
-  // Wall
-  var wallStr = '';
-  if(specs['wall-w']||specs['wall-h']) wallStr = (specs['wall-w']||'?') + ' × ' + (specs['wall-h']||'?');
-  if(specs['wall-c']) wallStr += ' · ' + specs['wall-c'] + ' curve';
+  function cf(c,k){ return c && c.fields ? (c.fields[k]||'') : ''; }
+  var ws = components.filter(function(c){return c.type==='workstation';});
+  var editor = ws.find(function(c){return c.fields.role==='Editor';}) || ws[0];
+  var nodes = ws.filter(function(c){return c.fields.role==='Display Node';});
+  if(!nodes.length) nodes = ws.filter(function(c){return c!==editor;});
+  var n1 = nodes[0], n2 = nodes[1];
+  var wall = components.find(function(c){return c.type==='ledwall';});
+  var proc = components.find(function(c){return c.type==='ledproc';});
+  var trk = components.find(function(c){return c.type==='tracking';});
+  var cam = components.find(function(c){return c.type==='camera';});
+  var syn = components.find(function(c){return c.type==='sync';});
+  var net = components.find(function(c){return c.type==='network';});
+
+  dtxt('dg-editor-machine', cf(editor,'machine'), 'Editor PC');
+  dtxt('dg-editor-gpu', cf(editor,'gpu'), 'GPU');
+  dtxt('dg-editor-ue', cf(editor,'ue') ? 'UE ' + cf(editor,'ue') : 'UE 5.7', 'UE 5.7');
+  dtxt('dg-n1-machine', cf(n1,'machine'), 'Node 1');
+  dtxt('dg-n1-gpu', cf(n1,'gpu'), 'GPU');
+  var n1sync=(cf(n1,'sync')||'Sync II').replace(/Nvidia |Quadro /g,'');
+  var n1cap=(cf(n1,'capture')||'Decklink').replace('Blackmagic ','');
+  dtxt('dg-n1-sync', n1sync+' · '+n1cap, 'Sync II · Decklink');
+  dtxt('dg-n2-machine', cf(n2,'machine'), 'Node 2');
+  dtxt('dg-n2-gpu', cf(n2,'gpu'), 'GPU');
+  var n2sync=(cf(n2,'sync')||'Sync II').replace(/Nvidia |Quadro /g,'');
+  var n2cap=(cf(n2,'capture')||'Decklink').replace('Blackmagic ','');
+  dtxt('dg-n2-sync', n2sync+' · '+n2cap, 'Sync II · Decklink');
+  var wallStr = cf(wall,'size') || '— × —';
+  if(cf(wall,'curve')) wallStr += ' · '+cf(wall,'curve')+' curve';
   dtxt('dg-wall-size', wallStr, '— × —');
-  dtxt('dg-led-proc', specs['led'], 'LED Processor');
-  dtxt('dg-wall-left-res', specs['wall-res']||'UHD', 'UHD');
-  dtxt('dg-wall-right-res', specs['wall-res']||'UHD', 'UHD');
-  // Tracking
-  dtxt('dg-tr-hw', specs['tr-hw'], 'Tracking');
-  dtxt('dg-tr-rx', specs['tr-rx'], 'Receivers');
-  dtxt('dg-tr-fps', 'LiveLink · ' + (specs['tr-fps'] ? specs['tr-fps'] + ' · network' : 'network'), 'LiveLink · network');
-  // Camera
-  dtxt('dg-cam-model', specs['cam'], 'Camera');
-  dtxt('dg-cam-sdi', 'SDI ' + (specs['n1-sdi']||'—'), 'SDI');
-  dtxt('dg-cam-icvfx', specs['icvfx'] ? specs['icvfx'].replace('Full ','') : '—', '—');
-  // Sync
-  dtxt('dg-genlock', specs['genlock'], 'Genlock source');
-  dtxt('dg-syncgen', specs['syncgen']||'', '');
-  // Network switch label
-  dtxt('dg-switch-lbl', specs['net']||'10GbE Switch', '10GbE Switch');
+  dtxt('dg-led-proc', cf(proc,'mfr')||cf(proc,'model'), 'LED Processor');
+  dtxt('dg-wall-left-res', cf(wall,'res')||'UHD', 'UHD');
+  dtxt('dg-wall-right-res', cf(wall,'res')||'UHD', 'UHD');
+  dtxt('dg-tr-hw', cf(trk,'system'), 'Tracking');
+  dtxt('dg-tr-rx', cf(trk,'receivers')||cf(trk,'cameras')||cf(trk,'markers'), 'Receivers');
+  dtxt('dg-tr-fps', cf(trk,'transport')||'LiveLink · network', 'LiveLink · network');
+  dtxt('dg-cam-model', cf(cam,'body'), 'Camera');
+  dtxt('dg-cam-sdi', 'SDI '+(cf(cam,'output')||cf(n1,'sdi')||'—'), 'SDI');
+  dtxt('dg-cam-icvfx', '—', '—');
+  dtxt('dg-genlock', cf(syn,'source')||cf(syn,'type'), 'Genlock source');
+  dtxt('dg-syncgen', cf(syn,'model')||'', '');
+  dtxt('dg-switch-lbl', cf(net,'model')||cf(net,'speed')||'10GbE Switch', '10GbE Switch');
 }
 
-function updateRigMini(){
-  var ue=(specs['ue-version']||'').trim();
-  var fps=(specs['wall-fps-cap']||'').trim();
-  var sync=(specs['genlock-source']||'').trim();
-  var rm=el('rm-ue');if(rm)rm.textContent=ue?'UE '+ue:'UE 5.7';
-  var rf=el('rm-fps');
-  if(rf){rf.textContent=fps||'25/50';rf.className='rig-v'+(fps&&fps==='50fps'?'':' warn');}
-  var rs=el('rm-sync');
-  if(rs){rs.textContent=sync?sync.replace('House sync / ',''):'Blackburst';rs.className='rig-v'+(sync&&sync.toLowerCase().includes('aja')?'':' warn');}
-  var av=el('uav');if(av&&cu&&cu.displayName)av.textContent=cu.displayName.charAt(0).toUpperCase();
-}
 function buildSysPrompt(){
   var mode = specs['mode'] || 'vp';
   if(mode === 'vp'){
@@ -1779,17 +2193,9 @@ function getSysVP(){
   var s = specs;
   return 'You are a specialist technical support engineer for virtual production. Deep expertise in Unreal Engine, nDisplay, ICVFX, LED volumes, camera tracking, colour pipeline, VP networking.\n\n'
   + 'THE USER IS IN VIRTUAL PRODUCTION MODE.\n'
-  + 'THEIR SYSTEM:\n'
-  + 'UE Version: ' + (s['ue-version']||'not set') + '\n'
-  + 'Editor PC: ' + (s['editor-machine']||'not set') + ' / ' + (s['editor-gpu']||'not set') + '\n'
-  + 'Display Node 1 (left): ' + (s['n1-machine']||'not set') + ' / ' + (s['n1-gpu']||'not set') + ' / Sync: ' + (s['n1-sync']||'not set') + ' / Capture: ' + (s['n1-cap']||'not set') + ' / SDI: ' + (s['n1-sdi']||'not set') + '\n'
-  + 'Display Node 2 (right): ' + (s['n2-machine']||'not set') + ' / ' + (s['n2-gpu']||'not set') + ' / Sync: ' + (s['n2-sync']||'not set') + ' / Capture: ' + (s['n2-cap']||'not set') + ' / SDI: ' + (s['n2-sdi']||'not set') + '\n'
-  + 'LED Wall: ' + (s['wall-w']||'?') + ' x ' + (s['wall-h']||'?') + ', ' + (s['wall-c']||'?') + ' curve, ' + (s['wall-res']||'?') + ' per node, ' + (s['led']||'?') + ' processor\n'
-  + 'Frame rate: ' + (s['fps-t']||'?') + ' target, ' + (s['fps-c']||'?') + ' current cap. Wall: ' + (s['wall-hz']||'?') + '\n'
-  + 'Tracking: ' + (s['tr-hw']||'?') + ', ' + (s['tr-rx']||'?') + ', ' + (s['tr-int']||'?') + ', ' + (s['tr-fps']||'?') + '\n'
-  + 'Camera: ' + (s['cam']||'?') + ' / Mode: ' + (s['icvfx']||'?') + '\n'
-  + 'Network: ' + (s['net']||'?') + ' / Genlock: ' + (s['genlock']||'?') + ' / Sync gen: ' + (s['syncgen']||'?') + '\n'
-  + (s['vp-notes'] ? 'Notes: ' + s['vp-notes'] + '\n' : '')
+  + 'UE Version: ' + (function(){var e=components.find(function(c){return c.type==='workstation'&&c.fields.role==='Editor';});return (e&&e.fields.ue)||s['ue-version']||'not set';})() + '\n'
+  + 'THEIR RIG (composed of these components — pay attention to the NOTE lines, they are user-supplied context):\n'
+  + componentsToContext()
   + '\nSOURCE PRIORITY:\n1. docs.unrealengine.com\n2. dev.epicgames.com/community and forums.unrealengine.com\n3. Curated VP YouTube (fetch transcripts):\n- nDisplay+Switchboard LED wall: https://www.youtube.com/watch?v=4kVsIagsX50\n- nDisplay config class: https://www.youtube.com/watch?v=0-vUJhBHWfs\n- Vive Mars LiveLink ICVFX: https://www.youtube.com/watch?v=g_6_-htkIzU\n- ICVFX inner frustum resolution: https://www.youtube.com/watch?v=gAkJRcHMg1c\n4. Reddit r/virtualproduction, fxguide.com\n\nFor every question: search docs first, then community, then fetch YouTube transcript if needed.\nEnd every response with:\n===SOURCES===\n[{"title":"...","url":"...","type":"epic or community or youtube"}]\n===END===\nBe direct, technical, practical. Assume a capable VP professional.';
 }
 
@@ -1811,34 +2217,6 @@ function getSysGD(){
   + '\nSOURCE PRIORITY:\n1. docs.unrealengine.com\n2. dev.epicgames.com/community and forums.unrealengine.com\n3. YouTube: Unreal Engine official channel, William Faucher (lighting/rendering), Alex Forsythe (UE C++), Gorka Games, Matt Aspland\n4. Reddit r/unrealengine, r/gamedev\n\nFor every question: search docs first, then community sources, then YouTube if needed.\nEnd every response with:\n===SOURCES===\n[{"title":"...","url":"...","type":"epic or community or youtube"}]\n===END===\nBe direct, technical, practical. Tailor all advice to the user\'s specific platform target, project type, and UE version.';
 }
 
-function renderRigSum(){
-  var mode = specs['mode'] || 'vp';
-  var rows;
-  if(mode === 'vp'){
-    rows = [
-      ['Mode','Virtual Production',true],
-      ['UE',specs['ue-version']||'—',false],
-      ['Nodes','2x '+(specs['n1-machine']||'—')+' / '+(specs['n1-gpu']||'—'),false],
-      ['Wall',(specs['wall-w']||'—')+' x '+(specs['wall-h']||'—')+' / '+(specs['led']||'—'),false],
-      ['FPS',(specs['fps-c']||'—')+' cap / '+(specs['wall-hz']||'—'),false],
-      ['Tracking',(specs['tr-hw']||'—'),false],
-      ['Sync',specs['genlock']||'—',false]
-    ];
-  } else {
-    rows = [
-      ['Mode','Game Development',true],
-      ['UE',specs['gd-ue']||'—',false],
-      ['Machine',specs['gd-gpu']||'—',false],
-      ['Project',specs['gd-projtype']||'—',false],
-      ['Platform',specs['gd-platform']||'—',false],
-      ['Target FPS',specs['gd-fps']||'—',false],
-      ['Stage',specs['gd-stage']||'—',false]
-    ];
-  }
-  el('rig-sum').innerHTML = rows.map(function(r){
-    return '<div class="sr"><span class="sk">'+r[0]+'</span><span class="sv'+(r[2]?' ac':'')+'">'+r[1]+'</span></div>';
-  }).join('');
-}
 
 // Issues
 var SL={'open':'Open','in-progress':'In Progress','waiting':'Waiting','resolved':'Resolved'};

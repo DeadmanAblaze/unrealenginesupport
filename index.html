@@ -2597,7 +2597,7 @@ function updateDiagram(){
     var out  = cf(cam,'output')||cf(cam,'sdi')||'';
     var n = drawNode(COL_LEFT-NODE_W/2+10, leftY, NODE_W,
       [{text:sh(body,20)},{text:sh(out,20),color:'#60a5fa'}],
-      'Camera', '#1e40af', '#93c5fd', cam);
+      compName(cam)||'Camera', '#1e40af', '#93c5fd', cam);
     nodes['cam'+i] = n; svgParts.push(n.html);
     leftY += n.h + 12;
   });
@@ -2608,7 +2608,7 @@ function updateDiagram(){
     var tport= cf(trk,'transport')||'LiveLink';
     var n = drawNode(COL_LEFT-NODE_W/2+10, leftY, NODE_W,
       [{text:sh(sys,20)},{text:sh(tport,20),color:'#4ade80'}],
-      'Tracking', '#166534', '#86efac', trk);
+      compName(trk)||'Tracking', '#166534', '#86efac', trk);
     nodes['trk'+i] = n; svgParts.push(n.html);
     leftY += n.h + 12;
   });
@@ -2619,7 +2619,7 @@ function updateDiagram(){
     var ctrlMix = cf(ctrl,'mixer')||'';
     var ctrlLines = [{text:sh(ctrlLoc,17)}];
     if(ctrlMix) ctrlLines.push({text:sh(ctrlMix,17),color:'#9b9b9f'});
-    var n = drawNode(COL_LEFT-NODE_W/2+10, leftY, NODE_W, ctrlLines, 'Control Room', '#1c2010', '#86efac', ctrl);
+    var n = drawNode(COL_LEFT-NODE_W/2+10, leftY, NODE_W, ctrlLines, compName(ctrl)||'Control Room', '#1c2010', '#86efac', ctrl);
     nodes['ctrl'+i] = n; svgParts.push(n.html);
     leftY += n.h + 12;
   });
@@ -2635,7 +2635,7 @@ function updateDiagram(){
     if(eGpu) eLines.push({text:sh(eGpu,17)});
     if(eUe) eLines.push({text:eUe, color:'#60a5fa'});
     var n = drawNode(COL_MID, midY, NODE_W, eLines.length?eLines:[{text:'Editor'}],
-      'Editor', '#1e3a8a', '#93c5fd', editor);
+      compName(editor)||'Editor', '#1e3a8a', '#93c5fd', editor);
     nodes['editor'] = n; svgParts.push(n.html);
     midY += n.h + 10;
   }
@@ -2651,7 +2651,7 @@ function updateDiagram(){
     if(dnGpu) eLines.push({text:sh(dnGpu,17)});
     if(syncStr) eLines.push({text:sh(syncStr,17),color:'#60a5fa'});
     var n = drawNode(COL_MID, midY, NODE_W, eLines.length?eLines:[{text:'Display Node'}],
-      'Node '+(i+1), '#1e3a8a', '#93c5fd', dn);
+      compName(dn)||'Node '+(i+1), '#1e3a8a', '#93c5fd', dn);
     nodes['dn'+i] = n; svgParts.push(n.html);
     midY += n.h + 14;
   });
@@ -2668,7 +2668,7 @@ function updateDiagram(){
     if(wallRes)  wallLines.push({text:sh(wallRes,17),color:'#60a5fa'});
     if(wallHz)   wallLines.push({text:wallHz,color:'#9b9b9f'});
     var nwall = drawNode(COL_RIGHT, rightY, NODE_W, wallLines.length?wallLines:[{text:'LED Wall'}],
-      'LED Wall', '#312e81', '#a5b4fc', wall);
+      compName(wall)||'LED Wall', '#312e81', '#a5b4fc', wall);
     nodes['wall'] = nwall; svgParts.push(nwall.html);
     rightY += nwall.h + 10;
   }
@@ -2681,7 +2681,7 @@ function updateDiagram(){
     if(pModel) pLines.push({text:sh(pModel,17)});
     if(pMap)   pLines.push({text:sh(pMap,17),color:'#9b9b9f'});
     var nproc = drawNode(COL_RIGHT, rightY, NODE_W, pLines.length?pLines:[{text:pMfr}],
-      pMfr||'Processor', '#312e81', '#a5b4fc', proc);
+      compName(proc)||pMfr||'Processor', '#312e81', '#a5b4fc', proc);
     nodes['proc'] = nproc; svgParts.push(nproc.html);
     rightY += nproc.h + 10;
   }
@@ -2694,7 +2694,7 @@ function updateDiagram(){
     var synModel= cf(syn,'model')||'';
     var synLines= [{text:sh(synSrc,18), color:'#4ade80'}];
     if(synModel) synLines.push({text:sh(synModel,18), color:'#9b9b9f'});
-    var n = drawNode(COL_MID, bandY, NODE_W, synLines, 'Genlock / Sync', '#14532d', '#86efac', syn);
+    var n = drawNode(COL_MID, bandY, NODE_W, synLines, compName(syn)||'Genlock / Sync', '#14532d', '#86efac', syn);
     nodes['syn'+i] = n; svgParts.push(n.html);
     // Band label
     svgParts.push(dgText(COL_MID-8, bandY + n.h/2, 'Sync', 9, '#2a2a2a', 'end'));
@@ -2706,7 +2706,7 @@ function updateDiagram(){
     var netSpeed = cf(net,'speed')||'';
     var netLines = [{text:sh(netModel,18)}];
     if(netSpeed) netLines.push({text:netSpeed, color:'#9b9b9f'});
-    var n = drawNode(COL_MID, bandY, NODE_W, netLines, 'Network', '#303038', '#606068', net);
+    var n = drawNode(COL_MID, bandY, NODE_W, netLines, compName(net)||'Network', '#303038', '#606068', net);
     nodes['net'+i] = n; svgParts.push(n.html);
     svgParts.push(dgText(COL_MID-8, bandY + n.h/2, 'Network', 9, '#2a2a2a', 'end'));
     bandY += n.h + 10;
@@ -2717,7 +2717,7 @@ function updateDiagram(){
     var pwrModel = cf(pwr,'model')||'';
     var pwrLines = [{text:sh(pwrType,18)}];
     if(pwrModel) pwrLines.push({text:sh(pwrModel,18),color:'#9b9b9f'});
-    var n = drawNode(COL_MID, bandY, NODE_W, pwrLines, 'Power', '#303038', '#606068', pwr);
+    var n = drawNode(COL_MID, bandY, NODE_W, pwrLines, compName(pwr)||'Power', '#303038', '#606068', pwr);
     nodes['pwr'+i] = n; svgParts.push(n.html);
     bandY += n.h + 10;
   });
@@ -2728,18 +2728,29 @@ function updateDiagram(){
   var connParts = [];
 
   // ── Clean routing: classify by column, route to avoid all node boxes ──────
-  var _leftList=[], _upList=[], _rightList=[];
+  // ── Classify all connections ──────────────────────────────────────────────
+  // Store per-connection: {i, fci, tci} for accurate routing decisions
+  var _connMeta = [];
   connections.forEach(function(cn,i){
     var fc=components.find(function(x){return x.id===cn.fromCompId;});
     var tc=components.find(function(x){return x.id===cn.toCompId;});
-    if(!fc||!tc) return;
-    var fci=getColIdx(fc), tci=getColIdx(tc);
-    if(fci>tci) _leftList.push(i);
-    else if(fci===tci && fci===1) _upList.push(i);
-    else _rightList.push(i);
+    if(!fc||!tc){ _connMeta.push(null); return; }
+    _connMeta.push({i:i, fci:getColIdx(fc), tci:getColIdx(tc)});
   });
 
-  var _TOP_Y = 46; // above all nodes, below column header pills (y=12-32)
+  // Assign stagger indices within each routing category
+  var _sameColCount = [0,0,0]; // per column
+  var _leftCount = 0;
+  var _rightCount = 0;
+  var _stagger = _connMeta.map(function(m){
+    if(!m) return 0;
+    if(m.fci===m.tci){ var s=_sameColCount[m.fci]++; return s; }
+    if(m.fci>m.tci){ var s=_leftCount++; return s; }
+    var s=_rightCount++; return s;
+  });
+
+  var _TOP_Y = 46; // safe zone: above nodes (y≥50), below headers (y≤32)
+  var _BOT_Y = totalH - 28; // below all content
 
   connections.forEach(function(cn, connIdx){
     var fc=components.find(function(x){return x.id===cn.fromCompId;});
@@ -2756,52 +2767,123 @@ function updateDiagram(){
     var fromPos=(fNode.portPositions&&fNode.portPositions[cn.fromPortId])||{x:fNode.right,y:fNode.cy};
     var toPos  =(tNode.portPositions&&tNode.portPositions[cn.toPortId])  ||{x:tNode.left, y:tNode.cy};
 
-    var d, labelX, labelY;
-    var li=_leftList.indexOf(connIdx), ui=_upList.indexOf(connIdx), ri=_rightList.indexOf(connIdx);
+    var meta = _connMeta[connIdx];
+    if(!meta) return;
+    var fci=meta.fci, tci=meta.tci, si=_stagger[connIdx];
+    var d;
 
-    // Safe exit/entry x values — just outside box boundaries
-    var exitX = fNode.right + 8 + Math.max(li,ui,ri,0)*14; // right side of source + stagger
-    var entX  = tNode.left  - 8 - Math.max(li,ui,ri,0)*8;  // left side of target + stagger
+    if(fci===tci){
+      // ── SAME COLUMN ──────────────────────────────────────────────────────
+      // Route via the inter-column gap on the RIGHT side of the column,
+      // then approach target from above-left. All gaps are node-free by design.
+      var aboveY = tNode.top - 6;  // guaranteed in the 12px gap above target
 
-    if(li >= 0){
-      // LEFTWARD (mid→left or right→mid): exit right → go UP to top margin → go FAR LEFT → drop to target
-      var topY   = _TOP_Y - li * 3;      // 46, 43, 40, 37 — all in safe zone above nodes/below headers
-      var farX   = Math.max(4, 28 - li * 8); // 28, 20, 12, 4 — far-left channels
-      exitX = fNode.right + 8 + li * 8;
-      d = 'M'+fromPos.x+' '+fromPos.y    // port dot
-        + ' L'+exitX+' '+fromPos.y       // exit right of source
-        + ' L'+exitX+' '+topY            // rise to top margin
-        + ' L'+farX+' '+topY             // traverse left
-        + ' L'+farX+' '+toPos.y          // drop to target y
-        + ' L'+toPos.x+' '+toPos.y;      // enter target port
-      labelX = (exitX + farX) / 2;
-      labelY = topY;
+      if(fci===0){
+        // Left col → use left-mid gap (x=170 to x=390)
+        var rchX = fNode.right + 12 + si*14;   // 182, 196... in left-mid gap
+        var appX = tNode.left  -  6 - si*6;    // 24, 18... far-left of target
+        d = 'M'+fromPos.x+' '+fromPos.y
+          + ' L'+rchX+' '+fromPos.y
+          + ' L'+rchX+' '+aboveY
+          + ' L'+appX+' '+aboveY
+          + ' L'+appX+' '+toPos.y
+          + ' L'+toPos.x+' '+toPos.y;
 
-    } else if(ui >= 0){
-      // SAME-COL UPWARD: exit right → rise to ABOVE the target → cross left past target → drop to port
-      var rchX  = fNode.right + 12 + ui * 14;  // 542, 556... (mid-right gap)
-      var aboveY = tNode.top - 6;                // always in the gap above the target node
-      var appX  = tNode.left - 6 - ui * 6;      // approach from left, staggered per connection
-      d = 'M'+fromPos.x+' '+fromPos.y     // port dot
-        + ' L'+rchX+' '+fromPos.y         // exit right to channel
-        + ' L'+rchX+' '+aboveY            // rise to above target
-        + ' L'+appX+' '+aboveY            // cross left past target left edge
-        + ' L'+appX+' '+toPos.y           // drop to port y (outside target box)
-        + ' L'+toPos.x+' '+toPos.y;       // enter target port
-      labelX = rchX + 5;
-      labelY = (fromPos.y + aboveY) / 2;
+      } else if(fci===1){
+        // Mid col → use mid-right gap (x=530 to x=700)
+        var rchX = fNode.right + 12 + si*14;   // 542, 556...
+        var appX = tNode.left  -  6 - si*6;    // 384, 378...
+        d = 'M'+fromPos.x+' '+fromPos.y
+          + ' L'+rchX+' '+fromPos.y
+          + ' L'+rchX+' '+aboveY
+          + ' L'+appX+' '+aboveY
+          + ' L'+appX+' '+toPos.y
+          + ' L'+toPos.x+' '+toPos.y;
+
+      } else {
+        // Right col → use far-right margin (x>840), approach from right-then-above-left
+        var rchX = fNode.right + 12 + si*14;   // 852, 866...
+        var aboveY2 = tNode.top - 6;
+        var appX = tNode.left - 6 - si*6;      // 694, 688...
+        d = 'M'+fromPos.x+' '+fromPos.y
+          + ' L'+rchX+' '+fromPos.y
+          + ' L'+rchX+' '+aboveY2
+          + ' L'+appX+' '+aboveY2
+          + ' L'+appX+' '+toPos.y
+          + ' L'+toPos.x+' '+toPos.y;
+      }
+
+    } else if(fci < tci){
+      // ── GOING RIGHT (toward higher column index) ─────────────────────────
+      // Route through the inter-column gap(s) between source and target.
+      if(fci===0 && tci===1){
+        // Left → mid: route through left-mid gap
+        var mx = fNode.right + (tNode.left - fNode.right)*0.4 + (si%3-1)*10;
+        d = 'M'+fromPos.x+' '+fromPos.y
+          + ' L'+(fNode.right+4)+' '+fromPos.y
+          + ' L'+mx+' '+fromPos.y
+          + ' L'+mx+' '+toPos.y
+          + ' L'+toPos.x+' '+toPos.y;
+
+      } else if(fci===1 && tci===2){
+        // Mid → right: route through mid-right gap
+        var mx = fNode.right + (tNode.left - fNode.right)*0.4 + (si%3-1)*10;
+        d = 'M'+fromPos.x+' '+fromPos.y
+          + ' L'+(fNode.right+4)+' '+fromPos.y
+          + ' L'+mx+' '+fromPos.y
+          + ' L'+mx+' '+toPos.y
+          + ' L'+toPos.x+' '+toPos.y;
+
+      } else {
+        // Left → right (col 0→2): route through left-mid gap then mid-right gap
+        // Use an intermediate y in the left-mid gap, then dogleg to mid-right gap
+        var midX1 = fNode.right + 30 + si*10;  // in left-mid gap
+        var midX2 = tNode.left  - 30 - si*10;  // in mid-right gap
+        d = 'M'+fromPos.x+' '+fromPos.y
+          + ' L'+midX1+' '+fromPos.y
+          + ' L'+midX1+' '+toPos.y
+          + ' L'+midX2+' '+toPos.y
+          + ' L'+toPos.x+' '+toPos.y;
+      }
 
     } else {
-      // RIGHTWARD: staggered elbow through inter-column gap
-      var stagger = (ri % 3 - 1) * 10;
-      var mx = fNode.right + (tNode.left - fNode.right) * 0.4 + stagger;
-      d = 'M'+fromPos.x+' '+fromPos.y
-        + ' L'+(fNode.right+4)+' '+fromPos.y
-        + ' L'+mx+' '+fromPos.y
-        + ' L'+mx+' '+toPos.y
-        + ' L'+toPos.x+' '+toPos.y;
-      labelX = mx + 5;
-      labelY = (fromPos.y + toPos.y) / 2;
+      // ── GOING LEFT (toward lower column index) ───────────────────────────
+      if(fci===2 && tci===1){
+        // Right → mid: enter mid-right gap from left side of source,
+        // then use above-target approach (same as same-col mid routing)
+        var rchX = fNode.left - 14 - si*14;    // 686, 672... in mid-right gap
+        var aboveY = tNode.top - 6;
+        var appX   = tNode.left - 6 - si*6;    // 384, 378...
+        d = 'M'+fromPos.x+' '+fromPos.y
+          + ' L'+rchX+' '+fromPos.y
+          + ' L'+rchX+' '+aboveY
+          + ' L'+appX+' '+aboveY
+          + ' L'+appX+' '+toPos.y
+          + ' L'+toPos.x+' '+toPos.y;
+
+      } else if(fci===2 && tci===0){
+        // Right → left: route via BOTTOM margin to avoid crossing the full diagram
+        var botY  = _BOT_Y + si*16;
+        var farX  = Math.max(4, 26 - si*8);
+        d = 'M'+fromPos.x+' '+fromPos.y
+          + ' L'+(fNode.left-4)+' '+fromPos.y  // exit left of source
+          + ' L'+(fNode.left-4)+' '+botY        // drop to bottom lane
+          + ' L'+farX+' '+botY                  // traverse left below all nodes
+          + ' L'+farX+' '+toPos.y               // rise to target y
+          + ' L'+toPos.x+' '+toPos.y;           // enter target
+
+      } else {
+        // Mid → left (col 1→0): TOP margin routing — safe zone y=37-46
+        var topY  = _TOP_Y - si*3;
+        var farX  = Math.max(4, 28 - si*8);
+        var exitX = fNode.right + 8 + si*8;
+        d = 'M'+fromPos.x+' '+fromPos.y
+          + ' L'+exitX+' '+fromPos.y
+          + ' L'+exitX+' '+topY
+          + ' L'+farX+' '+topY
+          + ' L'+farX+' '+toPos.y
+          + ' L'+toPos.x+' '+toPos.y;
+      }
     }
 
     connParts.push('<path class="cn" d="'+d+'" fill="none" stroke="'+col

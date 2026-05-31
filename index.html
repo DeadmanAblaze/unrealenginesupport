@@ -412,7 +412,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:13p
 
 /* ── DIAGRAM ── */
 .diag-wrap{margin-top:20px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;overflow-x:auto}
-#vp-diagram{width:100%;min-width:680px;display:block}
+#vp-diagram{width:100%;display:block}
 .diag-node{cursor:default}
 .diag-node rect,.diag-node polygon{transition:filter .15s}
 .sh{font-size:10px;color:var(--ink3);font-weight:500;margin-bottom:11px;margin-top:18px;text-transform:uppercase;letter-spacing:.09em}
@@ -2404,7 +2404,7 @@ function drawNode(x, y, w, lines, title, stroke, titleColor, compObj){
   var portPositions = {};
   var portAreaTop = y + 22;
   var portAreaH   = h - 24;
-  var portStep = 13;
+  var portStep = 15;
 
   if(outPorts.length){
     var outStartY = y + h/2 - (outPorts.length-1)*portStep/2;
@@ -2419,7 +2419,7 @@ function drawNode(x, y, w, lines, title, stroke, titleColor, compObj){
               : p.signal==='Genlock/Ref' ? 'Ref'
               : p.signal==='DisplayPort' ? 'DP'
               : (p.signal||'').slice(0,10);
-      inner += '<text x="'+(x+w+8)+'" y="'+(py+1)+'" text-anchor="start" dominant-baseline="central" font-size="7" font-family="monospace" fill="'+col+'" opacity="0.75">'+dgEsc(lbl)+'</text>';
+      inner += '<text x="'+(x+w+8)+'" y="'+(py+1)+'" text-anchor="start" dominant-baseline="central" font-size="9" font-family="monospace" fill="'+col+'" opacity="0.75">'+dgEsc(lbl)+'</text>';
     });
   }
   if(inPorts.length){
@@ -2435,7 +2435,7 @@ function drawNode(x, y, w, lines, title, stroke, titleColor, compObj){
               : p.signal==='Genlock/Ref' ? 'Ref'
               : p.signal==='DisplayPort' ? 'DP'
               : (p.signal||'').slice(0,10);
-      inner += '<text x="'+(x-8)+'" y="'+(py+1)+'" text-anchor="end" dominant-baseline="central" font-size="7" font-family="monospace" fill="'+col+'" opacity="0.75">'+dgEsc(lbl)+'</text>';
+      inner += '<text x="'+(x-8)+'" y="'+(py+1)+'" text-anchor="end" dominant-baseline="central" font-size="9" font-family="monospace" fill="'+col+'" opacity="0.75">'+dgEsc(lbl)+'</text>';
     });
   }
 
@@ -2652,7 +2652,7 @@ function updateDiagram(){
     var netSpeed = cf(net,'speed')||'';
     var netLines = [{text:sh(netModel,18)}];
     if(netSpeed) netLines.push({text:netSpeed, color:'#9b9b9f'});
-    var n = drawNode(COL_MID, bandY, NODE_W, netLines, 'Network', '#2a2a30', '#505058', net);
+    var n = drawNode(COL_MID, bandY, NODE_W, netLines, 'Network', '#303038', '#606068', net);
     nodes['net'+i] = n; svgParts.push(n.html);
     svgParts.push(dgText(COL_MID-8, bandY + n.h/2, 'Network', 9, '#2a2a2a', 'end'));
     bandY += n.h + 10;
@@ -2663,7 +2663,7 @@ function updateDiagram(){
     var pwrModel = cf(pwr,'model')||'';
     var pwrLines = [{text:sh(pwrType,18)}];
     if(pwrModel) pwrLines.push({text:sh(pwrModel,18),color:'#9b9b9f'});
-    var n = drawNode(COL_MID, bandY, NODE_W, pwrLines, 'Power', '#2a2a30', '#505058', pwr);
+    var n = drawNode(COL_MID, bandY, NODE_W, pwrLines, 'Power', '#303038', '#606068', pwr);
     nodes['pwr'+i] = n; svgParts.push(n.html);
     bandY += n.h + 10;
   });
@@ -2705,7 +2705,7 @@ function updateDiagram(){
     var midLabelX = (fromPos.x + toPos.x) / 2;
     var midLabelY = fromPos.y;
     var sigLbl = fp.signal==='Ethernet/10GbE'?'10GbE':fp.signal==='Genlock/Ref'?'Ref':fp.signal==='DisplayPort'?'DP':fp.signal;
-    connParts.push('<text x="'+midLabelX+'" y="'+(midLabelY-4)+'" text-anchor="middle" font-size="7" fill="'+col+'" opacity="0.6" style="pointer-events:none">'+sigLbl+'</text>');
+    connParts.push('<text x="'+midLabelX+'" y="'+(midLabelY-4)+'" text-anchor="middle" font-size="8" fill="'+col+'" opacity="0.6" style="pointer-events:none">'+sigLbl+'</text>');
   });
 
   // No fallback connections — user defines routing explicitly in Signal Routing section

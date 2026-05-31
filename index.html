@@ -933,13 +933,16 @@ select.cv-edit{text-align:left;cursor:pointer}
 .st-chev{color:var(--ink4);font-size:10px;transition:transform .2s;flex-shrink:0}
 .st-chev.closed{transform:rotate(-90deg)}
 .st-body{padding:14px}
-.vid-ctrl-row{display:flex;align-items:center;gap:7px;margin-bottom:11px}
+.vid-layout{display:flex;gap:12px;align-items:flex-start}
+.vid-left{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
+.vid-ctrl-row{display:flex;align-items:center;gap:7px}
 .vid-src-sel{flex:1;min-width:0;background:var(--el);border:1px solid var(--line2);color:var(--ink2);font-family:var(--mono);font-size:11px;padding:6px 9px;border-radius:5px;outline:none}
 .vid-src-sel:focus{border-color:var(--brand1)}
-.vid-wrap{position:relative;width:100%;aspect-ratio:16/9;background:#000;border-radius:6px;overflow:hidden;border:1px solid var(--line)}
+.vid-right{flex-shrink:0;width:240px}
+.vid-wrap{position:relative;width:240px;aspect-ratio:16/9;background:#000;border-radius:6px;overflow:hidden;border:1px solid var(--line)}
 .vid-wrap video{width:100%;height:100%;object-fit:contain;display:block}
-.vid-nosrc{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;color:var(--ink4);font-size:12px;pointer-events:none;text-align:center;padding:20px}
-.vid-infobar{display:flex;align-items:center;gap:10px;margin-top:8px;padding:5px 10px;background:var(--el);border-radius:5px;border:1px solid var(--line);font-size:11px;font-family:var(--mono);color:var(--ink3)}
+.vid-nosrc{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;color:var(--ink4);font-size:10px;pointer-events:none;text-align:center;padding:12px}
+.vid-infobar{display:flex;align-items:center;gap:8px;padding:4px 8px;background:var(--el);border-radius:5px;border:1px solid var(--line);font-size:10px;font-family:var(--mono);color:var(--ink3)}
 .ue-conn-row{display:flex;align-items:center;gap:7px;margin-bottom:11px}
 .ue-inp{background:var(--el);border:1px solid var(--line2);color:var(--ink);font-family:var(--mono);font-size:11px;padding:6px 9px;border-radius:5px;outline:none}
 .ue-inp:focus{border-color:var(--brand1)}
@@ -1472,7 +1475,6 @@ select.cv-edit{text-align:left;cursor:pointer}
           </div>
         </div>
       </div>
-    </div>
 
     <!-- ── SUPPORT TOOLS: VIDEO INPUT + UE REMOTE CONTROL ─────────────── -->
     <div class="st-tools">
@@ -1487,26 +1489,35 @@ select.cv-edit{text-align:left;cursor:pointer}
           <span class="st-chev" id="vid-chev">&#9660;</span>
         </div>
         <div class="st-body" id="st-vid-body">
-          <div class="vid-ctrl-row">
-            <select class="vid-src-sel" id="vid-src-sel"><option value="">Detecting devices&#8230;</option></select>
-            <button class="btn sm" onclick="vidRefresh()" title="Refresh">&#8635;</button>
-            <button class="btn bp sm" id="vid-btn" onclick="vidToggle()">Connect</button>
-          </div>
-          <div class="vid-wrap">
-            <video id="vid-el" autoplay muted playsinline></video>
-            <div class="vid-nosrc" id="vid-nosrc">
-              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"><path d="M15 10l4.55-2.07A1 1 0 0 1 21 8.87v6.26a1 1 0 0 1-1.45.89L15 14"/><rect x="2" y="6" width="13" height="12" rx="2"/></svg>
-              <span>Select a source and click Connect</span>
-              <span style="font-size:10px;color:var(--ink4)">Blackmagic Web Presenter &middot; Decklink &middot; Webcams</span>
+          <div class="vid-layout">
+            <div class="vid-left">
+              <div class="vid-ctrl-row">
+                <select class="vid-src-sel" id="vid-src-sel"><option value="">Detecting devices&#8230;</option></select>
+                <button class="btn sm" onclick="vidRefresh()" title="Refresh">&#8635;</button>
+                <button class="btn bp sm" id="vid-btn" onclick="vidToggle()">Connect</button>
+              </div>
+              <div class="vid-infobar" id="vid-infobar" style="display:none">
+                <span id="vid-res">&#8212;</span>
+                <span style="opacity:.3">&middot;</span>
+                <span id="vid-fps">&#8212;</span>
+                <span style="opacity:.3">&middot;</span>
+                <span id="vid-label">&#8212;</span>
+                <span style="margin-left:auto;color:var(--live)">&#9679; Live</span>
+              </div>
+              <div style="font-size:10px;color:var(--ink4);line-height:1.5">
+                Supports Blackmagic Web Presenter, Decklink (Desktop Video drivers required), and any UVC webcam.
+                Click &#8635; if devices don&rsquo;t appear after granting camera permission.
+              </div>
             </div>
-          </div>
-          <div class="vid-infobar" id="vid-infobar" style="display:none">
-            <span id="vid-res">&#8212;</span>
-            <span style="opacity:.3">&middot;</span>
-            <span id="vid-fps">&#8212;</span>
-            <span style="opacity:.3">&middot;</span>
-            <span id="vid-label">&#8212;</span>
-            <span style="margin-left:auto;color:var(--live)">&#9679; Live</span>
+            <div class="vid-right">
+              <div class="vid-wrap">
+                <video id="vid-el" autoplay muted playsinline></video>
+                <div class="vid-nosrc" id="vid-nosrc">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"><path d="M15 10l4.55-2.07A1 1 0 0 1 21 8.87v6.26a1 1 0 0 1-1.45.89L15 14"/><rect x="2" y="6" width="13" height="12" rx="2"/></svg>
+                  <span>No source</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -1566,6 +1577,8 @@ select.cv-edit{text-align:left;cursor:pointer}
       </div>
 
     </div>
+        </div>
+
     <div class="pnl" id="pnl-cl">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
         <div class="cl-prog-row" style="flex:1;margin-right:16px;margin-bottom:0">

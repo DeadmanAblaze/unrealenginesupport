@@ -2347,7 +2347,7 @@ var DIAG_W = 980, DIAG_H = 660;
 var COL_LEFT = 90,   COL_LEFT_W = 130;   // Video in
 var COL_MID  = 390,  COL_MID_W  = 130;   // Compute
 var COL_RIGHT= 700,  COL_RIGHT_W= 130;   // Display & LED
-var NODE_W = 130, NODE_H_BASE = 62, NODE_LINE_H = 16;
+var NODE_W = 130, NODE_H_BASE = 68, NODE_LINE_H = 17;
 var BAND_Y_SYNC = 468, BAND_Y_NET = 538, BAND_Y_POWER = 608;
 
 // Signal colour map (matches SIGNAL_COLOR in ports JS)
@@ -2413,8 +2413,13 @@ function drawNode(x, y, w, lines, title, stroke, titleColor, compObj){
       var col = SIGNAL_COLOR[p.signal]||'#9b9b9f';
       portPositions[p.id] = {x: x+w+1, y: py};
       inner += '<circle cx="'+(x+w)+'" cy="'+py+'" r="3.5" fill="'+col+'" stroke="#080808" stroke-width="1"/>';
-      var lbl = (p.label||p.signal||'').replace(/[/\\]/g,'').slice(0,8);
-      if(lbl) inner += '<text x="'+(x+w-7)+'" y="'+(py+1)+'" text-anchor="end" dominant-baseline="central" font-size="6" fill="'+col+'" opacity="0.65">'+dgEsc(lbl)+'</text>';
+      // Port label — outside node, to the right
+      var lbl = p.label && p.label.trim() ? p.label.slice(0,13)
+              : p.signal==='Ethernet/10GbE' ? '10GbE'
+              : p.signal==='Genlock/Ref' ? 'Ref'
+              : p.signal==='DisplayPort' ? 'DP'
+              : (p.signal||'').slice(0,10);
+      inner += '<text x="'+(x+w+8)+'" y="'+(py+1)+'" text-anchor="start" dominant-baseline="central" font-size="7" font-family="monospace" fill="'+col+'" opacity="0.75">'+dgEsc(lbl)+'</text>';
     });
   }
   if(inPorts.length){
@@ -2424,6 +2429,13 @@ function drawNode(x, y, w, lines, title, stroke, titleColor, compObj){
       var col = SIGNAL_COLOR[p.signal]||'#9b9b9f';
       portPositions[p.id] = {x: x-1, y: py};
       inner += '<circle cx="'+x+'" cy="'+py+'" r="3.5" fill="'+col+'" stroke="#080808" stroke-width="1"/>';
+      // Port label — outside node, to the left
+      var lbl = p.label && p.label.trim() ? p.label.slice(0,13)
+              : p.signal==='Ethernet/10GbE' ? '10GbE'
+              : p.signal==='Genlock/Ref' ? 'Ref'
+              : p.signal==='DisplayPort' ? 'DP'
+              : (p.signal||'').slice(0,10);
+      inner += '<text x="'+(x-8)+'" y="'+(py+1)+'" text-anchor="end" dominant-baseline="central" font-size="7" font-family="monospace" fill="'+col+'" opacity="0.75">'+dgEsc(lbl)+'</text>';
     });
   }
 
@@ -2462,7 +2474,8 @@ function legHover(legEl){
       p.classList.remove('conn-dim');
       p.classList.add('cn-animated');
       p.style.opacity='1';
-      p.style.strokeWidth='2.5';
+      p.style.strokeWidth='2';
+      p.style.strokeDasharray='10 5';
     } else {
       p.classList.add('conn-dim');
       p.classList.remove('cn-animated');
@@ -2481,6 +2494,7 @@ function legUnhover(){
     p.classList.remove('conn-dim','cn-animated');
     p.style.opacity='';
     p.style.strokeWidth='';
+    p.style.strokeDasharray='';
   });
   svg.querySelectorAll('.leg-line').forEach(function(l){ l.setAttribute('stroke-width','2'); });
 }
@@ -2539,7 +2553,7 @@ function updateDiagram(){
     var body = cf(cam,'body')||'Camera';
     var out  = cf(cam,'output')||cf(cam,'sdi')||'';
     var n = drawNode(COL_LEFT-NODE_W/2+10, leftY, NODE_W,
-      [{text:sh(body,18)},{text:sh(out,18),color:'#60a5fa'}],
+      [{text:sh(body,20)},{text:sh(out,20),color:'#60a5fa'}],
       'Camera', '#1e40af', '#93c5fd', cam);
     nodes['cam'+i] = n; svgParts.push(n.html);
     leftY += n.h + 12;
@@ -2550,7 +2564,7 @@ function updateDiagram(){
     var sys  = cf(trk,'system')||'Tracking';
     var tport= cf(trk,'transport')||'LiveLink';
     var n = drawNode(COL_LEFT-NODE_W/2+10, leftY, NODE_W,
-      [{text:sh(sys,18)},{text:sh(tport,18),color:'#4ade80'}],
+      [{text:sh(sys,20)},{text:sh(tport,20),color:'#4ade80'}],
       'Tracking', '#166534', '#86efac', trk);
     nodes['trk'+i] = n; svgParts.push(n.html);
     leftY += n.h + 12;
@@ -2585,7 +2599,7 @@ function updateDiagram(){
     var n = drawNode(COL_MID, midY, NODE_W, eLines.length?eLines:[{text:'Display Node'}],
       'Node '+(i+1), '#1e3a8a', '#93c5fd', dn);
     nodes['dn'+i] = n; svgParts.push(n.html);
-    midY += n.h + 10;
+    midY += n.h + 14;
   });
 
   // ── Right column: LED wall + LED processor ────────────────────────────
@@ -2638,7 +2652,7 @@ function updateDiagram(){
     var netSpeed = cf(net,'speed')||'';
     var netLines = [{text:sh(netModel,18)}];
     if(netSpeed) netLines.push({text:netSpeed, color:'#9b9b9f'});
-    var n = drawNode(COL_MID, bandY, NODE_W, netLines, 'Network', '#1c1c1f', '#646469', net);
+    var n = drawNode(COL_MID, bandY, NODE_W, netLines, 'Network', '#2a2a30', '#505058', net);
     nodes['net'+i] = n; svgParts.push(n.html);
     svgParts.push(dgText(COL_MID-8, bandY + n.h/2, 'Network', 9, '#2a2a2a', 'end'));
     bandY += n.h + 10;
@@ -2649,7 +2663,7 @@ function updateDiagram(){
     var pwrModel = cf(pwr,'model')||'';
     var pwrLines = [{text:sh(pwrType,18)}];
     if(pwrModel) pwrLines.push({text:sh(pwrModel,18),color:'#9b9b9f'});
-    var n = drawNode(COL_MID, bandY, NODE_W, pwrLines, 'Power', '#1c1c1f', '#646469', pwr);
+    var n = drawNode(COL_MID, bandY, NODE_W, pwrLines, 'Power', '#2a2a30', '#505058', pwr);
     nodes['pwr'+i] = n; svgParts.push(n.html);
     bandY += n.h + 10;
   });
@@ -2687,6 +2701,11 @@ function updateDiagram(){
     var fromPos = (fNode.portPositions && fNode.portPositions[cn.fromPortId]) || {x: fNode.right, y: fNode.cy};
     var toPos   = (tNode.portPositions && tNode.portPositions[cn.toPortId])   || {x: tNode.left,  y: tNode.cy};
     connParts.push(elbowPath(fromPos.x, fromPos.y, toPos.x, toPos.y, col, dash, 0.8));
+    // Signal label at midpoint
+    var midLabelX = (fromPos.x + toPos.x) / 2;
+    var midLabelY = fromPos.y;
+    var sigLbl = fp.signal==='Ethernet/10GbE'?'10GbE':fp.signal==='Genlock/Ref'?'Ref':fp.signal==='DisplayPort'?'DP':fp.signal;
+    connParts.push('<text x="'+midLabelX+'" y="'+(midLabelY-4)+'" text-anchor="middle" font-size="7" fill="'+col+'" opacity="0.6" style="pointer-events:none">'+sigLbl+'</text>');
   });
 
   // No fallback connections — user defines routing explicitly in Signal Routing section
@@ -2704,13 +2723,22 @@ function updateDiagram(){
 
   // ── Legend ────────────────────────────────────────────────────────────
   var legendY = totalH - 28;
-  var legendItems = [
-    {col:DC.SDI, label:'SDI', dash:'5 3'},
-    {col:DC.LiveLink, label:'LiveLink', dash:'5 3'},
-    {col:DC.nDisplay, label:'nDisplay/10GbE', dash:''},
-    {col:DC.DisplayPort, label:'DP/HDMI', dash:''},
-    {col:DC['Genlock/Ref'], label:'Sync ref', dash:'3 4'},
-  ];
+  // Build legend from actual connections using same colors as paths
+  var _usedSigs = {};
+  connections.forEach(function(cn){
+    var fc=components.find(function(x){return x.id===cn.fromCompId;});
+    var fp=fc?(fc.ports||[]).find(function(p){return p.id===cn.fromPortId;}):null;
+    if(fp&&fp.signal) _usedSigs[fp.signal]=SIGNAL_COLOR[fp.signal]||DC[fp.signal]||'#9b9b9f';
+  });
+  // Also include fallback diagram connection types if no user connections
+  if(!connections.length){
+    _usedSigs['SDI']=DC.SDI; _usedSigs['DisplayPort']=DC.DisplayPort;
+    _usedSigs['Genlock/Ref']=DC['Genlock/Ref']; _usedSigs['Ethernet/10GbE']=DC['Ethernet/10GbE'];
+  }
+  var _sigDash={'SDI':'4 3','12G-SDI':'4 3','Genlock/Ref':'3 4','Timecode':'3 4'};
+  var legendItems = Object.keys(_usedSigs).map(function(sig){
+    return {col:_usedSigs[sig], label:sig, dash:_sigDash[sig]||''};
+  });
   var lx = 40;
   var legendSvg = '';
   legendItems.forEach(function(li, idx){
@@ -2732,13 +2760,18 @@ function updateDiagram(){
 
   // ── Assemble final SVG ─────────────────────────────────────────────────
   var newSvg = '<svg id="vp-diagram" viewBox="0 0 980 '+totalH+'" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">'
+    + '<defs><pattern id="dg-grid" width="20" height="20" patternUnits="userSpaceOnUse">'
+    + '<circle cx="10" cy="10" r="0.6" fill="#1a1a1e"/>'
+    + '</pattern></defs>'
+    + '<rect width="980" height="'+totalH+'" fill="url(#dg-grid)" opacity="0.8"/>'
+
     + '<style>'
     + '#vp-diagram text{font-family:inherit}'
     + '#vp-diagram .nd{transition:opacity .18s}'
     + '#vp-diagram .nd.dimmed{opacity:0.08}'
     + '#vp-diagram .cn{transition:opacity .18s,stroke-width .15s}'
     + '#vp-diagram .cn.conn-dim{opacity:0.05}'
-    + '#vp-diagram .cn.cn-animated{animation:flowpath 1.2s linear infinite}'
+    + '#vp-diagram .cn.cn-animated{animation:flowpath 1s linear infinite;stroke-dasharray:10 5 !important;stroke-width:2 !important;opacity:1 !important}'
     + '#vp-diagram .leg-item{transition:opacity .15s;cursor:pointer}'
     + '@keyframes flowpath{from{stroke-dashoffset:0}to{stroke-dashoffset:-24}}'
     + '</style>'

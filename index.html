@@ -1526,7 +1526,7 @@ select.cv-edit{text-align:left;cursor:pointer}
       <div class="st-panel" id="st-ue-panel">
         <div class="st-panel-head" onclick="stToggle('ue')">
           <span class="ctick"></span>
-          <span class="st-panel-title">Unreal Engine Remote Control</span>
+          <span class="st-panel-title">Unreal Engine Remote Control</span><span style="font-size:9px;font-family:var(--mono);color:var(--ink4);background:var(--el);border:1px solid var(--line);border-radius:3px;padding:1px 6px;letter-spacing:.06em">READ ONLY</span>
           <span class="st-dot" id="ue-dot"></span>
           <span class="st-status-txt" id="ue-stxt">Disconnected</span>
           <span class="st-chev" id="ue-chev">&#9660;</span>
@@ -4527,14 +4527,10 @@ function stToggle(id){
 // ── VIDEO INPUT ────────────────────────────────────────────────────────────
 var _vidStream=null;
 
-function vidRefresh(){
-  if(!navigator.mediaDevices||!navigator.mediaDevices.enumerateDevices){
-    var s=el('vid-src-sel');
-    s.innerHTML='<option value="">getUserMedia not supported</option>';
-    return;
-  }
-  navigator.mediaDevices.enumerateDevices().then(function(devs){
-    var s=el('vid-src-sel');
+function vidEnumerate(){
+  // Enumerate devices and populate dropdown. Labels are only available after permission.
+  return navigator.mediaDevices.enumerateDevices().then(function(devs){
+    var s=el('vid-src-sel'); if(!s) return;
     var prev=s.value;
     var vids=devs.filter(function(d){return d.kind==='videoinput';});
     if(!vids.length){s.innerHTML='<option value="">No video devices found</option>';return;}
@@ -4543,8 +4539,18 @@ function vidRefresh(){
       return '<option value="'+d.deviceId+'">'+esc(lbl)+'</option>';
     }).join('');
     if(prev) s.value=prev;
-  }).catch(function(e){
-    el('vid-src-sel').innerHTML='<option value="">Error: '+e.message+'</option>';
+  });
+}
+
+function vidRefresh(){
+  if(!navigator.mediaDevices||!navigator.mediaDevices.enumerateDevices){
+    var s=el('vid-src-sel');
+    if(s) s.innerHTML='<option value="">getUserMedia not supported in this browser</option>';
+    return;
+  }
+  vidEnumerate().catch(function(e){
+    var s=el('vid-src-sel');
+    if(s) s.innerHTML='<option value="">Error: '+e.message+'</option>';
   });
 }
 
@@ -4553,30 +4559,54 @@ function vidToggle(){
 }
 
 function vidConnect(){
-  var devId=el('vid-src-sel').value; if(!devId) return;
-  var constraints={video:{deviceId:{exact:devId},width:{ideal:1920},height:{ideal:1080}}};
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
+    alert('Camera access is not available. Ensure the page is served over HTTPS.');
+    return;
+  }
+  // Build constraints — if we have a real deviceId, use it; otherwise request any camera
+  // (which triggers the permission prompt) then re-enumerate to get proper IDs
+  var sel=el('vid-src-sel');
+  var devId=sel?sel.value:'';
+  var constraints=devId
+    ?{video:{deviceId:{exact:devId},width:{ideal:1920},height:{ideal:1080}}}
+    :{video:{width:{ideal:1920},height:{ideal:1080}}};
   navigator.mediaDevices.getUserMedia(constraints).then(function(stream){
     _vidStream=stream;
-    var v=el('vid-el');
-    v.srcObject=stream;
+    var v=el('vid-el'); v.srcObject=stream;
     el('vid-nosrc').style.display='none';
     el('vid-btn').textContent='Disconnect';
     el('vid-dot').classList.add('live');
-    var lbl=el('vid-src-sel').options[el('vid-src-sel').selectedIndex].text;
     el('vid-stxt').textContent='Live';
     el('vid-infobar').style.display='flex';
-    el('vid-label').textContent=lbl.length>30?lbl.slice(0,28)+'…':lbl;
+    // Re-enumerate now that we have permission — get proper labels and IDs
+    vidEnumerate().then(function(){
+      // Match the active track to its dropdown entry
+      var track=stream.getVideoTracks()[0];
+      var trackLbl=track.label||'';
+      var s=el('vid-src-sel');
+      if(s){
+        for(var i=0;i<s.options.length;i++){
+          if(s.options[i].text===trackLbl||s.options[i].value===track.id){s.selectedIndex=i;break;}
+        }
+        var lbl=s.options[s.selectedIndex]?s.options[s.selectedIndex].text:trackLbl||'Camera';
+        el('vid-label').textContent=lbl.length>32?lbl.slice(0,30)+'…':lbl;
+      }
+    });
     v.onloadedmetadata=function(){
       var track=stream.getVideoTracks()[0];
       var s=track.getSettings?track.getSettings():{};
       el('vid-res').textContent=(s.width||'?')+'×'+(s.height||'?');
       el('vid-fps').textContent=s.frameRate?Math.round(s.frameRate)+'fps':'—';
-      vidRefresh(); // re-enumerate for proper labels now permission granted
     };
   }).catch(function(e){
     el('vid-stxt').textContent='Error';
     el('vid-dot').classList.add('err');
-    alert('Camera error: '+e.message);
+    if(e.name==='NotAllowedError'||e.name==='PermissionDeniedError'){
+      el('vid-stxt').textContent='Permission denied';
+      alert('Camera permission denied. Allow camera access in your browser and click Connect again.');
+    } else {
+      alert('Camera error: '+e.message);
+    }
   });
 }
 
@@ -4693,7 +4723,7 @@ function ueQueryPresets(){
 }
 
 function ueQueryFT(){
-  // Query frame timing via object property
+  // Read-only: query frame rate limit from GameUserSettings
   ueFetch('/remote/object/property','PUT',{
     objectPath:'/Script/Engine.Default__GameUserSettings',
     access:'READ_ACCESS',
@@ -4702,14 +4732,13 @@ function ueQueryFT(){
     var fps=d.FrameRateLimit||d.propertyValue||0;
     el('ue-ftarget').textContent=fps>0?fps+'fps limit':'Unlimited';
     ueLog('Frame rate limit: '+fps);
-  }).catch(function(){
-    // Fallback: query via console command
-    ueFetch('/remote/object/call','PUT',{
-      objectPath:'/Script/Engine.Default__KismetSystemLibrary',
-      functionName:'PrintString',
-      parameters:{InString:'RemoteControlPing',bPrintToScreen:true,bPrintToLog:true}
-    }).then(function(){ueLog('Console ping sent');})
-     .catch(function(e){ueLog('Frame timing: '+e.message,true);});
+  }).catch(function(e){
+    // Try alternate path for UE 5.x
+    ueFetch('/remote/object/property','PUT',{
+      objectPath:'/Game/Maps/Main.Main:PersistentLevel.GameState',
+      access:'READ_ACCESS',
+      propertyName:'ReplicationGraph'
+    }).catch(function(){ ueLog('Frame timing: requires stat access plugin',true); });
   });
 }
 

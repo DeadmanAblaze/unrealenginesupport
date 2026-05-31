@@ -948,7 +948,7 @@ select.cv-edit{text-align:left;cursor:pointer}
 .ue-inp:focus{border-color:var(--brand1)}
 .ue-host-inp{flex:1;min-width:0}
 .ue-port-inp{width:72px}
-.ue-dash{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:11px}
+.ue-dash{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px}.ue-dash2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
 .ue-card{background:var(--el);border:1px solid var(--line);border-radius:6px;padding:9px 11px}
 .ue-card-t{font-family:'Barlow Condensed',var(--sans);font-weight:900;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink4);margin-bottom:7px}
 .ue-sr{display:flex;justify-content:space-between;align-items:baseline;gap:6px;margin-bottom:2px}
@@ -1534,44 +1534,73 @@ select.cv-edit{text-align:left;cursor:pointer}
         <div class="st-body" id="st-ue-body">
           <div class="ue-conn-row">
             <input class="ue-inp ue-host-inp" id="ue-host" value="localhost" placeholder="Editor node IP or Cloudflare Tunnel URL">
-            <input class="ue-inp ue-port-inp" id="ue-port" value="30010" placeholder="Port">
+            <input class="ue-inp ue-port-inp" id="ue-port" value="30011" placeholder="Port">
             <button class="btn bp sm" id="ue-btn" onclick="ueToggle()">Connect</button>
           </div>
           <div id="ue-dash" style="display:none">
+            <!-- Row 1: Frame Timing | Level | nDisplay -->
             <div class="ue-dash">
               <div class="ue-card">
-                <div class="ue-card-t">Project</div>
-                <div class="ue-sr"><span class="ue-sk">Name</span><span class="ue-sv" id="ue-pname">&#8212;</span></div>
-                <div class="ue-sr"><span class="ue-sk">Level</span><span class="ue-sv" id="ue-plevel">&#8212;</span></div>
-                <div class="ue-sr"><span class="ue-sk">Engine</span><span class="ue-sv" id="ue-pengine">&#8212;</span></div>
-                <div class="ue-sr"><span class="ue-sk">Presets</span><span class="ue-sv" id="ue-ppresets">&#8212;</span></div>
+                <div class="ue-card-t">Frame Timing</div>
+                <div class="ue-sr"><span class="ue-sk">FPS</span><span class="ue-sv" id="ue-fps">&#8212;</span></div>
+                <div class="ue-sr"><span class="ue-sk">GPU</span><span class="ue-sv" id="ue-fgpu">&#8212;</span></div>
+                <div class="ue-sr"><span class="ue-sk">Game</span><span class="ue-sv" id="ue-fgame">&#8212;</span></div>
+                <div class="ue-sr"><span class="ue-sk">Render</span><span class="ue-sv" id="ue-frender">&#8212;</span></div>
+                <div class="ue-sr"><span class="ue-sk">RHI</span><span class="ue-sv" id="ue-frhi">&#8212;</span></div>
+                <div class="ue-sr"><span class="ue-sk">Target</span><span class="ue-sv" id="ue-ftarget">&#8212;</span></div>
               </div>
               <div class="ue-card">
-                <div class="ue-card-t">Frame Timing</div>
-                <div class="ue-sr"><span class="ue-sk">Frame</span><span class="ue-sv" id="ue-fframe">&#8212;</span></div>
-                <div class="ue-sr"><span class="ue-sk">GPU</span><span class="ue-sv" id="ue-fgpu">&#8212;</span></div>
-                <div class="ue-sr"><span class="ue-sk">CPU</span><span class="ue-sv" id="ue-fcpu">&#8212;</span></div>
-                <div class="ue-sr"><span class="ue-sk">Target FPS</span><span class="ue-sv" id="ue-ftarget">&#8212;</span></div>
+                <div class="ue-card-t">Level</div>
+                <div class="ue-sr"><span class="ue-sk">Map</span><span class="ue-sv" id="ue-level-cur">&#8212;</span></div>
+                <div class="ue-sr"><span class="ue-sk">Type</span><span class="ue-sv" id="ue-level-type">&#8212;</span></div>
+                <div class="ue-sr"><span class="ue-sk">Sub-levels</span><span class="ue-sv" id="ue-level-stream">&#8212;</span></div>
+                <div id="ue-streaming-list" style="margin-top:5px;padding-top:5px;border-top:1px solid var(--line)"></div>
               </div>
+              <div class="ue-card">
+                <div class="ue-card-t">nDisplay</div>
+                <div class="ue-sr"><span class="ue-sk">Status</span><span class="ue-sv" id="ue-nd-status">&#8212;</span></div>
+                <div class="ue-sr"><span class="ue-sk">Nodes</span><span class="ue-sv" id="ue-nd-nodes">&#8212;</span></div>
+                <div class="ue-sr"><span class="ue-sk">Primary</span><span class="ue-sv" id="ue-nd-primary">&#8212;</span></div>
+                <div class="ue-sr"><span class="ue-sk">Config</span><span class="ue-sv" id="ue-nd-config">&#8212;</span></div>
+                <div class="ue-sr"><span class="ue-sk">Inner frustum</span><span class="ue-sv" id="ue-nd-frustum">&#8212;</span></div>
+                <div class="ue-sr"><span class="ue-sk">Chromakey</span><span class="ue-sv" id="ue-nd-chroma">&#8212;</span></div>
+              </div>
+            </div>
+            <!-- Row 2: Cluster nodes | Stage actors -->
+            <div class="ue-dash2" style="margin-bottom:8px">
+              <div class="ue-card">
+                <div class="ue-card-t">Cluster Nodes</div>
+                <div id="ue-nd-nodes-body" style="font-size:10px;color:var(--ink3)">&#8212;</div>
+              </div>
+              <div class="ue-card">
+                <div class="ue-card-t">Stage Actors (ICVFX)</div>
+                <div id="ue-nd-actors" style="font-size:10px;color:var(--ink3)">&#8212;</div>
+              </div>
+            </div>
+            <!-- Row 3: LiveLink | CVars -->
+            <div class="ue-dash2">
               <div class="ue-card">
                 <div class="ue-card-t">LiveLink</div>
                 <div id="ue-llbody" style="font-size:10px;color:var(--ink3)">&#8212;</div>
               </div>
+              <div class="ue-card">
+                <div class="ue-card-t">Console Variables</div>
+                <div id="ue-cvarbody" style="font-size:10px;color:var(--ink3)">&#8212;</div>
+              </div>
             </div>
-            <div class="ue-acts">
-              <button class="ue-qbtn" onclick="ueQueryProject()">Project info</button>
-              <button class="ue-qbtn" onclick="ueQueryFT()">Frame timing</button>
-              <button class="ue-qbtn" onclick="ueQueryLL()">LiveLink</button>
-              <button class="ue-qbtn" onclick="ueQueryPresets()">Presets</button>
-              <button class="ue-qbtn" onclick="ueQueryAll()">Refresh all</button>
-              <button class="ue-qbtn" id="ue-poll-btn" onclick="ueTogglePoll()">Auto-poll: off</button>
+            <!-- Row 4: Assets (shown when data available) -->
+            <div id="ue-assets-row" style="display:none;margin-top:8px">
+              <div class="ue-card">
+                <div class="ue-card-t">Asset Registry</div>
+                <div id="ue-assetbody" style="font-size:10px;color:var(--ink3)"></div>
+              </div>
             </div>
             <div class="ue-log" id="ue-log"></div>
           </div>
           <div id="ue-hint" class="ue-hint">
-            Connects to UE&rsquo;s built-in <b>Remote Control HTTP API</b> (port&nbsp;30010 by default).
-            Requires the <b>Remote Control API</b> plugin enabled in your UE project.
-            For off-LAN access, enter your <b>Cloudflare Tunnel URL</b> as the host and leave the port blank.
+            Connects to the <b>Unreal Support Plugin</b> WebSocket server (port&nbsp;30011 by default).
+            Drop the plugin into your project&rsquo;s <b>Plugins/</b> folder, build, and enable it in the editor.
+            For off-LAN access, point a <b>Cloudflare Tunnel</b> at port&nbsp;30011 and enter the tunnel URL as the host.
           </div>
         </div>
       </div>
@@ -4623,14 +4652,15 @@ function vidDisconnect(){
   }
 }
 
-// ── UE REMOTE CONTROL ─────────────────────────────────────────────────────
-var _ueConn=false, _uePoll=null, _ueBase='';
+// ── UE REMOTE CONTROL (WebSocket — Unreal Support Plugin) ─────────────────
+var _ueWS=null, _ueConn=false, _uePushCount=0;
 
-function ueBase(){
+function ueWsUrl(){
   var host=(el('ue-host').value||'localhost').trim();
-  var port=(el('ue-port').value||'30010').trim();
-  if(host.startsWith('http')) return host.replace(/\/$/,'');
-  return 'http://'+host+(port?':'+port:'');
+  var port=(el('ue-port').value||'30011').trim();
+  if(host.startsWith('https://')) return host.replace('https://','wss://').replace(/\/$/,'');
+  if(host.startsWith('http://'))  return host.replace('http://','ws://').replace(/\/$/,'');
+  return 'ws://'+host+(port?':'+port:'');
 }
 
 function ueLog(msg,err){
@@ -4640,169 +4670,183 @@ function ueLog(msg,err){
   var ts=new Date().toLocaleTimeString('en-GB',{hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'});
   d.textContent='['+ts+'] '+msg;
   log.insertBefore(d,log.firstChild);
-  while(log.children.length>25) log.removeChild(log.lastChild);
+  while(log.children.length>30) log.removeChild(log.lastChild);
 }
 
 function ueToggle(){
-  if(_ueConn) ueDisconnect(); else ueConnect();
+  if(_ueWS||_ueConn) ueDisconnect(); else ueConnect();
 }
 
 function ueConnect(){
-  _ueBase=ueBase();
-  var btn=el('ue-btn'); btn.textContent='Connecting…'; btn.disabled=true;
-  var ctrl=_ueBase.startsWith('http://')?undefined:(new AbortController());
-  var opts={method:'GET',headers:{'Content-Type':'application/json'}};
-  if(ctrl) opts.signal=ctrl.signal;
-  var timer=setTimeout(function(){if(ctrl)ctrl.abort();},5000);
-  fetch(_ueBase+'/remote/info',opts).then(function(r){
-    clearTimeout(timer);
-    if(!r.ok) throw new Error('HTTP '+r.status);
-    return r.json();
-  }).then(function(data){
-    _ueConn=true;
+  var url=ueWsUrl();
+  var btn=el('ue-btn'); btn.textContent='Connecting\u2026'; btn.disabled=true;
+  el('ue-stxt').textContent='Connecting\u2026';
+  ueLog('Connecting to '+url);
+  try{ _ueWS=new WebSocket(url); }
+  catch(e){
+    btn.textContent='Connect'; btn.disabled=false;
+    el('ue-dot').classList.add('err');
+    el('ue-stxt').textContent='Failed';
+    ueLog('WebSocket error: '+e.message,true); return;
+  }
+
+  _ueWS.onopen=function(){
+    _ueConn=true; _uePushCount=0;
     btn.textContent='Disconnect'; btn.disabled=false;
     el('ue-dot').classList.add('live'); el('ue-dot').classList.remove('err');
     el('ue-stxt').textContent='Connected';
     el('ue-dash').style.display=''; el('ue-hint').style.display='none';
-    ueLog('Connected to '+_ueBase);
-    if(data&&data.engineVersion) el('ue-pengine').textContent='UE '+data.engineVersion;
-    if(data&&data.projectName){
-      el('ue-pname').textContent=data.projectName;
-      el('ue-stxt').textContent=data.projectName;
-    }
-    ueQueryAll();
-  }).catch(function(e){
-    clearTimeout(timer);
-    _ueConn=false;
-    btn.textContent='Connect'; btn.disabled=false;
-    el('ue-dot').classList.add('err'); el('ue-dot').classList.remove('live');
-    el('ue-stxt').textContent='Failed';
-    ueLog('Connection failed: '+e.message,true);
-    ueLog('Enable Remote Control API plugin + set bAllowRemoteControlToSendAndReceive=true in UE project',true);
-  });
+    ueLog('Connected \u2014 receiving live push data (port '+(el('ue-port').value||'30011')+')');
+  };
+
+  _ueWS.onmessage=function(ev){
+    try{ ueApplySnapshot(JSON.parse(ev.data)); _uePushCount++; }
+    catch(e){ ueLog('Parse error: '+e.message,true); }
+  };
+
+  _ueWS.onerror=function(){
+    ueLog('Connection error \u2014 is the Unreal Support Plugin running on this host/port?',true);
+  };
+
+  _ueWS.onclose=function(ev){
+    _ueConn=false; _ueWS=null;
+    if(btn){ btn.textContent='Connect'; btn.disabled=false; }
+    el('ue-dot').classList.remove('live'); el('ue-dot').classList.add('err');
+    el('ue-stxt').textContent='Disconnected';
+    ueLog('Connection closed (code '+ev.code+'). '+_uePushCount+' snapshots received.');
+  };
 }
 
 function ueDisconnect(){
-  _ueConn=false; ueStopPoll();
-  el('ue-btn').textContent='Connect';
+  if(_ueWS){ _ueWS.close(); _ueWS=null; }
+  _ueConn=false;
+  var btn=el('ue-btn'); if(btn){ btn.textContent='Connect'; btn.disabled=false; }
   el('ue-dot').classList.remove('live','err');
   el('ue-stxt').textContent='Disconnected';
   el('ue-dash').style.display='none'; el('ue-hint').style.display='';
-  ueLog('Disconnected');
 }
 
-function ueFetch(path,method,body){
-  if(!_ueConn) return Promise.reject(new Error('Not connected'));
-  var opts={method:method||'GET',headers:{'Content-Type':'application/json'}};
-  if(body) opts.body=JSON.stringify(body);
-  return fetch(_ueBase+path,opts).then(function(r){
-    if(!r.ok) throw new Error('HTTP '+r.status+' '+path);
-    return r.json();
-  });
+function ueSetStat(id,val,cls){
+  var e=el(id); if(!e) return;
+  e.textContent=val;
+  e.className='ue-sv'+(cls?' '+cls:'');
 }
 
-function ueQueryProject(){
-  ueFetch('/remote/info').then(function(d){
-    if(d.engineVersion) el('ue-pengine').textContent='UE '+d.engineVersion;
-    if(d.projectName) el('ue-pname').textContent=d.projectName;
-    ueLog('Project: '+(d.projectName||'unknown')+' / UE '+(d.engineVersion||'?'));
-  }).catch(function(e){ueLog('Project info: '+e.message,true);});
-}
+function ueApplySnapshot(d){
+  if(!d) return;
 
-function ueQueryPresets(){
-  ueFetch('/remote/presets').then(function(d){
-    var presets=d.Presets||d.presets||[];
-    el('ue-ppresets').textContent=presets.length+' preset'+(presets.length!==1?'s':'');
-    if(presets.length>0){
-      var names=presets.slice(0,3).map(function(p){return p.Name||p.name||'?';}).join(', ');
-      ueLog('Presets: '+names+(presets.length>3?' +more':''));
+  // Frame timing
+  var ft=d.frametiming;
+  if(ft){
+    var fpsCls=ft.fps>0&&ft.targetFps>0?(ft.fps>=ft.targetFps*0.97?'ok':ft.fps>=ft.targetFps*0.8?'warn':'err'):'';
+    var gpuCls=ft.gpuMs>0?(ft.gpuMs<33?'ok':ft.gpuMs<40?'warn':'err'):'';
+    ueSetStat('ue-fps',     ft.fps>0?ft.fps.toFixed(1)+' fps':'\u2014', fpsCls);
+    ueSetStat('ue-fgame',   ft.gameMs>0?ft.gameMs.toFixed(1)+'ms':'\u2014','');
+    ueSetStat('ue-frender', ft.renderMs>0?ft.renderMs.toFixed(1)+'ms':'\u2014','');
+    ueSetStat('ue-fgpu',    ft.gpuMs>0?ft.gpuMs.toFixed(1)+'ms':'\u2014', gpuCls);
+    ueSetStat('ue-frhi',    ft.rhiMs>0?ft.rhiMs.toFixed(1)+'ms':'\u2014','');
+    ueSetStat('ue-ftarget', ft.targetFps>0?ft.targetFps+'fps':'Unlimited','');
+  }
+
+  // Level
+  var lv=d.level;
+  if(lv){
+    ueSetStat('ue-level-cur',   lv.current||'\u2014','');
+    ueSetStat('ue-level-type',  lv.worldType||'\u2014','');
+    var sl=lv.streaming||[];
+    ueSetStat('ue-level-stream',sl.length+' sub-level'+(sl.length!==1?'s':''),'');
+    var slEl=el('ue-streaming-list');
+    if(slEl) slEl.innerHTML=sl.length?sl.map(function(s){
+      return '<div class="ue-sr"><span class="ue-sk">'+esc(s.name)+'</span>'
+        +'<span class="ue-sv '+(s.visible?'ok':'')+'">'+
+        (s.loaded?(s.visible?'Visible':'Loaded'):'Unloaded')+'</span></div>';
+    }).join(''):'<div style="color:var(--ink4);font-size:10px">None</div>';
+  }
+
+  // nDisplay
+  var nd=d.ndisplay;
+  if(nd){
+    ueSetStat('ue-nd-status', nd.available?(nd.active?nd.operationMode:'Inactive'):'Not available',
+      nd.available&&nd.active?'ok':'warn');
+    ueSetStat('ue-nd-nodes',  (nd.nodeCount||0)+' node'+((nd.nodeCount||0)!==1?'s':''),'');
+    ueSetStat('ue-nd-primary',nd.primaryNode||'\u2014','');
+    ueSetStat('ue-nd-config', nd.configPath?nd.configPath.split('/').pop().replace('.ndisplay',''):'\u2014','');
+    ueSetStat('ue-nd-frustum',nd.innerFrustum?'Active':'Off', nd.innerFrustum?'ok':'');
+    ueSetStat('ue-nd-chroma', nd.chromakey?'Active':'Off',    nd.chromakey?'warn':'');
+    var nodesEl=el('ue-nd-nodes-body');
+    if(nodesEl&&nd.nodes&&nd.nodes.length){
+      nodesEl.innerHTML=nd.nodes.map(function(n){
+        return '<div class="ue-sr"><span class="ue-sk">'+esc(n.name)
+          +(n.isPrimary?' <span style="color:var(--brand1)">(primary)</span>':'')
+          +'</span><span class="ue-sv ok">'+esc(n.address)+'</span></div>';
+      }).join('');
+    }
+    var saEl=el('ue-nd-actors');
+    if(saEl&&nd.stageActors&&nd.stageActors.length){
+      saEl.innerHTML=nd.stageActors.map(function(a){
+        return '<div class="ue-sr"><span class="ue-sk">'+esc(a.name)+'</span><span class="ue-sv">'
+          +(a.innerFrustum?'<span style="color:var(--live)">IF</span>':'<span style="color:var(--ink4)">IF</span>')
+          +' '+(a.chromakey?'<span style="color:#fbbf24">CK</span>':'<span style="color:var(--ink4)">CK</span>')
+          +'</span></div>';
+      }).join('');
+    }
+  }
+
+  // LiveLink
+  var ll=d.livelink;
+  if(ll){
+    var llEl=el('ue-llbody');
+    if(!ll.available){
+      if(llEl) llEl.innerHTML='<div style="color:var(--ink4)">Plugin not loaded</div>';
     } else {
-      ueLog('No Remote Control presets configured in project');
+      var srcHtml=(ll.sources||[]).map(function(s){
+        return '<div class="ue-sr"><span class="ue-sk">'+esc(s.name)
+          +'<span style="color:var(--ink4);font-size:9px"> ('+esc(s.type)+')</span>'
+          +'</span><span class="ue-sv '+(s.connected?'ok':'err')+'">'
+          +(s.connected?'\u25cf':'\u25cb')+' '+(s.connected?'Live':'Off')
+          +'<span style="color:var(--ink4)"> \u00b7 '+s.subjectCount+' subj</span>'
+          +'</span></div>';
+      }).join('');
+      var subjHtml=(ll.subjects||[]).map(function(s){
+        var ageOk=s.frameAge>=0&&s.frameAge<=2;
+        var ageCls=s.frameAge<0?'':(ageOk?'ok':'warn');
+        var role=s.role.replace('LiveLink','').replace(/Role$/,'');
+        var xf=s.transform?(' \u00b7 '+Math.round(s.transform.x)+','+Math.round(s.transform.y)+','+Math.round(s.transform.z)):'';
+        return '<div class="ue-sr" style="margin-top:2px"><span class="ue-sk">'+esc(s.name)
+          +'<span style="color:var(--ink4);font-size:9px"> ('+esc(role)+')</span>'
+          +'</span><span class="ue-sv '+ageCls+'">'+(s.fps>0?s.fps.toFixed(1)+'fps':'\u2014')+xf+'</span></div>';
+      }).join('');
+      if(llEl) llEl.innerHTML=(srcHtml||'<div style="color:var(--ink4)">No sources</div>')
+        +(subjHtml?'<div style="margin-top:5px;padding-top:5px;border-top:1px solid var(--line)">'+subjHtml+'</div>':'');
+      var liveCount=(ll.sources||[]).filter(function(s){return s.connected;}).length;
+      if(liveCount) el('ue-stxt').textContent=liveCount+' LL source'+(liveCount!==1?'s':'')+' \u00b7 \u25cf Live';
     }
-  }).catch(function(e){ueLog('Presets: '+e.message,true);});
-}
+  }
 
-function ueQueryFT(){
-  // Read-only: query frame rate limit from GameUserSettings
-  ueFetch('/remote/object/property','PUT',{
-    objectPath:'/Script/Engine.Default__GameUserSettings',
-    access:'READ_ACCESS',
-    propertyName:'FrameRateLimit'
-  }).then(function(d){
-    var fps=d.FrameRateLimit||d.propertyValue||0;
-    el('ue-ftarget').textContent=fps>0?fps+'fps limit':'Unlimited';
-    ueLog('Frame rate limit: '+fps);
-  }).catch(function(e){
-    // Try alternate path for UE 5.x
-    ueFetch('/remote/object/property','PUT',{
-      objectPath:'/Game/Maps/Main.Main:PersistentLevel.GameState',
-      access:'READ_ACCESS',
-      propertyName:'ReplicationGraph'
-    }).catch(function(){ ueLog('Frame timing: requires stat access plugin',true); });
-  });
-}
+  // CVars
+  var cv=d.convars; var cvEl=el('ue-cvarbody');
+  if(cv&&cvEl){
+    var keys=Object.keys(cv);
+    cvEl.innerHTML=keys.length?keys.map(function(k){
+      return '<div class="ue-sr"><span class="ue-sk" title="'+esc(k)+'">'
+        +esc(k.replace(/^r\./,'').replace(/^nDisplay\./,'nDisp.'))+'</span>'
+        +'<span class="ue-sv">'+esc(String(cv[k]))+'</span></div>';
+    }).join(''):'<div style="color:var(--ink4);font-size:10px">None configured</div>';
+  }
 
-function ueQueryLL(){
-  // Query LiveLink sources - check multiple possible paths
-  var paths=[
-    '/Script/LiveLink.Default__LiveLinkClient',
-    '/Engine/Transient.LiveLinkClient_0'
-  ];
-  var tried=0;
-  function tryNext(){
-    if(tried>=paths.length){
-      // Try listing all objects with LiveLink in name
-      ueFetch('/remote/object/property','PUT',{
-        objectPath:paths[0],access:'READ_ACCESS',propertyName:'SourceCount'
-      }).catch(function(){});
-      el('ue-llbody').innerHTML='<div style="color:var(--ink3)">LiveLink: check plugin is enabled</div>';
-      ueLog('LiveLink query requires Live Link plugin active',true);
-      return;
-    }
-    ueFetch('/remote/object/property','PUT',{
-      objectPath:paths[tried],access:'READ_ACCESS',propertyName:'Sources'
-    }).then(function(d){
-      var src=d.Sources||d.propertyValue;
-      if(src&&Array.isArray(src)&&src.length>0){
-        var items=src.map(function(s){
-          return '<div class="ue-sr"><span class="ue-sk">'+esc(s.SourceType||s.name||'Source')+'</span>'
-                +'<span class="ue-sv ok">&#9679; Active</span></div>';
+  // Assets
+  var as=d.assets; var asEl=el('ue-assetbody');
+  if(as&&asEl){
+    var asRow=el('ue-assets-row'); if(asRow) asRow.style.display='';
+    if(!as.ready){ asEl.innerHTML='<div style="color:var(--ink3)">Scanning\u2026</div>'; }
+    else{
+      var topC=Object.keys(as.byClass||{}).slice(0,6);
+      asEl.innerHTML='<div class="ue-sr"><span class="ue-sk">Total</span><span class="ue-sv">'+as.totalAssets+'</span></div>'
+        +topC.map(function(k){
+          return '<div class="ue-sr"><span class="ue-sk">'+esc(k)+'</span><span class="ue-sv">'+as.byClass[k]+'</span></div>';
         }).join('');
-        el('ue-llbody').innerHTML=items;
-        el('ue-stxt').textContent='Connected · '+src.length+' LL source'+(src.length!==1?'s':'');
-        ueLog('LiveLink: '+src.length+' source(s) active');
-      } else {
-        el('ue-llbody').innerHTML='<div style="color:var(--ink4)">No active sources</div>';
-        ueLog('LiveLink: no active sources');
-      }
-    }).catch(function(){tried++;tryNext();});
+    }
   }
-  tryNext();
-}
-
-function ueQueryAll(){
-  if(!_ueConn) return;
-  ueQueryProject();
-  setTimeout(ueQueryPresets,200);
-  setTimeout(ueQueryFT,400);
-  setTimeout(ueQueryLL,600);
-}
-
-function ueTogglePoll(){
-  if(_uePoll){ueStopPoll();}
-  else{
-    _uePoll=setInterval(function(){if(_ueConn)ueQueryAll();else ueStopPoll();},3000);
-    var btn=el('ue-poll-btn');
-    btn.textContent='Auto-poll: 3s ■';
-    btn.classList.add('active');
-    ueLog('Auto-poll started (3s)');
-  }
-}
-
-function ueStopPoll(){
-  if(_uePoll){clearInterval(_uePoll);_uePoll=null;}
-  var btn=el('ue-poll-btn');
-  if(btn){btn.textContent='Auto-poll: off';btn.classList.remove('active');}
 }
 
 

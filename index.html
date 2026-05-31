@@ -2698,7 +2698,7 @@ function updateDiagram(){
     else _rightList.push(i);
   });
 
-  var _TOP_Y = 34; // above all nodes (first node starts at y≈50)
+  var _TOP_Y = 46; // above all nodes, below column header pills (y=12-32)
 
   connections.forEach(function(cn, connIdx){
     var fc=components.find(function(x){return x.id===cn.fromCompId;});
@@ -2724,8 +2724,8 @@ function updateDiagram(){
 
     if(li >= 0){
       // LEFTWARD (mid→left or right→mid): exit right → go UP to top margin → go FAR LEFT → drop to target
-      var topY   = _TOP_Y - li * 10;     // 34, 24, 14... (above all nodes, staggered)
-      var farX   = 28 - li * 10;         // 28, 18,  8... (left margin)
+      var topY   = _TOP_Y - li * 3;      // 46, 43, 40, 37 — all in safe zone above nodes/below headers
+      var farX   = Math.max(4, 28 - li * 8); // 28, 20, 12, 4 — far-left channels
       exitX = fNode.right + 8 + li * 8;
       d = 'M'+fromPos.x+' '+fromPos.y    // port dot
         + ' L'+exitX+' '+fromPos.y       // exit right of source
@@ -2738,9 +2738,9 @@ function updateDiagram(){
 
     } else if(ui >= 0){
       // SAME-COL UPWARD: exit right → rise to ABOVE the target → cross left past target → drop to port
-      var rchX  = fNode.right + 12 + ui * 14;  // 532, 546... (mid-right gap)
-      var aboveY = tNode.top - 6 - ui * 4;      // just above target node, staggered
-      var appX  = tNode.left - 6 - ui * 6;      // approach x (left of target), staggered
+      var rchX  = fNode.right + 12 + ui * 14;  // 542, 556... (mid-right gap)
+      var aboveY = tNode.top - 6;                // always in the gap above the target node
+      var appX  = tNode.left - 6 - ui * 6;      // approach from left, staggered per connection
       d = 'M'+fromPos.x+' '+fromPos.y     // port dot
         + ' L'+rchX+' '+fromPos.y         // exit right to channel
         + ' L'+rchX+' '+aboveY            // rise to above target

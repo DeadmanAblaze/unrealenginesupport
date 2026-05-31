@@ -2382,7 +2382,7 @@ function dgText(x, y, txt, size, fill, anchor, weight){
 function dgEsc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 var _nodeIdCounter = 0;
-function drawNode(x, y, w, lines, title, stroke, titleColor, compObj){
+function drawNode(x, y, w, lines, title, stroke, titleColor, compObj, connectedPorts){
   // Compute minimum height needed for ports
   var ports = compObj ? (compObj.ports||[]) : [];
   var outPorts = ports.filter(function(p){return p.dir==='out';});
@@ -2414,12 +2414,10 @@ function drawNode(x, y, w, lines, title, stroke, titleColor, compObj){
       var col = SIGNAL_COLOR[p.signal]||'#9b9b9f';
       portPositions[p.id] = {x: x+w+1, y: py};
       inner += '<circle cx="'+(x+w)+'" cy="'+py+'" r="3.5" fill="'+col+'" stroke="#080808" stroke-width="1"/>';
-      var lbl = p.label && p.label.trim() ? p.label.slice(0,13)
-              : p.signal==='Ethernet/10GbE' ? '10GbE'
-              : p.signal==='Genlock/Ref' ? 'Ref'
-              : p.signal==='DisplayPort' ? 'DP'
-              : (p.signal||'').slice(0,10);
-      inner += '<text x="'+(x+w+8)+'" y="'+(py+1)+'" text-anchor="start" dominant-baseline="central" font-size="9" font-family="monospace" fill="'+col+'" opacity="0.9">'+dgEsc(lbl)+'</text>';
+      // Only label if port is connected AND has a user-defined name
+      if(connectedPorts && connectedPorts[p.id] && p.label && p.label.trim()){
+        inner += '<text x="'+(x+w+8)+'" y="'+(py+1)+'" text-anchor="start" dominant-baseline="central" font-size="8.5" font-family="monospace" fill="'+col+'" opacity="0.85">'+dgEsc(p.label.slice(0,13))+'</text>';
+      }
     });
   }
   if(inPorts.length){
@@ -2429,13 +2427,10 @@ function drawNode(x, y, w, lines, title, stroke, titleColor, compObj){
       var col = SIGNAL_COLOR[p.signal]||'#9b9b9f';
       portPositions[p.id] = {x: x-1, y: py};
       inner += '<circle cx="'+x+'" cy="'+py+'" r="3.5" fill="'+col+'" stroke="#080808" stroke-width="1"/>';
-      // Port label — outside node, to the left
-      var lbl = p.label && p.label.trim() ? p.label.slice(0,13)
-              : p.signal==='Ethernet/10GbE' ? '10GbE'
-              : p.signal==='Genlock/Ref' ? 'Ref'
-              : p.signal==='DisplayPort' ? 'DP'
-              : (p.signal||'').slice(0,10);
-      inner += '<text x="'+(x-8)+'" y="'+(py+1)+'" text-anchor="end" dominant-baseline="central" font-size="9" font-family="monospace" fill="'+col+'" opacity="0.75">'+dgEsc(lbl)+'</text>';
+      // Only label if port is connected AND has a user-defined name
+      if(connectedPorts && connectedPorts[p.id] && p.label && p.label.trim()){
+        inner += '<text x="'+(x-8)+'" y="'+(py+1)+'" text-anchor="end" dominant-baseline="central" font-size="8.5" font-family="monospace" fill="'+col+'" opacity="0.85">'+dgEsc(p.label.slice(0,13))+'</text>';
+      }
     });
   }
 
@@ -2563,7 +2558,7 @@ function updateDiagram(){
     var out  = cf(cam,'output')||cf(cam,'sdi')||'';
     var n = drawNode(COL_LEFT-NODE_W/2+10, leftY, NODE_W,
       [{text:sh(body,20)},{text:sh(out,20),color:'#60a5fa'}],
-      'Camera', '#1e40af', '#93c5fd', cam);
+      'Camera', '#1e40af', '#93c5fd', cam, _connectedPorts);
     nodes['cam'+i] = n; svgParts.push(n.html);
     leftY += n.h + 12;
   });
@@ -2574,7 +2569,7 @@ function updateDiagram(){
     var tport= cf(trk,'transport')||'LiveLink';
     var n = drawNode(COL_LEFT-NODE_W/2+10, leftY, NODE_W,
       [{text:sh(sys,20)},{text:sh(tport,20),color:'#4ade80'}],
-      'Tracking', '#166534', '#86efac', trk);
+      'Tracking', '#166534', '#86efac', trk, _connectedPorts);
     nodes['trk'+i] = n; svgParts.push(n.html);
     leftY += n.h + 12;
   });
@@ -2590,7 +2585,7 @@ function updateDiagram(){
     if(eGpu) eLines.push({text:sh(eGpu,17)});
     if(eUe) eLines.push({text:eUe, color:'#60a5fa'});
     var n = drawNode(COL_MID, midY, NODE_W, eLines.length?eLines:[{text:'Editor'}],
-      'Editor', '#1e3a8a', '#93c5fd', editor);
+      'Editor', '#1e3a8a', '#93c5fd', editor, _connectedPorts);
     nodes['editor'] = n; svgParts.push(n.html);
     midY += n.h + 10;
   }
@@ -2606,7 +2601,7 @@ function updateDiagram(){
     if(dnGpu) eLines.push({text:sh(dnGpu,17)});
     if(syncStr) eLines.push({text:sh(syncStr,17),color:'#60a5fa'});
     var n = drawNode(COL_MID, midY, NODE_W, eLines.length?eLines:[{text:'Display Node'}],
-      'Node '+(i+1), '#1e3a8a', '#93c5fd', dn);
+      'Node '+(i+1), '#1e3a8a', '#93c5fd', dn, _connectedPorts);
     nodes['dn'+i] = n; svgParts.push(n.html);
     midY += n.h + 14;
   });
@@ -2623,7 +2618,7 @@ function updateDiagram(){
     if(wallRes)  wallLines.push({text:sh(wallRes,17),color:'#60a5fa'});
     if(wallHz)   wallLines.push({text:wallHz,color:'#9b9b9f'});
     var nwall = drawNode(COL_RIGHT, rightY, NODE_W, wallLines.length?wallLines:[{text:'LED Wall'}],
-      'LED Wall', '#312e81', '#a5b4fc', wall);
+      'LED Wall', '#312e81', '#a5b4fc', wall, _connectedPorts);
     nodes['wall'] = nwall; svgParts.push(nwall.html);
     rightY += nwall.h + 10;
   }
@@ -2636,7 +2631,7 @@ function updateDiagram(){
     if(pModel) pLines.push({text:sh(pModel,17)});
     if(pMap)   pLines.push({text:sh(pMap,17),color:'#9b9b9f'});
     var nproc = drawNode(COL_RIGHT, rightY, NODE_W, pLines.length?pLines:[{text:pMfr}],
-      pMfr||'Processor', '#312e81', '#a5b4fc', proc);
+      pMfr||'Processor', '#312e81', '#a5b4fc', proc, _connectedPorts);
     nodes['proc'] = nproc; svgParts.push(nproc.html);
     rightY += nproc.h + 10;
   }
@@ -2649,7 +2644,7 @@ function updateDiagram(){
     var synModel= cf(syn,'model')||'';
     var synLines= [{text:sh(synSrc,18), color:'#4ade80'}];
     if(synModel) synLines.push({text:sh(synModel,18), color:'#9b9b9f'});
-    var n = drawNode(COL_MID, bandY, NODE_W, synLines, 'Genlock / Sync', '#14532d', '#86efac', syn);
+    var n = drawNode(COL_MID, bandY, NODE_W, synLines, 'Genlock / Sync', '#14532d', '#86efac', syn, _connectedPorts);
     nodes['syn'+i] = n; svgParts.push(n.html);
     // Band label
     svgParts.push(dgText(COL_MID-8, bandY + n.h/2, 'Sync', 9, '#2a2a2a', 'end'));
@@ -2661,7 +2656,7 @@ function updateDiagram(){
     var netSpeed = cf(net,'speed')||'';
     var netLines = [{text:sh(netModel,18)}];
     if(netSpeed) netLines.push({text:netSpeed, color:'#9b9b9f'});
-    var n = drawNode(COL_MID, bandY, NODE_W, netLines, 'Network', '#303038', '#606068', net);
+    var n = drawNode(COL_MID, bandY, NODE_W, netLines, 'Network', '#303038', '#606068', net, _connectedPorts);
     nodes['net'+i] = n; svgParts.push(n.html);
     svgParts.push(dgText(COL_MID-8, bandY + n.h/2, 'Network', 9, '#2a2a2a', 'end'));
     bandY += n.h + 10;
@@ -2672,7 +2667,7 @@ function updateDiagram(){
     var pwrModel = cf(pwr,'model')||'';
     var pwrLines = [{text:sh(pwrType,18)}];
     if(pwrModel) pwrLines.push({text:sh(pwrModel,18),color:'#9b9b9f'});
-    var n = drawNode(COL_MID, bandY, NODE_W, pwrLines, 'Power', '#303038', '#606068', pwr);
+    var n = drawNode(COL_MID, bandY, NODE_W, pwrLines, 'Power', '#303038', '#606068', pwr, _connectedPorts);
     nodes['pwr'+i] = n; svgParts.push(n.html);
     bandY += n.h + 10;
   });
@@ -2685,7 +2680,7 @@ function updateDiagram(){
     var ctrlMix = cf(ctrl,'mixer')||'';
     var ctrlLines = [{text:sh(ctrlLoc,17)}];
     if(ctrlMix) ctrlLines.push({text:sh(ctrlMix,17),color:'#9b9b9f'});
-    var n = drawNode(COL_RIGHT, ctrlY, NODE_W, ctrlLines, 'Control Room', '#1c2010', '#86efac', ctrl);
+    var n = drawNode(COL_RIGHT, ctrlY, NODE_W, ctrlLines, 'Control Room', '#1c2010', '#86efac', ctrl, _connectedPorts);
     nodes['ctrl'+i] = n; svgParts.push(n.html);
     ctrlY += n.h + 10;
   });
@@ -2694,6 +2689,13 @@ function updateDiagram(){
   var connParts = [];
 
   // ── Clean routing: classify by column, route to avoid all node boxes ──────
+  // Which ports are actually wired up — only these get labels
+  var _connectedPorts = {};
+  connections.forEach(function(cn){
+    _connectedPorts[cn.fromPortId] = true;
+    _connectedPorts[cn.toPortId] = true;
+  });
+
   var _leftList=[], _upList=[], _rightList=[];
   connections.forEach(function(cn,i){
     var fc=components.find(function(x){return x.id===cn.fromCompId;});
@@ -2773,8 +2775,7 @@ function updateDiagram(){
     connParts.push('<path class="cn" d="'+d+'" fill="none" stroke="'+col
       +'" stroke-width="1.4" stroke-dasharray="'+da
       +'" marker-end="url(#vpa)" opacity="0.85"/>');
-    var sigLbl=fp.signal==='Ethernet/10GbE'?'10G':fp.signal==='Genlock/Ref'?'Ref':fp.signal==='DisplayPort'?'DP':fp.signal;
-    connParts.push('<text x="'+labelX+'" y="'+(labelY-3)+'" text-anchor="middle" font-size="7.5" fill="'+col+'" opacity="0.5" style="pointer-events:none">'+sigLbl+'</text>');
+// Signal colours explained by legend — no midpoint labels
   });
 
   // No fallback connections — user defines routing explicitly in Signal Routing section

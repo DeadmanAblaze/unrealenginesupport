@@ -1796,11 +1796,22 @@ function setCompField(id, key, val){
   if(c.type==='tracking' && key==='system'){ saveComponents(); }
   else { fsave('components',{items:components,nextId:compNextId}); renderRigSum(); updateRigMini(); buildSysPrompt(); updateDiagram(); }
 }
+var _nickTimer = null;
 function setNickname(id, val){
   var c=components.find(function(x){return x.id===id;}); if(!c) return;
   c.nickname = val;
-  fsave('components',{items:components,nextId:compNextId});
-  renderComponents(); updateDiagram(); updateStatusFooter();
+  // Update diagram instantly (non-destructive)
+  updateDiagram(); updateStatusFooter();
+  // Debounce the save + re-render so typing doesn't destroy the input
+  clearTimeout(_nickTimer);
+  _nickTimer = setTimeout(function(){
+    fsave('components',{items:components,nextId:compNextId});
+    // Only re-render if the input is no longer focused
+    var active = document.activeElement;
+    if(!active || active.className.indexOf('cv-nick')<0){
+      renderComponents();
+    }
+  }, 600);
 }
 
 function setCompNotes(id, val){

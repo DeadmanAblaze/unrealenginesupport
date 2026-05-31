@@ -2360,17 +2360,6 @@ var DC = {
   'nDisplay':'#374151','LiveLink':'#065f46'
 };
 
-  // Pre-scan: which out-ports connect leftward → dots go on LEFT side of source node
-  var _leftPortSet = {};
-  connections.forEach(function(cn){
-    var _fc=components.find(function(x){return x.id===cn.fromCompId;});
-    var _tc=components.find(function(x){return x.id===cn.toCompId;});
-    if(!_fc||!_tc) return;
-    if(getColIdx(_fc)>getColIdx(_tc)){
-      if(!_leftPortSet[_fc.id]) _leftPortSet[_fc.id]={};
-      _leftPortSet[_fc.id][cn.fromPortId]=true;
-    }
-  });
 
 function nodeH(lines){ return NODE_H_BASE + Math.max(0, lines-2) * NODE_LINE_H; }
 
@@ -2543,6 +2532,18 @@ function getColIdx(comp){
 function updateDiagram(){
   if((specs['mode']||'vp') !== 'vp') return;
   _nodeIdCounter = 0;
+
+  // Pre-scan: which out-ports connect leftward → dots go on LEFT side of source node
+  var _leftPortSet = {};
+  connections.forEach(function(cn){
+    var _fc=components.find(function(x){return x.id===cn.fromCompId;});
+    var _tc=components.find(function(x){return x.id===cn.toCompId;});
+    if(!_fc||!_tc) return;
+    if(getColIdx(_fc)>getColIdx(_tc)){
+      if(!_leftPortSet[_fc.id]) _leftPortSet[_fc.id]={};
+      _leftPortSet[_fc.id][cn.fromPortId]=true;
+    }
+  });
   var host = document.getElementById('vp-diagram');
   if(!host) return;
 

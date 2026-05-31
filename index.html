@@ -495,6 +495,13 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:13p
 .rconn-warn .rconn-arrow{color:var(--warn)}
 .rconn-warn-tag{color:var(--warn);margin-left:4px;font-size:12px}
 .rconn-del{margin-left:auto;background:none;border:none;color:var(--ink4);cursor:pointer;font-size:14px;padding:2px 6px;border-radius:4px;transition:all .12s}
+.rconn-del:hover{color:var(--crit);background:rgba(248,113,113,.1)}
+.rconn-edit{background:none;border:none;color:var(--ink4);cursor:pointer;font-size:12px;padding:2px 5px;border-radius:4px;transition:all .12s;margin-left:auto}
+.rconn-edit:hover{color:var(--brand1);background:rgba(91,157,255,.1)}
+.route-edit-panel{border:1px solid rgba(91,157,255,0.25)!important;background:rgba(91,157,255,0.04)!important}
+.route-edit-actions{display:flex;gap:8px;margin-top:10px}
+.route-cancel-btn{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--ink3);padding:6px 14px;border-radius:5px;cursor:pointer;font-size:12px;transition:all .15s}
+.route-cancel-btn:hover{background:rgba(255,255,255,0.1);color:var(--ink1)}
 .rconn-del:hover{color:var(--crit);background:var(--rdim)}
 
 /* ── COMPOSABLE COMPONENTS ── */
@@ -1773,7 +1780,7 @@ function setCompField(id, key, val){
   c.fields[key] = val;
   // tracking system change rebuilds fieldset → re-render in place
   if(c.type==='tracking' && key==='system'){ saveComponents(); }
-  else { fsave('components',{items:components,nextId:compNextId}); renderRigSum(); updateRigMini(); buildSysPrompt(); }
+  else { fsave('components',{items:components,nextId:compNextId}); renderRigSum(); updateRigMini(); buildSysPrompt(); updateDiagram(); }
 }
 function setCompNotes(id, val){
   var c = components.find(function(x){return x.id===id;}); if(!c) return;
@@ -2511,8 +2518,8 @@ function elbowPath(x1,y1,x2,y2,col,dash,opacity){
 }
 
 function getColIdx(comp){
-  var L=['camera','lens','fiz','tracking'];
-  var R=['ledwall','ledproc','controlroom'];
+  var L=['camera','lens','fiz','tracking','controlroom'];
+  var R=['ledwall','ledproc'];
   if(L.indexOf(comp.type)>=0) return 0;
   if(R.indexOf(comp.type)>=0) return 2;
   return 1;
@@ -2569,6 +2576,17 @@ function updateDiagram(){
       [{text:sh(sys,20)},{text:sh(tport,20),color:'#4ade80'}],
       'Tracking', '#166534', '#86efac', trk);
     nodes['trk'+i] = n; svgParts.push(n.html);
+    leftY += n.h + 12;
+  });
+
+  var ctrls = components.filter(function(c){return c.type==='controlroom';});
+  ctrls.forEach(function(ctrl, i){
+    var ctrlLoc = cf(ctrl,'location')||'Control Room';
+    var ctrlMix = cf(ctrl,'mixer')||'';
+    var ctrlLines = [{text:sh(ctrlLoc,17)}];
+    if(ctrlMix) ctrlLines.push({text:sh(ctrlMix,17),color:'#9b9b9f'});
+    var n = drawNode(COL_LEFT-NODE_W/2+10, leftY, NODE_W, ctrlLines, 'Control Room', '#1c2010', '#86efac', ctrl);
+    nodes['ctrl'+i] = n; svgParts.push(n.html);
     leftY += n.h + 12;
   });
 
@@ -2672,17 +2690,6 @@ function updateDiagram(){
 
   // Control room — right column, below LED wall/processor
   var ctrls = components.filter(function(c){return c.type==='controlroom';});
-  var ctrlY = rightY;
-  ctrls.forEach(function(ctrl, i){
-    var ctrlLoc = cf(ctrl,'location')||'Control Room';
-    var ctrlMix = cf(ctrl,'mixer')||'';
-    var ctrlLines = [{text:sh(ctrlLoc,17)}];
-    if(ctrlMix) ctrlLines.push({text:sh(ctrlMix,17),color:'#9b9b9f'});
-    var n = drawNode(COL_RIGHT, ctrlY, NODE_W, ctrlLines, 'Control Room', '#1c2010', '#86efac', ctrl);
-    nodes['ctrl'+i] = n; svgParts.push(n.html);
-    ctrlY += n.h + 10;
-  });
-
   // ── CONNECTIONS ────────────────────────────────────────────────────────
   var connParts = [];
 
@@ -2932,7 +2939,7 @@ function addPort(compId){
   if(!c.ports) c.ports = [];
   c.ports.push({id: Date.now(), dir:'out', signal:'SDI', label:'', notes:''});
   fsave('components',{items:components,nextId:compNextId});
-  renderComponents();
+  renderComponents(); updateDiagram();
 }
 
 function removePort(compId, portId){
@@ -2945,7 +2952,7 @@ function removePort(compId, portId){
   });
   fsave('components',{items:components,nextId:compNextId});
   fsave('connections',{items:connections,nextId:connNextId});
-  renderComponents();
+  renderComponents(); updateDiagram();
   renderRoutingView();
 }
 
@@ -3156,24 +3163,109 @@ function renderRoutingView(){
           '<span class="rconn-arrow">&#8594;</span>'+
           '<span class="rconn-to">'+esc(tc)+'<span class="rconn-port">'+esc(tl)+'</span></span>'+
           (cn.mismatch?'<span class="rconn-warn-tag" title="Signal type mismatch">&#9888;</span>':'')+
+          '<button class="rconn-edit" title="Edit" onclick="rcLoadEditForm('+cn.id+')">&#9998;</button>'+
           '<button class="rconn-del" onclick="removeConnection('+cn.id+')">&#215;</button>'+
           '</div>';
       }).join('')
       +'</div>';
   }).join('');
 
-  host.innerHTML=addForm+connList;
+  var editPanel = '<div id="rc-edit-panel" class="route-add-form route-edit-panel" style="display:none">'
+    + '<div class="route-add-title">Edit connection <span id="rc-edit-id"></span></div>'
+    + '<div class="route-add-row">'
+    + '<div class="route-add-group">'
+    + '<label class="route-lbl">From</label>'
+    + '<select id="rce-from-dev" class="route-sel" data-side="efrom" onchange="rcUpdatePorts(this.dataset.side)">'
+    + '<option value="">Select device…</option>'+compOptions+'</select>'
+    + '<select id="rce-from-port" class="route-sel"><option value="">Select output port…</option></select>'
+    + '</div>'
+    + '<div class="route-arrow">&#8594;</div>'
+    + '<div class="route-add-group">'
+    + '<label class="route-lbl">To</label>'
+    + '<select id="rce-to-dev" class="route-sel" data-side="eto" onchange="rcUpdatePorts(this.dataset.side)">'
+    + '<option value="">Select device…</option>'+compOptions+'</select>'
+    + '<select id="rce-to-port" class="route-sel"><option value="">Select input port…</option></select>'
+    + '</div>'
+    + '</div>'
+    + '<div class="route-edit-actions">'
+    + '<button class="route-add-btn" onclick="rcUpdateConnection()">Update</button>'
+    + '<button class="route-cancel-btn" onclick="rcCancelEdit()">Cancel</button>'
+    + '</div>'
+    + '</div>';
+  host.innerHTML=addForm+editPanel+connList;
+}
+
+// ── Connection editing ──────────────────────────────────────────────────
+var _rcEditId = null;
+
+function rcLoadEditForm(id){
+  var cn=connections.find(function(x){return x.id===id;}); if(!cn) return;
+  _rcEditId=id;
+  var panel=el('rc-edit-panel'); if(!panel) return;
+  panel.style.display='block';
+  el('rc-edit-id').textContent='#'+id;
+  // Set from device then trigger port population
+  var fromDev=el('rce-from-dev'), toDev=el('rce-to-dev');
+  if(!fromDev||!toDev) return;
+  fromDev.value=cn.fromCompId;
+  rcUpdatePorts('efrom');
+  toDev.value=cn.toCompId;
+  rcUpdatePorts('eto');
+  // Now set port values (need small delay for options to render)
+  setTimeout(function(){
+    var fp=el('rce-from-port'), tp=el('rce-to-port');
+    if(fp) fp.value=cn.fromPortId;
+    if(tp) tp.value=cn.toPortId;
+    // Scroll edit panel into view
+    panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+  },50);
+}
+
+function rcUpdateConnection(){
+  if(!_rcEditId) return;
+  var fromDevSel=el('rce-from-dev'), fromPortSel=el('rce-from-port');
+  var toDevSel=el('rce-to-dev'), toPortSel=el('rce-to-port');
+  if(!fromDevSel||!fromPortSel||!toDevSel||!toPortSel) return;
+  var fromCompId=parseInt(fromDevSel.value);
+  var fromPortRaw=fromPortSel.value;
+  var toCompId=parseInt(toDevSel.value);
+  var toPortRaw=toPortSel.value;
+  if(!fromCompId||!fromPortRaw||!toCompId||!toPortRaw){
+    alert('Please select a device and port for both ends.'); return;
+  }
+  var mismatch=fromPortRaw.indexOf('mismatch:')==0||toPortRaw.indexOf('mismatch:')==0;
+  var fromPortId=parseInt(fromPortRaw.replace('mismatch:',''));
+  var toPortId=parseInt(toPortRaw.replace('mismatch:',''));
+  var fc=components.find(function(x){return x.id===fromCompId;});
+  var tc=components.find(function(x){return x.id===toCompId;});
+  var fp=fc?(fc.ports||[]).find(function(p){return p.id===fromPortId;}):null;
+  var tp=tc?(tc.ports||[]).find(function(p){return p.id===toPortId;}):null;
+  var sigMismatch=fp&&tp&&fp.signal!==tp.signal;
+  var idx=connections.findIndex(function(x){return x.id===_rcEditId;});
+  if(idx<0) return;
+  connections[idx]={id:_rcEditId,fromCompId:fromCompId,fromPortId:fromPortId,
+    toCompId:toCompId,toPortId:toPortId,mismatch:mismatch||sigMismatch};
+  _rcEditId=null;
+  saveConnections();
+}
+
+function rcCancelEdit(){
+  _rcEditId=null;
+  var panel=el('rc-edit-panel'); if(panel) panel.style.display='none';
 }
 
 // Populate port dropdowns when device is selected in the add form
 function rcUpdatePorts(side){
-  var devSel=el('rc-'+side+'-dev');
-  var portSel=el('rc-'+side+'-port');
+  // side can be 'from'/'to' (add form) or 'efrom'/'eto' (edit form)
+  var prefix = (side==='efrom'||side==='eto') ? 'rce-' : 'rc-';
+  var baseSide = side==='efrom'?'from':side==='eto'?'to':side;
+  var devSel=el(prefix+baseSide+'-dev');
+  var portSel=el(prefix+baseSide+'-port');
   if(!devSel||!portSel) return;
   var compId=parseInt(devSel.value);
   var c=components.find(function(x){return x.id===compId;});
-  var dir=side==='from'?'out':'in';
-  portSel.innerHTML='<option value="">Select '+(side==='from'?'output':'input')+' port…</option>';
+  var dir=baseSide==='from'?'out':'in';
+  portSel.innerHTML='<option value="">Select '+(baseSide==='from'?'output':'input')+' port…</option>';
   if(c){
     (c.ports||[]).filter(function(p){return p.dir===dir;}).forEach(function(p){
       var opt=document.createElement('option');

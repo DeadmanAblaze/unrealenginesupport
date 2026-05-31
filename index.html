@@ -919,6 +919,46 @@ select.cv-edit{text-align:left;cursor:pointer}
 .gear-finding{font-family:var(--mono);font-size:9px;color:#252530;letter-spacing:.08em;animation:gearfind 1.2s ease-in-out infinite}
 @keyframes gearfind{0%,100%{opacity:.4}50%{opacity:1}}
 .gear-empty{font-family:var(--mono);font-size:11px;color:#1e1e26;padding:24px 0;letter-spacing:.04em}
+/* ── Support Tools ────────────────────────────────────────── */
+.st-tools{margin-top:16px;display:flex;flex-direction:column;gap:12px}
+.st-panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.st-panel-head{display:flex;align-items:center;gap:9px;padding:10px 14px;cursor:pointer;user-select:none;border-bottom:1px solid var(--line);transition:background .12s}
+.st-panel-head:hover{background:var(--el)}
+.st-panel-head.collapsed{border-bottom:none}
+.st-panel-title{font-family:'Barlow Condensed',var(--sans);font-weight:900;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink2);flex:1}
+.st-dot{width:6px;height:6px;border-radius:50%;background:var(--ink4);flex-shrink:0;transition:background .2s}
+.st-dot.live{background:var(--live)}
+.st-dot.err{background:#f87171}
+.st-status-txt{font-size:11px;color:var(--ink3);font-family:var(--mono)}
+.st-chev{color:var(--ink4);font-size:10px;transition:transform .2s;flex-shrink:0}
+.st-chev.closed{transform:rotate(-90deg)}
+.st-body{padding:14px}
+.vid-ctrl-row{display:flex;align-items:center;gap:7px;margin-bottom:11px}
+.vid-src-sel{flex:1;min-width:0;background:var(--el);border:1px solid var(--line2);color:var(--ink2);font-family:var(--mono);font-size:11px;padding:6px 9px;border-radius:5px;outline:none}
+.vid-src-sel:focus{border-color:var(--brand1)}
+.vid-wrap{position:relative;width:100%;aspect-ratio:16/9;background:#000;border-radius:6px;overflow:hidden;border:1px solid var(--line)}
+.vid-wrap video{width:100%;height:100%;object-fit:contain;display:block}
+.vid-nosrc{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;color:var(--ink4);font-size:12px;pointer-events:none;text-align:center;padding:20px}
+.vid-infobar{display:flex;align-items:center;gap:10px;margin-top:8px;padding:5px 10px;background:var(--el);border-radius:5px;border:1px solid var(--line);font-size:11px;font-family:var(--mono);color:var(--ink3)}
+.ue-conn-row{display:flex;align-items:center;gap:7px;margin-bottom:11px}
+.ue-inp{background:var(--el);border:1px solid var(--line2);color:var(--ink);font-family:var(--mono);font-size:11px;padding:6px 9px;border-radius:5px;outline:none}
+.ue-inp:focus{border-color:var(--brand1)}
+.ue-host-inp{flex:1;min-width:0}
+.ue-port-inp{width:72px}
+.ue-dash{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:11px}
+.ue-card{background:var(--el);border:1px solid var(--line);border-radius:6px;padding:9px 11px}
+.ue-card-t{font-family:'Barlow Condensed',var(--sans);font-weight:900;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink4);margin-bottom:7px}
+.ue-sr{display:flex;justify-content:space-between;align-items:baseline;gap:6px;margin-bottom:2px}
+.ue-sk{font-size:10px;color:var(--ink3);white-space:nowrap}
+.ue-sv{font-family:var(--mono);font-size:10px;color:var(--ink2);text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100px}
+.ue-sv.ok{color:var(--live)}.ue-sv.warn{color:#fbbf24}.ue-sv.err{color:#f87171}
+.ue-acts{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.ue-qbtn{font-size:11px;padding:5px 10px;background:var(--el);border:1px solid var(--line2);color:var(--ink3);border-radius:5px;cursor:pointer;font-family:var(--mono);transition:all .12s}
+.ue-qbtn:hover{border-color:var(--brand1);color:var(--brand1)}
+.ue-qbtn.active{border-color:var(--brand1);color:var(--brand1);background:var(--brand-dim)}
+.ue-log{background:var(--el);border:1px solid var(--line);border-radius:5px;padding:7px 10px;font-family:var(--mono);font-size:10px;color:var(--ink3);max-height:90px;overflow-y:auto}
+.ue-hint{font-size:11px;color:var(--ink3);line-height:1.65}
+.ue-hint b{color:var(--ink2)}
 </style>
 </head>
 <body>
@@ -1434,6 +1474,98 @@ select.cv-edit{text-align:left;cursor:pointer}
       </div>
     </div>
 
+    <!-- ── SUPPORT TOOLS: VIDEO INPUT + UE REMOTE CONTROL ─────────────── -->
+    <div class="st-tools">
+
+      <!-- VIDEO INPUT ──────────────────────────────────────── -->
+      <div class="st-panel" id="st-vid-panel">
+        <div class="st-panel-head" onclick="stToggle('vid')">
+          <span class="ctick"></span>
+          <span class="st-panel-title">Video inputs</span>
+          <span class="st-dot" id="vid-dot"></span>
+          <span class="st-status-txt" id="vid-stxt">No source</span>
+          <span class="st-chev" id="vid-chev">&#9660;</span>
+        </div>
+        <div class="st-body" id="st-vid-body">
+          <div class="vid-ctrl-row">
+            <select class="vid-src-sel" id="vid-src-sel"><option value="">Detecting devices&#8230;</option></select>
+            <button class="btn sm" onclick="vidRefresh()" title="Refresh">&#8635;</button>
+            <button class="btn bp sm" id="vid-btn" onclick="vidToggle()">Connect</button>
+          </div>
+          <div class="vid-wrap">
+            <video id="vid-el" autoplay muted playsinline></video>
+            <div class="vid-nosrc" id="vid-nosrc">
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"><path d="M15 10l4.55-2.07A1 1 0 0 1 21 8.87v6.26a1 1 0 0 1-1.45.89L15 14"/><rect x="2" y="6" width="13" height="12" rx="2"/></svg>
+              <span>Select a source and click Connect</span>
+              <span style="font-size:10px;color:var(--ink4)">Blackmagic Web Presenter &middot; Decklink &middot; Webcams</span>
+            </div>
+          </div>
+          <div class="vid-infobar" id="vid-infobar" style="display:none">
+            <span id="vid-res">&#8212;</span>
+            <span style="opacity:.3">&middot;</span>
+            <span id="vid-fps">&#8212;</span>
+            <span style="opacity:.3">&middot;</span>
+            <span id="vid-label">&#8212;</span>
+            <span style="margin-left:auto;color:var(--live)">&#9679; Live</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- UE REMOTE CONTROL ────────────────────────────────── -->
+      <div class="st-panel" id="st-ue-panel">
+        <div class="st-panel-head" onclick="stToggle('ue')">
+          <span class="ctick"></span>
+          <span class="st-panel-title">Unreal Engine Remote Control</span>
+          <span class="st-dot" id="ue-dot"></span>
+          <span class="st-status-txt" id="ue-stxt">Disconnected</span>
+          <span class="st-chev" id="ue-chev">&#9660;</span>
+        </div>
+        <div class="st-body" id="st-ue-body">
+          <div class="ue-conn-row">
+            <input class="ue-inp ue-host-inp" id="ue-host" value="localhost" placeholder="Editor node IP or Cloudflare Tunnel URL">
+            <input class="ue-inp ue-port-inp" id="ue-port" value="30010" placeholder="Port">
+            <button class="btn bp sm" id="ue-btn" onclick="ueToggle()">Connect</button>
+          </div>
+          <div id="ue-dash" style="display:none">
+            <div class="ue-dash">
+              <div class="ue-card">
+                <div class="ue-card-t">Project</div>
+                <div class="ue-sr"><span class="ue-sk">Name</span><span class="ue-sv" id="ue-pname">&#8212;</span></div>
+                <div class="ue-sr"><span class="ue-sk">Level</span><span class="ue-sv" id="ue-plevel">&#8212;</span></div>
+                <div class="ue-sr"><span class="ue-sk">Engine</span><span class="ue-sv" id="ue-pengine">&#8212;</span></div>
+                <div class="ue-sr"><span class="ue-sk">Presets</span><span class="ue-sv" id="ue-ppresets">&#8212;</span></div>
+              </div>
+              <div class="ue-card">
+                <div class="ue-card-t">Frame Timing</div>
+                <div class="ue-sr"><span class="ue-sk">Frame</span><span class="ue-sv" id="ue-fframe">&#8212;</span></div>
+                <div class="ue-sr"><span class="ue-sk">GPU</span><span class="ue-sv" id="ue-fgpu">&#8212;</span></div>
+                <div class="ue-sr"><span class="ue-sk">CPU</span><span class="ue-sv" id="ue-fcpu">&#8212;</span></div>
+                <div class="ue-sr"><span class="ue-sk">Target FPS</span><span class="ue-sv" id="ue-ftarget">&#8212;</span></div>
+              </div>
+              <div class="ue-card">
+                <div class="ue-card-t">LiveLink</div>
+                <div id="ue-llbody" style="font-size:10px;color:var(--ink3)">&#8212;</div>
+              </div>
+            </div>
+            <div class="ue-acts">
+              <button class="ue-qbtn" onclick="ueQueryProject()">Project info</button>
+              <button class="ue-qbtn" onclick="ueQueryFT()">Frame timing</button>
+              <button class="ue-qbtn" onclick="ueQueryLL()">LiveLink</button>
+              <button class="ue-qbtn" onclick="ueQueryPresets()">Presets</button>
+              <button class="ue-qbtn" onclick="ueQueryAll()">Refresh all</button>
+              <button class="ue-qbtn" id="ue-poll-btn" onclick="ueTogglePoll()">Auto-poll: off</button>
+            </div>
+            <div class="ue-log" id="ue-log"></div>
+          </div>
+          <div id="ue-hint" class="ue-hint">
+            Connects to UE&rsquo;s built-in <b>Remote Control HTTP API</b> (port&nbsp;30010 by default).
+            Requires the <b>Remote Control API</b> plugin enabled in your UE project.
+            For off-LAN access, enter your <b>Cloudflare Tunnel URL</b> as the host and leave the port blank.
+          </div>
+        </div>
+      </div>
+
+    </div>
     <div class="pnl" id="pnl-cl">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
         <div class="cl-prog-row" style="flex:1;margin-right:16px;margin-bottom:0">
@@ -2296,6 +2428,7 @@ function go(id, btn){
   if(id==='home') renderHome();
   if(id==='cal') renderCalendar();
   if(id==='gear') renderGear();
+  if(id==='chat') setTimeout(vidRefresh, 200);
   var t={'home':['Home','Welcome to Unreal Support'],'specs':['Rig specs','Virtual production configuration'],'issues':['Issues','Open and recent stage issues'],'chat':['Support','VP and nDisplay assistance'],'cl':['Checklist','Daily session readiness'],'cal':['Planner','Schedule and stage activity'],'gear':['Equipment','Component manifest and product links']};
   if(t[id]&&el('tb-title')){el('tb-title').textContent=t[id][0];el('tb-meta').textContent=t[id][1];}
 }
@@ -4364,6 +4497,272 @@ function showChatEmpty(){
     +'<div class="chat-empty-pills">'+pills+'</div>'
     +'</div>';
 }
+
+// ── SUPPORT TOOLS ─────────────────────────────────────────────────────────
+
+function stToggle(id){
+  var body=el('st-'+id+'-body');
+  var chev=el(id+'-chev');
+  var head=body.previousElementSibling;
+  if(!body) return;
+  var open = body.style.display!=='none';
+  body.style.display = open?'none':'';
+  if(chev) chev.classList.toggle('closed', open);
+  if(head) head.classList.toggle('collapsed', open);
+}
+
+// ── VIDEO INPUT ────────────────────────────────────────────────────────────
+var _vidStream=null;
+
+function vidRefresh(){
+  if(!navigator.mediaDevices||!navigator.mediaDevices.enumerateDevices){
+    var s=el('vid-src-sel');
+    s.innerHTML='<option value="">getUserMedia not supported</option>';
+    return;
+  }
+  navigator.mediaDevices.enumerateDevices().then(function(devs){
+    var s=el('vid-src-sel');
+    var prev=s.value;
+    var vids=devs.filter(function(d){return d.kind==='videoinput';});
+    if(!vids.length){s.innerHTML='<option value="">No video devices found</option>';return;}
+    s.innerHTML=vids.map(function(d,i){
+      var lbl=d.label||('Camera '+(i+1));
+      return '<option value="'+d.deviceId+'">'+esc(lbl)+'</option>';
+    }).join('');
+    if(prev) s.value=prev;
+  }).catch(function(e){
+    el('vid-src-sel').innerHTML='<option value="">Error: '+e.message+'</option>';
+  });
+}
+
+function vidToggle(){
+  if(_vidStream) vidDisconnect(); else vidConnect();
+}
+
+function vidConnect(){
+  var devId=el('vid-src-sel').value; if(!devId) return;
+  var constraints={video:{deviceId:{exact:devId},width:{ideal:1920},height:{ideal:1080}}};
+  navigator.mediaDevices.getUserMedia(constraints).then(function(stream){
+    _vidStream=stream;
+    var v=el('vid-el');
+    v.srcObject=stream;
+    el('vid-nosrc').style.display='none';
+    el('vid-btn').textContent='Disconnect';
+    el('vid-dot').classList.add('live');
+    var lbl=el('vid-src-sel').options[el('vid-src-sel').selectedIndex].text;
+    el('vid-stxt').textContent='Live';
+    el('vid-infobar').style.display='flex';
+    el('vid-label').textContent=lbl.length>30?lbl.slice(0,28)+'…':lbl;
+    v.onloadedmetadata=function(){
+      var track=stream.getVideoTracks()[0];
+      var s=track.getSettings?track.getSettings():{};
+      el('vid-res').textContent=(s.width||'?')+'×'+(s.height||'?');
+      el('vid-fps').textContent=s.frameRate?Math.round(s.frameRate)+'fps':'—';
+      vidRefresh(); // re-enumerate for proper labels now permission granted
+    };
+  }).catch(function(e){
+    el('vid-stxt').textContent='Error';
+    el('vid-dot').classList.add('err');
+    alert('Camera error: '+e.message);
+  });
+}
+
+function vidDisconnect(){
+  if(_vidStream){
+    _vidStream.getTracks().forEach(function(t){t.stop();});
+    _vidStream=null;
+    el('vid-el').srcObject=null;
+    el('vid-nosrc').style.display='';
+    el('vid-btn').textContent='Connect';
+    el('vid-dot').classList.remove('live','err');
+    el('vid-stxt').textContent='No source';
+    el('vid-infobar').style.display='none';
+  }
+}
+
+// ── UE REMOTE CONTROL ─────────────────────────────────────────────────────
+var _ueConn=false, _uePoll=null, _ueBase='';
+
+function ueBase(){
+  var host=(el('ue-host').value||'localhost').trim();
+  var port=(el('ue-port').value||'30010').trim();
+  if(host.startsWith('http')) return host.replace(/\/$/,'');
+  return 'http://'+host+(port?':'+port:'');
+}
+
+function ueLog(msg,err){
+  var log=el('ue-log'); if(!log) return;
+  var d=document.createElement('div');
+  d.style.color=err?'#f87171':'var(--ink3)';
+  var ts=new Date().toLocaleTimeString('en-GB',{hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  d.textContent='['+ts+'] '+msg;
+  log.insertBefore(d,log.firstChild);
+  while(log.children.length>25) log.removeChild(log.lastChild);
+}
+
+function ueToggle(){
+  if(_ueConn) ueDisconnect(); else ueConnect();
+}
+
+function ueConnect(){
+  _ueBase=ueBase();
+  var btn=el('ue-btn'); btn.textContent='Connecting…'; btn.disabled=true;
+  var ctrl=_ueBase.startsWith('http://')?undefined:(new AbortController());
+  var opts={method:'GET',headers:{'Content-Type':'application/json'}};
+  if(ctrl) opts.signal=ctrl.signal;
+  var timer=setTimeout(function(){if(ctrl)ctrl.abort();},5000);
+  fetch(_ueBase+'/remote/info',opts).then(function(r){
+    clearTimeout(timer);
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    return r.json();
+  }).then(function(data){
+    _ueConn=true;
+    btn.textContent='Disconnect'; btn.disabled=false;
+    el('ue-dot').classList.add('live'); el('ue-dot').classList.remove('err');
+    el('ue-stxt').textContent='Connected';
+    el('ue-dash').style.display=''; el('ue-hint').style.display='none';
+    ueLog('Connected to '+_ueBase);
+    if(data&&data.engineVersion) el('ue-pengine').textContent='UE '+data.engineVersion;
+    if(data&&data.projectName){
+      el('ue-pname').textContent=data.projectName;
+      el('ue-stxt').textContent=data.projectName;
+    }
+    ueQueryAll();
+  }).catch(function(e){
+    clearTimeout(timer);
+    _ueConn=false;
+    btn.textContent='Connect'; btn.disabled=false;
+    el('ue-dot').classList.add('err'); el('ue-dot').classList.remove('live');
+    el('ue-stxt').textContent='Failed';
+    ueLog('Connection failed: '+e.message,true);
+    ueLog('Enable Remote Control API plugin + set bAllowRemoteControlToSendAndReceive=true in UE project',true);
+  });
+}
+
+function ueDisconnect(){
+  _ueConn=false; ueStopPoll();
+  el('ue-btn').textContent='Connect';
+  el('ue-dot').classList.remove('live','err');
+  el('ue-stxt').textContent='Disconnected';
+  el('ue-dash').style.display='none'; el('ue-hint').style.display='';
+  ueLog('Disconnected');
+}
+
+function ueFetch(path,method,body){
+  if(!_ueConn) return Promise.reject(new Error('Not connected'));
+  var opts={method:method||'GET',headers:{'Content-Type':'application/json'}};
+  if(body) opts.body=JSON.stringify(body);
+  return fetch(_ueBase+path,opts).then(function(r){
+    if(!r.ok) throw new Error('HTTP '+r.status+' '+path);
+    return r.json();
+  });
+}
+
+function ueQueryProject(){
+  ueFetch('/remote/info').then(function(d){
+    if(d.engineVersion) el('ue-pengine').textContent='UE '+d.engineVersion;
+    if(d.projectName) el('ue-pname').textContent=d.projectName;
+    ueLog('Project: '+(d.projectName||'unknown')+' / UE '+(d.engineVersion||'?'));
+  }).catch(function(e){ueLog('Project info: '+e.message,true);});
+}
+
+function ueQueryPresets(){
+  ueFetch('/remote/presets').then(function(d){
+    var presets=d.Presets||d.presets||[];
+    el('ue-ppresets').textContent=presets.length+' preset'+(presets.length!==1?'s':'');
+    if(presets.length>0){
+      var names=presets.slice(0,3).map(function(p){return p.Name||p.name||'?';}).join(', ');
+      ueLog('Presets: '+names+(presets.length>3?' +more':''));
+    } else {
+      ueLog('No Remote Control presets configured in project');
+    }
+  }).catch(function(e){ueLog('Presets: '+e.message,true);});
+}
+
+function ueQueryFT(){
+  // Query frame timing via object property
+  ueFetch('/remote/object/property','PUT',{
+    objectPath:'/Script/Engine.Default__GameUserSettings',
+    access:'READ_ACCESS',
+    propertyName:'FrameRateLimit'
+  }).then(function(d){
+    var fps=d.FrameRateLimit||d.propertyValue||0;
+    el('ue-ftarget').textContent=fps>0?fps+'fps limit':'Unlimited';
+    ueLog('Frame rate limit: '+fps);
+  }).catch(function(){
+    // Fallback: query via console command
+    ueFetch('/remote/object/call','PUT',{
+      objectPath:'/Script/Engine.Default__KismetSystemLibrary',
+      functionName:'PrintString',
+      parameters:{InString:'RemoteControlPing',bPrintToScreen:true,bPrintToLog:true}
+    }).then(function(){ueLog('Console ping sent');})
+     .catch(function(e){ueLog('Frame timing: '+e.message,true);});
+  });
+}
+
+function ueQueryLL(){
+  // Query LiveLink sources - check multiple possible paths
+  var paths=[
+    '/Script/LiveLink.Default__LiveLinkClient',
+    '/Engine/Transient.LiveLinkClient_0'
+  ];
+  var tried=0;
+  function tryNext(){
+    if(tried>=paths.length){
+      // Try listing all objects with LiveLink in name
+      ueFetch('/remote/object/property','PUT',{
+        objectPath:paths[0],access:'READ_ACCESS',propertyName:'SourceCount'
+      }).catch(function(){});
+      el('ue-llbody').innerHTML='<div style="color:var(--ink3)">LiveLink: check plugin is enabled</div>';
+      ueLog('LiveLink query requires Live Link plugin active',true);
+      return;
+    }
+    ueFetch('/remote/object/property','PUT',{
+      objectPath:paths[tried],access:'READ_ACCESS',propertyName:'Sources'
+    }).then(function(d){
+      var src=d.Sources||d.propertyValue;
+      if(src&&Array.isArray(src)&&src.length>0){
+        var items=src.map(function(s){
+          return '<div class="ue-sr"><span class="ue-sk">'+esc(s.SourceType||s.name||'Source')+'</span>'
+                +'<span class="ue-sv ok">&#9679; Active</span></div>';
+        }).join('');
+        el('ue-llbody').innerHTML=items;
+        el('ue-stxt').textContent='Connected · '+src.length+' LL source'+(src.length!==1?'s':'');
+        ueLog('LiveLink: '+src.length+' source(s) active');
+      } else {
+        el('ue-llbody').innerHTML='<div style="color:var(--ink4)">No active sources</div>';
+        ueLog('LiveLink: no active sources');
+      }
+    }).catch(function(){tried++;tryNext();});
+  }
+  tryNext();
+}
+
+function ueQueryAll(){
+  if(!_ueConn) return;
+  ueQueryProject();
+  setTimeout(ueQueryPresets,200);
+  setTimeout(ueQueryFT,400);
+  setTimeout(ueQueryLL,600);
+}
+
+function ueTogglePoll(){
+  if(_uePoll){ueStopPoll();}
+  else{
+    _uePoll=setInterval(function(){if(_ueConn)ueQueryAll();else ueStopPoll();},3000);
+    var btn=el('ue-poll-btn');
+    btn.textContent='Auto-poll: 3s ■';
+    btn.classList.add('active');
+    ueLog('Auto-poll started (3s)');
+  }
+}
+
+function ueStopPoll(){
+  if(_uePoll){clearInterval(_uePoll);_uePoll=null;}
+  var btn=el('ue-poll-btn');
+  if(btn){btn.textContent='Auto-poll: off';btn.classList.remove('active');}
+}
+
 
 function addMsg(role, text, sources){
   var m=el('msgs');

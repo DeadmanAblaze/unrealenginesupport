@@ -2347,7 +2347,7 @@ var DIAG_W = 980, DIAG_H = 660;
 var COL_LEFT = 90,   COL_LEFT_W = 130;   // Video in
 var COL_MID  = 390,  COL_MID_W  = 130;   // Compute
 var COL_RIGHT= 700,  COL_RIGHT_W= 130;   // Display & LED
-var NODE_W = 130, NODE_H_BASE = 68, NODE_LINE_H = 17;
+var NODE_W = 140, NODE_H_BASE = 62, NODE_LINE_H = 16;
 var BAND_Y_SYNC = 468, BAND_Y_NET = 538, BAND_Y_POWER = 608;
 
 // Signal colour map (matches SIGNAL_COLOR in ports JS)
@@ -2382,15 +2382,15 @@ function dgText(x, y, txt, size, fill, anchor, weight){
 function dgEsc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 var _nodeIdCounter = 0;
-function drawNode(x, y, w, lines, title, stroke, titleColor, compObj, connectedPorts){
-  // Compute minimum height needed for ports
+function drawNode(x, y, w, lines, title, stroke, titleColor, compObj){
   var ports = compObj ? (compObj.ports||[]) : [];
   var outPorts = ports.filter(function(p){return p.dir==='out';});
   var inPorts  = ports.filter(function(p){return p.dir==='in';});
-  var maxSide  = Math.max(outPorts.length, inPorts.length);
+  var numRows2 = Math.max(outPorts.length, inPorts.length);
   var textH = NODE_H_BASE + Math.max(0, lines.length-2) * NODE_LINE_H;
-  var portsH = maxSide > 0 ? maxSide * 13 + 28 : 0;
-  var h = Math.max(textH, portsH);
+  // Port rows section: divider line + rows inside the box bottom
+  var portsH = numRows2 > 0 ? numRows2 * 13 + 6 : 0;
+  var h = textH + portsH;
   var cx = x + w/2;
   var nid = 'dg-nd-'+(++_nodeIdCounter);
 
@@ -2400,38 +2400,36 @@ function drawNode(x, y, w, lines, title, stroke, titleColor, compObj, connectedP
   lines.forEach(function(l, i){
     inner += dgText(cx, y+30+(i*NODE_LINE_H), l.text, 9.5, l.color||'#9b9b9f', 'middle');
   });
+  // Port section divider
+  if(numRows2>0){
+    var pdivY = y + textH;
+    inner += '<line x1="'+x+'" y1="'+pdivY+'" x2="'+(x+w)+'" y2="'+pdivY+'" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>';
+    inner += '<line x1="'+(x+w/2)+'" y1="'+pdivY+'" x2="'+(x+w/2)+'" y2="'+(y+h)+'" stroke="rgba(255,255,255,0.03)" stroke-width="0.5"/>';
+  }
 
   // Port dots and positions
+  // Port rows inside the box — side by side, OUT on right, IN on left
   var portPositions = {};
-  var portAreaTop = y + 22;
-  var portAreaH   = h - 24;
-  var portStep = 15;
-
-  if(outPorts.length){
-    var outStartY = y + h/2 - (outPorts.length-1)*portStep/2;
-    outPorts.forEach(function(p, i){
-      var py = outStartY + i*portStep;
-      var col = SIGNAL_COLOR[p.signal]||'#9b9b9f';
-      portPositions[p.id] = {x: x+w+1, y: py};
-      inner += '<circle cx="'+(x+w)+'" cy="'+py+'" r="3.5" fill="'+col+'" stroke="#080808" stroke-width="1"/>';
-      // Only label if port is connected AND has a user-defined name
-      if(connectedPorts && connectedPorts[p.id] && p.label && p.label.trim()){
-        inner += '<text x="'+(x+w+8)+'" y="'+(py+1)+'" text-anchor="start" dominant-baseline="central" font-size="8.5" font-family="monospace" fill="'+col+'" opacity="0.85">'+dgEsc(p.label.slice(0,13))+'</text>';
-      }
-    });
-  }
-  if(inPorts.length){
-    var inStartY = y + h/2 - (inPorts.length-1)*portStep/2;
-    inPorts.forEach(function(p, i){
-      var py = inStartY + i*portStep;
-      var col = SIGNAL_COLOR[p.signal]||'#9b9b9f';
-      portPositions[p.id] = {x: x-1, y: py};
-      inner += '<circle cx="'+x+'" cy="'+py+'" r="3.5" fill="'+col+'" stroke="#080808" stroke-width="1"/>';
-      // Only label if port is connected AND has a user-defined name
-      if(connectedPorts && connectedPorts[p.id] && p.label && p.label.trim()){
-        inner += '<text x="'+(x-8)+'" y="'+(py+1)+'" text-anchor="end" dominant-baseline="central" font-size="8.5" font-family="monospace" fill="'+col+'" opacity="0.85">'+dgEsc(p.label.slice(0,13))+'</text>';
-      }
-    });
+  var PR = 13;  // port row height
+  var numRows = Math.max(outPorts.length, inPorts.length);
+  for(var ri=0; ri<numRows; ri++){
+    var rowY = y + h - (numRows-ri)*PR + PR/2 - 1;
+    // OUT port — right side
+    if(ri < outPorts.length){
+      var op=outPorts[ri], oc=SIGNAL_COLOR[op.signal]||'#9b9b9f';
+      portPositions[op.id] = {x:x+w+1, y:rowY};
+      inner += '<circle cx="'+(x+w)+'" cy="'+rowY+'" r="3" fill="'+oc+'" stroke="#080808" stroke-width="1"/>';
+      var ol=(op.label&&op.label.trim()?op.label:op.signal==='DisplayPort'?'DP':op.signal==='Ethernet/10GbE'?'10GbE':op.signal==='Genlock/Ref'?'Ref':(op.signal||'')).slice(0,9);
+      inner += '<text x="'+(x+w-6)+'" y="'+rowY+'" text-anchor="end" dominant-baseline="central" font-size="7" font-family="monospace" fill="'+oc+'" opacity="0.85">'+dgEsc(ol)+'</text>';
+    }
+    // IN port — left side
+    if(ri < inPorts.length){
+      var ip=inPorts[ri], ic=SIGNAL_COLOR[ip.signal]||'#9b9b9f';
+      portPositions[ip.id] = {x:x-1, y:rowY};
+      inner += '<circle cx="'+x+'" cy="'+rowY+'" r="3" fill="'+ic+'" stroke="#080808" stroke-width="1"/>';
+      var il=(ip.label&&ip.label.trim()?ip.label:ip.signal==='Ethernet/10GbE'?'10GbE':ip.signal==='Genlock/Ref'?'Ref':ip.signal==='DisplayPort'?'DP':(ip.signal||'')).slice(0,9);
+      inner += '<text x="'+(x+6)+'" y="'+rowY+'" text-anchor="start" dominant-baseline="central" font-size="7" font-family="monospace" fill="'+ic+'" opacity="0.85">'+dgEsc(il)+'</text>';
+    }
   }
 
   var html = '<g class="nd" id="'+nid+'" style="cursor:default"'
@@ -2558,7 +2556,7 @@ function updateDiagram(){
     var out  = cf(cam,'output')||cf(cam,'sdi')||'';
     var n = drawNode(COL_LEFT-NODE_W/2+10, leftY, NODE_W,
       [{text:sh(body,20)},{text:sh(out,20),color:'#60a5fa'}],
-      'Camera', '#1e40af', '#93c5fd', cam, _connectedPorts);
+      'Camera', '#1e40af', '#93c5fd', cam);
     nodes['cam'+i] = n; svgParts.push(n.html);
     leftY += n.h + 12;
   });
@@ -2569,7 +2567,7 @@ function updateDiagram(){
     var tport= cf(trk,'transport')||'LiveLink';
     var n = drawNode(COL_LEFT-NODE_W/2+10, leftY, NODE_W,
       [{text:sh(sys,20)},{text:sh(tport,20),color:'#4ade80'}],
-      'Tracking', '#166534', '#86efac', trk, _connectedPorts);
+      'Tracking', '#166534', '#86efac', trk);
     nodes['trk'+i] = n; svgParts.push(n.html);
     leftY += n.h + 12;
   });
@@ -2585,7 +2583,7 @@ function updateDiagram(){
     if(eGpu) eLines.push({text:sh(eGpu,17)});
     if(eUe) eLines.push({text:eUe, color:'#60a5fa'});
     var n = drawNode(COL_MID, midY, NODE_W, eLines.length?eLines:[{text:'Editor'}],
-      'Editor', '#1e3a8a', '#93c5fd', editor, _connectedPorts);
+      'Editor', '#1e3a8a', '#93c5fd', editor);
     nodes['editor'] = n; svgParts.push(n.html);
     midY += n.h + 10;
   }
@@ -2601,7 +2599,7 @@ function updateDiagram(){
     if(dnGpu) eLines.push({text:sh(dnGpu,17)});
     if(syncStr) eLines.push({text:sh(syncStr,17),color:'#60a5fa'});
     var n = drawNode(COL_MID, midY, NODE_W, eLines.length?eLines:[{text:'Display Node'}],
-      'Node '+(i+1), '#1e3a8a', '#93c5fd', dn, _connectedPorts);
+      'Node '+(i+1), '#1e3a8a', '#93c5fd', dn);
     nodes['dn'+i] = n; svgParts.push(n.html);
     midY += n.h + 14;
   });
@@ -2618,7 +2616,7 @@ function updateDiagram(){
     if(wallRes)  wallLines.push({text:sh(wallRes,17),color:'#60a5fa'});
     if(wallHz)   wallLines.push({text:wallHz,color:'#9b9b9f'});
     var nwall = drawNode(COL_RIGHT, rightY, NODE_W, wallLines.length?wallLines:[{text:'LED Wall'}],
-      'LED Wall', '#312e81', '#a5b4fc', wall, _connectedPorts);
+      'LED Wall', '#312e81', '#a5b4fc', wall);
     nodes['wall'] = nwall; svgParts.push(nwall.html);
     rightY += nwall.h + 10;
   }
@@ -2631,7 +2629,7 @@ function updateDiagram(){
     if(pModel) pLines.push({text:sh(pModel,17)});
     if(pMap)   pLines.push({text:sh(pMap,17),color:'#9b9b9f'});
     var nproc = drawNode(COL_RIGHT, rightY, NODE_W, pLines.length?pLines:[{text:pMfr}],
-      pMfr||'Processor', '#312e81', '#a5b4fc', proc, _connectedPorts);
+      pMfr||'Processor', '#312e81', '#a5b4fc', proc);
     nodes['proc'] = nproc; svgParts.push(nproc.html);
     rightY += nproc.h + 10;
   }
@@ -2644,7 +2642,7 @@ function updateDiagram(){
     var synModel= cf(syn,'model')||'';
     var synLines= [{text:sh(synSrc,18), color:'#4ade80'}];
     if(synModel) synLines.push({text:sh(synModel,18), color:'#9b9b9f'});
-    var n = drawNode(COL_MID, bandY, NODE_W, synLines, 'Genlock / Sync', '#14532d', '#86efac', syn, _connectedPorts);
+    var n = drawNode(COL_MID, bandY, NODE_W, synLines, 'Genlock / Sync', '#14532d', '#86efac', syn);
     nodes['syn'+i] = n; svgParts.push(n.html);
     // Band label
     svgParts.push(dgText(COL_MID-8, bandY + n.h/2, 'Sync', 9, '#2a2a2a', 'end'));
@@ -2656,7 +2654,7 @@ function updateDiagram(){
     var netSpeed = cf(net,'speed')||'';
     var netLines = [{text:sh(netModel,18)}];
     if(netSpeed) netLines.push({text:netSpeed, color:'#9b9b9f'});
-    var n = drawNode(COL_MID, bandY, NODE_W, netLines, 'Network', '#303038', '#606068', net, _connectedPorts);
+    var n = drawNode(COL_MID, bandY, NODE_W, netLines, 'Network', '#303038', '#606068', net);
     nodes['net'+i] = n; svgParts.push(n.html);
     svgParts.push(dgText(COL_MID-8, bandY + n.h/2, 'Network', 9, '#2a2a2a', 'end'));
     bandY += n.h + 10;
@@ -2667,7 +2665,7 @@ function updateDiagram(){
     var pwrModel = cf(pwr,'model')||'';
     var pwrLines = [{text:sh(pwrType,18)}];
     if(pwrModel) pwrLines.push({text:sh(pwrModel,18),color:'#9b9b9f'});
-    var n = drawNode(COL_MID, bandY, NODE_W, pwrLines, 'Power', '#303038', '#606068', pwr, _connectedPorts);
+    var n = drawNode(COL_MID, bandY, NODE_W, pwrLines, 'Power', '#303038', '#606068', pwr);
     nodes['pwr'+i] = n; svgParts.push(n.html);
     bandY += n.h + 10;
   });
@@ -2680,7 +2678,7 @@ function updateDiagram(){
     var ctrlMix = cf(ctrl,'mixer')||'';
     var ctrlLines = [{text:sh(ctrlLoc,17)}];
     if(ctrlMix) ctrlLines.push({text:sh(ctrlMix,17),color:'#9b9b9f'});
-    var n = drawNode(COL_RIGHT, ctrlY, NODE_W, ctrlLines, 'Control Room', '#1c2010', '#86efac', ctrl, _connectedPorts);
+    var n = drawNode(COL_RIGHT, ctrlY, NODE_W, ctrlLines, 'Control Room', '#1c2010', '#86efac', ctrl);
     nodes['ctrl'+i] = n; svgParts.push(n.html);
     ctrlY += n.h + 10;
   });
@@ -2689,13 +2687,6 @@ function updateDiagram(){
   var connParts = [];
 
   // ── Clean routing: classify by column, route to avoid all node boxes ──────
-  // Which ports are actually wired up — only these get labels
-  var _connectedPorts = {};
-  connections.forEach(function(cn){
-    _connectedPorts[cn.fromPortId] = true;
-    _connectedPorts[cn.toPortId] = true;
-  });
-
   var _leftList=[], _upList=[], _rightList=[];
   connections.forEach(function(cn,i){
     var fc=components.find(function(x){return x.id===cn.fromCompId;});

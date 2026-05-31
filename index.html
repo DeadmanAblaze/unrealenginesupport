@@ -2382,7 +2382,7 @@ function dgText(x, y, txt, size, fill, anchor, weight){
 function dgEsc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 var _nodeIdCounter = 0;
-function drawNode(x, y, w, lines, title, stroke, titleColor, compObj, leftPortSet){
+function drawNode(x, y, w, lines, title, stroke, titleColor, compObj){
   // Compute minimum height needed for ports
   var ports = compObj ? (compObj.ports||[]) : [];
   var outPorts = ports.filter(function(p){return p.dir==='out';});
@@ -2412,18 +2412,14 @@ function drawNode(x, y, w, lines, title, stroke, titleColor, compObj, leftPortSe
     outPorts.forEach(function(p, i){
       var py = outStartY + i*portStep;
       var col = SIGNAL_COLOR[p.signal]||'#9b9b9f';
-      var isLeft = leftPortSet && leftPortSet[p.id];
-      var dotX = isLeft ? x : x+w;
-      portPositions[p.id] = {x: isLeft ? x-1 : x+w+1, y: py};
-      inner += '<circle cx="'+dotX+'" cy="'+py+'" r="3.5" fill="'+col+'" stroke="#080808" stroke-width="1"/>';
+      portPositions[p.id] = {x: x+w+1, y: py};
+      inner += '<circle cx="'+(x+w)+'" cy="'+py+'" r="3.5" fill="'+col+'" stroke="#080808" stroke-width="1"/>';
       var lbl = p.label && p.label.trim() ? p.label.slice(0,13)
               : p.signal==='Ethernet/10GbE' ? '10GbE'
               : p.signal==='Genlock/Ref' ? 'Ref'
               : p.signal==='DisplayPort' ? 'DP'
               : (p.signal||'').slice(0,10);
-      var lblX = isLeft ? x-8 : x+w+8;
-      var anchor = isLeft ? 'end' : 'start';
-      inner += '<text x="'+lblX+'" y="'+(py+1)+'" text-anchor="'+anchor+'" dominant-baseline="central" font-size="9" font-family="monospace" fill="'+col+'" opacity="0.9">'+dgEsc(lbl)+'</text>';
+      inner += '<text x="'+(x+w+8)+'" y="'+(py+1)+'" text-anchor="start" dominant-baseline="central" font-size="9" font-family="monospace" fill="'+col+'" opacity="0.9">'+dgEsc(lbl)+'</text>';
     });
   }
   if(inPorts.length){
@@ -2533,17 +2529,6 @@ function updateDiagram(){
   if((specs['mode']||'vp') !== 'vp') return;
   _nodeIdCounter = 0;
 
-  // Pre-scan: which out-ports connect leftward → dots go on LEFT side of source node
-  var _leftPortSet = {};
-  connections.forEach(function(cn){
-    var _fc=components.find(function(x){return x.id===cn.fromCompId;});
-    var _tc=components.find(function(x){return x.id===cn.toCompId;});
-    if(!_fc||!_tc) return;
-    if(getColIdx(_fc)>getColIdx(_tc)){
-      if(!_leftPortSet[_fc.id]) _leftPortSet[_fc.id]={};
-      _leftPortSet[_fc.id][cn.fromPortId]=true;
-    }
-  });
   var host = document.getElementById('vp-diagram');
   if(!host) return;
 
@@ -2578,7 +2563,7 @@ function updateDiagram(){
     var out  = cf(cam,'output')||cf(cam,'sdi')||'';
     var n = drawNode(COL_LEFT-NODE_W/2+10, leftY, NODE_W,
       [{text:sh(body,20)},{text:sh(out,20),color:'#60a5fa'}],
-      'Camera', '#1e40af', '#93c5fd', cam, _leftPortSet[cam.id]);
+      'Camera', '#1e40af', '#93c5fd', cam);
     nodes['cam'+i] = n; svgParts.push(n.html);
     leftY += n.h + 12;
   });
@@ -2589,7 +2574,7 @@ function updateDiagram(){
     var tport= cf(trk,'transport')||'LiveLink';
     var n = drawNode(COL_LEFT-NODE_W/2+10, leftY, NODE_W,
       [{text:sh(sys,20)},{text:sh(tport,20),color:'#4ade80'}],
-      'Tracking', '#166534', '#86efac', trk, _leftPortSet[trk.id]);
+      'Tracking', '#166534', '#86efac', trk);
     nodes['trk'+i] = n; svgParts.push(n.html);
     leftY += n.h + 12;
   });
@@ -2605,7 +2590,7 @@ function updateDiagram(){
     if(eGpu) eLines.push({text:sh(eGpu,17)});
     if(eUe) eLines.push({text:eUe, color:'#60a5fa'});
     var n = drawNode(COL_MID, midY, NODE_W, eLines.length?eLines:[{text:'Editor'}],
-      'Editor', '#1e3a8a', '#93c5fd', editor, _leftPortSet[editor.id]);
+      'Editor', '#1e3a8a', '#93c5fd', editor);
     nodes['editor'] = n; svgParts.push(n.html);
     midY += n.h + 10;
   }
@@ -2621,7 +2606,7 @@ function updateDiagram(){
     if(dnGpu) eLines.push({text:sh(dnGpu,17)});
     if(syncStr) eLines.push({text:sh(syncStr,17),color:'#60a5fa'});
     var n = drawNode(COL_MID, midY, NODE_W, eLines.length?eLines:[{text:'Display Node'}],
-      'Node '+(i+1), '#1e3a8a', '#93c5fd', dn, _leftPortSet[dn.id]);
+      'Node '+(i+1), '#1e3a8a', '#93c5fd', dn);
     nodes['dn'+i] = n; svgParts.push(n.html);
     midY += n.h + 14;
   });
@@ -2638,7 +2623,7 @@ function updateDiagram(){
     if(wallRes)  wallLines.push({text:sh(wallRes,17),color:'#60a5fa'});
     if(wallHz)   wallLines.push({text:wallHz,color:'#9b9b9f'});
     var nwall = drawNode(COL_RIGHT, rightY, NODE_W, wallLines.length?wallLines:[{text:'LED Wall'}],
-      'LED Wall', '#312e81', '#a5b4fc', wall, _leftPortSet[wall.id]);
+      'LED Wall', '#312e81', '#a5b4fc', wall);
     nodes['wall'] = nwall; svgParts.push(nwall.html);
     rightY += nwall.h + 10;
   }
@@ -2651,7 +2636,7 @@ function updateDiagram(){
     if(pModel) pLines.push({text:sh(pModel,17)});
     if(pMap)   pLines.push({text:sh(pMap,17),color:'#9b9b9f'});
     var nproc = drawNode(COL_RIGHT, rightY, NODE_W, pLines.length?pLines:[{text:pMfr}],
-      pMfr||'Processor', '#312e81', '#a5b4fc', proc, _leftPortSet[proc.id]);
+      pMfr||'Processor', '#312e81', '#a5b4fc', proc);
     nodes['proc'] = nproc; svgParts.push(nproc.html);
     rightY += nproc.h + 10;
   }
@@ -2664,7 +2649,7 @@ function updateDiagram(){
     var synModel= cf(syn,'model')||'';
     var synLines= [{text:sh(synSrc,18), color:'#4ade80'}];
     if(synModel) synLines.push({text:sh(synModel,18), color:'#9b9b9f'});
-    var n = drawNode(COL_MID, bandY, NODE_W, synLines, 'Genlock / Sync', '#14532d', '#86efac', syn, _leftPortSet[syn.id]);
+    var n = drawNode(COL_MID, bandY, NODE_W, synLines, 'Genlock / Sync', '#14532d', '#86efac', syn);
     nodes['syn'+i] = n; svgParts.push(n.html);
     // Band label
     svgParts.push(dgText(COL_MID-8, bandY + n.h/2, 'Sync', 9, '#2a2a2a', 'end'));
@@ -2676,7 +2661,7 @@ function updateDiagram(){
     var netSpeed = cf(net,'speed')||'';
     var netLines = [{text:sh(netModel,18)}];
     if(netSpeed) netLines.push({text:netSpeed, color:'#9b9b9f'});
-    var n = drawNode(COL_MID, bandY, NODE_W, netLines, 'Network', '#303038', '#606068', net, _leftPortSet[net.id]);
+    var n = drawNode(COL_MID, bandY, NODE_W, netLines, 'Network', '#303038', '#606068', net);
     nodes['net'+i] = n; svgParts.push(n.html);
     svgParts.push(dgText(COL_MID-8, bandY + n.h/2, 'Network', 9, '#2a2a2a', 'end'));
     bandY += n.h + 10;
@@ -2687,7 +2672,7 @@ function updateDiagram(){
     var pwrModel = cf(pwr,'model')||'';
     var pwrLines = [{text:sh(pwrType,18)}];
     if(pwrModel) pwrLines.push({text:sh(pwrModel,18),color:'#9b9b9f'});
-    var n = drawNode(COL_MID, bandY, NODE_W, pwrLines, 'Power', '#303038', '#606068', pwr, _leftPortSet[pwr.id]);
+    var n = drawNode(COL_MID, bandY, NODE_W, pwrLines, 'Power', '#303038', '#606068', pwr);
     nodes['pwr'+i] = n; svgParts.push(n.html);
     bandY += n.h + 10;
   });
@@ -2700,7 +2685,7 @@ function updateDiagram(){
     var ctrlMix = cf(ctrl,'mixer')||'';
     var ctrlLines = [{text:sh(ctrlLoc,17)}];
     if(ctrlMix) ctrlLines.push({text:sh(ctrlMix,17),color:'#9b9b9f'});
-    var n = drawNode(COL_RIGHT, ctrlY, NODE_W, ctrlLines, 'Control Room', '#1c2010', '#86efac', ctrl, _leftPortSet[ctrl.id]);
+    var n = drawNode(COL_RIGHT, ctrlY, NODE_W, ctrlLines, 'Control Room', '#1c2010', '#86efac', ctrl);
     nodes['ctrl'+i] = n; svgParts.push(n.html);
     ctrlY += n.h + 10;
   });
@@ -2708,21 +2693,19 @@ function updateDiagram(){
   // ── CONNECTIONS ────────────────────────────────────────────────────────
   var connParts = [];
 
-  // ── Smart routing: classify connections by column direction ─────────────
+  // ── Clean routing: classify by column, route to avoid all node boxes ──────
   var _leftList=[], _upList=[], _rightList=[];
   connections.forEach(function(cn,i){
     var fc=components.find(function(x){return x.id===cn.fromCompId;});
     var tc=components.find(function(x){return x.id===cn.toCompId;});
     if(!fc||!tc) return;
     var fci=getColIdx(fc), tci=getColIdx(tc);
-    if(fci>tci) _leftList.push(i);            // cross-column leftward
-    else if(fci===tci && fci===1) _upList.push(i);  // same mid-col (routing via right channel)
-    else _rightList.push(i);                   // rightward or other
+    if(fci>tci) _leftList.push(i);
+    else if(fci===tci && fci===1) _upList.push(i);
+    else _rightList.push(i);
   });
 
-  var _bottomY = bandY + 32;   // bottom routing lane (below all content)
-  var _leftCh  = 340;          // start x for left-channel routing (in left-mid gap)
-  var _rightCh = 535;          // start x for right-channel routing (in mid-right gap)
+  var _TOP_Y = 34; // above all nodes (first node starts at y≈50)
 
   connections.forEach(function(cn, connIdx){
     var fc=components.find(function(x){return x.id===cn.fromCompId;});
@@ -2740,45 +2723,58 @@ function updateDiagram(){
     var toPos  =(tNode.portPositions&&tNode.portPositions[cn.toPortId])  ||{x:tNode.left, y:tNode.cy};
 
     var d, labelX, labelY;
+    var li=_leftList.indexOf(connIdx), ui=_upList.indexOf(connIdx), ri=_rightList.indexOf(connIdx);
 
-    var li = _leftList.indexOf(connIdx);
-    var ui = _upList.indexOf(connIdx);
-    var ri = _rightList.indexOf(connIdx);
+    // Safe exit/entry x values — just outside box boundaries
+    var exitX = fNode.right + 8 + Math.max(li,ui,ri,0)*14; // right side of source + stagger
+    var entX  = tNode.left  - 8 - Math.max(li,ui,ri,0)*8;  // left side of target + stagger
 
     if(li >= 0){
-      // LEFTWARD: route through left-mid gap using staggered vertical channels
-      var chX = _leftCh - li * 16;  // 340, 324, 308... (in left-mid gap x=165-390)
-      d = 'M'+fromPos.x+' '+fromPos.y
-        + ' L'+chX+' '+fromPos.y        // go left to channel
-        + ' L'+chX+' '+toPos.y          // go up/down to target y
-        + ' L'+toPos.x+' '+toPos.y;     // go right/left to target port
-      labelX = chX - 4;
-      labelY = (fromPos.y + toPos.y) / 2;
+      // LEFTWARD (mid→left or right→mid): exit right → go UP to top margin → go FAR LEFT → drop to target
+      var topY   = _TOP_Y - li * 10;     // 34, 24, 14... (above all nodes, staggered)
+      var farX   = 28 - li * 10;         // 28, 18,  8... (left margin)
+      exitX = fNode.right + 8 + li * 8;
+      d = 'M'+fromPos.x+' '+fromPos.y    // port dot
+        + ' L'+exitX+' '+fromPos.y       // exit right of source
+        + ' L'+exitX+' '+topY            // rise to top margin
+        + ' L'+farX+' '+topY             // traverse left
+        + ' L'+farX+' '+toPos.y          // drop to target y
+        + ' L'+toPos.x+' '+toPos.y;      // enter target port
+      labelX = (exitX + farX) / 2;
+      labelY = topY;
+
     } else if(ui >= 0){
-      // SAME-COL UPWARD: route via right channel (mid-right gap)
-      var rchX = _rightCh + ui * 14;  // 535, 549, 563...
-      d = 'M'+fromPos.x+' '+fromPos.y
-        + ' L'+rchX+' '+fromPos.y      // go right to channel
-        + ' L'+rchX+' '+toPos.y        // go up to target y
-        + ' L'+toPos.x+' '+toPos.y;    // go left to target port
-      labelX = rchX + 4;
-      labelY = (fromPos.y + toPos.y) / 2;
+      // SAME-COL UPWARD: exit right → rise to ABOVE the target → cross left past target → drop to port
+      var rchX  = fNode.right + 12 + ui * 14;  // 532, 546... (mid-right gap)
+      var aboveY = tNode.top - 6 - ui * 4;      // just above target node, staggered
+      var appX  = tNode.left - 6 - ui * 6;      // approach x (left of target), staggered
+      d = 'M'+fromPos.x+' '+fromPos.y     // port dot
+        + ' L'+rchX+' '+fromPos.y         // exit right to channel
+        + ' L'+rchX+' '+aboveY            // rise to above target
+        + ' L'+appX+' '+aboveY            // cross left past target left edge
+        + ' L'+appX+' '+toPos.y           // drop to port y (outside target box)
+        + ' L'+toPos.x+' '+toPos.y;       // enter target port
+      labelX = rchX + 5;
+      labelY = (fromPos.y + aboveY) / 2;
+
     } else {
-      // RIGHTWARD: staggered elbow through mid-right gap
+      // RIGHTWARD: staggered elbow through inter-column gap
       var stagger = (ri % 3 - 1) * 10;
-      var mx = fNode.right + (tNode.left - fNode.right) * 0.45 + stagger;
-      d = 'M'+fromPos.x+' '+fromPos.y+' L'+mx+' '+fromPos.y+' L'+mx+' '+toPos.y+' L'+toPos.x+' '+toPos.y;
-      labelX = mx;
+      var mx = fNode.right + (tNode.left - fNode.right) * 0.4 + stagger;
+      d = 'M'+fromPos.x+' '+fromPos.y
+        + ' L'+(fNode.right+4)+' '+fromPos.y
+        + ' L'+mx+' '+fromPos.y
+        + ' L'+mx+' '+toPos.y
+        + ' L'+toPos.x+' '+toPos.y;
+      labelX = mx + 5;
       labelY = (fromPos.y + toPos.y) / 2;
     }
 
     connParts.push('<path class="cn" d="'+d+'" fill="none" stroke="'+col
       +'" stroke-width="1.4" stroke-dasharray="'+da
       +'" marker-end="url(#vpa)" opacity="0.85"/>');
-
-    // Small signal label near midpoint
     var sigLbl=fp.signal==='Ethernet/10GbE'?'10G':fp.signal==='Genlock/Ref'?'Ref':fp.signal==='DisplayPort'?'DP':fp.signal;
-    connParts.push('<text x="'+labelX+'" y="'+(labelY-3)+'" text-anchor="middle" font-size="7.5" fill="'+col+'" opacity="0.55" style="pointer-events:none">'+sigLbl+'</text>');
+    connParts.push('<text x="'+labelX+'" y="'+(labelY-3)+'" text-anchor="middle" font-size="7.5" fill="'+col+'" opacity="0.5" style="pointer-events:none">'+sigLbl+'</text>');
   });
 
   // No fallback connections — user defines routing explicitly in Signal Routing section

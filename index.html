@@ -2473,7 +2473,8 @@ function drawNode(x, y, w, lines, title, stroke, titleColor, compObj){
     }
   }
 
-  var html = '<g class="nd" id="'+nid+'" style="cursor:default"'
+  var _cid = compObj ? String(compObj.id) : '';
+  var html = '<g class="nd" id="'+nid+'" data-compid="'+_cid+'" style="cursor:default"'
     +' onmouseenter="dgHover(this.id)" onmouseleave="dgUnhover()">'
     + inner + '</g>';
   return {html:html, cx:cx, cy:y+h/2, top:y, bottom:y+h, left:x, right:x+w, h:h, portPositions:portPositions};
@@ -2482,13 +2483,51 @@ function drawNode(x, y, w, lines, title, stroke, titleColor, compObj){
 
 function dgHover(nid){
   var svg=document.getElementById('vp-diagram'); if(!svg) return;
-  svg.querySelectorAll('.nd').forEach(function(g){ g.classList.toggle('dimmed', g.id!==nid); });
-  svg.querySelectorAll('.cn').forEach(function(p){ p.classList.add('conn-dim'); });
+  var hovNode=document.getElementById(nid);
+  var compId=hovNode ? hovNode.dataset.compid : '';
+  if(!compId){
+    svg.querySelectorAll('.nd').forEach(function(g){ g.classList.toggle('dimmed', g.id!==nid); });
+    svg.querySelectorAll('.cn').forEach(function(p){ p.classList.add('conn-dim'); });
+    return;
+  }
+  // Collect all component IDs connected to this node
+  var linked={};
+  linked[compId]=true;
+  svg.querySelectorAll('.cn').forEach(function(p){
+    var f=p.dataset.from, t=p.dataset.to;
+    if(f===compId||t===compId){ linked[f]=true; linked[t]=true; }
+  });
+  // Dim unrelated nodes, highlight connected ones
+  svg.querySelectorAll('.nd').forEach(function(g){
+    g.classList.toggle('dimmed', !linked[g.dataset.compid]);
+  });
+  // Animate connected paths, dim unrelated ones
+  svg.querySelectorAll('.cn').forEach(function(p){
+    var isLinked=(p.dataset.from===compId||p.dataset.to===compId);
+    if(isLinked){
+      p.classList.remove('conn-dim');
+      p.classList.add('cn-animated');
+      p.style.opacity='1';
+      p.style.strokeWidth='2';
+      p.style.strokeDasharray='10 5';
+    } else {
+      p.classList.add('conn-dim');
+      p.classList.remove('cn-animated');
+      p.style.opacity='';
+      p.style.strokeWidth='';
+      p.style.strokeDasharray='';
+    }
+  });
 }
 function dgUnhover(){
   var svg=document.getElementById('vp-diagram'); if(!svg) return;
   svg.querySelectorAll('.nd').forEach(function(g){ g.classList.remove('dimmed'); });
-  svg.querySelectorAll('.cn').forEach(function(p){ p.classList.remove('conn-dim','cn-animated'); });
+  svg.querySelectorAll('.cn').forEach(function(p){
+    p.classList.remove('conn-dim','cn-animated');
+    p.style.opacity='';
+    p.style.strokeWidth='';
+    p.style.strokeDasharray='';
+  });
 }
 
 function legHover(legEl){
@@ -2886,7 +2925,7 @@ function updateDiagram(){
       }
     }
 
-    connParts.push('<path class="cn" d="'+d+'" fill="none" stroke="'+col
+    connParts.push('<path class="cn" data-from="'+fc.id+'" data-to="'+tc.id+'" d="'+d+'" fill="none" stroke="'+col
       +'" stroke-width="1.4" stroke-dasharray="'+da
       +'" marker-end="url(#vpa)" opacity="0.85"/>');
 // Signal colours explained by legend — no midpoint labels

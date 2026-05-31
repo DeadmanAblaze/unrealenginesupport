@@ -543,7 +543,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:13p
 .cact{background:none;border:none;color:var(--ink4);cursor:pointer;padding:3px;border-radius:4px;display:flex;align-items:center;flex-shrink:0;transition:all .12s}
 .cact svg{width:14px;height:14px}
 .cact:hover{color:var(--ink2);background:var(--el2)}
-.cact-del:hover{color:var(--crit);background:var(--rdim)}
+.cact-del:hover{color:var(--crit);background:var(--rdim)}.cact-dup{color:var(--brand1)}
 .cact-done{background:var(--brand1);color:#06141f!important;border-radius:0;padding:4px 12px!important;font-family:"Barlow Condensed",var(--sans);font-weight:900;font-size:10px;letter-spacing:.1em;text-transform:uppercase}
 .cact-done:hover{opacity:.9;background:linear-gradient(135deg,var(--brand1),var(--brand2))!important;color:#06141f!important}
 .csbody{padding:3px 12px 9px}
@@ -1773,6 +1773,19 @@ function removeComponent(id){
   saveComponents();
 }
 
+function duplicateComponent(id){
+  var src=components.find(function(c){return c.id===id;}); if(!src) return;
+  var copy=JSON.parse(JSON.stringify(src));
+  copy.id=compNextId++;
+  // Give each port a fresh unique ID so connections don't alias
+  if(copy.ports) copy.ports=copy.ports.map(function(p){
+    return Object.assign({},p,{id:Date.now()+Math.floor(Math.random()*100000)});
+  });
+  components.push(copy);
+  compEditId=copy.id;
+  saveComponents();
+}
+
 function editComponent(id){ compEditId = (compEditId===id?null:id); renderComponents(); }
 
 function setCompField(id, key, val){
@@ -1906,6 +1919,7 @@ function renderStrip(comp){
     +   (editing
     ? '<button class="cact cact-done" onclick="editComponent('+comp.id+')" title="Save &amp; close">Done</button>'
     : '<button class="cact" title="Edit" onclick="editComponent('+comp.id+')"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 20h4l10.5-10.5a2.1 2.1 0 0 0-3-3L5 17z\"/></svg></button>')
+    +   '<button class="cact cact-dup" title="Duplicate" onclick="duplicateComponent('+comp.id+')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg></button>'
     +   '<button class="cact cact-del" title="Remove" onclick="removeComponent('+comp.id+')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M5 7h14M9 7V5h6v2M7 7l1 13h8l1-13"/></svg></button>'
     + '</div>'
     + '<div class="csbody">'+body+'</div>'
@@ -2961,7 +2975,7 @@ function setPortField(compId, portId, key, val, noRender){
   var p = (c.ports||[]).find(function(x){return x.id===portId;}); if(!p) return;
   p[key] = val;
   fsave('components',{items:components,nextId:compNextId});
-  if(!noRender){ renderComponents(); renderRoutingView(); }
+  if(!noRender){ renderComponents(); renderRoutingView(); updateDiagram(); }
 }
 
 // ── CONNECTION LOGIC ──────────────────────────────────────────────────────

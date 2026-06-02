@@ -1588,7 +1588,26 @@ select.cv-edit{text-align:left;cursor:pointer}
                 <div id="ue-cvarbody" style="font-size:10px;color:var(--ink3)">&#8212;</div>
               </div>
             </div>
-            <!-- Row 4: Assets (shown when data available) -->
+            <!-- Row 4: GPU metrics | Quadro Sync -->
+            <div class="ue-dash2" style="margin-bottom:8px">
+              <div class="ue-card">
+                <div class="ue-card-t">GPU <span id="ue-gpu-name" style="font-weight:400;color:var(--ink3);font-family:var(--mono);font-size:9px;text-transform:none;letter-spacing:0"></span></div>
+                <div class="ue-sr"><span class="ue-sk">Temp</span><span class="ue-sv" id="ue-gpu-temp">&#8212;</span></div>
+                <div class="ue-sr"><span class="ue-sk">GPU util</span><span class="ue-sv" id="ue-gpu-util">&#8212;</span></div>
+                <div class="ue-sr"><span class="ue-sk">VRAM</span><span class="ue-sv" id="ue-gpu-vram">&#8212;</span></div>
+                <div class="ue-sr"><span class="ue-sk">Core clock</span><span class="ue-sv" id="ue-gpu-clock">&#8212;</span></div>
+                <div class="ue-sr"><span class="ue-sk">Power</span><span class="ue-sv" id="ue-gpu-power">&#8212;</span></div>
+                <div class="ue-sr"><span class="ue-sk">Throttle</span><span class="ue-sv" id="ue-gpu-throttle">&#8212;</span></div>
+                <div id="ue-gpu-reasons" style="font-size:9px;color:#fbbf24;margin-top:3px"></div>
+              </div>
+              <div class="ue-card">
+                <div class="ue-card-t">Quadro Sync II</div>
+                <div id="ue-gsync-body" style="font-size:10px;color:var(--ink3)">
+                  <div style="color:var(--ink4)">&#8212;</div>
+                </div>
+              </div>
+            </div>
+            <!-- Row 5: Assets (shown when data available) -->
             <div id="ue-assets-row" style="display:none;margin-top:8px">
               <div class="ue-card">
                 <div class="ue-card-t">Asset Registry</div>
@@ -4838,13 +4857,68 @@ function ueApplySnapshot(d){
   var as=d.assets; var asEl=el('ue-assetbody');
   if(as&&asEl){
     var asRow=el('ue-assets-row'); if(asRow) asRow.style.display='';
-    if(!as.ready){ asEl.innerHTML='<div style="color:var(--ink3)">Scanning\u2026</div>'; }
+    if(!as.ready){ asEl.innerHTML='<div style="color:var(--ink3)">Scanning…</div>'; }
     else{
       var topC=Object.keys(as.byClass||{}).slice(0,6);
       asEl.innerHTML='<div class="ue-sr"><span class="ue-sk">Total</span><span class="ue-sv">'+as.totalAssets+'</span></div>'
         +topC.map(function(k){
           return '<div class="ue-sr"><span class="ue-sk">'+esc(k)+'</span><span class="ue-sv">'+as.byClass[k]+'</span></div>';
         }).join('');
+    }
+  }
+
+  // GPU (NVML)
+  var gpu=d.gpu;
+  if(gpu&&gpu.available&&gpu.devices&&gpu.devices.length>0){
+    var gd=gpu.devices[0];
+    var nameEl=el('ue-gpu-name'); if(nameEl) nameEl.textContent=gd.name||'';
+    var tempCls=gd.tempC<0?'':(gd.tempC<75?'ok':gd.tempC<85?'warn':'err');
+    ueSetStat('ue-gpu-temp',  gd.tempC>=0?gd.tempC+'°C':'—', tempCls);
+    var utilCls=gd.gpuUtil<0?'':(gd.gpuUtil<90?'ok':gd.gpuUtil<98?'warn':'err');
+    ueSetStat('ue-gpu-util',  gd.gpuUtil>=0?gd.gpuUtil+'%':'—', utilCls);
+    var vramPct=gd.vramTotalMB>0?Math.round(gd.vramUsedMB/gd.vramTotalMB*100):0;
+    var vramCls=gd.vramTotalMB<0?'':(vramPct<85?'ok':vramPct<95?'warn':'err');
+    ueSetStat('ue-gpu-vram',  gd.vramTotalMB>0?gd.vramUsedMB+'/'+(gd.vramTotalMB)+'MB ('+vramPct+'%)':'—', vramCls);
+    ueSetStat('ue-gpu-clock', gd.clockMhz>0?gd.clockMhz+(gd.maxClockMhz>0?' / '+gd.maxClockMhz:'')+'MHz':'—','');
+    var pwrCls=gd.powerLimitW>0&&gd.powerW>0?(gd.powerW/gd.powerLimitW>0.95?'warn':'ok'):'';
+    ueSetStat('ue-gpu-power', gd.powerW>=0?gd.powerW.toFixed(1)+(gd.powerLimitW>0?' / '+gd.powerLimitW:'')+'W':'—', pwrCls);
+    var thrCls=gd.throttleState==='none'?'ok':gd.throttleState==='sync'?'warn':'err';
+    ueSetStat('ue-gpu-throttle', gd.throttleState||'—', thrCls);
+    var reasonsEl=el('ue-gpu-reasons');
+    if(reasonsEl){
+      var reasons=gd.throttleReasons||[];
+      reasonsEl.textContent=reasons.length?'⚠ '+reasons.join(', '):'';
+      reasonsEl.style.display=reasons.length?'':'none';
+    }
+  } else if(gpu&&!gpu.available){
+    ueSetStat('ue-gpu-temp','—',''); ueSetStat('ue-gpu-util','—','');
+    ueSetStat('ue-gpu-vram','NVML unavailable','');
+    ueSetStat('ue-gpu-clock','',''); ueSetStat('ue-gpu-power','',''); ueSetStat('ue-gpu-throttle','','');
+  }
+
+  // Quadro Sync (NVAPI)
+  var gs=d.gsync; var gsEl=el('ue-gsync-body');
+  if(gs&&gsEl){
+    if(!gs.available){
+      gsEl.innerHTML='<div style="color:var(--ink4)">'+esc(gs.reason||'Unavailable')+'</div>'
+        +'<div style="color:var(--ink4);font-size:9px;margin-top:4px">Enable NVAPI SDK in Build.cs for Quadro Sync data</div>';
+    } else if(!gs.devices||gs.devices.length===0){
+      gsEl.innerHTML='<div style="color:var(--ink4)">No Quadro Sync cards detected</div>';
+    } else {
+      gsEl.innerHTML=gs.devices.map(function(sd,i){
+        var lockCls=sd.syncLocked?'ok':'err';
+        var hsCls=sd.houseSyncPresent?'ok':'warn';
+        return '<div class="ue-sr"><span class="ue-sk">Sync card '+i+'</span>'
+          +'<span class="ue-sv '+lockCls+'">'+(sd.syncLocked?'● Locked':'○ Unlocked')+'</span></div>'
+          +'<div class="ue-sr"><span class="ue-sk">House sync</span>'
+          +'<span class="ue-sv '+hsCls+'">'+(sd.houseSyncPresent?'Present':'Not detected')+'</span></div>'
+          +'<div class="ue-sr"><span class="ue-sk">Mode</span>'
+          +'<span class="ue-sv">'+esc(sd.syncMode||'—')+'</span></div>'
+          +((sd.gpus||[]).map(function(g){
+            return '<div class="ue-sr"><span class="ue-sk">GPU '+g.gpuIndex+'</span>'
+              +'<span class="ue-sv '+(g.syncState==='Master'||g.syncState==='Slave'?'ok':'')+'">'+esc(g.syncState)+'</span></div>';
+          }).join(''));
+      }).join('<div style="margin:5px 0;border-top:1px solid var(--line)"></div>');
     }
   }
 }

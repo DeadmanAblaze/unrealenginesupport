@@ -948,6 +948,15 @@ select.cv-edit{text-align:left;cursor:pointer}
 .ue-inp:focus{border-color:var(--brand1)}
 .ue-host-inp{flex:1;min-width:0}
 .ue-port-inp{width:72px}
+.ue-ntab{background:var(--bg2);border:1px solid var(--line);color:var(--ink2);font-size:10px;padding:3px 8px;border-radius:3px;cursor:pointer;display:flex;align-items:center;gap:4px}
+.ue-ntab.act{background:var(--brand1);color:#fff;border-color:var(--brand1)}
+.ue-ndot{width:6px;height:6px;border-radius:50%;background:var(--ink4);display:inline-block;flex-shrink:0}
+.ue-ndot.live{background:var(--live)}.ue-ndot.err{background:#f87171}
+.ue-asum-hdr{display:grid;grid-template-columns:160px repeat(7,1fr);gap:4px;font-size:9px;color:var(--ink4);padding:0 0 4px;border-bottom:1px solid var(--line);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em}
+.ue-asum-row{display:grid;grid-template-columns:160px repeat(7,1fr);gap:4px;font-size:10px;padding:4px 0;border-bottom:1px solid var(--line);cursor:pointer;align-items:center}
+.ue-asum-row:hover{background:var(--bg2)}
+.ue-ar-name{display:flex;align-items:center;gap:5px;font-weight:500;color:var(--ink1)}
+.ue-asum-row span.ok{color:var(--live)}.ue-asum-row span.warn{color:#fbbf24}.ue-asum-row span.err{color:#f87171}
 .ue-dash{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px}.ue-dash2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
 .ue-card{background:var(--el);border:1px solid var(--line);border-radius:6px;padding:9px 11px}
 .ue-card-t{font-family:'Barlow Condensed',var(--sans);font-weight:900;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink4);margin-bottom:7px}
@@ -1538,16 +1547,24 @@ select.cv-edit{text-align:left;cursor:pointer}
             <button class="btn bp sm" id="ue-btn" onclick="ueToggle()">Connect</button>
           </div>
           <div id="ue-dash" style="display:none">
+            <div id="ue-node-tabs" style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px"></div>
+            <div id="ue-all-summary" style="display:none;margin-bottom:8px"></div>
+            <div id="ue-dash-content">
             <!-- Row 1: Frame Timing | Level | nDisplay -->
             <div class="ue-dash">
               <div class="ue-card">
-                <div class="ue-card-t">Frame Timing</div>
+                <div class="ue-card-t">Frame Timing &amp; Render Stats</div>
                 <div class="ue-sr"><span class="ue-sk">FPS</span><span class="ue-sv" id="ue-fps">&#8212;</span></div>
                 <div class="ue-sr"><span class="ue-sk">GPU</span><span class="ue-sv" id="ue-fgpu">&#8212;</span></div>
                 <div class="ue-sr"><span class="ue-sk">Game</span><span class="ue-sv" id="ue-fgame">&#8212;</span></div>
                 <div class="ue-sr"><span class="ue-sk">Render</span><span class="ue-sv" id="ue-frender">&#8212;</span></div>
                 <div class="ue-sr"><span class="ue-sk">RHI</span><span class="ue-sv" id="ue-frhi">&#8212;</span></div>
                 <div class="ue-sr"><span class="ue-sk">Target</span><span class="ue-sv" id="ue-ftarget">&#8212;</span></div>
+                <div style="margin-top:5px;padding-top:5px;border-top:1px solid var(--line)"></div>
+                <div class="ue-sr"><span class="ue-sk">Draw calls</span><span class="ue-sv" id="ue-drawcalls">&#8212;</span></div>
+                <div class="ue-sr"><span class="ue-sk">Primitives</span><span class="ue-sv" id="ue-primitives">&#8212;</span></div>
+                <div class="ue-sr"><span class="ue-sk">Tex mem</span><span class="ue-sv" id="ue-texmem">&#8212;</span></div>
+                <div class="ue-sr"><span class="ue-sk">RAM</span><span class="ue-sv" id="ue-ram">&#8212;</span></div>
               </div>
               <div class="ue-card">
                 <div class="ue-card-t">Level</div>
@@ -1564,6 +1581,9 @@ select.cv-edit{text-align:left;cursor:pointer}
                 <div class="ue-sr"><span class="ue-sk">Config</span><span class="ue-sv" id="ue-nd-config">&#8212;</span></div>
                 <div class="ue-sr"><span class="ue-sk">Inner frustum</span><span class="ue-sv" id="ue-nd-frustum">&#8212;</span></div>
                 <div class="ue-sr"><span class="ue-sk">Chromakey</span><span class="ue-sv" id="ue-nd-chroma">&#8212;</span></div>
+                <div style="margin-top:5px;padding-top:5px;border-top:1px solid var(--line)"></div>
+                <div class="ue-sr"><span class="ue-sk">Sync policy</span><span class="ue-sv" id="ue-nd-syncpol">&#8212;</span></div>
+                <div class="ue-sr"><span class="ue-sk">Genlock</span><span class="ue-sv" id="ue-nd-genlock">&#8212;</span></div>
               </div>
             </div>
             <!-- Row 2: Cluster nodes | Stage actors -->
@@ -1614,6 +1634,7 @@ select.cv-edit{text-align:left;cursor:pointer}
                 <div id="ue-assetbody" style="font-size:10px;color:var(--ink3)"></div>
               </div>
             </div>
+            </div><!-- /ue-dash-content -->
             <div class="ue-log" id="ue-log"></div>
           </div>
           <div id="ue-hint" class="ue-hint">
@@ -4693,61 +4714,170 @@ function ueLog(msg,err){
 }
 
 function ueToggle(){
-  if(_ueWS||_ueConn) ueDisconnect(); else ueConnect();
+  if(Object.keys(_ueNodes).length>0){ ueDisconnectAll(); }
+  else {
+    var host=(el('ue-host').value||'localhost').trim();
+    _uePrimaryPort=parseInt(el('ue-port').value||'30011');
+    el('ue-btn').textContent='Connecting\u2026'; el('ue-btn').disabled=true;
+    el('ue-stxt').textContent='Connecting\u2026';
+    ueConnectNode('primary', host, _uePrimaryPort, true);
+  }
 }
 
-function ueConnect(){
-  var url=ueWsUrl();
-  var btn=el('ue-btn'); btn.textContent='Connecting\u2026'; btn.disabled=true;
-  el('ue-stxt').textContent='Connecting\u2026';
-  ueLog('Connecting to '+url);
-  try{ _ueWS=new WebSocket(url); _ueWS.binaryType='arraybuffer'; }
+function ueConnectNode(nodeId, ip, port, isPrimary){
+  if(_ueNodes[nodeId] && _ueNodes[nodeId].ws) return;
+  var url=ueWsUrl(ip, port);
+  ueLog('['+(isPrimary?'Primary':nodeId)+'] Connecting to '+url);
+  var ws;
+  try{ ws=new WebSocket(url); ws.binaryType='arraybuffer'; }
   catch(e){
-    btn.textContent='Connect'; btn.disabled=false;
-    el('ue-dot').classList.add('err');
-    el('ue-stxt').textContent='Failed';
-    ueLog('WebSocket error: '+e.message,true); return;
+    ueLog('['+nodeId+'] Error: '+e.message,true);
+    if(isPrimary){ el('ue-btn').textContent='Connect'; el('ue-btn').disabled=false; }
+    return;
   }
+  _ueNodes[nodeId]={ws:ws,status:'connecting',data:null,ip:ip,name:nodeId,isPrimary:isPrimary};
+  ueUpdateNodeTabs();
 
-  _ueWS.onopen=function(){
-    _ueConn=true; _uePushCount=0;
-    btn.textContent='Disconnect'; btn.disabled=false;
-    el('ue-dot').classList.add('live'); el('ue-dot').classList.remove('err');
-    el('ue-stxt').textContent='Connected';
+  ws.onopen=function(){
+    _ueNodes[nodeId].status='connected';
+    if(!_ueActiveNode) _ueActiveNode=nodeId;
+    if(isPrimary){
+      el('ue-btn').textContent='Disconnect'; el('ue-btn').disabled=false;
+      el('ue-dot').classList.add('live'); el('ue-dot').classList.remove('err');
+    }
     el('ue-dash').style.display=''; el('ue-hint').style.display='none';
-    ueLog('Connected \u2014 receiving live push data (port '+(el('ue-port').value||'30011')+')');
+    ueUpdateNodeTabs();
+    ueLog('['+(nodeId)+'] Connected');
   };
 
-  _ueWS.onmessage=function(ev){
+  ws.onmessage=function(ev){
+    var text=ev.data instanceof ArrayBuffer?new TextDecoder().decode(ev.data):ev.data;
     try{
-      var text = ev.data instanceof ArrayBuffer
-        ? new TextDecoder().decode(ev.data)
-        : ev.data;
-      ueApplySnapshot(JSON.parse(text));
-      _uePushCount++;
-    } catch(e){ ueLog('Parse error: '+e.message,true); }
+      var d=JSON.parse(text);
+      _ueNodes[nodeId].data=d;
+      // Update display name from nDisplay config
+      if(d.ndisplay&&d.ndisplay.primaryNode&&isPrimary)
+        _ueNodes[nodeId].name=d.ndisplay.primaryNode;
+      // Auto-connect to display nodes listed in nDisplay config
+      if(isPrimary&&d.ndisplay&&d.ndisplay.nodes){
+        d.ndisplay.nodes.forEach(function(n){
+          if(!n.isPrimary&&n.address&&!_ueNodes[n.name]){
+            ueLog('[Auto] Connecting to display node '+n.name+' at '+n.address);
+            ueConnectNode(n.name, n.address, _uePrimaryPort, false);
+          }
+        });
+      }
+      if(_ueActiveNode===nodeId) ueRenderNode(nodeId);
+      if(_ueActiveNode==='__all') ueUpdateAllSummary();
+      ueUpdateNodeTabs();
+    }catch(e){ ueLog('['+nodeId+'] Parse error: '+e.message,true); }
   };
 
-  _ueWS.onerror=function(){
-    ueLog('Connection error \u2014 is the Unreal Support Plugin running on this host/port?',true);
+  ws.onerror=function(){
+    _ueNodes[nodeId].status='error';
+    ueLog('['+nodeId+'] Connection error',true);
+    ueUpdateNodeTabs();
   };
 
-  _ueWS.onclose=function(ev){
-    _ueConn=false; _ueWS=null;
-    if(btn){ btn.textContent='Connect'; btn.disabled=false; }
-    el('ue-dot').classList.remove('live'); el('ue-dot').classList.add('err');
-    el('ue-stxt').textContent='Disconnected';
-    ueLog('Connection closed (code '+ev.code+'). '+_uePushCount+' snapshots received.');
+  ws.onclose=function(ev){
+    _ueNodes[nodeId].status='disconnected';
+    ueLog('['+nodeId+'] Disconnected (code '+ev.code+')');
+    if(isPrimary){ el('ue-btn').textContent='Connect'; el('ue-btn').disabled=false;
+      el('ue-dot').classList.remove('live'); el('ue-dot').classList.add('err'); }
+    ueUpdateNodeTabs();
   };
 }
 
 function ueDisconnect(){
-  if(_ueWS){ _ueWS.close(); _ueWS=null; }
-  _ueConn=false;
-  var btn=el('ue-btn'); if(btn){ btn.textContent='Connect'; btn.disabled=false; }
+  if(_ueNodes['primary']&&_ueNodes['primary'].ws) _ueNodes['primary'].ws.close();
+}
+
+function ueDisconnectAll(){
+  Object.keys(_ueNodes).forEach(function(id){ if(_ueNodes[id].ws) _ueNodes[id].ws.close(); });
+  _ueNodes={}; _ueActiveNode=null;
+  el('ue-btn').textContent='Connect'; el('ue-btn').disabled=false;
   el('ue-dot').classList.remove('live','err');
   el('ue-stxt').textContent='Disconnected';
   el('ue-dash').style.display='none'; el('ue-hint').style.display='';
+  ueUpdateNodeTabs();
+  ueLog('Disconnected all nodes');
+}
+
+function ueSelectNode(nodeId){
+  _ueActiveNode=nodeId;
+  ueUpdateNodeTabs();
+  var allView=el('ue-all-summary'), dashContent=el('ue-dash-content');
+  if(nodeId==='__all'){
+    if(allView) allView.style.display='';
+    if(dashContent) dashContent.style.display='none';
+    ueUpdateAllSummary();
+  } else {
+    if(allView) allView.style.display='none';
+    if(dashContent) dashContent.style.display='';
+    ueRenderNode(nodeId);
+  }
+}
+
+function ueRenderNode(nodeId){
+  var node=_ueNodes[nodeId];
+  if(node&&node.data) ueApplySnapshot(node.data);
+  el('ue-stxt').textContent=(node&&node.name?node.name:nodeId)
+    +' \u25cf '+(node&&node.status==='connected'?'Live':'...');
+}
+
+function ueUpdateNodeTabs(){
+  var c=el('ue-node-tabs'); if(!c) return;
+  var ids=Object.keys(_ueNodes);
+  if(ids.length===0){ c.innerHTML=''; return; }
+  var h='';
+  if(ids.length>1){
+    h+='<button class="ue-ntab'+((_ueActiveNode==='__all')?' act':'')+'" onclick="ueSelectNode(\'__all\')">All nodes</button>';
+  }
+  ids.forEach(function(id){
+    var n=_ueNodes[id];
+    var dotCls=n.status==='connected'?'live':n.status==='error'?'err':'';
+    h+='<button class="ue-ntab'+((_ueActiveNode===id)?' act':'')+'" onclick="ueSelectNode(\''+id+'\')">'
+      +'<span class="ue-ndot '+dotCls+'"></span>'+esc(n.name||id)+'</button>';
+  });
+  c.innerHTML=h;
+}
+
+function ueUpdateAllSummary(){
+  var c=el('ue-all-summary'); if(!c) return;
+  var ids=Object.keys(_ueNodes);
+  c.innerHTML='<div class="ue-asum-hdr">'
+    +'<span>Node</span><span>FPS</span><span>GPU ms</span><span>GPU \u00b0C</span>'
+    +'<span>VRAM</span><span>Throttle</span><span>Draw calls</span><span>Sync</span></div>'
+    +ids.map(function(id){
+      var n=_ueNodes[id], d=n.data;
+      if(!d) return '<div class="ue-asum-row"><span class="ue-ar-name">'
+        +'<span class="ue-ndot '+(n.status==='connected'?'live':'err')+'"></span>'+esc(n.name||id)+'</span>'
+        +'<span colspan="7" style="color:var(--ink4)">'+n.status+'...</span></div>';
+      var ft=d.frametiming||{}, gpu=(d.gpu&&d.gpu.devices&&d.gpu.devices[0])||{};
+      var nd=d.ndisplay||{};
+      var fps=ft.fps>0?ft.fps.toFixed(1):'--';
+      var gpuMs=ft.gpuMs>0?ft.gpuMs.toFixed(1)+'ms':'--';
+      var temp=gpu.tempC>=0?gpu.tempC+'\u00b0C':'--';
+      var vramPct=gpu.vramTotalMB>0?Math.round(gpu.vramUsedMB/gpu.vramTotalMB*100)+'%':'--';
+      var thr=gpu.throttleState||'--';
+      var draws=ft.drawCalls>=0?ft.drawCalls.toLocaleString():'--';
+      var sync=nd.active?(nd.innerFrustum?'IF+Cluster':'Cluster'):'Off';
+      var syncCls=nd.active?'ok':'';
+      var thrCls=thr==='none'?'ok':thr==='--'?'':thr==='sync'?'warn':'err';
+      var fpsCls=ft.fps>0&&ft.targetFps>0?(ft.fps>=ft.targetFps*0.97?'ok':'warn'):'';
+      var gpuCls=ft.gpuMs>0?(ft.gpuMs<33?'ok':ft.gpuMs<40?'warn':'err'):'';
+      var tCls=gpu.tempC>=0?(gpu.tempC<75?'ok':gpu.tempC<85?'warn':'err'):'';
+      return '<div class="ue-asum-row" onclick="ueSelectNode(\''+id+'\')" title="Click for full dashboard">'
+        +'<span class="ue-ar-name"><span class="ue-ndot '+(n.status==='connected'?'live':'err')+'"></span>'+esc(n.name||id)+'</span>'
+        +'<span class="'+fpsCls+'">'+fps+'</span>'
+        +'<span class="'+gpuCls+'">'+gpuMs+'</span>'
+        +'<span class="'+tCls+'">'+temp+'</span>'
+        +'<span>'+vramPct+'</span>'
+        +'<span class="'+thrCls+'">'+thr+'</span>'
+        +'<span>'+draws+'</span>'
+        +'<span class="'+syncCls+'">'+sync+'</span>'
+        +'</div>';
+    }).join('');
 }
 
 function ueSetStat(id,val,cls){
@@ -4759,17 +4889,26 @@ function ueSetStat(id,val,cls){
 function ueApplySnapshot(d){
   if(!d) return;
 
-  // Frame timing
+  // Frame timing + render stats
   var ft=d.frametiming;
   if(ft){
     var fpsCls=ft.fps>0&&ft.targetFps>0?(ft.fps>=ft.targetFps*0.97?'ok':ft.fps>=ft.targetFps*0.8?'warn':'err'):'';
     var gpuCls=ft.gpuMs>0?(ft.gpuMs<33?'ok':ft.gpuMs<40?'warn':'err'):'';
-    ueSetStat('ue-fps',     ft.fps>0?ft.fps.toFixed(1)+' fps':'\u2014', fpsCls);
-    ueSetStat('ue-fgame',   ft.gameMs>0?ft.gameMs.toFixed(1)+'ms':'\u2014','');
-    ueSetStat('ue-frender', ft.renderMs>0?ft.renderMs.toFixed(1)+'ms':'\u2014','');
-    ueSetStat('ue-fgpu',    ft.gpuMs>0?ft.gpuMs.toFixed(1)+'ms':'\u2014', gpuCls);
-    ueSetStat('ue-frhi',    ft.rhiMs>0?ft.rhiMs.toFixed(1)+'ms':'\u2014','');
+    ueSetStat('ue-fps',     ft.fps>0?ft.fps.toFixed(1)+' fps':'—', fpsCls);
+    ueSetStat('ue-fgame',   ft.gameMs>0?ft.gameMs.toFixed(1)+'ms':'—','');
+    ueSetStat('ue-frender', ft.renderMs>0?ft.renderMs.toFixed(1)+'ms':'—','');
+    ueSetStat('ue-fgpu',    ft.gpuMs>0?ft.gpuMs.toFixed(1)+'ms':'—', gpuCls);
+    ueSetStat('ue-frhi',    ft.rhiMs>0?ft.rhiMs.toFixed(1)+'ms':'—','');
     ueSetStat('ue-ftarget', ft.targetFps>0?ft.targetFps+'fps':'Unlimited','');
+    if(ft.drawCalls>=0) ueSetStat('ue-drawcalls', ft.drawCalls.toLocaleString(),'');
+    if(ft.primitives>=0) ueSetStat('ue-primitives',
+      ft.primitives>=1000000?(ft.primitives/1000000).toFixed(1)+'M':
+      ft.primitives>=1000?(ft.primitives/1000).toFixed(0)+'K':
+      String(ft.primitives),'');
+    if(ft.texMemUsedMB>=0) ueSetStat('ue-texmem',
+      ft.texMemUsedMB+'MB'+(ft.texMemTotalMB>0?' / '+ft.texMemTotalMB+'MB':''),'');
+    if(ft.ramUsedMB>=0) ueSetStat('ue-ram',
+      ft.ramUsedMB+' / '+ft.ramTotalMB+'MB','');
   }
 
   // Level
@@ -4797,6 +4936,12 @@ function ueApplySnapshot(d){
     ueSetStat('ue-nd-config', nd.configPath?nd.configPath.split('/').pop().replace('.ndisplay',''):'\u2014','');
     ueSetStat('ue-nd-frustum',nd.innerFrustum?'Active':'Off', nd.innerFrustum?'ok':'');
     ueSetStat('ue-nd-chroma', nd.chromakey?'Active':'Off',    nd.chromakey?'warn':'');
+    // Genlock
+    var gl=nd.genlock;
+    if(gl){
+      ueSetStat('ue-nd-syncpol', gl.swapPolicy||'—', gl.swapPolicy==='NvSwapSync (Quadro)'?'ok':gl.swapPolicy==='SoftSwapSync'?'ok':'');
+      ueSetStat('ue-nd-genlock', gl.enabled?'● Active':'○ Off', gl.enabled?'ok':'');
+    }
     var nodesEl=el('ue-nd-nodes-body');
     if(nodesEl&&nd.nodes&&nd.nodes.length){
       nodesEl.innerHTML=nd.nodes.map(function(n){

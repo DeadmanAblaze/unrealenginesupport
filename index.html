@@ -4701,7 +4701,7 @@ function ueConnect(){
   var btn=el('ue-btn'); btn.textContent='Connecting\u2026'; btn.disabled=true;
   el('ue-stxt').textContent='Connecting\u2026';
   ueLog('Connecting to '+url);
-  try{ _ueWS=new WebSocket(url); }
+  try{ _ueWS=new WebSocket(url); _ueWS.binaryType='arraybuffer'; }
   catch(e){
     btn.textContent='Connect'; btn.disabled=false;
     el('ue-dot').classList.add('err');
@@ -4719,8 +4719,13 @@ function ueConnect(){
   };
 
   _ueWS.onmessage=function(ev){
-    try{ ueApplySnapshot(JSON.parse(ev.data)); _uePushCount++; }
-    catch(e){ ueLog('Parse error: '+e.message,true); }
+    try{
+      var text = ev.data instanceof ArrayBuffer
+        ? new TextDecoder().decode(ev.data)
+        : ev.data;
+      ueApplySnapshot(JSON.parse(text));
+      _uePushCount++;
+    } catch(e){ ueLog('Parse error: '+e.message,true); }
   };
 
   _ueWS.onerror=function(){

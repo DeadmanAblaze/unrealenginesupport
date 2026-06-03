@@ -4693,7 +4693,10 @@ function vidDisconnect(){
 }
 
 // ── UE REMOTE CONTROL (WebSocket — Unreal Support Plugin) ─────────────────
-var _ueWS=null, _ueConn=false, _uePushCount=0;
+// Multi-node connection state
+var _ueNodes={};          // nodeId -> {ws,status,data,ip,name,isPrimary}
+var _ueActiveNode=null;   // currently selected node id, or '__all'
+var _uePrimaryPort=30011;
 
 function ueWsUrl(){
   var host=(el('ue-host').value||'localhost').trim();

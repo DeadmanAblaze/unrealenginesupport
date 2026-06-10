@@ -9,9 +9,10 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#0b0b0c;--rail:#0e0e10;--card:#141416;--el:#161618;--el2:#1c1c1f;
-  --line:rgba(255,255,255,0.055);--line2:rgba(255,255,255,0.085);--line3:rgba(255,255,255,0.13);
-  --ink:#ededee;--ink2:#9b9b9f;--ink3:#646469;--ink4:#3a3a3d;
+  --bg:#262624;--rail:#1f1e1c;--card:#30302e;--el:#32312f;--el2:#3a3937;
+  --line:rgba(255,255,255,0.07);--line2:rgba(255,255,255,0.1);--line3:rgba(255,255,255,0.15);
+  --ink:#f0efea;--ink2:#b8b6ad;--ink3:#83817a;--ink4:#54524d;
+  --bg2:#30302e;--bg3:#3a3937;--ink1:#f0efea;
   --live:#4ade80;--live-dim:rgba(74,222,128,0.1);
   --warn:#fbbf24;--warn-dim:rgba(251,191,36,0.09);
   --crit:#f87171;--red:#f87171;--rdim:rgba(248,113,113,0.1);
@@ -26,10 +27,10 @@
 }
 /* dark scrollbar */
 ::-webkit-scrollbar{width:6px;height:6px}
-::-webkit-scrollbar-track{background:#0a0a0b}
-::-webkit-scrollbar-thumb{background:#1a1a1e;border-radius:0}
-::-webkit-scrollbar-thumb:hover{background:#242428}
-*{scrollbar-width:thin;scrollbar-color:#1a1a1e #0a0a0b}
+::-webkit-scrollbar-track{background:#21201e}
+::-webkit-scrollbar-thumb{background:#454440;border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:#54524d}
+*{scrollbar-width:thin;scrollbar-color:#454440 #21201e}
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:13px;line-height:1.5;-webkit-font-smoothing:antialiased;min-height:100vh}
@@ -1043,10 +1044,7 @@ select.cv-edit{text-align:left;cursor:pointer}
         <div class="auth-title">Welcome back</div>
         <div class="auth-sub">Sign in to your production console.</div>
       </div>
-      <div class="tabs">
-        <button class="tab active" id="t-in" onclick="swTab('in')">Sign in</button>
-        <button class="tab" id="t-up" onclick="swTab('up')">Create account</button>
-      </div>
+      <!-- Account creation is admin-only; see Admin page -->
       <div class="aerr" id="aerr"></div>
       <div class="aok" id="aok"></div>
       <div id="f-in">
@@ -1133,6 +1131,10 @@ select.cv-edit{text-align:left;cursor:pointer}
       <button class="nb" onclick="go('quickstart',this)">
         <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
         <span class="nb-label">Quick start</span>
+      </button>
+      <button class="nb" id="nb-admin" style="display:none" onclick="go('admin',this);adminLoadUsers()">
+        <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+        <span class="nb-label">Admin</span>
       </button>
     </nav>
     <div class="rail-spacer"></div>
@@ -2314,6 +2316,9 @@ fbauth.onAuthStateChanged(function(user) {
     hide('auth-screen');
     showBlock('app');
     el('udisp').textContent = user.displayName || user.email;
+    // Admin nav only for the admin account
+    var adminBtn = el('nb-admin');
+    if(adminBtn) adminBtn.style.display = isAdmin() ? '' : 'none';
     loadData();
   } else {
     cu = null;
@@ -2515,11 +2520,15 @@ function go(id, btn){
   document.querySelectorAll('.nb').forEach(function(b){ b.classList.remove('on'); });
   el('pnl-'+id).classList.add('on');
   btn.classList.add('on');
+  // Always start new page at the top
+  window.scrollTo(0,0);
+  var mainEl=document.querySelector('main'); if(mainEl) mainEl.scrollTop=0;
+  document.querySelectorAll('.pnl.on').forEach(function(p){ p.scrollTop=0; });
   if(id==='home') renderHome();
   if(id==='cal') renderCalendar();
   if(id==='gear') renderGear();
   if(id==='chat') setTimeout(vidRefresh, 200);
-  var t={'home':['Home','Welcome to Unreal Support'],'specs':['Rig specs','Virtual production configuration'],'issues':['Issues','Open and recent stage issues'],'chat':['Support','VP and nDisplay assistance'],'cl':['Checklist','Daily session readiness'],'cal':['Planner','Schedule and stage activity'],'gear':['Equipment','Component manifest and product links'],'features':['Features','How Unreal Support works'],'quickstart':['Quick Start','nDisplay stage startup guide']};
+  var t={'home':['Home','Welcome to Unreal Support'],'specs':['Rig specs','Virtual production configuration'],'issues':['Issues','Open and recent stage issues'],'chat':['Support','VP and nDisplay assistance'],'cl':['Checklist','Daily session readiness'],'cal':['Planner','Schedule and stage activity'],'gear':['Equipment','Component manifest and product links'],'features':['Features','How Unreal Support works'],'quickstart':['Quick Start','nDisplay stage startup guide'],'admin':['Admin','User management']};
   if(t[id]&&el('tb-title')){el('tb-title').textContent=t[id][0];el('tb-meta').textContent=t[id][1];}
 }
 
@@ -2552,17 +2561,83 @@ function doLogin(){
   });
 }
 
-function doSignUp(){
-  var nm=el('su-nm').value.trim(), em=el('su-em').value.trim(), pw=el('su-pw').value;
-  if(!em||!pw){aerr('Please fill in all fields.');return;}
-  el('su-btn').disabled=true; el('su-btn').textContent='Creating...';
-  fbauth.createUserWithEmailAndPassword(em,pw).then(function(c){
-    var p = nm ? c.user.updateProfile({displayName:nm}) : Promise.resolve();
+// ── Admin system ──────────────────────────────────────────────────────────
+var ADMIN_EMAIL = 'matthew.whalen87@icloud.com';
+
+function isAdmin(){
+  return fbauth.currentUser && (fbauth.currentUser.email||'').toLowerCase() === ADMIN_EMAIL;
+}
+
+// Create a user WITHOUT signing out the admin: use a secondary Firebase app
+// instance so createUserWithEmailAndPassword doesn't replace the admin session.
+var _fbSecondary = null;
+function adminCreateUser(){
+  if(!isAdmin()){ return; }
+  var nm = el('au-nm').value.trim();
+  var em = el('au-em').value.trim();
+  var pw = el('au-pw').value;
+  var msgEl = el('au-msg');
+  msgEl.style.color = 'var(--ink3)';
+  if(!em || !pw){ msgEl.textContent='Email and password are required.'; msgEl.style.color='var(--red)'; return; }
+  if(pw.length < 6){ msgEl.textContent='Password must be at least 6 characters.'; msgEl.style.color='var(--red)'; return; }
+
+  el('au-btn').disabled = true; el('au-btn').textContent = 'Creating\u2026';
+  msgEl.textContent = '';
+
+  if(!_fbSecondary){ _fbSecondary = firebase.initializeApp(FBCFG, 'admin-secondary'); }
+
+  _fbSecondary.auth().createUserWithEmailAndPassword(em, pw).then(function(cred){
+    var p = nm ? cred.user.updateProfile({displayName:nm}) : Promise.resolve();
     return p.then(function(){
-      return uref().set({created:firebase.firestore.FieldValue.serverTimestamp()});
+      // Record user in Firestore under admin's user registry
+      return fbdb.collection('users').doc(cred.user.uid).set({
+        email: em, name: nm||'', createdBy: ADMIN_EMAIL,
+        created: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    }).then(function(){
+      return _fbSecondary.auth().signOut(); // don't keep the new user signed in on secondary
     });
+  }).then(function(){
+    msgEl.textContent = 'User created: ' + em;
+    msgEl.style.color = 'var(--green)';
+    el('au-nm').value=''; el('au-em').value=''; el('au-pw').value='';
+    adminLoadUsers();
   }).catch(function(e){
-    aerr(fae(e.code)); el('su-btn').disabled=false; el('su-btn').textContent='Create Account';
+    msgEl.textContent = fae(e.code) || e.message;
+    msgEl.style.color = 'var(--red)';
+  }).finally(function(){
+    el('au-btn').disabled = false; el('au-btn').textContent = 'Create user';
+  });
+}
+
+function adminLoadUsers(){
+  if(!isAdmin()) return;
+  var listEl = el('au-list'); if(!listEl) return;
+  fbdb.collection('users').orderBy('created','desc').limit(50).get().then(function(snap){
+    if(snap.empty){ listEl.innerHTML='<div style="color:var(--ink3);font-size:12px;padding:8px 0">No users created yet.</div>'; return; }
+    listEl.innerHTML = snap.docs.map(function(d){
+      var u=d.data();
+      var when = u.created && u.created.toDate ? u.created.toDate().toLocaleDateString() : '';
+      return '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)">'
+        +'<div><div style="font-size:12px;color:var(--ink)">'+esc(u.email)+'</div>'
+        +(u.name?'<div style="font-size:11px;color:var(--ink3)">'+esc(u.name)+'</div>':'')
+        +'</div><div style="font-size:11px;color:var(--ink3)">'+when+'</div></div>';
+    }).join('');
+  }).catch(function(e){
+    listEl.innerHTML='<div style="color:var(--red);font-size:12px">Could not load users: '+esc(e.message)+'</div>';
+  });
+}
+
+function adminResetPassword(){
+  var em = el('au-rem').value.trim();
+  var msgEl = el('au-rmsg');
+  if(!em){ msgEl.textContent='Enter an email.'; msgEl.style.color='var(--red)'; return; }
+  fbauth.sendPasswordResetEmail(em).then(function(){
+    msgEl.textContent='Reset email sent to '+em;
+    msgEl.style.color='var(--green)';
+  }).catch(function(e){
+    msgEl.textContent=fae(e.code)||e.message;
+    msgEl.style.color='var(--red)';
   });
 }
 
@@ -5676,4 +5751,33 @@ function clAddItem(el){
       </div>
     </div>
 
+  
+    <div class="pnl" id="pnl-admin">
+      <div style="max-width:560px;padding:8px 0 40px">
+        <h2 style="font-size:22px;font-weight:700;color:var(--ink);margin:0 0 4px">Admin</h2>
+        <p style="color:var(--ink3);margin:0 0 24px;font-size:13px">Create user accounts and manage access. Only visible to the admin account.</p>
+
+        <div style="background:var(--card);border:1px solid var(--line);border-radius:6px;padding:20px;margin-bottom:16px">
+          <div style="font-size:11px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px">Create new user</div>
+          <div class="afield"><label>Name (optional)</label><input type="text" id="au-nm" placeholder="Their name"></div>
+          <div class="afield"><label>Email</label><input type="email" id="au-em" placeholder="user@studio.com"></div>
+          <div class="afield"><label>Password</label><input type="text" id="au-pw" placeholder="Min 6 characters — share with the user"></div>
+          <button class="abtn" id="au-btn" onclick="adminCreateUser()" style="margin-top:6px">Create user</button>
+          <div id="au-msg" style="font-size:12px;margin-top:10px;min-height:16px"></div>
+        </div>
+
+        <div style="background:var(--card);border:1px solid var(--line);border-radius:6px;padding:20px;margin-bottom:16px">
+          <div style="font-size:11px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px">Send password reset</div>
+          <div class="afield"><label>User email</label><input type="email" id="au-rem" placeholder="user@studio.com"></div>
+          <button class="abtn" onclick="adminResetPassword()" style="margin-top:6px">Send reset email</button>
+          <div id="au-rmsg" style="font-size:12px;margin-top:10px;min-height:16px"></div>
+        </div>
+
+        <div style="background:var(--card);border:1px solid var(--line);border-radius:6px;padding:20px">
+          <div style="font-size:11px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Users</div>
+          <div id="au-list"><div style="color:var(--ink3);font-size:12px">Loading…</div></div>
+        </div>
+
+      </div>
+    </div>
   

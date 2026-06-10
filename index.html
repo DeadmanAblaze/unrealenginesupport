@@ -1160,6 +1160,257 @@ select.cv-edit{text-align:left;cursor:pointer}
     </div>
     <div class="main-scroll"><div class="pnl on" id="pnl-home"></div>
 
+    <div class="pnl" id="pnl-features">
+      <div style="max-width:820px;padding:8px 0 40px">
+        <h2 style="font-size:22px;font-weight:700;color:var(--ink1);margin:0 0 6px">Unreal Support</h2>
+        <p style="color:var(--ink3);margin:0 0 28px;font-size:13px">A production console for virtual production stages running Unreal Engine 5 with nDisplay.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:28px">
+          <div style="background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:18px">
+            <div style="font-size:11px;font-weight:600;color:var(--brand1);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Live UE Monitoring</div>
+            <p style="font-size:12px;color:var(--ink2);line-height:1.6;margin:0">The <b>Unreal Support Plugin</b> runs a WebSocket server inside UE. Once connected, the dashboard streams live data every second — frame timing, GPU stats, nDisplay cluster status, LiveLink subjects, genlock state, and hardware metrics from NVML and NVAPI.</p>
+          </div>
+          <div style="background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:18px">
+            <div style="font-size:11px;font-weight:600;color:var(--brand1);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Multi-Node</div>
+            <p style="font-size:12px;color:var(--ink2);line-height:1.6;margin:0">Connect to your editor node IP and the dashboard automatically discovers and connects to all display nodes listed in your nDisplay config. Each node gets its own tab. The <b>All nodes</b> view shows a live health grid across the whole cluster at a glance.</p>
+          </div>
+          <div style="background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:18px">
+            <div style="font-size:11px;font-weight:600;color:var(--brand1);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Quadro Sync II (NVAPI)</div>
+            <p style="font-size:12px;color:var(--ink2);line-height:1.6;margin:0">When built with the NVAPI SDK, the plugin queries your Quadro Sync II cards directly — house sync signal presence, lock state, sync mode, per-GPU primary/secondary role, and incoming house sync frequency in Hz.</p>
+          </div>
+          <div style="background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:18px">
+            <div style="font-size:11px;font-weight:600;color:var(--brand1);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">GPU Hardware (NVML)</div>
+            <p style="font-size:12px;color:var(--ink2);line-height:1.6;margin:0">NVML loads dynamically at runtime — no SDK needed. Reports temperature, GPU utilisation, VRAM usage, clock speeds, power draw, performance state, and throttle reasons for every GPU in each node.</p>
+          </div>
+          <div style="background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:18px">
+            <div style="font-size:11px;font-weight:600;color:var(--brand1);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">nDisplay and Genlock</div>
+            <p style="font-size:12px;color:var(--ink2);line-height:1.6;margin:0">Shows cluster operation mode, node count, primary node, inner frustum and chromakey state, and stage actors. The genlock section reads swap sync policy, sync enable state, and swap interval directly from nDisplay CVars.</p>
+          </div>
+          <div style="background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:18px">
+            <div style="font-size:11px;font-weight:600;color:var(--brand1);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">LiveLink and Camera Tracking</div>
+            <p style="font-size:12px;color:var(--ink2);line-height:1.6;margin:0">Lists all LiveLink sources with connection state, subject count, and type. For each subject, shows role and live transform data. For the Vive Mars this means you can verify the tracker is streaming to UE without opening the editor.</p>
+          </div>
+          <div style="background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:18px">
+            <div style="font-size:11px;font-weight:600;color:var(--brand1);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">AI Support Assistant</div>
+            <p style="font-size:12px;color:var(--ink2);line-height:1.6;margin:0">The <b>Support</b> page is an AI assistant with context about your specific rig. Ask it about nDisplay configs, VP troubleshooting, camera settings, or anything stage-related. Powered by Claude.</p>
+          </div>
+          <div style="background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:18px">
+            <div style="font-size:11px;font-weight:600;color:var(--brand1);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Issues, Checklist and Planner</div>
+            <p style="font-size:12px;color:var(--ink2);line-height:1.6;margin:0">Log stage issues with tags and track their status. The Checklist is a pre-shoot readiness list. The Planner shows upcoming shoot dates. All data is stored in Firebase and synced across devices.</p>
+          </div>
+        </div>
+        <div style="background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:18px;margin-bottom:16px">
+          <div style="font-size:11px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px">Plugin installation</div>
+          <div style="font-size:12px;color:var(--ink2);line-height:2">
+            1. Extract <b>UnrealSupportPlugin-UE5.7-Win64.zip</b><br>
+            2. Copy <b>UnrealSupportPlugin/</b> into <code style="background:var(--bg3);padding:1px 4px;border-radius:3px">YourProject/Plugins/</code><br>
+            3. UE &rarr; Edit &rarr; Plugins &rarr; search "Unreal Support" &rarr; Enable &rarr; Restart<br>
+            4. Project Settings &rarr; Plugins &rarr; Unreal Support &rarr; set port (default 30011)<br>
+            5. Add firewall rule: <code style="background:var(--bg3);padding:1px 4px;border-radius:3px;font-size:11px">netsh advfirewall firewall add rule name="UE Support" dir=in action=allow protocol=TCP localport=30011</code><br>
+            6. Enter the machine's IP in the Remote Control section and click Connect
+          </div>
+        </div>
+        <div style="background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:18px">
+          <div style="font-size:11px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px">WebSocket payload — top-level keys</div>
+          <div style="font-size:12px;color:var(--ink2);line-height:2">
+            <b>frametiming</b> &mdash; fps, gameMs, renderMs, gpuMs, rhiMs, drawCalls, primitives, RAM<br>
+            <b>ndisplay</b> &mdash; cluster, nodes, innerFrustum, chromakey, stageActors, genlock<br>
+            <b>livelink</b> &mdash; sources and subjects with live transforms<br>
+            <b>level</b> &mdash; map name, world type, streaming sub-levels<br>
+            <b>convars</b> &mdash; watched console variables and their current values<br>
+            <b>gpu</b> &mdash; NVML: temp, utilisation, VRAM, clocks, power, throttle per GPU<br>
+            <b>gsync</b> &mdash; NVAPI: Quadro Sync II lock state, house sync, per-GPU role
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pnl" id="pnl-quickstart">
+      <div style="max-width:820px;padding:8px 0 40px">
+        <h2 style="font-size:22px;font-weight:700;color:var(--ink1);margin:0 0 4px">nDisplay Quick Start</h2>
+        <p style="color:var(--ink3);margin:0 0 28px;font-size:13px">Complete startup sequence for this stage &mdash; 15m &times; 3m curved LED wall, 3-node cluster, Vive Mars tracking, Sony HDC-1500.</p>
+
+        <div style="margin-bottom:20px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+            <div style="width:26px;height:26px;border-radius:50%;background:var(--brand1);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">1</div>
+            <div style="font-size:14px;font-weight:600;color:var(--ink1)">Power on &mdash; in this order</div>
+          </div>
+          <div style="background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:16px;font-size:12px;color:var(--ink2);line-height:1.8;margin-left:36px">
+            <b style="color:var(--ink1)">1. AJA sync generator</b> &mdash; turn this on first and wait for it to lock. It provides house sync (blackburst) to the Quadro Sync II cards. If it comes on after the cards have already booted, they won't detect the signal until restarted.<br>
+            <b style="color:var(--ink1)">2. Novastar MX2000PRO</b> &mdash; the LED wall processor. Power on and confirm the wall is showing input or a test pattern.<br>
+            <b style="color:var(--ink1)">3. Display nodes</b> (both HP Z8 workstations with A6000 + Decklink) &mdash; boot these before the editor so Switchboard can connect to their listeners.<br>
+            <b style="color:var(--ink1)">4. Editor node</b> (HP Z8 with RTX 4090) &mdash; boot last. This is where you run Switchboard and UE.
+          </div>
+        </div>
+
+        <div style="margin-bottom:20px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+            <div style="width:26px;height:26px;border-radius:50%;background:var(--brand1);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">2</div>
+            <div style="font-size:14px;font-weight:600;color:var(--ink1)">Verify network</div>
+          </div>
+          <div style="background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:16px;font-size:12px;color:var(--ink2);line-height:1.8;margin-left:36px">
+            All three workstations must be on the <b>10GbE isolated switch</b> (the dedicated production network, not the office network). Confirm you can ping each display node from the editor node:<br>
+            <code style="background:var(--bg3);padding:2px 6px;border-radius:3px;font-size:11px">ping 192.168.x.x</code><br>
+            nDisplay requires low-latency, reliable LAN. If pings drop or spike, check cable connections at the switch before going further.
+          </div>
+        </div>
+
+        <div style="margin-bottom:20px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+            <div style="width:26px;height:26px;border-radius:50%;background:var(--brand1);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">3</div>
+            <div style="font-size:14px;font-weight:600;color:var(--ink1)">Start Switchboard Listener on each display node</div>
+          </div>
+          <div style="background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:16px;font-size:12px;color:var(--ink2);line-height:1.8;margin-left:36px">
+            On <b>each display node</b>, navigate to and run:<br>
+            <code style="background:var(--bg3);padding:2px 6px;border-radius:3px;font-size:11px">C:\Program Files\Epic Games\UE_5.7\Engine\Binaries\Win64\SwitchboardListener.exe</code><br><br>
+            A small console window appears &mdash; leave it running. It listens on port <b>2980</b> and waits for Switchboard to connect from the editor node.<br><br>
+            <b style="color:var(--ink3)">Tip:</b> Add a shortcut to SwitchboardListener.exe in the Startup folder on each display node (<code style="background:var(--bg3);padding:1px 4px;border-radius:3px">shell:startup</code>) so it launches automatically on boot and you never have to think about it.
+          </div>
+        </div>
+
+        <div style="margin-bottom:20px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+            <div style="width:26px;height:26px;border-radius:50%;background:var(--brand1);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">4</div>
+            <div style="font-size:14px;font-weight:600;color:var(--ink1)">Open Switchboard on the editor node</div>
+          </div>
+          <div style="background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:16px;font-size:12px;color:var(--ink2);line-height:1.8;margin-left:36px">
+            Open your UE project on the editor node, then:<br>
+            <b>Window &rarr; Virtual Production &rarr; Switchboard</b><br><br>
+            If this is the first time:<br>
+            &mdash; Set <b>UE4Editor path</b> to your UE 5.7 executable<br>
+            &mdash; Set your <b>.uproject path</b><br>
+            &mdash; Add a <b>nDisplay Device</b> for each display node: click +, choose nDisplay, enter its IP address<br><br>
+            If Switchboard has been used before, your saved config will restore all device entries automatically.
+          </div>
+        </div>
+
+        <div style="margin-bottom:20px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+            <div style="width:26px;height:26px;border-radius:50%;background:var(--brand1);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">5</div>
+            <div style="font-size:14px;font-weight:600;color:var(--ink1)">Connect all nodes in Switchboard</div>
+          </div>
+          <div style="background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:16px;font-size:12px;color:var(--ink2);line-height:1.8;margin-left:36px">
+            Click <b>Connect</b> next to each display node. The status indicator turns green when connected.<br><br>
+            If a node won't connect:<br>
+            &mdash; Confirm SwitchboardListener.exe is running on it<br>
+            &mdash; Check Windows Firewall isn't blocking port 2980<br>
+            &mdash; Add a rule: <code style="background:var(--bg3);padding:1px 4px;border-radius:3px;font-size:11px">netsh advfirewall firewall add rule name="Switchboard" dir=in action=allow protocol=TCP localport=2980</code>
+          </div>
+        </div>
+
+        <div style="margin-bottom:20px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+            <div style="width:26px;height:26px;border-radius:50%;background:var(--brand1);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">6</div>
+            <div style="font-size:14px;font-weight:600;color:var(--ink1)">Launch the nDisplay cluster</div>
+          </div>
+          <div style="background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:16px;font-size:12px;color:var(--ink2);line-height:1.8;margin-left:36px">
+            In Switchboard, set the <b>nDisplay Config</b> file path to your .ndisplay file (which defines the L/R node split, viewports, and cluster config for this wall).<br><br>
+            Click <b>Launch All</b>. Switchboard will push the project to each display node and start UE in nDisplay Cluster mode. The LED wall should go live within 20&ndash;40 seconds.<br><br>
+            The editor node runs UE in normal editor mode. The display nodes run as cluster nodes and appear in the nDisplay panel inside UE.
+          </div>
+        </div>
+
+        <div style="margin-bottom:20px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+            <div style="width:26px;height:26px;border-radius:50%;background:var(--brand1);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">7</div>
+            <div style="font-size:14px;font-weight:600;color:var(--ink1)">Verify sync &mdash; Quadro Sync II + AJA</div>
+          </div>
+          <div style="background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:16px;font-size:12px;color:var(--ink2);line-height:1.8;margin-left:36px">
+            Open this site &rarr; Support &rarr; Unreal Engine Remote Control, enter a display node's IP, and connect.<br><br>
+            In the <b>Quadro Sync</b> card, confirm:<br>
+            &#10003; <b>House sync: Present</b> &mdash; the AJA signal is being received<br>
+            &#10003; <b>Sync locked: Yes</b> &mdash; the GPU is locked to house sync<br>
+            &#10003; <b>Sync mode: HouseSync</b> &mdash; not Internal V-Sync<br>
+            &#10003; Per-GPU roles show Primary and Secondary correctly<br><br>
+            <b style="color:#f87171">If house sync is not present:</b> check the BNC cable from the AJA to the Quadro Sync II card. The AJA should output blackburst at 25Hz to match the 50Hz wall.
+          </div>
+        </div>
+
+        <div style="margin-bottom:20px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+            <div style="width:26px;height:26px;border-radius:50%;background:var(--brand1);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">8</div>
+            <div style="font-size:14px;font-weight:600;color:var(--ink1)">Verify camera tracking &mdash; Vive Mars</div>
+          </div>
+          <div style="background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:16px;font-size:12px;color:var(--ink2);line-height:1.8;margin-left:36px">
+            The HTC Vive Mars connects via <b>LiveLink native to UE</b>. In UE open <b>Window &rarr; Virtual Production &rarr; Live Link</b> and confirm the source is connected with a subject visible.<br><br>
+            In the dashboard, the <b>LiveLink</b> card should show the source connected with live transform values updating every frame.<br><br>
+            Mount the four IR receivers on the lighting grid above the shooting area. The Sony HDC-1500 should have the Vive Mars tracker unit attached and the lens encoder connected for lens data.
+          </div>
+        </div>
+
+        <div style="margin-bottom:20px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+            <div style="width:26px;height:26px;border-radius:50%;background:var(--brand1);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">9</div>
+            <div style="font-size:14px;font-weight:600;color:var(--ink1)">Verify SDI camera feed &mdash; Sony HDC-1500</div>
+          </div>
+          <div style="background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:16px;font-size:12px;color:var(--ink2);line-height:1.8;margin-left:36px">
+            The Sony HDC-1500 outputs <b>1080i50</b> SDI to both display nodes via Decklink. Confirm the media player is showing a live picture in the inner frustum viewport.<br><br>
+            If you don't see the camera feed:<br>
+            &mdash; Use Blackmagic Media Express on a display node to confirm the Decklink is receiving signal<br>
+            &mdash; Check the SDI cable from the camera CCU to both display nodes<br>
+            &mdash; Confirm the UE Media Source is set to the correct Decklink input
+          </div>
+        </div>
+
+        <div style="margin-bottom:20px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+            <div style="width:26px;height:26px;border-radius:50%;background:var(--brand1);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">10</div>
+            <div style="font-size:14px;font-weight:600;color:var(--ink1)">Enable inner frustum and go live</div>
+          </div>
+          <div style="background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:16px;font-size:12px;color:var(--ink2);line-height:1.8;margin-left:36px">
+            In UE, select the <b>nDisplayRootActor</b> in the outliner. In its details panel:<br>
+            &mdash; Enable <b>Inner Frustum</b><br>
+            &mdash; Set the cine camera component to your tracked camera<br>
+            &mdash; Confirm the frustum is rendering correctly relative to camera position<br><br>
+            The frustum should move and perspective-correct as you physically move the camera. If it's static, the LiveLink controller component on the camera actor may not be set up correctly.<br><br>
+            <b style="color:var(--brand1)">You're live.</b> Check the dashboard &mdash; all nodes connected, sync locked, LiveLink active, inner frustum enabled. The stage is ready.
+          </div>
+        </div>
+
+        <div style="background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:18px">
+          <div style="font-size:11px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px">Quick troubleshooting</div>
+          <div style="font-size:12px;color:var(--ink2);line-height:2.2">
+            <b style="color:var(--ink1)">Wall stuttering or frame drops</b> &mdash; check GPU ms in the dashboard. Above 40ms means you're over frame budget. Thermal throttling means the GPU is too hot.<br>
+            <b style="color:var(--ink1)">Visual tear between L/R panels</b> &mdash; Quadro Sync issue. House sync must be Present and Locked on both display nodes simultaneously. Power-cycle display nodes after confirming AJA is outputting.<br>
+            <b style="color:var(--ink1)">Inner frustum slipping on pan</b> &mdash; LiveLink latency or lens calibration issue. Check LiveLink frame age in the dashboard. More than 2&ndash;3 frames indicates a tracking delay.<br>
+            <b style="color:var(--ink1)">Switchboard can't connect to a node</b> &mdash; SwitchboardListener not running, or firewall blocking port 2980. See Step 5.<br>
+            <b style="color:var(--ink1)">nDisplay won't launch</b> &mdash; check Switchboard's log output. Common causes: wrong .uproject path, wrong nDisplay config path, or display node doesn't have the project built.<br>
+            <b style="color:var(--ink1)">No camera tracking</b> &mdash; Vive Mars base stations must be powered and synced before UE loads. If they come on after, restart the LiveLink source in UE.
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="pnl" id="pnl-admin">
+      <div style="max-width:560px;padding:8px 0 40px">
+        <h2 style="font-size:22px;font-weight:700;color:var(--ink);margin:0 0 4px">Admin</h2>
+        <p style="color:var(--ink3);margin:0 0 24px;font-size:13px">Create user accounts and manage access. Only visible to the admin account.</p>
+
+        <div style="background:var(--card);border:1px solid var(--line);border-radius:6px;padding:20px;margin-bottom:16px">
+          <div style="font-size:11px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px">Create new user</div>
+          <div class="afield"><label>Name (optional)</label><input type="text" id="au-nm" placeholder="Their name"></div>
+          <div class="afield"><label>Email</label><input type="email" id="au-em" placeholder="user@studio.com"></div>
+          <div class="afield"><label>Password</label><input type="text" id="au-pw" placeholder="Min 6 characters — share with the user"></div>
+          <button class="abtn" id="au-btn" onclick="adminCreateUser()" style="margin-top:6px">Create user</button>
+          <div id="au-msg" style="font-size:12px;margin-top:10px;min-height:16px"></div>
+        </div>
+
+        <div style="background:var(--card);border:1px solid var(--line);border-radius:6px;padding:20px;margin-bottom:16px">
+          <div style="font-size:11px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px">Send password reset</div>
+          <div class="afield"><label>User email</label><input type="email" id="au-rem" placeholder="user@studio.com"></div>
+          <button class="abtn" onclick="adminResetPassword()" style="margin-top:6px">Send reset email</button>
+          <div id="au-rmsg" style="font-size:12px;margin-top:10px;min-height:16px"></div>
+        </div>
+
+        <div style="background:var(--card);border:1px solid var(--line);border-radius:6px;padding:20px">
+          <div style="font-size:11px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Users</div>
+          <div id="au-list"><div style="color:var(--ink3);font-size:12px">Loading…</div></div>
+        </div>
+
+      </div>
+    </div>
+
+
     <div class="pnl" id="pnl-gear">
       <div class="gear-wrap">
         <div class="gear-head">
@@ -5530,254 +5781,10 @@ function clAddItem(el){
 
 </script>
 </body>
-    <div class="pnl" id="pnl-features">
-      <div style="max-width:820px;padding:8px 0 40px">
-        <h2 style="font-size:22px;font-weight:700;color:var(--ink1);margin:0 0 6px">Unreal Support</h2>
-        <p style="color:var(--ink3);margin:0 0 28px;font-size:13px">A production console for virtual production stages running Unreal Engine 5 with nDisplay.</p>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:28px">
-          <div style="background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:18px">
-            <div style="font-size:11px;font-weight:600;color:var(--brand1);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Live UE Monitoring</div>
-            <p style="font-size:12px;color:var(--ink2);line-height:1.6;margin:0">The <b>Unreal Support Plugin</b> runs a WebSocket server inside UE. Once connected, the dashboard streams live data every second — frame timing, GPU stats, nDisplay cluster status, LiveLink subjects, genlock state, and hardware metrics from NVML and NVAPI.</p>
-          </div>
-          <div style="background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:18px">
-            <div style="font-size:11px;font-weight:600;color:var(--brand1);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Multi-Node</div>
-            <p style="font-size:12px;color:var(--ink2);line-height:1.6;margin:0">Connect to your editor node IP and the dashboard automatically discovers and connects to all display nodes listed in your nDisplay config. Each node gets its own tab. The <b>All nodes</b> view shows a live health grid across the whole cluster at a glance.</p>
-          </div>
-          <div style="background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:18px">
-            <div style="font-size:11px;font-weight:600;color:var(--brand1);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Quadro Sync II (NVAPI)</div>
-            <p style="font-size:12px;color:var(--ink2);line-height:1.6;margin:0">When built with the NVAPI SDK, the plugin queries your Quadro Sync II cards directly — house sync signal presence, lock state, sync mode, per-GPU primary/secondary role, and incoming house sync frequency in Hz.</p>
-          </div>
-          <div style="background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:18px">
-            <div style="font-size:11px;font-weight:600;color:var(--brand1);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">GPU Hardware (NVML)</div>
-            <p style="font-size:12px;color:var(--ink2);line-height:1.6;margin:0">NVML loads dynamically at runtime — no SDK needed. Reports temperature, GPU utilisation, VRAM usage, clock speeds, power draw, performance state, and throttle reasons for every GPU in each node.</p>
-          </div>
-          <div style="background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:18px">
-            <div style="font-size:11px;font-weight:600;color:var(--brand1);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">nDisplay and Genlock</div>
-            <p style="font-size:12px;color:var(--ink2);line-height:1.6;margin:0">Shows cluster operation mode, node count, primary node, inner frustum and chromakey state, and stage actors. The genlock section reads swap sync policy, sync enable state, and swap interval directly from nDisplay CVars.</p>
-          </div>
-          <div style="background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:18px">
-            <div style="font-size:11px;font-weight:600;color:var(--brand1);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">LiveLink and Camera Tracking</div>
-            <p style="font-size:12px;color:var(--ink2);line-height:1.6;margin:0">Lists all LiveLink sources with connection state, subject count, and type. For each subject, shows role and live transform data. For the Vive Mars this means you can verify the tracker is streaming to UE without opening the editor.</p>
-          </div>
-          <div style="background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:18px">
-            <div style="font-size:11px;font-weight:600;color:var(--brand1);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">AI Support Assistant</div>
-            <p style="font-size:12px;color:var(--ink2);line-height:1.6;margin:0">The <b>Support</b> page is an AI assistant with context about your specific rig. Ask it about nDisplay configs, VP troubleshooting, camera settings, or anything stage-related. Powered by Claude.</p>
-          </div>
-          <div style="background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:18px">
-            <div style="font-size:11px;font-weight:600;color:var(--brand1);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Issues, Checklist and Planner</div>
-            <p style="font-size:12px;color:var(--ink2);line-height:1.6;margin:0">Log stage issues with tags and track their status. The Checklist is a pre-shoot readiness list. The Planner shows upcoming shoot dates. All data is stored in Firebase and synced across devices.</p>
-          </div>
-        </div>
-        <div style="background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:18px;margin-bottom:16px">
-          <div style="font-size:11px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px">Plugin installation</div>
-          <div style="font-size:12px;color:var(--ink2);line-height:2">
-            1. Extract <b>UnrealSupportPlugin-UE5.7-Win64.zip</b><br>
-            2. Copy <b>UnrealSupportPlugin/</b> into <code style="background:var(--bg3);padding:1px 4px;border-radius:3px">YourProject/Plugins/</code><br>
-            3. UE &rarr; Edit &rarr; Plugins &rarr; search "Unreal Support" &rarr; Enable &rarr; Restart<br>
-            4. Project Settings &rarr; Plugins &rarr; Unreal Support &rarr; set port (default 30011)<br>
-            5. Add firewall rule: <code style="background:var(--bg3);padding:1px 4px;border-radius:3px;font-size:11px">netsh advfirewall firewall add rule name="UE Support" dir=in action=allow protocol=TCP localport=30011</code><br>
-            6. Enter the machine's IP in the Remote Control section and click Connect
-          </div>
-        </div>
-        <div style="background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:18px">
-          <div style="font-size:11px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px">WebSocket payload — top-level keys</div>
-          <div style="font-size:12px;color:var(--ink2);line-height:2">
-            <b>frametiming</b> &mdash; fps, gameMs, renderMs, gpuMs, rhiMs, drawCalls, primitives, RAM<br>
-            <b>ndisplay</b> &mdash; cluster, nodes, innerFrustum, chromakey, stageActors, genlock<br>
-            <b>livelink</b> &mdash; sources and subjects with live transforms<br>
-            <b>level</b> &mdash; map name, world type, streaming sub-levels<br>
-            <b>convars</b> &mdash; watched console variables and their current values<br>
-            <b>gpu</b> &mdash; NVML: temp, utilisation, VRAM, clocks, power, throttle per GPU<br>
-            <b>gsync</b> &mdash; NVAPI: Quadro Sync II lock state, house sync, per-GPU role
-          </div>
-        </div>
-      </div>
-    </div>
+    
 
-    <div class="pnl" id="pnl-quickstart">
-      <div style="max-width:820px;padding:8px 0 40px">
-        <h2 style="font-size:22px;font-weight:700;color:var(--ink1);margin:0 0 4px">nDisplay Quick Start</h2>
-        <p style="color:var(--ink3);margin:0 0 28px;font-size:13px">Complete startup sequence for this stage &mdash; 15m &times; 3m curved LED wall, 3-node cluster, Vive Mars tracking, Sony HDC-1500.</p>
-
-        <div style="margin-bottom:20px">
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-            <div style="width:26px;height:26px;border-radius:50%;background:var(--brand1);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">1</div>
-            <div style="font-size:14px;font-weight:600;color:var(--ink1)">Power on &mdash; in this order</div>
-          </div>
-          <div style="background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:16px;font-size:12px;color:var(--ink2);line-height:1.8;margin-left:36px">
-            <b style="color:var(--ink1)">1. AJA sync generator</b> &mdash; turn this on first and wait for it to lock. It provides house sync (blackburst) to the Quadro Sync II cards. If it comes on after the cards have already booted, they won't detect the signal until restarted.<br>
-            <b style="color:var(--ink1)">2. Novastar MX2000PRO</b> &mdash; the LED wall processor. Power on and confirm the wall is showing input or a test pattern.<br>
-            <b style="color:var(--ink1)">3. Display nodes</b> (both HP Z8 workstations with A6000 + Decklink) &mdash; boot these before the editor so Switchboard can connect to their listeners.<br>
-            <b style="color:var(--ink1)">4. Editor node</b> (HP Z8 with RTX 4090) &mdash; boot last. This is where you run Switchboard and UE.
-          </div>
-        </div>
-
-        <div style="margin-bottom:20px">
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-            <div style="width:26px;height:26px;border-radius:50%;background:var(--brand1);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">2</div>
-            <div style="font-size:14px;font-weight:600;color:var(--ink1)">Verify network</div>
-          </div>
-          <div style="background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:16px;font-size:12px;color:var(--ink2);line-height:1.8;margin-left:36px">
-            All three workstations must be on the <b>10GbE isolated switch</b> (the dedicated production network, not the office network). Confirm you can ping each display node from the editor node:<br>
-            <code style="background:var(--bg3);padding:2px 6px;border-radius:3px;font-size:11px">ping 192.168.x.x</code><br>
-            nDisplay requires low-latency, reliable LAN. If pings drop or spike, check cable connections at the switch before going further.
-          </div>
-        </div>
-
-        <div style="margin-bottom:20px">
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-            <div style="width:26px;height:26px;border-radius:50%;background:var(--brand1);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">3</div>
-            <div style="font-size:14px;font-weight:600;color:var(--ink1)">Start Switchboard Listener on each display node</div>
-          </div>
-          <div style="background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:16px;font-size:12px;color:var(--ink2);line-height:1.8;margin-left:36px">
-            On <b>each display node</b>, navigate to and run:<br>
-            <code style="background:var(--bg3);padding:2px 6px;border-radius:3px;font-size:11px">C:\Program Files\Epic Games\UE_5.7\Engine\Binaries\Win64\SwitchboardListener.exe</code><br><br>
-            A small console window appears &mdash; leave it running. It listens on port <b>2980</b> and waits for Switchboard to connect from the editor node.<br><br>
-            <b style="color:var(--ink3)">Tip:</b> Add a shortcut to SwitchboardListener.exe in the Startup folder on each display node (<code style="background:var(--bg3);padding:1px 4px;border-radius:3px">shell:startup</code>) so it launches automatically on boot and you never have to think about it.
-          </div>
-        </div>
-
-        <div style="margin-bottom:20px">
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-            <div style="width:26px;height:26px;border-radius:50%;background:var(--brand1);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">4</div>
-            <div style="font-size:14px;font-weight:600;color:var(--ink1)">Open Switchboard on the editor node</div>
-          </div>
-          <div style="background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:16px;font-size:12px;color:var(--ink2);line-height:1.8;margin-left:36px">
-            Open your UE project on the editor node, then:<br>
-            <b>Window &rarr; Virtual Production &rarr; Switchboard</b><br><br>
-            If this is the first time:<br>
-            &mdash; Set <b>UE4Editor path</b> to your UE 5.7 executable<br>
-            &mdash; Set your <b>.uproject path</b><br>
-            &mdash; Add a <b>nDisplay Device</b> for each display node: click +, choose nDisplay, enter its IP address<br><br>
-            If Switchboard has been used before, your saved config will restore all device entries automatically.
-          </div>
-        </div>
-
-        <div style="margin-bottom:20px">
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-            <div style="width:26px;height:26px;border-radius:50%;background:var(--brand1);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">5</div>
-            <div style="font-size:14px;font-weight:600;color:var(--ink1)">Connect all nodes in Switchboard</div>
-          </div>
-          <div style="background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:16px;font-size:12px;color:var(--ink2);line-height:1.8;margin-left:36px">
-            Click <b>Connect</b> next to each display node. The status indicator turns green when connected.<br><br>
-            If a node won't connect:<br>
-            &mdash; Confirm SwitchboardListener.exe is running on it<br>
-            &mdash; Check Windows Firewall isn't blocking port 2980<br>
-            &mdash; Add a rule: <code style="background:var(--bg3);padding:1px 4px;border-radius:3px;font-size:11px">netsh advfirewall firewall add rule name="Switchboard" dir=in action=allow protocol=TCP localport=2980</code>
-          </div>
-        </div>
-
-        <div style="margin-bottom:20px">
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-            <div style="width:26px;height:26px;border-radius:50%;background:var(--brand1);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">6</div>
-            <div style="font-size:14px;font-weight:600;color:var(--ink1)">Launch the nDisplay cluster</div>
-          </div>
-          <div style="background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:16px;font-size:12px;color:var(--ink2);line-height:1.8;margin-left:36px">
-            In Switchboard, set the <b>nDisplay Config</b> file path to your .ndisplay file (which defines the L/R node split, viewports, and cluster config for this wall).<br><br>
-            Click <b>Launch All</b>. Switchboard will push the project to each display node and start UE in nDisplay Cluster mode. The LED wall should go live within 20&ndash;40 seconds.<br><br>
-            The editor node runs UE in normal editor mode. The display nodes run as cluster nodes and appear in the nDisplay panel inside UE.
-          </div>
-        </div>
-
-        <div style="margin-bottom:20px">
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-            <div style="width:26px;height:26px;border-radius:50%;background:var(--brand1);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">7</div>
-            <div style="font-size:14px;font-weight:600;color:var(--ink1)">Verify sync &mdash; Quadro Sync II + AJA</div>
-          </div>
-          <div style="background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:16px;font-size:12px;color:var(--ink2);line-height:1.8;margin-left:36px">
-            Open this site &rarr; Support &rarr; Unreal Engine Remote Control, enter a display node's IP, and connect.<br><br>
-            In the <b>Quadro Sync</b> card, confirm:<br>
-            &#10003; <b>House sync: Present</b> &mdash; the AJA signal is being received<br>
-            &#10003; <b>Sync locked: Yes</b> &mdash; the GPU is locked to house sync<br>
-            &#10003; <b>Sync mode: HouseSync</b> &mdash; not Internal V-Sync<br>
-            &#10003; Per-GPU roles show Primary and Secondary correctly<br><br>
-            <b style="color:#f87171">If house sync is not present:</b> check the BNC cable from the AJA to the Quadro Sync II card. The AJA should output blackburst at 25Hz to match the 50Hz wall.
-          </div>
-        </div>
-
-        <div style="margin-bottom:20px">
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-            <div style="width:26px;height:26px;border-radius:50%;background:var(--brand1);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">8</div>
-            <div style="font-size:14px;font-weight:600;color:var(--ink1)">Verify camera tracking &mdash; Vive Mars</div>
-          </div>
-          <div style="background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:16px;font-size:12px;color:var(--ink2);line-height:1.8;margin-left:36px">
-            The HTC Vive Mars connects via <b>LiveLink native to UE</b>. In UE open <b>Window &rarr; Virtual Production &rarr; Live Link</b> and confirm the source is connected with a subject visible.<br><br>
-            In the dashboard, the <b>LiveLink</b> card should show the source connected with live transform values updating every frame.<br><br>
-            Mount the four IR receivers on the lighting grid above the shooting area. The Sony HDC-1500 should have the Vive Mars tracker unit attached and the lens encoder connected for lens data.
-          </div>
-        </div>
-
-        <div style="margin-bottom:20px">
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-            <div style="width:26px;height:26px;border-radius:50%;background:var(--brand1);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">9</div>
-            <div style="font-size:14px;font-weight:600;color:var(--ink1)">Verify SDI camera feed &mdash; Sony HDC-1500</div>
-          </div>
-          <div style="background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:16px;font-size:12px;color:var(--ink2);line-height:1.8;margin-left:36px">
-            The Sony HDC-1500 outputs <b>1080i50</b> SDI to both display nodes via Decklink. Confirm the media player is showing a live picture in the inner frustum viewport.<br><br>
-            If you don't see the camera feed:<br>
-            &mdash; Use Blackmagic Media Express on a display node to confirm the Decklink is receiving signal<br>
-            &mdash; Check the SDI cable from the camera CCU to both display nodes<br>
-            &mdash; Confirm the UE Media Source is set to the correct Decklink input
-          </div>
-        </div>
-
-        <div style="margin-bottom:20px">
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-            <div style="width:26px;height:26px;border-radius:50%;background:var(--brand1);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">10</div>
-            <div style="font-size:14px;font-weight:600;color:var(--ink1)">Enable inner frustum and go live</div>
-          </div>
-          <div style="background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:16px;font-size:12px;color:var(--ink2);line-height:1.8;margin-left:36px">
-            In UE, select the <b>nDisplayRootActor</b> in the outliner. In its details panel:<br>
-            &mdash; Enable <b>Inner Frustum</b><br>
-            &mdash; Set the cine camera component to your tracked camera<br>
-            &mdash; Confirm the frustum is rendering correctly relative to camera position<br><br>
-            The frustum should move and perspective-correct as you physically move the camera. If it's static, the LiveLink controller component on the camera actor may not be set up correctly.<br><br>
-            <b style="color:var(--brand1)">You're live.</b> Check the dashboard &mdash; all nodes connected, sync locked, LiveLink active, inner frustum enabled. The stage is ready.
-          </div>
-        </div>
-
-        <div style="background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:18px">
-          <div style="font-size:11px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px">Quick troubleshooting</div>
-          <div style="font-size:12px;color:var(--ink2);line-height:2.2">
-            <b style="color:var(--ink1)">Wall stuttering or frame drops</b> &mdash; check GPU ms in the dashboard. Above 40ms means you're over frame budget. Thermal throttling means the GPU is too hot.<br>
-            <b style="color:var(--ink1)">Visual tear between L/R panels</b> &mdash; Quadro Sync issue. House sync must be Present and Locked on both display nodes simultaneously. Power-cycle display nodes after confirming AJA is outputting.<br>
-            <b style="color:var(--ink1)">Inner frustum slipping on pan</b> &mdash; LiveLink latency or lens calibration issue. Check LiveLink frame age in the dashboard. More than 2&ndash;3 frames indicates a tracking delay.<br>
-            <b style="color:var(--ink1)">Switchboard can't connect to a node</b> &mdash; SwitchboardListener not running, or firewall blocking port 2980. See Step 5.<br>
-            <b style="color:var(--ink1)">nDisplay won't launch</b> &mdash; check Switchboard's log output. Common causes: wrong .uproject path, wrong nDisplay config path, or display node doesn't have the project built.<br>
-            <b style="color:var(--ink1)">No camera tracking</b> &mdash; Vive Mars base stations must be powered and synced before UE loads. If they come on after, restart the LiveLink source in UE.
-          </div>
-        </div>
-
-      </div>
-    </div>
+    
 
   
-    <div class="pnl" id="pnl-admin">
-      <div style="max-width:560px;padding:8px 0 40px">
-        <h2 style="font-size:22px;font-weight:700;color:var(--ink);margin:0 0 4px">Admin</h2>
-        <p style="color:var(--ink3);margin:0 0 24px;font-size:13px">Create user accounts and manage access. Only visible to the admin account.</p>
-
-        <div style="background:var(--card);border:1px solid var(--line);border-radius:6px;padding:20px;margin-bottom:16px">
-          <div style="font-size:11px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px">Create new user</div>
-          <div class="afield"><label>Name (optional)</label><input type="text" id="au-nm" placeholder="Their name"></div>
-          <div class="afield"><label>Email</label><input type="email" id="au-em" placeholder="user@studio.com"></div>
-          <div class="afield"><label>Password</label><input type="text" id="au-pw" placeholder="Min 6 characters — share with the user"></div>
-          <button class="abtn" id="au-btn" onclick="adminCreateUser()" style="margin-top:6px">Create user</button>
-          <div id="au-msg" style="font-size:12px;margin-top:10px;min-height:16px"></div>
-        </div>
-
-        <div style="background:var(--card);border:1px solid var(--line);border-radius:6px;padding:20px;margin-bottom:16px">
-          <div style="font-size:11px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px">Send password reset</div>
-          <div class="afield"><label>User email</label><input type="email" id="au-rem" placeholder="user@studio.com"></div>
-          <button class="abtn" onclick="adminResetPassword()" style="margin-top:6px">Send reset email</button>
-          <div id="au-rmsg" style="font-size:12px;margin-top:10px;min-height:16px"></div>
-        </div>
-
-        <div style="background:var(--card);border:1px solid var(--line);border-radius:6px;padding:20px">
-          <div style="font-size:11px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Users</div>
-          <div id="au-list"><div style="color:var(--ink3);font-size:12px">Loading…</div></div>
-        </div>
-
-      </div>
-    </div>
+    
   

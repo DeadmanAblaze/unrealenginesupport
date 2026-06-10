@@ -5545,8 +5545,8 @@ function sendChat(){
   var storedKey = localStorage.getItem('vp_anthropic_key') || '';
   fetch('/.netlify/functions/chat',{
     method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:1000,system:SYS,
-      messages:chatHist,userEmail:cu?cu.email:'',userApiKey:storedKey})
+    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:SYS,
+      messages:chatHist.slice(-10),userEmail:cu?cu.email:'',userApiKey:storedKey})
   }).then(function(r){
     return r.text().then(function(text){
       var si=el('sind'); if(si) si.remove();
@@ -5577,7 +5577,7 @@ function sendChat(){
       chatHist.push({role:'assistant',content:full});
       addMsg('assistant',ps.t||full,ps.s||[]);
       m.scrollTop=m.scrollHeight;
-      fsave('chat',{history:chatHist.slice(-40)});
+      fsave('chat',{history:chatHist.slice(-20)});
     });
   }).catch(function(e){
     var si=el('sind'); if(si) si.remove();

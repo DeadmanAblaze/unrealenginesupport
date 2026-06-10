@@ -5514,10 +5514,27 @@ function buildSrcMeta(sources){
 }
 
 function parseSrc(text){
+  // Try strict match first (both markers present)
   var m=text.match(/===SOURCES===\s*([\s\S]*?)\s*===END===/);
-  if(!m) return{t:text,s:[]};
-  var s=[]; try{s=JSON.parse(m[1]);}catch(e){}
-  return{t:text.replace(/===SOURCES===[\s\S]*?===END===/g,'').trim(),s:s};
+  if(m){
+    var s=[]; try{s=JSON.parse(m[1]);}catch(e){}
+    return{t:text.replace(/===SOURCES===[\s\S]*?(===END===|$)/g,'').trim(),s:s};
+  }
+  // Fallback: model ran out of tokens before writing ===END===
+  var si=text.indexOf('===SOURCES===');
+  if(si>=0){
+    var jsonStr=text.slice(si+13).trim().replace(/===END===[\s\S]*$/,'').trim();
+    var s=[];
+    try{
+      s=JSON.parse(jsonStr);
+    }catch(e){
+      // Try to recover truncated JSON array — find last complete object
+      var lb=jsonStr.lastIndexOf('}');
+      if(lb>=0){ try{s=JSON.parse(jsonStr.slice(0,lb+1)+']');}catch(e2){} }
+    }
+    return{t:text.slice(0,si).trim(),s:s};
+  }
+  return{t:text,s:[]};
 }
 
 function addSrcs(s,wrap){
@@ -5545,7 +5562,7 @@ function sendChat(){
   var storedKey = localStorage.getItem('vp_anthropic_key') || '';
   fetch('/.netlify/functions/chat',{
     method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:SYS,
+    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1400,system:SYS,
       messages:chatHist.slice(-10),userEmail:cu?cu.email:'',userApiKey:storedKey})
   }).then(function(r){
     return r.text().then(function(text){
@@ -5575,7 +5592,9 @@ function sendChat(){
       if(!full) full='No response content received.';
       var ps=parseSrc(full);
       chatHist.push({role:'assistant',content:full});
-      addMsg('assistant',ps.t||full,ps.s||[]);
+      // If ps.t is empty but full contains SOURCES, strip it manually rather than showing raw text
+      var displayText = ps.t || (full.indexOf('===SOURCES===') >= 0 ? full.slice(0, full.indexOf('===SOURCES===')).trim() : full);
+      addMsg('assistant', displayText, ps.s||[]);
       m.scrollTop=m.scrollHeight;
       fsave('chat',{history:chatHist.slice(-20)});
     });

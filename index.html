@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Unreal Support — Virtual Production Console</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='11' fill='%230b0b0c'/%3E%3Cpath d='M15 30 A9 9 0 0 0 33 30 L33 18 A6 6 0 0 0 21 18 L21 25' fill='none' stroke='%2347b8e8' stroke-width='4.2' stroke-linecap='round'/%3E%3Cpath d='M15 30 L15 15' fill='none' stroke='%235b9dff' stroke-width='4.2' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 60'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%2300c6ff'/%3E%3Cstop offset='100%25' stop-color='%230072ff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M 30 2 L 53 15 L 53 45 L 30 58 L 7 45 L 7 15 Z' fill='none' stroke='url(%23g)' stroke-width='5' stroke-linejoin='round'/%3E%3Cpath d='M 30 2 L 30 30' stroke='url(%23g)' stroke-width='5' stroke-linecap='round'/%3E%3Cpath d='M 7 15 L 30 30 L 53 15' fill='none' stroke='url(%23g)' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='30' cy='45' r='5' fill='%230072ff'/%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Geist:wght@400;450;500;600&family=Geist+Mono:wght@400;450&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -22,7 +22,7 @@
   --border:rgba(255,255,255,0.055);--border2:rgba(255,255,255,0.085);
   --text:#ededee;--text2:#9b9b9f;--text3:#646469;
   --sans:'Geist',system-ui,sans-serif;--mono:'Geist Mono',ui-monospace,monospace;
-  --brand1:#5b9dff;--brand2:#22d3ee;--brand-glow:rgba(74,160,230,0.16);--brand-dim:rgba(74,160,230,0.1);
+  --brand1:#2b9fff;--brand2:#00c6ff;--brand-glow:rgba(0,140,255,0.16);--brand-dim:rgba(0,140,255,0.1);
   --r:6px;--rl:8px
 }
 /* dark scrollbar */
@@ -993,17 +993,19 @@ select.cv-edit{text-align:left;cursor:pointer}
   <div class="auth-brand">
     <div class="auth-grid"></div>
     <div class="auth-glow"></div>
-    <svg class="auth-watermark" viewBox="0 0 48 52" aria-hidden="true">
-      <path d="M13 32 A10 10 0 0 0 33 32 L33 18 A6.3 6.3 0 0 0 20.4 18 L20.4 26" fill="none" stroke="#5b9dff" stroke-width="3" stroke-linecap="round"/>
-      <path d="M13 32 L13 16" fill="none" stroke="#5b9dff" stroke-width="3" stroke-linecap="round"/>
+    <svg class="auth-watermark" viewBox="0 0 60 60" aria-hidden="true">
+      <path d="M 30 0 L 55 15 L 55 45 L 30 60 L 5 45 L 5 15 Z" fill="none" stroke="#0072ff" stroke-width="2.5" stroke-linejoin="round"/>
+      <path d="M 30 0 L 30 30" stroke="#0072ff" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M 5 15 L 30 30 L 55 15" fill="none" stroke="#0072ff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
     <div class="auth-brand-inner">
       <div class="auth-brand-logo">
-        <svg viewBox="0 0 48 52" width="34" height="37" aria-hidden="true">
-          <defs><linearGradient id="ulgAuth" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5b9dff"/><stop offset="1" stop-color="#22d3ee"/></linearGradient></defs>
-          <path d="M13 32 A10 10 0 0 0 33 32 L33 18 A6.3 6.3 0 0 0 20.4 18 L20.4 26" fill="none" stroke="url(#ulgAuth)" stroke-width="4.3" stroke-linecap="round"/>
-          <path d="M13 32 L13 16" fill="none" stroke="url(#ulgAuth)" stroke-width="4.3" stroke-linecap="round"/>
-          <circle cx="20.4" cy="26" r="2.3" fill="#22d3ee"/>
+        <svg viewBox="0 0 60 60" width="36" height="36" aria-hidden="true">
+          <defs><linearGradient id="ulgAuth" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00c6ff"/><stop offset="100%" stop-color="#0072ff"/></linearGradient></defs>
+          <path d="M 30 0 L 55 15 L 55 45 L 30 60 L 5 45 L 5 15 Z" fill="none" stroke="url(#ulgAuth)" stroke-width="4.3" stroke-linejoin="round"/>
+          <path d="M 30 0 L 30 30" stroke="url(#ulgAuth)" stroke-width="4.3" stroke-linecap="round"/>
+          <path d="M 5 15 L 30 30 L 55 15" fill="none" stroke="url(#ulgAuth)" stroke-width="4.3" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="30" cy="45" r="4.5" fill="#0072ff"/>
         </svg>
         <div>
           <div class="abl-name">Unreal Support</div>
@@ -1033,12 +1035,14 @@ select.cv-edit{text-align:left;cursor:pointer}
   <div class="auth-form-panel">
     <div class="auth-box">
       <div class="auth-mobile-brand">
-        <svg viewBox="0 0 48 52" width="26" height="28" aria-hidden="true">
-          <defs><linearGradient id="ulgMob" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5b9dff"/><stop offset="1" stop-color="#22d3ee"/></linearGradient></defs>
-          <path d="M13 32 A10 10 0 0 0 33 32 L33 18 A6.3 6.3 0 0 0 20.4 18 L20.4 26" fill="none" stroke="url(#ulgMob)" stroke-width="4.6" stroke-linecap="round"/>
-          <path d="M13 32 L13 16" fill="none" stroke="url(#ulgMob)" stroke-width="4.6" stroke-linecap="round"/>
+        <svg viewBox="0 0 60 60" width="26" height="26" aria-hidden="true">
+          <defs><linearGradient id="ulgMob" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00c6ff"/><stop offset="100%" stop-color="#0072ff"/></linearGradient></defs>
+          <path d="M 30 0 L 55 15 L 55 45 L 30 60 L 5 45 L 5 15 Z" fill="none" stroke="url(#ulgMob)" stroke-width="4.5" stroke-linejoin="round"/>
+          <path d="M 30 0 L 30 30" stroke="url(#ulgMob)" stroke-width="4.5" stroke-linecap="round"/>
+          <path d="M 5 15 L 30 30 L 55 15" fill="none" stroke="url(#ulgMob)" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="30" cy="45" r="4.5" fill="#0072ff"/>
         </svg>
-        <span>Unreal Support</span>
+        <span><span style="font-weight:800">unreal</span><span style="font-weight:300;color:#2b9fff">support</span></span>
       </div>
       <div class="auth-box-head">
         <div class="auth-title">Welcome back</div>
@@ -1082,14 +1086,16 @@ select.cv-edit{text-align:left;cursor:pointer}
   <aside class="rail">
     <div class="rail-brand">
       <div class="rail-logo">
-        <svg viewBox="0 0 48 52" width="20" height="22" aria-hidden="true">
-          <defs><linearGradient id="ulgRail" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5b9dff"/><stop offset="1" stop-color="#22d3ee"/></linearGradient></defs>
-          <path d="M13 32 A10 10 0 0 0 33 32 L33 18 A6.3 6.3 0 0 0 20.4 18 L20.4 26" fill="none" stroke="url(#ulgRail)" stroke-width="4.6" stroke-linecap="round"/>
-          <path d="M13 32 L13 16" fill="none" stroke="url(#ulgRail)" stroke-width="4.6" stroke-linecap="round"/>
+        <svg viewBox="0 0 60 60" width="22" height="22" aria-hidden="true">
+          <defs><linearGradient id="ulgRail" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00c6ff"/><stop offset="100%" stop-color="#0072ff"/></linearGradient></defs>
+          <path d="M 30 0 L 55 15 L 55 45 L 30 60 L 5 45 L 5 15 Z" fill="none" stroke="url(#ulgRail)" stroke-width="4.5" stroke-linejoin="round"/>
+          <path d="M 30 0 L 30 30" stroke="url(#ulgRail)" stroke-width="4.5" stroke-linecap="round"/>
+          <path d="M 5 15 L 30 30 L 55 15" fill="none" stroke="url(#ulgRail)" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="30" cy="45" r="4.5" fill="#0072ff"/>
         </svg>
       </div>
       <div>
-        <span class="rail-brand-name">Unreal Support</span>
+        <span class="rail-brand-name" style="text-transform:none;letter-spacing:-0.02em;font-family:var(--sans);font-size:15px"><span style="font-weight:800;color:var(--ink)">unreal</span><span style="font-weight:300;color:#2b9fff">support</span></span>
         <span class="rail-brand-sub">Production console</span>
       </div>
     </div>

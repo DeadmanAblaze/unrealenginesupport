@@ -772,6 +772,20 @@ select.cv-edit{text-align:left;cursor:pointer}
 .sidebar{display:flex;flex-direction:column;gap:10px;overflow-y:auto}
 .qa-box{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:5px}
 .qa-t{font-size:10px;color:var(--ink3);font-weight:500;letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}
+.log-box{flex:1;min-height:0}
+.log-row{display:flex;gap:6px}
+.log-sel{flex:1;min-width:0;background:var(--bg);color:var(--ink2);border:1px solid var(--line2);border-radius:5px;padding:6px 7px;font-family:var(--sans);font-size:11px;cursor:pointer}
+.log-sel:focus{outline:none;border-color:rgba(91,157,255,.45)}
+.log-ta{flex:1;min-height:180px;resize:none;background:var(--bg);color:var(--ink2);border:1px solid var(--line2);border-radius:6px;padding:9px 10px;font-family:var(--mono);font-size:10.5px;line-height:1.5;white-space:pre;overflow:auto}
+.log-ta:focus{outline:none;border-color:rgba(91,157,255,.45)}
+.log-ta::placeholder{color:var(--ink4);font-family:var(--sans);white-space:normal}
+.log-foot{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.log-count{font-family:var(--mono);font-size:9.5px;color:var(--ink4);letter-spacing:.04em}
+.code-blk{position:relative;margin:8px 0;background:#121215;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.code-blk pre{margin:0;padding:9px 12px;padding-right:66px;font-family:var(--mono);font-size:11.5px;line-height:1.55;color:#a9c6e8;white-space:pre;overflow:auto;max-height:260px}
+.code-copy{position:absolute;top:6px;right:6px;font-family:var(--mono);font-size:9.5px;letter-spacing:.05em;color:var(--ink3);background:var(--el);border:1px solid var(--line2);border-radius:4px;padding:3px 9px;cursor:pointer;transition:all .12s}
+.code-copy:hover{color:var(--ink);border-color:var(--line3)}
+.code-copy.ok{color:var(--live);border-color:rgba(74,222,128,.4)}
 .qab{font-size:11px;color:var(--ink2);background:var(--el);border:1px solid var(--line);border-radius:5px;padding:6px 9px;cursor:pointer;text-align:left;font-family:var(--sans);transition:all .12s;width:100%;line-height:1.35}
 .qab:hover{border-color:var(--line2);color:var(--ink);background:var(--el2)}
 #rig-sum{font-size:11px;color:var(--ink3);line-height:1.7;font-family:var(--mono)}
@@ -1736,18 +1750,26 @@ select.cv-edit{text-align:left;cursor:pointer}
           </div>
         </div>
         <div class="sidebar">
-          <div class="qa-box">
-            <div class="qa-t">Quick queries</div>
-            <button class="qab" onclick="sq('Walk me through the correct nDisplay config for my left/right curved wall split')">nDisplay config for my wall</button>
-            <button class="qab" onclick="sq('How do I configure Nvidia Sync cards with house sync blackburst at 25fps?')">Nvidia Sync + blackburst</button>
-            <button class="qab" onclick="sq('What is causing inner frustum pixelation on wide shots and how do I fix it?')">Inner frustum pixelation</button>
-            <button class="qab" onclick="sq('How do I reduce inner frustum slip on fast camera pans?')">Frustum slip on fast pan</button>
-            <button class="qab" onclick="sq('What render settings to optimise on A6000 nodes for ICVFX at 25fps?')">A6000 render optimisation</button>
-            <button class="qab" onclick="sq('How do I install and configure an AJA sync generator for my VP system?')">AJA sync generator setup</button>
-          </div>
-          <div class="qa-box">
-            <div class="qa-t">Loaded rig</div>
-            <div id="rig-sum"></div>
+          <div class="qa-box log-box">
+            <div class="qa-t">Paste node logs</div>
+            <div class="log-row">
+              <select class="log-sel" id="log-type" title="Log type">
+                <option value="Output log">Output log</option>
+                <option value="Switchboard log">Switchboard log</option>
+              </select>
+              <select class="log-sel" id="log-machine" title="Source machine">
+                <option value="">Machine&#8230;</option>
+                <option>Editor</option>
+                <option>Node_0</option>
+                <option>Node_1</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <textarea class="log-ta" id="log-paste" spellcheck="false" placeholder="Paste the log here. Long logs are trimmed to the most recent lines before sending." oninput="logCount()"></textarea>
+            <div class="log-foot">
+              <span class="log-count" id="log-count"></span>
+              <button class="btn bp sm" id="log-send" onclick="sendLog()">Send to chat</button>
+            </div>
           </div>
         </div>
       </div>
@@ -1757,14 +1779,14 @@ select.cv-edit{text-align:left;cursor:pointer}
 
       <!-- VIDEO INPUT ──────────────────────────────────────── -->
       <div class="st-panel" id="st-vid-panel">
-        <div class="st-panel-head" onclick="stToggle('vid')">
+        <div class="st-panel-head collapsed" onclick="stToggle('vid')">
           <span class="ctick"></span>
           <span class="st-panel-title">Video inputs</span>
           <span class="st-dot" id="vid-dot"></span>
           <span class="st-status-txt" id="vid-stxt">No source</span>
-          <span class="st-chev" id="vid-chev">&#9660;</span>
+          <span class="st-chev closed" id="vid-chev">&#9660;</span>
         </div>
-        <div class="st-body" id="st-vid-body">
+        <div class="st-body" id="st-vid-body" style="display:none">
           <div class="vid-layout">
             <div class="vid-left">
               <div class="vid-ctrl-row">
@@ -1800,14 +1822,14 @@ select.cv-edit{text-align:left;cursor:pointer}
 
       <!-- UE REMOTE CONTROL ────────────────────────────────── -->
       <div class="st-panel" id="st-ue-panel">
-        <div class="st-panel-head" onclick="stToggle('ue')">
+        <div class="st-panel-head collapsed" onclick="stToggle('ue')">
           <span class="ctick"></span>
           <span class="st-panel-title">Unreal Engine Remote Control</span><span style="font-size:9px;font-family:var(--mono);color:var(--ink4);background:var(--el);border:1px solid var(--line);border-radius:3px;padding:1px 6px;letter-spacing:.06em">READ ONLY</span>
           <span class="st-dot" id="ue-dot"></span>
           <span class="st-status-txt" id="ue-stxt">Disconnected</span>
-          <span class="st-chev" id="ue-chev">&#9660;</span>
+          <span class="st-chev closed" id="ue-chev">&#9660;</span>
         </div>
-        <div class="st-body" id="st-ue-body">
+        <div class="st-body" id="st-ue-body" style="display:none">
           <div class="ue-conn-row">
             <input class="ue-inp ue-host-inp" id="ue-host" value="localhost" placeholder="Editor node IP or Cloudflare Tunnel URL">
             <input class="ue-inp ue-port-inp" id="ue-port" value="30011" placeholder="Port">
@@ -3599,7 +3621,7 @@ function getSysVP(){
   + 'UE Version: ' + (function(){var e=components.find(function(c){return c.type==='workstation'&&c.fields.role==='Editor';});return (e&&e.fields.ue)||s['ue-version']||'not set';})() + '\n'
   + 'THEIR RIG (composed of these components — pay attention to the NOTE lines, they are user-supplied context):\n'
   + componentsToContext()
-  + '\nSOURCE PRIORITY:\n1. docs.unrealengine.com\n2. dev.epicgames.com/community and forums.unrealengine.com\n3. Curated VP YouTube (fetch transcripts):\n- nDisplay+Switchboard LED wall: https://www.youtube.com/watch?v=4kVsIagsX50\n- nDisplay config class: https://www.youtube.com/watch?v=0-vUJhBHWfs\n- Vive Mars LiveLink ICVFX: https://www.youtube.com/watch?v=g_6_-htkIzU\n- ICVFX inner frustum resolution: https://www.youtube.com/watch?v=gAkJRcHMg1c\n4. Reddit r/virtualproduction, fxguide.com\n\nFor every question: search docs first, then community, then fetch YouTube transcript if needed.\nEnd every response with:\n===SOURCES===\n[{"title":"...","url":"...","type":"epic or community or youtube"}]\n===END===\nBe direct, technical, practical. Assume a capable VP professional.';
+  + '\nSOURCE PRIORITY:\n1. docs.unrealengine.com\n2. dev.epicgames.com/community and forums.unrealengine.com\n3. Curated VP YouTube (fetch transcripts):\n- nDisplay+Switchboard LED wall: https://www.youtube.com/watch?v=4kVsIagsX50\n- nDisplay config class: https://www.youtube.com/watch?v=0-vUJhBHWfs\n- Vive Mars LiveLink ICVFX: https://www.youtube.com/watch?v=g_6_-htkIzU\n- ICVFX inner frustum resolution: https://www.youtube.com/watch?v=gAkJRcHMg1c\n4. Reddit r/virtualproduction, fxguide.com\n\nFor every question: search docs first, then community, then fetch YouTube transcript if needed.\nEnd every response with:\n===SOURCES===\n[{"title":"...","url":"...","type":"epic or community or youtube"}]\n===END===\nWrap every console command, CVar, command-line invocation, config snippet, or file path the user may need to copy in fenced code blocks (```).\nBe direct, technical, practical. Assume a capable VP professional.';
 }
 
 function getSysGD(){
@@ -3617,7 +3639,7 @@ function getSysGD(){
   + 'Target res/fps: ' + (s['gd-res']||'not set') + ' / ' + (s['gd-fps']||'not set') + ' / AA: ' + (s['gd-aa']||'not set') + '\n'
   + 'Version control: ' + (s['gd-vcs']||'not set') + ' / Team: ' + (s['gd-team']||'not set') + ' / Stage: ' + (s['gd-stage']||'not set') + '\n'
   + (s['gd-notes'] ? 'Notes: ' + s['gd-notes'] + '\n' : '')
-  + '\nSOURCE PRIORITY:\n1. docs.unrealengine.com\n2. dev.epicgames.com/community and forums.unrealengine.com\n3. YouTube: Unreal Engine official channel, William Faucher (lighting/rendering), Alex Forsythe (UE C++), Gorka Games, Matt Aspland\n4. Reddit r/unrealengine, r/gamedev\n\nFor every question: search docs first, then community sources, then YouTube if needed.\nEnd every response with:\n===SOURCES===\n[{"title":"...","url":"...","type":"epic or community or youtube"}]\n===END===\nBe direct, technical, practical. Tailor all advice to the user\'s specific platform target, project type, and UE version.';
+  + '\nSOURCE PRIORITY:\n1. docs.unrealengine.com\n2. dev.epicgames.com/community and forums.unrealengine.com\n3. YouTube: Unreal Engine official channel, William Faucher (lighting/rendering), Alex Forsythe (UE C++), Gorka Games, Matt Aspland\n4. Reddit r/unrealengine, r/gamedev\n\nFor every question: search docs first, then community sources, then YouTube if needed.\nEnd every response with:\n===SOURCES===\n[{"title":"...","url":"...","type":"epic or community or youtube"}]\n===END===\nWrap every console command, CVar, command-line invocation, config snippet, or file path the user may need to copy in fenced code blocks (```).\nBe direct, technical, practical. Tailor all advice to the user\'s specific platform target, project type, and UE version.';
 }
 
 
@@ -5421,6 +5443,65 @@ function ueApplySnapshot(d){
 }
 
 
+function renderBubble(bubble, text){
+  text = String(text);
+  var re = /```[a-zA-Z0-9_+-]*\n?([\s\S]*?)```/g, last = 0, m;
+  while((m = re.exec(text))){
+    var before = text.slice(last, m.index).replace(/\n+$/,'\n');
+    if(before) bubble.appendChild(document.createTextNode(before));
+    bubble.appendChild(buildCodeBlk(m[1].replace(/\n$/,'')));
+    last = re.lastIndex;
+  }
+  var rest = text.slice(last).replace(/^\n+/,'');
+  if(rest || last === 0) bubble.appendChild(document.createTextNode(rest || text));
+}
+
+function buildCodeBlk(code){
+  var w = document.createElement('div'); w.className = 'code-blk';
+  var btn = document.createElement('button'); btn.className = 'code-copy'; btn.type = 'button'; btn.textContent = 'Copy';
+  btn.onclick = function(ev){
+    ev.stopPropagation();
+    var done = function(){ btn.textContent = 'Copied'; btn.classList.add('ok'); setTimeout(function(){ btn.textContent = 'Copy'; btn.classList.remove('ok'); }, 1400); };
+    if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(code).then(done); }
+    else { var t = document.createElement('textarea'); t.value = code; document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove(); done(); }
+  };
+  var pre = document.createElement('pre'); pre.textContent = code;
+  w.appendChild(btn); w.appendChild(pre);
+  return w;
+}
+
+var LOG_MAX_CHARS = 12000;
+
+function logCount(){
+  var ta = el('log-paste'), c = el('log-count');
+  if(!ta || !c) return;
+  var n = ta.value.length;
+  if(!n){ c.textContent = ''; return; }
+  c.textContent = n.toLocaleString() + ' chars' + (n > LOG_MAX_CHARS ? ' \u2014 tail kept' : '');
+}
+
+function sendLog(){
+  if(streaming) return;
+  var ta = el('log-paste');
+  var raw = (ta.value || '').replace(/\r\n/g, '\n').trim();
+  if(!raw) return;
+  var type = el('log-type').value;
+  var mach = el('log-machine').value;
+  var note = '';
+  if(raw.length > LOG_MAX_CHARS){
+    var tail = raw.slice(-LOG_MAX_CHARS);
+    var nl = tail.indexOf('\n');
+    if(nl > 0) tail = tail.slice(nl + 1);
+    note = ' (trimmed to the most recent ' + tail.split('\n').length + ' lines)';
+    raw = tail;
+  }
+  var head = 'Analyse this ' + type.toLowerCase() + (mach ? ' from ' + mach : '') + note +
+    '. Identify errors, warnings, and misconfigurations relevant to my rig, and give fixes:';
+  el('cinput').value = head + '\n\n```\n' + raw + '\n```';
+  ta.value = ''; logCount();
+  sendChat();
+}
+
 function addMsg(role, text, sources){
   var m=el('msgs');
   var group=document.createElement('div');
@@ -5430,7 +5511,7 @@ function addMsg(role, text, sources){
   from.textContent=role==='user'?'You':'Support';
   var bubble=document.createElement('div');
   bubble.className='msg-bubble';
-  bubble.textContent=text;
+  renderBubble(bubble, text);
   group.appendChild(from);
   group.appendChild(bubble);
   if(role==='assistant'&&sources&&sources.length){

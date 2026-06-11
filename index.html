@@ -5673,7 +5673,7 @@ function sendChat(){
   var storedKey = localStorage.getItem('vp_anthropic_key') || '';
   fetch('/.netlify/functions/chat',{
     method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1400,system:SYS,
+    body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1400,system:SYS,
       messages:chatHist.slice(-10),userEmail:cu?cu.email:'',userApiKey:storedKey})
   }).then(function(r){
     return r.text().then(function(text){

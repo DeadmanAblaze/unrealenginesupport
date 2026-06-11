@@ -3968,12 +3968,9 @@ function autoDetectPorts(compId){
     var data; try{ data=JSON.parse(rawAuto); } catch(e){ if(btn){ btn.textContent='\u2736 Auto-detect'; btn.disabled=false; } return; }
     var text='';
     (data.content||[]).forEach(function(b){ if(b.type==='text') text+=b.text; });
-    try{
-      var result=JSON.parse(text.trim());
-      applyAutoDetect(compId, result);
-    } catch(e){
-      alert('Could not parse device data. Try adding ports manually.');
-    }
+    var result=extractJsonObject(text);
+    if(result){ applyAutoDetect(compId, result); }
+    else { alert('Could not parse device data. Try adding ports manually.'); }
     if(btn){ btn.textContent='\u2736 Auto-detect'; btn.disabled=false; }
   }).catch(function(){
     if(btn){ btn.textContent='\u2736 Auto-detect'; btn.disabled=false; }
@@ -4850,6 +4847,16 @@ function renderGear(){
   }).join('');
 }
 
+function extractJsonObject(text){
+  var clean=String(text||'').replace(/```json|```/g,'').trim();
+  try{ return JSON.parse(clean); }catch(e){}
+  var a=clean.indexOf('{'), b=clean.lastIndexOf('}');
+  if(a>=0&&b>a){
+    try{ return JSON.parse(clean.slice(a,b+1)); }catch(e){}
+  }
+  return null;
+}
+
 function findLinksForComp(compId){
   var comp = components.find(function(c){return c.id===compId;}); if(!comp) return;
   var f = comp.fields||{};
@@ -4887,9 +4894,8 @@ function findLinksForComp(compId){
     var content='';
     (data.content||[]).forEach(function(b){ if(b.type==='text') content+=b.text; });
     if(!content) throw new Error('No content in response');
-    var clean=content.trim().replace(/```json|```/g,'').trim();
-    var result;
-    try{ result=JSON.parse(clean); } catch(e){ throw new Error('Could not parse response as JSON'); }
+    var result=extractJsonObject(content);
+    if(!result){ throw new Error('Could not parse response as JSON. Reply began: '+content.trim().slice(0,100)); }
     var valid={};
     ['manufacturer','product','docs','specs'].forEach(function(k){
       if(result[k]&&typeof result[k]==='string'&&result[k].startsWith('http')) valid[k]=result[k];

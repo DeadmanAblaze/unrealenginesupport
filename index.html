@@ -1177,7 +1177,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
 .s3-hint{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);font-size:10.5px;color:var(--ink3);background:rgba(16,18,23,.75);border:1px solid var(--line);border-radius:7px;padding:4px 11px;z-index:5;pointer-events:none;white-space:nowrap}
 .s3-topbtn{position:absolute;top:14px;right:14px;z-index:6;background:rgba(16,18,23,.9);backdrop-filter:blur(12px);border:1px solid var(--line2);color:var(--ink2);font-size:11px;font-weight:600;padding:7px 13px;border-radius:8px;cursor:pointer}
 .s3-topbtn.on{background:var(--brand-dim);border-color:var(--brand1);color:var(--brand1)}
-#s3-pop{position:absolute;z-index:7;width:248px;background:rgba(16,18,23,.95);backdrop-filter:blur(14px);border:1px solid var(--line2);border-radius:11px;padding:10px 11px;box-shadow:0 12px 32px rgba(0,0,0,.5)}
+#s3-pop{position:absolute;z-index:7;width:330px;max-height:70%;overflow-y:auto;background:rgba(16,18,23,.95);backdrop-filter:blur(14px);border:1px solid var(--line2);border-radius:11px;padding:10px 11px;box-shadow:0 12px 32px rgba(0,0,0,.5)}
 .s3-pop-h{display:flex;align-items:center;justify-content:space-between;font-family:'Barlow Condensed',var(--sans);font-weight:800;font-size:12px;letter-spacing:.16em;color:var(--brand1);margin-bottom:8px}
 .s3-pop-x{background:none;border:none;color:var(--ink3);font-size:16px;cursor:pointer;padding:0 2px;line-height:1}
 .s3-pop-dev{display:flex;align-items:center;gap:8px;width:100%;background:var(--el);border:1px solid var(--line);border-radius:7px;padding:7px 9px;margin-bottom:5px;cursor:pointer;color:var(--ink);text-align:left}
@@ -1187,6 +1187,15 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
 .s3-pop-nm{font-size:11.5px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .s3-pop-cn{font-family:var(--mono);font-size:10px;color:var(--ink3);flex-shrink:0}
 .s3-pop-empty{font-size:11px;color:var(--ink3);padding:4px 0 8px}
+.s3-pop-sec{font-family:'Barlow Condensed',var(--sans);font-weight:800;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);margin:8px 0 5px}
+.s3-pop-vents{font-family:var(--mono);font-size:9px;color:var(--ink4);letter-spacing:2px}
+.s3-pop-back{background:#0d0f13;border:1px solid var(--line);border-radius:7px;padding:6px 8px;margin-bottom:5px}
+.s3-pop-back.sel{border-color:var(--brand1)}
+.s3-pop-bnm{font-size:10px;color:var(--ink3);margin-bottom:4px;font-family:var(--mono)}
+.s3-pop-ports{display:flex;flex-wrap:wrap;gap:4px}
+.s3-pop-port{display:inline-flex;align-items:center;gap:4px;font-family:var(--mono);font-size:9.5px;color:var(--ink2);border:1px solid;border-radius:4px;padding:2px 6px;opacity:.55}
+.s3-pop-port.wired{opacity:1}
+.s3-pop-pd{width:6px;height:6px;border-radius:50%}
 .s3-pop-hint{font-size:10px;color:var(--ink4);line-height:1.45;margin-top:3px}
 @media(max-width:900px){
   #pnl-stage3d.on{margin:-14px}
@@ -1498,7 +1507,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
       </div>
       <button class="s3-topbtn" id="s3-topbtn" onclick="_s3TopToggle()" title="Toggle top-down plan view">Top view</button>
       <div id="s3-pop" style="display:none"></div>
-      <div class="s3-hint">drag to orbit &middot; scroll to zoom &middot; drag racks to place &middot; click a rack to inspect</div>
+      <div class="s3-hint">orbit &middot; scroll to zoom &middot; click a rack to inspect &middot; reposition in Top view</div>
     </div>
 
     <div class="pnl" id="pnl-plugin">
@@ -2779,6 +2788,7 @@ function renderStrip(comp){
       + '<select class="cv-edit" onchange="setCompRack('+comp.id+',this.value)">'
       + '<option value="0">Unassigned</option>'
       + '<option value="-1"'+(comp.rack===-1?' selected':'')+'>Floating (free-standing)</option>'
+      + [1,2,3,4].map(function(ws){return '<option value="'+(100+ws)+'"'+(comp.rack===100+ws?' selected':'')+'>Workstation '+ws+'</option>';}).join('')
       + [1,2,3,4,5,6,7,8].map(function(r){return '<option value="'+r+'"'+(comp.rack===r?' selected':'')+'>Rack '+r+'</option>';}).join('')
       + '</select></div>';
     body = nickRow + rackRow + body;    body += '<div class="crow cnotes-row"><span class="ck">Notes</span></div>'
@@ -2787,7 +2797,7 @@ function renderStrip(comp){
     body = fs.filter(function(fl){return (comp.fields[fl.k]||'').trim();}).map(function(fl){
       return '<div class="crow"><span class="ck">'+fl.l+'</span><span class="cv">'+esc(comp.fields[fl.k])+'</span></div>';
     }).join('');
-    if(comp.rack) body = '<div class="crow"><span class="ck">Rack</span><span class="cv" style="color:var(--brand1);font-weight:600">'+(comp.rack===-1?'Floating':'R'+comp.rack)+'</span></div>' + body;
+    if(comp.rack) body = '<div class="crow"><span class="ck">Rack</span><span class="cv" style="color:var(--brand1);font-weight:600">'+(comp.rack===-1?'Floating':comp.rack>=100?'WS'+(comp.rack-100):'R'+comp.rack)+'</span></div>' + body;
     if(!body) body = '<div class="crow"><span class="ck" style="color:var(--ink4)">Not configured</span></div>';
     if((comp.notes||'').trim()) body += '<div class="cnote-disp">'+esc(comp.notes)+'</div>';
   }
@@ -7189,6 +7199,13 @@ function s3Boot(){
         var tower=new T.Mesh(new T.BoxGeometry(0.24,0.52,0.55),
           new T.MeshStandardMaterial({ color:0x14161c, roughness:0.45, metalness:0.6 }));
         tower.position.set(0.6,0.26,0.05); g.add(tower);
+        components.filter(function(c){return c.rack===101+m.i;}).slice(0,3).forEach(function(c,s){
+          var dv=new T.Mesh(new T.BoxGeometry(0.42,0.14,0.5),
+            new T.MeshStandardMaterial({ color:0x1c2027, metalness:0.55, roughness:0.45 }));
+          dv.position.set(-0.45, 0.12+s*0.17, 0.05); g.add(dv);
+          var dl3=textSprite(compName(c).slice(0,14), '#9fd0ff', 0.55);
+          dl3.position.set(-1.15, 0.2+s*0.17, 0.3); g.add(dl3);
+        });
         var lbl2=textSprite('EDITOR'+(S3.editors>1?' '+(m.i+1):''), '#4ade80', 0.85);
         lbl2.position.y=1.7; g.add(lbl2);
       }
@@ -7225,8 +7242,7 @@ function s3Boot(){
   }
   function buildRig(){
     dispose(rigG);
-    camRig=makeCameraModel();
-    rigG.add(camRig);
+    camRig=null;
     talent=new T.Group();
     var tM=new T.MeshStandardMaterial({ color:0x33363e, roughness:0.85 });
     var torso=new T.Mesh(new T.CylinderGeometry(0.16,0.2,1.18,12), tM); torso.position.y=0.84; talent.add(torso);
@@ -7259,6 +7275,10 @@ function s3Boot(){
   }
   function compAnchor(c){
     if(c.rack>0){ var p=rackPos(c.rack); return p?{x:p.x,z:p.z,y:slotY(c)}:null; }
+    if(c.rack>=100){
+      var em=(S3.machines||[]).find(function(x){return x.t==='ed'&&x.i===c.rack-101;});
+      return em?{x:em.x,z:em.z,y:0.8}:null;
+    }
     if(c.rack===-1){
       var fm=(S3.machines||[]).find(function(x){return x.t==='float'&&x.i===c.id;});
       var isCam=CTYPES[c.type]&&CTYPES[c.type].section==='camera';
@@ -7288,14 +7308,14 @@ function s3Boot(){
         var port=(a.ports||[]).find(function(p){return p.id===cn.fromPortId;});
         var col=SIGNAL_COLOR[(port||{}).signal]||'#9b9b9f';
         var pts2=s3CablePath(pa.x,pa.z,pb.x,pb.z,S3.roomW,S3.roomD,k);
-        var floorY=0.05+k*0.012;
+        var floorY=0.05+k*0.03;
         var v=[];
         v.push(new T.Vector3(pa.x, pa.y, pa.z));
         pts2.forEach(function(pt,i){ v.push(new T.Vector3(pt[0], i===0?0.12:floorY, pt[1])); });
         v[v.length-1]=new T.Vector3(pb.x, 0.12, pb.z);
         v.push(new T.Vector3(pb.x, pb.y, pb.z));
         var curve=new T.CatmullRomCurve3(v, false, 'catmullrom', 0.04);
-        var rad=Math.max(0.045, (S3.roomW+S3.roomD)*0.0014);
+        var rad=0.026;
         var tube=new T.Mesh(new T.TubeGeometry(curve, Math.max(32, v.length*10), rad, 8, false),
           new T.MeshBasicMaterial({ color:new T.Color(col), transparent:true, opacity:1 }));
         cableG.add(tube);
@@ -7338,14 +7358,37 @@ function s3Boot(){
     var devs=components.filter(function(c){return c.rack===popRack;});
     var h='<div class="s3-pop-h">RACK '+popRack+'<button class="s3-pop-x" onclick="window._s3PopClose()">\u00d7</button></div>';
     if(!devs.length) h+='<div class="s3-pop-empty">Nothing assigned to this rack.</div>';
-    devs.forEach(function(c, s){
-      var cnt=connections.filter(function(cn){return cn.fromCompId===c.id||cn.toCompId===c.id;}).length;
-      h+='<button class="s3-pop-dev'+(selComp===c.id?' sel':'')+'" onclick="window._s3PopSel('+c.id+')">'
-        +'<span class="s3-pop-led" style="background:'+NODE_HUES[s%NODE_HUES.length]+'"></span>'
-        +'<span class="s3-pop-nm">'+esc(compName(c))+'</span>'
-        +'<span class="s3-pop-cn">'+(cnt?cnt+' cable'+(cnt>1?'s':''):'\u2014')+'</span>'
-        +'</button>';
-    });
+    else {
+      h+='<div class="s3-pop-sec">Front</div>';
+      devs.forEach(function(c, s){
+        h+='<button class="s3-pop-dev'+(selComp===c.id?' sel':'')+'" onclick="window._s3PopSel('+c.id+')">'
+          +'<span class="s3-pop-led" style="background:'+NODE_HUES[s%NODE_HUES.length]+'"></span>'
+          +'<span class="s3-pop-nm">'+esc(compName(c))+'</span>'
+          +'<span class="s3-pop-vents">|||</span>'
+          +'</button>';
+      });
+      h+='<div class="s3-pop-sec">Back \u2014 ports &amp; cables</div>';
+      devs.forEach(function(c){
+        h+='<div class="s3-pop-back'+(selComp===c.id?' sel':'')+'">'
+          +'<div class="s3-pop-bnm">'+esc(compName(c))+'</div>'
+          +'<div class="s3-pop-ports">';
+        (c.ports||[]).forEach(function(p){
+          var conns=portConnections(c.id, p.id);
+          var col=SIGNAL_COLOR[p.signal]||'#9b9b9f';
+          var tgt='';
+          if(conns.length){
+            var cn=conns[0];
+            var oid=cn.fromCompId===c.id?cn.toCompId:cn.fromCompId;
+            tgt=' \u2192 '+esc(compShortName(oid));
+          }
+          h+='<span class="s3-pop-port'+(conns.length?' wired':'')+'" style="border-color:'+col+'">'
+            +'<span class="s3-pop-pd" style="background:'+col+'"></span>'
+            +esc(p.label||p.signal)+tgt+'</span>';
+        });
+        if(!(c.ports||[]).length) h+='<span class="s3-pop-cn">no ports defined</span>';
+        h+='</div></div>';
+      });
+    }
     h+='<div class="s3-pop-hint">'+(selComp!=null?'Cables for the selected device are animating \u2014 click again to clear.':'Select a device to trace its cables.')+'</div>';
     pop.innerHTML=h;
     pop.style.display='block';
@@ -7401,6 +7444,7 @@ function s3Boot(){
   });
   host.addEventListener('pointermove', function(e){
     if(dragM){
+      if(!topView) return;
       if(Math.hypot(e.clientX-px, e.clientY-py)>6) dragMoved=true;
       if(!dragMoved) return;
       setNdc(e); ray.setFromCamera(ndc, activeCam());
@@ -7457,16 +7501,25 @@ function s3Boot(){
     if(!el('pnl-stage3d') || !el('pnl-stage3d').classList.contains('on')) return; // idle when hidden
     var t = S3.animate ? clock.getElapsedTime() : tPrev;
     if(S3.animate) tPrev=t;
-    var sweep=S3.animate?Math.sin(t*0.32):0.35;
-    var frU=0.5+sweep*0.27;
-    var aim=wallPoint(frU,0.5), base=wallPoint(0.5,0);
-    var cx=base.x+sweep*S3.wallW*0.16, cz=base.z+S3.camDist;
-    cz=Math.min(cz, S3.roomD/2-0.8);
-    if(camRig){ camRig.position.set(cx,0,cz); camRig.lookAt(aim.x,0,aim.z); camRig.rotation.x=0; camRig.rotation.z=0; }
-    if(talent){ var tp=wallPoint(0.5+sweep*0.08,0); talent.position.set(tp.x,0,Math.min(tp.z+S3.camDist*0.45, S3.roomD/2-0.8)); }
+    var frU=-1, cx=0, cz=0, camGroup=null;
+    machG.children.some(function(g2){
+      var m2=g2.userData.m;
+      if(m2&&m2.t==='float'){
+        var c2=components.find(function(x){return x.id===m2.i;});
+        if(c2&&CTYPES[c2.type]&&CTYPES[c2.type].section==='camera'){
+          var b0=wallPoint(0,0), b1=wallPoint(1,0);
+          frU=Math.max(0.08, Math.min(0.92, (m2.x-b0.x)/((b1.x-b0.x)||1)));
+          cx=m2.x; cz=m2.z; camGroup=g2; return true;
+        }
+      }
+      return false;
+    });
+    var aim=frU>=0?wallPoint(frU,0.5):wallPoint(0.5,0.5);
+    if(camGroup){ camGroup.lookAt(aim.x,0,aim.z); camGroup.rotation.x=0; camGroup.rotation.z=0; }
+    if(talent){ var tp=wallPoint(0.5,0); talent.position.set(tp.x,0,Math.min(tp.z+S3.camDist*0.45, S3.roomD/2-0.8)); }
     if(frLines){
-      frLines.visible=!!S3.frustum;
-      if(S3.frustum){
+      frLines.visible=!!S3.frustum && frU>=0;
+      if(S3.frustum && frU>=0){
         var lp=new T.Vector3(cx,1.45,cz-0.5), hU=0.10;
         var cs=[wallPoint(frU-hU,0.11),wallPoint(frU+hU,0.11),wallPoint(frU+hU,0.89),wallPoint(frU-hU,0.89)];
         for(var c2=0;c2<4;c2++){
@@ -7538,7 +7591,7 @@ function s3Bind(){
 // Returns 2D waypoints [[x,z],...] from A to B hugging the room walls.
 // k staggers parallel runs so cables sit side by side in the tray.
 function s3CablePath(ax, az, bx, bz, roomW, roomD, k){
-  var m = 0.25 + (k||0)*0.04;                 // tray inset from the walls
+  var m = 0.25 + (k||0)*0.1;                 // tray inset from the walls
   var hw = roomW/2 - m, hd = roomD/2 - m;
   function clamp(v,lo,hi){ return Math.max(lo, Math.min(hi, v)); }
   // Project a point to the nearest tray edge; param = distance around the

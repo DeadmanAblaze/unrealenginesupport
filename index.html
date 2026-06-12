@@ -1128,6 +1128,59 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
 .nd-parsed.ok{color:var(--green);background:var(--gdim)}
 .nd-parsed.raw{color:var(--warn);background:var(--warn-dim)}
 .nd-actions{margin-left:auto;display:flex;gap:7px}
+
+#pnl-stage.on{display:flex;flex-direction:column;height:100%;padding:0!important;margin:-20px -22px;animation:none}
+@media(max-width:900px){#pnl-stage.on{margin:-14px}}
+@media(max-width:760px){
+}
+
+/* ── STAGE 3D ── */
+#pnl-stage3d.on{display:block;position:relative;height:100%;padding:0!important;margin:-20px -22px;overflow:hidden;animation:none}
+#s3-host{position:absolute;inset:0;cursor:grab}
+#s3-host.s3-grab{cursor:grabbing}
+#s3-host canvas{display:block}
+#s3-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--ink3)}
+.s3-fallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--ink3);padding:30px;text-align:center}
+.s3-rail{position:absolute;top:14px;left:14px;width:236px;max-height:calc(100% - 28px);overflow-y:auto;background:rgba(16,18,23,.9);backdrop-filter:blur(12px);border:1px solid var(--line2);border-radius:12px;padding:13px 14px;z-index:5}
+.s3-rail::-webkit-scrollbar{width:8px}
+.s3-rail::-webkit-scrollbar-thumb{background:var(--line2);border-radius:4px}
+.s3-grp{font-family:'Barlow Condensed',var(--sans);font-weight:800;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--brand1);margin:12px 0 7px;display:flex;align-items:center;gap:8px}
+.s3-grp::after{content:'';flex:1;height:1px;background:var(--line)}
+.s3-grp:first-child{margin-top:0}
+.s3-import{width:100%}
+.s3-import-hint{font-size:10.5px;color:var(--ink4);line-height:1.5;margin-top:6px}
+.s3-ctl{margin-bottom:8px}
+.s3-ch{display:flex;justify-content:space-between;font-size:11px;color:var(--ink2);margin-bottom:2px}
+.s3-cv{font-family:var(--mono);color:var(--ink);font-weight:600}
+.s3-cv small{color:var(--ink4);font-weight:400}
+.s3-rail input[type=range]{width:100%;height:18px;-webkit-appearance:none;background:transparent;cursor:pointer}
+.s3-rail input[type=range]::-webkit-slider-runnable-track{height:3px;background:var(--line2);border-radius:2px}
+.s3-rail input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:var(--brand1);margin-top:-5px;border:2px solid var(--bg)}
+.s3-rail input[type=range]::-moz-range-track{height:3px;background:var(--line2);border-radius:2px}
+.s3-rail input[type=range]::-moz-range-thumb{width:11px;height:11px;border-radius:50%;background:var(--brand1);border:2px solid var(--bg)}
+.s3-row2{display:flex;gap:6px}
+.s3-row2 select{flex:1;background:var(--el);border:1px solid var(--line2);color:var(--ink);font-family:var(--mono);font-size:11px;padding:5px 7px;border-radius:6px;outline:none}
+.s3-seg{display:flex;gap:4px}
+.s3-seg button{flex:1;background:var(--el);border:1px solid var(--line2);color:var(--ink3);font-family:var(--mono);font-size:11px;font-weight:600;padding:5px 0;border-radius:6px;cursor:pointer}
+.s3-seg button.on{background:var(--brand-dim);border-color:var(--brand1);color:var(--brand1)}
+.s3-tog{display:flex;align-items:center;justify-content:space-between;padding:5px 0;cursor:pointer;font-size:11px;color:var(--ink2)}
+.s3-tog input{display:none}
+.s3-pill{width:30px;height:16px;border-radius:9px;background:var(--el);border:1px solid var(--line2);position:relative;transition:background .15s}
+.s3-pill::after{content:'';position:absolute;top:2px;left:2px;width:10px;height:10px;border-radius:50%;background:var(--ink3);transition:transform .15s}
+.s3-tog input:checked + .s3-pill{background:var(--brand-dim);border-color:var(--brand1)}
+.s3-tog input:checked + .s3-pill::after{transform:translateX(13px);background:var(--brand1)}
+.s3-readout{position:absolute;right:14px;bottom:14px;background:rgba(16,18,23,.9);backdrop-filter:blur(12px);border:1px solid var(--line2);border-radius:12px;padding:11px 14px;z-index:5;min-width:218px}
+.s3-ro-t{font-family:'Barlow Condensed',var(--sans);font-weight:800;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink3);margin-bottom:6px}
+.s3-ro{display:flex;justify-content:space-between;gap:16px;font-size:11px;padding:2px 0}
+.s3-ro span{color:var(--ink3)}
+.s3-ro b{font-family:var(--mono);font-weight:600;color:var(--ink)}
+.s3-hint{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);font-size:10.5px;color:var(--ink3);background:rgba(16,18,23,.75);border:1px solid var(--line);border-radius:7px;padding:4px 11px;z-index:5;pointer-events:none;white-space:nowrap}
+@media(max-width:900px){
+  #pnl-stage3d.on{margin:-14px}
+  .s3-rail{width:200px;padding:11px}
+  .s3-hint{display:none}
+  .s3-readout{right:10px;bottom:10px;min-width:0;padding:9px 11px}
+}
 </style>
 </head>
 <body>
@@ -1321,6 +1374,10 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
         <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>
         <span class="nb-label">Rig specs</span>
       </button>
+      <button aria-label="Stage 3D" title="Stage 3D" class="nb" onclick="go('stage3d',this);stage3dEnter()">
+        <svg viewBox="0 0 24 24"><path d="M12 2l9 5v10l-9 5-9-5V7l9-5z"/><path d="M12 22V12M12 12L3 7M12 12l9-5"/></svg>
+        <span class="nb-label">Stage 3D</span>
+      </button>
       <button aria-label="Equipment" title="Equipment" class="nb" onclick="go('gear',this)">
         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
         <span class="nb-label">Equipment</span>
@@ -1364,6 +1421,68 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
       </div>
     </div>
     <div class="main-scroll"><div class="pnl on" id="pnl-home"></div>
+
+    <div class="pnl" id="pnl-stage3d">
+      <div id="s3-host">
+        <div id="s3-loading">Loading 3D engine&hellip;</div>
+      </div>
+      <aside class="s3-rail" aria-label="Stage specifications">
+        <div class="s3-grp">Import</div>
+        <button class="btn bp sm s3-import" onclick="s3ImportConfig()">Build from nDisplay config</button>
+        <div class="s3-import-hint">Uses the config uploaded on Rig specs, at the pitch set below.</div>
+
+        <div class="s3-grp">Wall</div>
+        <div class="s3-ctl"><div class="s3-ch"><span>Width</span><span class="s3-cv" id="s3v-w">15.0 <small>m</small></span></div>
+          <input type="range" id="s3-w" min="4" max="30" step="0.5" value="15" aria-label="Wall width"></div>
+        <div class="s3-ctl"><div class="s3-ch"><span>Height</span><span class="s3-cv" id="s3v-h">3.0 <small>m</small></span></div>
+          <input type="range" id="s3-h" min="2" max="8" step="0.5" value="3" aria-label="Wall height"></div>
+        <div class="s3-ctl"><div class="s3-ch"><span>Curve</span><span class="s3-cv" id="s3v-c">60<small>&deg;</small></span></div>
+          <input type="range" id="s3-c" min="0" max="180" step="5" value="60" aria-label="Wall curve"></div>
+        <div class="s3-ctl"><div class="s3-ch"><span>From back wall</span><span class="s3-cv" id="s3v-wb">1.5 <small>m</small></span></div>
+          <input type="range" id="s3-wb" min="0.5" max="6" step="0.5" value="1.5" aria-label="Wall distance from back wall"></div>
+
+        <div class="s3-grp">Panels</div>
+        <div class="s3-row2">
+          <select id="s3-p" aria-label="Panel size"><option value="250">250 mm</option><option value="500" selected>500 mm</option><option value="1000">1000 mm</option></select>
+          <select id="s3-pp" aria-label="Pixel pitch"><option value="1.2">P1.2</option><option value="1.5">P1.5</option><option value="1.9">P1.9</option><option value="2.3">P2.3</option><option value="2.6" selected>P2.6</option><option value="3.1">P3.1</option><option value="3.9">P3.9</option></select>
+        </div>
+
+        <div class="s3-grp">Render nodes</div>
+        <div class="s3-seg" id="s3-seg-n" role="group" aria-label="Render node count">
+          <button data-n="1">1</button><button data-n="2" class="on">2</button><button data-n="3">3</button><button data-n="4">4</button>
+        </div>
+
+        <div class="s3-grp">Studio</div>
+        <div class="s3-ctl"><div class="s3-ch"><span>Width</span><span class="s3-cv" id="s3v-rw">24 <small>m</small></span></div>
+          <input type="range" id="s3-rw" min="8" max="50" step="1" value="24" aria-label="Studio width"></div>
+        <div class="s3-ctl"><div class="s3-ch"><span>Depth</span><span class="s3-cv" id="s3v-rd">16 <small>m</small></span></div>
+          <input type="range" id="s3-rd" min="6" max="40" step="1" value="16" aria-label="Studio depth"></div>
+        <div class="s3-ctl"><div class="s3-ch"><span>Height</span><span class="s3-cv" id="s3v-rh">7.0 <small>m</small></span></div>
+          <input type="range" id="s3-rh" min="3" max="15" step="0.5" value="7" aria-label="Studio height"></div>
+
+        <div class="s3-grp">Machines</div>
+        <div class="s3-ctl"><div class="s3-ch"><span>Editor workstations</span><span class="s3-cv" id="s3v-ed">1</span></div>
+          <input type="range" id="s3-ed" min="0" max="4" step="1" value="1" aria-label="Editor workstation count"></div>
+        <div class="s3-import-hint">Node racks and editor desks are draggable &mdash; grab one to place it.</div>
+
+        <div class="s3-grp">Camera</div>
+        <div class="s3-ctl"><div class="s3-ch"><span>Distance from wall</span><span class="s3-cv" id="s3v-cd">6.0 <small>m</small></span></div>
+          <input type="range" id="s3-cd" min="2.5" max="14" step="0.5" value="6" aria-label="Camera distance"></div>
+        <label class="s3-tog"><span>Inner frustum</span><input type="checkbox" id="s3-fr" checked><span class="s3-pill"></span></label>
+        <label class="s3-tog"><span>Animate content</span><input type="checkbox" id="s3-an" checked><span class="s3-pill"></span></label>
+      </aside>
+
+      <div class="s3-readout" aria-label="Computed figures">
+        <div class="s3-ro-t">Computed</div>
+        <div class="s3-ro"><span>Panel grid</span><b id="s3ro-grid">&mdash;</b></div>
+        <div class="s3-ro"><span>Wall resolution</span><b id="s3ro-res" style="color:var(--brand1)">&mdash;</b></div>
+        <div class="s3-ro"><span>Per node</span><b id="s3ro-node">&mdash;</b></div>
+        <div class="s3-ro"><span>Node load</span><b id="s3ro-load">&mdash;</b></div>
+        <div class="s3-ro"><span>Curve radius</span><b id="s3ro-rad">&mdash;</b></div>
+        <div class="s3-ro"><span>Studio</span><b id="s3ro-room">&mdash;</b></div>
+      </div>
+      <div class="s3-hint">drag to orbit &middot; scroll to zoom &middot; grab a machine to move it</div>
+    </div>
 
     <div class="pnl" id="pnl-plugin">
       <div class="plg-hero">
@@ -2999,6 +3118,9 @@ async function loadData(){
     var ndd = await dref('ndisplay').get();
     ndConfig = (ndd.exists && ndd.data().content) ? ndd.data() : null;
 
+    var s3d = await dref('stage3d').get();
+    if(s3d.exists && s3d.data().v) s3Merge(s3d.data());
+
   } catch(e) {
     console.error('Load error', e);
     showToast('Could not load saved data \u2014 check your connection and refresh', true);
@@ -3124,7 +3246,7 @@ function go(id, btn){
   if(id==='cal') renderCalendar();
   if(id==='gear') renderGear();
   if(id==='chat') setTimeout(vidRefresh, 200);
-  var t={'home':['Home','Welcome to Unreal Support'],'specs':['Rig specs','Virtual production configuration'],'issues':['Issues','Open and recent stage issues'],'chat':['Support','VP and nDisplay assistance'],'cl':['Checklist','Daily session readiness'],'cal':['Planner','Schedule and stage activity'],'gear':['Equipment','Component manifest and product links'],'plugin':['UE Plugin','Live diagnostics plugin for Unreal Engine'],'features':['Features','How Unreal Support works'],'quickstart':['Quick Start','nDisplay stage startup guide'],'admin':['Admin','User management']};
+  var t={'home':['Home','Welcome to Unreal Support'],'specs':['Rig specs','Virtual production configuration'],'issues':['Issues','Open and recent stage issues'],'chat':['Support','VP and nDisplay assistance'],'cl':['Checklist','Daily session readiness'],'cal':['Planner','Schedule and stage activity'],'gear':['Equipment','Component manifest and product links'],'plugin':['UE Plugin','Live diagnostics plugin for Unreal Engine'],'stage3d':['Stage 3D','Interactive LED volume and studio planner'],'features':['Features','How Unreal Support works'],'quickstart':['Quick Start','nDisplay stage startup guide'],'admin':['Admin','User management']};
   if(t[id]&&el('tb-title')){el('tb-title').textContent=t[id][0];el('tb-meta').textContent=t[id][1];}
 }
 
@@ -6578,6 +6700,544 @@ function plgUpload(){
     }).catch(function(){ fail('Uploaded, but could not get the download link \u2014 try again.'); });
   });
 }
+
+// ═══════════════════════════════════════════════════════════════════════════
+// STAGE 3D — interactive LED volume + studio planner (Three.js, lazy-loaded)
+// ═══════════════════════════════════════════════════════════════════════════
+var S3 = { v:1, wallW:15, wallH:3, curve:60, panel:500, pitch:2.6, nodes:2,
+  camDist:6, frustum:true, animate:true,
+  roomW:24, roomD:16, roomH:7, wallBack:1.5, editors:1, machines:[] };
+var _s3 = null;          // runtime scene handle (null until first visit)
+var _s3SaveT = null;
+
+function s3Merge(d){
+  ['wallW','wallH','curve','panel','pitch','nodes','camDist','frustum','animate',
+   'roomW','roomD','roomH','wallBack','editors','machines'].forEach(function(k){
+    if(d[k] !== undefined) S3[k] = d[k];
+  });
+}
+
+function s3Save(){
+  clearTimeout(_s3SaveT);
+  _s3SaveT = setTimeout(function(){ fsave('stage3d', S3); }, 800);
+}
+
+// Pure: derive wall spec from an nDisplay config JSON (testable, no DOM)
+function s3DeriveFromNd(text, pitchMm){
+  try{
+    var cfg = JSON.parse(text);
+    var root = cfg.nDisplay || cfg;
+    var nodes = (root.cluster||{}).nodes || {};
+    var keys = Object.keys(nodes);
+    if(!keys.length) return null;
+    var resW = 0, resH = 0;
+    keys.forEach(function(k){
+      var n = nodes[k]||{};
+      var w = 0, h = 0;
+      if(n.window && n.window.w){ w = n.window.w; h = n.window.h||0; }
+      else {
+        var vps = n.viewports||{};
+        Object.keys(vps).forEach(function(v){
+          var r = (vps[v]||{}).region||{};
+          w = Math.max(w, (r.x||0)+(r.w||0));
+          h = Math.max(h, (r.y||0)+(r.h||0));
+        });
+      }
+      resW += w; resH = Math.max(resH, h);
+    });
+    if(!resW || !resH) return null;
+    var p = pitchMm || S3.pitch;
+    return { nodes: keys.length, resW: resW, resH: resH,
+      wallW: Math.round(resW * p / 100) / 10,
+      wallH: Math.round(resH * p / 100) / 10 };
+  }catch(e){ return null; }
+}
+
+function s3ImportConfig(){
+  if(!ndConfig || !ndConfig.content){
+    showToast('No nDisplay config uploaded yet \u2014 add one on the Rig specs page first.', true);
+    return;
+  }
+  var d = s3DeriveFromNd(ndConfig.content, S3.pitch);
+  if(!d){ showToast('Could not read cluster topology from the stored config.', true); return; }
+  S3.nodes = d.nodes;
+  S3.wallW = Math.min(Math.max(d.wallW, 2), 40);
+  S3.wallH = Math.min(Math.max(d.wallH, 1.5), 10);
+  if(S3.roomW < S3.wallW + 4) S3.roomW = Math.ceil(S3.wallW + 6);
+  if(_s3){ s3SyncInputs(); _s3.build(); }
+  s3Save();
+  showToast('Built from "'+ndConfig.name+'": '+d.nodes+' nodes, '+d.resW+'\u00d7'+d.resH+'px \u2192 '
+    + S3.wallW.toFixed(1)+'m \u00d7 '+S3.wallH.toFixed(1)+'m at P'+S3.pitch);
+}
+
+function s3SyncInputs(){
+  if(!el('s3-w')) return;
+  el('s3-w').value = S3.wallW;   el('s3v-w').innerHTML = S3.wallW.toFixed(1)+' <small>m</small>';
+  el('s3-h').value = S3.wallH;   el('s3v-h').innerHTML = S3.wallH.toFixed(1)+' <small>m</small>';
+  el('s3-c').value = S3.curve;   el('s3v-c').innerHTML = S3.curve+'<small>\u00b0</small>';
+  el('s3-rw').value = S3.roomW;  el('s3v-rw').innerHTML = S3.roomW.toFixed(0)+' <small>m</small>';
+  el('s3-rd').value = S3.roomD;  el('s3v-rd').innerHTML = S3.roomD.toFixed(0)+' <small>m</small>';
+  el('s3-rh').value = S3.roomH;  el('s3v-rh').innerHTML = S3.roomH.toFixed(1)+' <small>m</small>';
+  el('s3-wb').value = S3.wallBack; el('s3v-wb').innerHTML = S3.wallBack.toFixed(1)+' <small>m</small>';
+  el('s3-cd').value = S3.camDist;  el('s3v-cd').innerHTML = S3.camDist.toFixed(1)+' <small>m</small>';
+  el('s3-p').value = String(S3.panel);
+  el('s3-pp').value = String(S3.pitch);
+  el('s3-ed').value = S3.editors; el('s3v-ed').innerHTML = String(S3.editors);
+  el('s3-fr').checked = !!S3.frustum;
+  el('s3-an').checked = !!S3.animate;
+  var seg = el('s3-seg-n');
+  if(seg) Array.prototype.forEach.call(seg.querySelectorAll('button'), function(b){
+    b.classList.toggle('on', parseInt(b.dataset.n,10) === S3.nodes);
+  });
+}
+
+function s3Readout(){
+  if(!el('s3ro-grid')) return;
+  var cols = Math.max(2, Math.round(S3.wallW/(S3.panel/1000)));
+  var rows = Math.max(1, Math.round(S3.wallH/(S3.panel/1000)));
+  var px = Math.round(S3.panel/S3.pitch);
+  var resW = cols*px, resH = rows*px;
+  var perW = Math.ceil(resW/S3.nodes);
+  var th = S3.curve*Math.PI/180, R = S3.curve<1 ? 0 : S3.wallW/th;
+  el('s3ro-grid').textContent = cols+' \u00d7 '+rows;
+  el('s3ro-res').textContent = resW.toLocaleString()+' \u00d7 '+resH.toLocaleString();
+  el('s3ro-node').textContent = perW.toLocaleString()+' \u00d7 '+resH.toLocaleString()+'  ('+S3.nodes+')';
+  el('s3ro-rad').textContent = R ? R.toFixed(1)+' m' : 'flat';
+  el('s3ro-room').textContent = S3.roomW+' \u00d7 '+S3.roomD+' \u00d7 '+S3.roomH+' m';
+  var mp = perW*resH/1e6;
+  var le = el('s3ro-load');
+  le.textContent = mp.toFixed(1)+' MP';
+  le.style.color = mp > 8.9 ? 'var(--warn)' : '';
+}
+
+function stage3dEnter(){
+  if(_s3){ _s3.resize(); return; }
+  var host = el('s3-host'); if(!host) return;
+  if(window.THREE){ s3Boot(); return; }
+  var note = el('s3-loading'); if(note) note.style.display='flex';
+  var sc = document.createElement('script');
+  sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+  sc.onload = function(){ s3Boot(); };
+  sc.onerror = function(){
+    if(note) note.innerHTML = 'Could not load the 3D engine \u2014 check your connection and reopen this page.';
+  };
+  document.head.appendChild(sc);
+}
+
+function s3Boot(){
+  var host = el('s3-host');
+  var note = el('s3-loading'); if(note) note.style.display='none';
+  var T = window.THREE;
+  var renderer;
+  try{
+    renderer = new T.WebGLRenderer({ antialias:true });
+  }catch(e){
+    host.innerHTML = '<div class="s3-fallback">3D isn\u2019t available in this browser (WebGL blocked or unsupported).</div>';
+    return;
+  }
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1, 2));
+  host.appendChild(renderer.domElement);
+
+  var scene = new T.Scene();
+  scene.background = new T.Color(0x0a0b0e);
+  scene.fog = new T.Fog(0x0a0b0e, 40, 110);
+  var cam = new T.PerspectiveCamera(50, 1, 0.1, 300);
+  scene.add(new T.AmbientLight(0x42485a, 1.0));
+  var hemi = new T.HemisphereLight(0x35415a, 0x0b0c10, 0.55); scene.add(hemi);
+  var keyL = new T.DirectionalLight(0xaebbd0, 0.45); keyL.position.set(10,18,12); scene.add(keyL);
+  var glow = new T.PointLight(0x2b9fff, 1.0, 30); scene.add(glow);
+
+  var NODE_HUES = ['#2b9fff','#7c5cff','#22c8b7','#fbbf24','#f87171','#4ade80'];
+  var wallG = new T.Group(), roomG = new T.Group(), machG = new T.Group(), rigG = new T.Group();
+  scene.add(wallG); scene.add(roomG); scene.add(machG); scene.add(rigG);
+
+  // Wall content texture
+  var tc = document.createElement('canvas'); tc.width=1024; tc.height=256;
+  var tx = tc.getContext('2d');
+  var wallTex = new T.CanvasTexture(tc);
+  function drawContent(t, frU){
+    var W=tc.width, H=tc.height;
+    var g=tx.createLinearGradient(0,0,0,H);
+    g.addColorStop(0,'#06121f'); g.addColorStop(.55,'#0b2238'); g.addColorStop(1,'#03070c');
+    tx.fillStyle=g; tx.fillRect(0,0,W,H);
+    for(var b=0;b<2;b++){
+      tx.beginPath(); tx.moveTo(0,H);
+      for(var x=0;x<=W;x+=8) tx.lineTo(x, H*0.62+b*26+Math.sin(x*0.012+t*(0.25+b*0.13)+b*2.2)*16);
+      tx.lineTo(W,H); tx.closePath();
+      tx.fillStyle = b?'rgba(10,32,52,.85)':'rgba(16,48,76,.7)'; tx.fill();
+    }
+    var sx=(0.5+0.32*Math.sin(t*0.1))*W;
+    var sun=tx.createRadialGradient(sx,H*0.34,2,sx,H*0.34,54);
+    sun.addColorStop(0,'rgba(150,210,255,.85)'); sun.addColorStop(1,'rgba(150,210,255,0)');
+    tx.fillStyle=sun; tx.fillRect(0,0,W,H);
+    if(S3.frustum && frU>=0){
+      var fw=W*0.2, fh=H*0.78, fx=frU*W-fw/2, fy=(H-fh)/2;
+      tx.save(); tx.beginPath(); tx.rect(fx,fy,fw,fh); tx.clip();
+      tx.fillStyle='rgba(120,190,255,.18)'; tx.fillRect(0,0,W,H); tx.restore();
+      tx.strokeStyle='rgba(251,191,36,.9)'; tx.lineWidth=2.5; tx.strokeRect(fx,fy,fw,fh);
+    }
+    for(var n=1;n<S3.nodes;n++){
+      var nx=Math.round(W*n/S3.nodes);
+      tx.fillStyle='rgba(0,0,0,.55)'; tx.fillRect(nx-1,0,2,H);
+      tx.fillStyle=NODE_HUES[(n)%NODE_HUES.length]; tx.fillRect(nx-0.5,0,1,H);
+    }
+    wallTex.needsUpdate=true;
+  }
+
+  var wp = null; // wall params
+  function backZ(){ return -S3.roomD/2 + S3.wallBack; }
+  function wallPoint(u, v){
+    var y = v*S3.wallH;
+    if(wp.flat) return new T.Vector3((u-0.5)*S3.wallW, y, backZ());
+    var a = wp.a0 + u*(wp.a1-wp.a0);
+    return new T.Vector3(Math.sin(a)*wp.R, y, backZ() + wp.cz - Math.cos(a)*wp.R);
+  }
+
+  function textSprite(txt, hue, scale){
+    var c=document.createElement('canvas'); c.width=256; c.height=80;
+    var x=c.getContext('2d');
+    x.font='700 36px "JetBrains Mono", monospace'; x.textAlign='center'; x.textBaseline='middle';
+    x.fillStyle=hue; x.fillText(txt,128,40);
+    var sp=new T.Sprite(new T.SpriteMaterial({ map:new T.CanvasTexture(c), transparent:true, depthWrite:false }));
+    sp.scale.set(2.2*(scale||1), 0.69*(scale||1), 1);
+    return sp;
+  }
+  function flatLabel(txt, w){
+    var c=document.createElement('canvas'); c.width=512; c.height=128;
+    var x=c.getContext('2d');
+    x.font='700 64px "JetBrains Mono", monospace'; x.textAlign='center'; x.textBaseline='middle';
+    x.fillStyle='#8b95a8'; x.fillText(txt,256,64);
+    var m=new T.Mesh(new T.PlaneGeometry(w||3, (w||3)/4),
+      new T.MeshBasicMaterial({ map:new T.CanvasTexture(c), transparent:true, depthWrite:false }));
+    m.rotation.x = -Math.PI/2;
+    return m;
+  }
+  function dispose(g){
+    while(g.children.length){
+      var o=g.children.pop();
+      if(o.children) while(o.children.length){ var k=o.children.pop(); if(k.geometry)k.geometry.dispose(); if(k.material){if(k.material.map&&k.material.map!==wallTex)k.material.map.dispose(); k.material.dispose();} }
+      if(o.geometry)o.geometry.dispose();
+      if(o.material){if(o.material.map&&o.material.map!==wallTex)o.material.map.dispose(); o.material.dispose();}
+    }
+  }
+
+  // ── Room shell + floor-plan dimensions ──
+  function buildRoom(){
+    dispose(roomG);
+    var W=S3.roomW, D=S3.roomD, Hh=S3.roomH;
+    var shell=new T.Mesh(new T.BoxGeometry(W,Hh,D),
+      new T.MeshStandardMaterial({ color:0x101218, roughness:0.92, metalness:0.1, side:T.BackSide }));
+    shell.position.y=Hh/2; roomG.add(shell);
+    var edges=new T.LineSegments(new T.EdgesGeometry(new T.BoxGeometry(W,Hh,D)),
+      new T.LineBasicMaterial({ color:0x2e323b }));
+    edges.position.y=Hh/2; roomG.add(edges);
+    var floor=new T.Mesh(new T.PlaneGeometry(W,D),
+      new T.MeshStandardMaterial({ color:0x0d0f13, roughness:0.6, metalness:0.35 }));
+    floor.rotation.x=-Math.PI/2; floor.position.y=0.001; roomG.add(floor);
+    var grid=new T.GridHelper(Math.max(W,D), Math.max(W,D), 0x1d2027, 0x14161b);
+    grid.position.y=0.004;
+    grid.scale.set(W/Math.max(W,D),1,D/Math.max(W,D));
+    roomG.add(grid);
+    // Dimension lines (plan style): width along front edge, depth along left edge
+    function dim(p0, p1, label){
+      var dirv=new T.Vector3().subVectors(p1,p0);
+      var lineG=new T.BufferGeometry().setFromPoints([p0,p1]);
+      roomG.add(new T.Line(lineG, new T.LineBasicMaterial({ color:0x3a4150 })));
+      [p0,p1].forEach(function(p){
+        var tickDir = new T.Vector3(-dirv.z,0,dirv.x).normalize().multiplyScalar(0.25);
+        var tg=new T.BufferGeometry().setFromPoints([p.clone().add(tickDir), p.clone().sub(tickDir)]);
+        roomG.add(new T.Line(tg, new T.LineBasicMaterial({ color:0x3a4150 })));
+      });
+      var mid=new T.Vector3().addVectors(p0,p1).multiplyScalar(0.5);
+      var lbl=flatLabel(label, 2.6);
+      lbl.position.set(mid.x, 0.01, mid.z + (Math.abs(dirv.x)>0.1 ? 0.65 : 0));
+      if(Math.abs(dirv.z)>0.1){ lbl.rotation.z = Math.PI/2; lbl.position.x = mid.x - 0.65; }
+      roomG.add(lbl);
+    }
+    var fz=D/2+0.7, lx=-W/2-0.7;
+    dim(new T.Vector3(-W/2,0.01,fz), new T.Vector3(W/2,0.01,fz), W.toFixed(1)+' m');
+    dim(new T.Vector3(lx,0.01,-D/2), new T.Vector3(lx,0.01,D/2), D.toFixed(1)+' m');
+    var hl=textSprite(Hh.toFixed(1)+' m \u2191', '#8b95a8', 0.9);
+    hl.position.set(-W/2+0.6, Hh-0.4, -D/2+0.6); roomG.add(hl);
+  }
+
+  // ── LED wall ──
+  function buildWallMesh(){
+    dispose(wallG);
+    var th=S3.curve*Math.PI/180, flat=S3.curve<1;
+    wp = flat ? {flat:true} : {flat:false, R:S3.wallW/th, a0:-th/2, a1:th/2, cz:S3.wallW/th};
+    var cols=Math.max(2, Math.round(S3.wallW/(S3.panel/1000)));
+    var segW=S3.wallW/cols, depth=0.09;
+    var backM=new T.MeshStandardMaterial({ color:0x191c22, roughness:0.8, metalness:0.3 });
+    for(var i=0;i<cols;i++){
+      var u=(i+0.5)/cols;
+      var p0=wallPoint(i/cols,0), p1=wallPoint((i+1)/cols,0), pc=wallPoint(u,0);
+      var ang=Math.atan2(p1.x-p0.x, p1.z-p0.z)-Math.PI/2;
+      var slab=new T.Mesh(new T.BoxGeometry(segW*0.995, S3.wallH, depth), backM);
+      slab.position.set(pc.x, S3.wallH/2, pc.z); slab.rotation.y=ang; slab.translateZ(-depth/2);
+      wallG.add(slab);
+      var face=new T.Mesh(new T.PlaneGeometry(segW*0.985, S3.wallH*0.995),
+        new T.MeshBasicMaterial({ map:wallTex }));
+      face.geometry.attributes.uv.array.set([i/cols,1,(i+1)/cols,1,i/cols,0,(i+1)/cols,0]);
+      face.geometry.attributes.uv.needsUpdate=true;
+      face.position.set(pc.x, S3.wallH/2, pc.z); face.rotation.y=ang; face.translateZ(0.002);
+      wallG.add(face);
+    }
+    for(var n=0;n<S3.nodes;n++){
+      var lp=wallPoint((n+0.5)/S3.nodes, 1);
+      var sp=textSprite('NODE '+(n+1), NODE_HUES[n%NODE_HUES.length], 1);
+      sp.position.set(lp.x, S3.wallH+0.45, lp.z);
+      wallG.add(sp);
+    }
+    var mid=wallPoint(0.5,0.5);
+    glow.position.set(mid.x, mid.y+0.6, mid.z+3.5);
+  }
+
+  // ── Machines: render-node racks + editor desks, draggable on the floor ──
+  function machineDefaults(){
+    var list=[], i;
+    for(i=0;i<S3.nodes;i++){
+      var ex=(S3.machines||[]).find(function(m){return m.t==='node'&&m.i===i;});
+      list.push(ex || { t:'node', i:i, x:-S3.roomW/2+1.2, z:-S3.roomD/2+2.2+i*1.3 });
+    }
+    for(i=0;i<S3.editors;i++){
+      var ex2=(S3.machines||[]).find(function(m){return m.t==='ed'&&m.i===i;});
+      list.push(ex2 || { t:'ed', i:i, x:S3.roomW/2-2.2, z:-S3.roomD/2+2.5+i*2.4 });
+    }
+    S3.machines=list;
+  }
+  function buildMachines(){
+    dispose(machG);
+    machineDefaults();
+    S3.machines.forEach(function(m){
+      var g=new T.Group();
+      if(m.t==='node'){
+        var rack=new T.Mesh(new T.BoxGeometry(0.62,1.7,0.85),
+          new T.MeshStandardMaterial({ color:0x14161c, roughness:0.45, metalness:0.6 }));
+        rack.position.y=0.85; g.add(rack);
+        var strip=new T.Mesh(new T.BoxGeometry(0.5,0.05,0.02),
+          new T.MeshBasicMaterial({ color:new T.Color(NODE_HUES[m.i%NODE_HUES.length]) }));
+        strip.position.set(0,1.3,0.44); g.add(strip);
+        var lbl=textSprite('NODE '+(m.i+1), NODE_HUES[m.i%NODE_HUES.length], 0.85);
+        lbl.position.y=2.05; g.add(lbl);
+      } else {
+        var desk=new T.Mesh(new T.BoxGeometry(1.7,0.06,0.8),
+          new T.MeshStandardMaterial({ color:0x23262e, roughness:0.6 }));
+        desk.position.y=0.74; g.add(desk);
+        [[-0.78,-0.32],[0.78,-0.32],[-0.78,0.32],[0.78,0.32]].forEach(function(lp){
+          var leg=new T.Mesh(new T.CylinderGeometry(0.025,0.025,0.74,8),
+            new T.MeshStandardMaterial({ color:0x1a1d23, metalness:0.5 }));
+          leg.position.set(lp[0],0.37,lp[1]); g.add(leg);
+        });
+        var mon=new T.Mesh(new T.PlaneGeometry(1.1,0.42),
+          new T.MeshBasicMaterial({ color:0x103654 }));
+        mon.position.set(0,1.08,-0.18); g.add(mon);
+        var tower=new T.Mesh(new T.BoxGeometry(0.24,0.52,0.55),
+          new T.MeshStandardMaterial({ color:0x14161c, roughness:0.45, metalness:0.6 }));
+        tower.position.set(0.6,0.26,0.05); g.add(tower);
+        var lbl2=textSprite('EDITOR'+(S3.editors>1?' '+(m.i+1):''), '#4ade80', 0.85);
+        lbl2.position.y=1.7; g.add(lbl2);
+      }
+      var shadow=new T.Mesh(new T.CircleGeometry(0.85,24),
+        new T.MeshBasicMaterial({ color:0x000000, transparent:true, opacity:0.35, depthWrite:false }));
+      shadow.rotation.x=-Math.PI/2; shadow.position.y=0.006; g.add(shadow);
+      g.position.set(m.x,0,m.z);
+      g.userData.m=m;
+      machG.add(g);
+    });
+  }
+
+  // ── Camera rig + talent + truss ──
+  var camRig=null, talent=null, frLines=null, frPos=new Float32Array(24);
+  function buildRig(){
+    dispose(rigG);
+    camRig=new T.Group();
+    var legM=new T.MeshStandardMaterial({ color:0x22252c, roughness:0.6, metalness:0.5 });
+    for(var l=0;l<3;l++){
+      var leg=new T.Mesh(new T.CylinderGeometry(0.022,0.022,1.35,8), legM);
+      var la=l*Math.PI*2/3;
+      leg.position.set(Math.sin(la)*0.28,0.62,Math.cos(la)*0.28);
+      leg.rotation.x=Math.cos(la)*0.32; leg.rotation.z=-Math.sin(la)*0.32;
+      camRig.add(leg);
+    }
+    var body=new T.Mesh(new T.BoxGeometry(0.34,0.3,0.62),
+      new T.MeshStandardMaterial({ color:0x2a2e36, metalness:0.6, roughness:0.45 }));
+    body.position.y=1.42; camRig.add(body);
+    var lens=new T.Mesh(new T.CylinderGeometry(0.085,0.1,0.34,16),
+      new T.MeshStandardMaterial({ color:0x111318, metalness:0.7, roughness:0.3 }));
+    lens.rotation.x=Math.PI/2; lens.position.set(0,1.45,-0.45); camRig.add(lens);
+    var tally=new T.Mesh(new T.SphereGeometry(0.035,10,10), new T.MeshBasicMaterial({ color:0xff3b30 }));
+    tally.position.set(0,1.62,-0.18); camRig.add(tally);
+    rigG.add(camRig);
+    talent=new T.Group();
+    var tM=new T.MeshStandardMaterial({ color:0x33363e, roughness:0.85 });
+    var torso=new T.Mesh(new T.CylinderGeometry(0.16,0.2,1.18,12), tM); torso.position.y=0.84; talent.add(torso);
+    var head=new T.Mesh(new T.SphereGeometry(0.13,14,12), tM); head.position.y=1.62; talent.add(head);
+    rigG.add(talent);
+    var trussM=new T.MeshStandardMaterial({ color:0x1c1f25, metalness:0.6, roughness:0.5 });
+    var ty=Math.min(S3.roomH-0.4, Math.max(S3.wallH+1.1,4.0)), span=Math.min(S3.wallW*0.45,7);
+    var cz=backZ()+S3.camDist*0.65;
+    [[-span/2,cz-span/2],[span/2,cz-span/2],[span/2,cz+span/2],[-span/2,cz+span/2]].forEach(function(pt,idx,arr){
+      var nx=arr[(idx+1)%4], dx=nx[0]-pt[0], dz=nx[1]-pt[1], len=Math.sqrt(dx*dx+dz*dz);
+      var pipe=new T.Mesh(new T.CylinderGeometry(0.035,0.035,len,8), trussM);
+      pipe.position.set((pt[0]+nx[0])/2,ty,(pt[1]+nx[1])/2);
+      pipe.rotation.z=Math.PI/2; pipe.rotation.y=-Math.atan2(dz,dx);
+      rigG.add(pipe);
+      var rec=new T.Mesh(new T.BoxGeometry(0.14,0.1,0.14),
+        new T.MeshStandardMaterial({ color:0x16181d, emissive:0x103a5e, emissiveIntensity:0.8 }));
+      rec.position.set(pt[0],ty-0.1,pt[1]); rigG.add(rec);
+    });
+    frLines=new T.LineSegments(
+      new T.BufferGeometry().setAttribute('position', new T.BufferAttribute(frPos,3)),
+      new T.LineBasicMaterial({ color:0xfbbf24, transparent:true, opacity:0.55 }));
+    rigG.add(frLines);
+  }
+
+  function build(){ buildRoom(); buildWallMesh(); buildMachines(); buildRig(); s3Readout(); }
+
+  // ── Orbit + machine dragging ──
+  var orb={ az:0.55, pol:1.15, dist:Math.max(S3.roomW,S3.roomD)*1.05, tAz:0.55, tPol:1.15, tDist:0 };
+  orb.tDist=orb.dist;
+  var dragging=false, dragM=null, px=0, py=0, pinch0=0;
+  var ray=new T.Raycaster(), ndc=new T.Vector2(), floorPlane=new T.Plane(new T.Vector3(0,1,0),0);
+
+  function setNdc(e){
+    var r=renderer.domElement.getBoundingClientRect();
+    ndc.x=((e.clientX-r.left)/r.width)*2-1;
+    ndc.y=-((e.clientY-r.top)/r.height)*2+1;
+  }
+  host.addEventListener('pointerdown', function(e){
+    setNdc(e); ray.setFromCamera(ndc, cam);
+    var hits=ray.intersectObjects(machG.children, true);
+    if(hits.length){
+      var g=hits[0].object; while(g.parent && g.parent!==machG) g=g.parent;
+      dragM=g; host.classList.add('s3-grab');
+    } else { dragging=true; }
+    px=e.clientX; py=e.clientY;
+    host.setPointerCapture(e.pointerId);
+  });
+  host.addEventListener('pointermove', function(e){
+    if(dragM){
+      setNdc(e); ray.setFromCamera(ndc, cam);
+      var pt=new T.Vector3();
+      if(ray.ray.intersectPlane(floorPlane, pt)){
+        var m=dragM.userData.m;
+        m.x=Math.max(-S3.roomW/2+0.6, Math.min(S3.roomW/2-0.6, pt.x));
+        m.z=Math.max(-S3.roomD/2+0.6, Math.min(S3.roomD/2-0.6, pt.z));
+        dragM.position.set(m.x,0,m.z);
+      }
+      return;
+    }
+    if(!dragging) return;
+    orb.tAz-=(e.clientX-px)*0.005; orb.tPol-=(e.clientY-py)*0.005;
+    orb.tPol=Math.max(0.2, Math.min(1.5, orb.tPol));
+    px=e.clientX; py=e.clientY;
+  });
+  host.addEventListener('pointerup', function(){
+    if(dragM){ s3Save(); }
+    dragM=null; dragging=false; host.classList.remove('s3-grab');
+  });
+  host.addEventListener('wheel', function(e){
+    e.preventDefault();
+    orb.tDist=Math.max(6, Math.min(90, orb.tDist+e.deltaY*0.03));
+  }, { passive:false });
+  host.addEventListener('touchmove', function(e){
+    if(e.touches.length===2){
+      var d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY);
+      if(pinch0) orb.tDist=Math.max(6, Math.min(90, orb.tDist-(d-pinch0)*0.06));
+      pinch0=d;
+    }
+  }, { passive:true });
+  host.addEventListener('touchend', function(){ pinch0=0; });
+
+  function resize(){
+    var w=host.clientWidth||1, h=host.clientHeight||1;
+    cam.aspect=w/h; cam.updateProjectionMatrix();
+    renderer.setSize(w,h);
+  }
+  if(window.ResizeObserver) new ResizeObserver(resize).observe(host);
+  window.addEventListener('resize', resize);
+
+  var clock=new T.Clock(), tPrev=0;
+  function tick(){
+    requestAnimationFrame(tick);
+    if(!el('pnl-stage3d') || !el('pnl-stage3d').classList.contains('on')) return; // idle when hidden
+    var t = S3.animate ? clock.getElapsedTime() : tPrev;
+    if(S3.animate) tPrev=t;
+    var sweep=S3.animate?Math.sin(t*0.32):0.35;
+    var frU=0.5+sweep*0.27;
+    var aim=wallPoint(frU,0.5), base=wallPoint(0.5,0);
+    var cx=base.x+sweep*S3.wallW*0.16, cz=base.z+S3.camDist;
+    cz=Math.min(cz, S3.roomD/2-0.8);
+    if(camRig){ camRig.position.set(cx,0,cz); camRig.lookAt(aim.x,0,aim.z); camRig.rotation.x=0; camRig.rotation.z=0; }
+    if(talent){ var tp=wallPoint(0.5+sweep*0.08,0); talent.position.set(tp.x,0,Math.min(tp.z+S3.camDist*0.45, S3.roomD/2-0.8)); }
+    if(frLines){
+      frLines.visible=!!S3.frustum;
+      if(S3.frustum){
+        var lp=new T.Vector3(cx,1.45,cz-0.5), hU=0.10;
+        var cs=[wallPoint(frU-hU,0.11),wallPoint(frU+hU,0.11),wallPoint(frU+hU,0.89),wallPoint(frU-hU,0.89)];
+        for(var c2=0;c2<4;c2++){
+          frPos[c2*6]=lp.x; frPos[c2*6+1]=lp.y; frPos[c2*6+2]=lp.z;
+          frPos[c2*6+3]=cs[c2].x; frPos[c2*6+4]=cs[c2].y; frPos[c2*6+5]=cs[c2].z;
+        }
+        frLines.geometry.attributes.position.needsUpdate=true;
+      }
+    }
+    drawContent(t, frU);
+    orb.az+=(orb.tAz-orb.az)*0.12; orb.pol+=(orb.tPol-orb.pol)*0.12; orb.dist+=(orb.tDist-orb.dist)*0.12;
+    var ty=S3.wallH*0.5;
+    cam.position.set(Math.sin(orb.az)*Math.sin(orb.pol)*orb.dist,
+      ty+Math.cos(orb.pol)*orb.dist,
+      Math.cos(orb.az)*Math.sin(orb.pol)*orb.dist+2);
+    cam.lookAt(0,ty,0);
+    renderer.render(scene,cam);
+  }
+
+  _s3={ build:build, resize:resize };
+  s3SyncInputs(); build(); resize(); tick();
+}
+
+// ── Stage 3D input bindings (safe to run before boot; they edit S3) ────────
+function s3Bind(){
+  function rng(id,vid,key,unit,fix,rebuild){
+    var i=el(id); if(!i) return;
+    i.addEventListener('input', function(){
+      S3[key]=parseFloat(i.value);
+      el(vid).innerHTML=S3[key].toFixed(fix)+(unit?' <small>'+unit+'</small>':'');
+      if(rebuild&&_s3) s3Rebuild(); else s3Readout();
+      s3Save();
+    });
+  }
+  rng('s3-w','s3v-w','wallW','m',1,true);
+  rng('s3-h','s3v-h','wallH','m',1,true);
+  rng('s3-rw','s3v-rw','roomW','m',0,true);
+  rng('s3-rd','s3v-rd','roomD','m',0,true);
+  rng('s3-rh','s3v-rh','roomH','m',1,true);
+  rng('s3-wb','s3v-wb','wallBack','m',1,true);
+  rng('s3-cd','s3v-cd','camDist','m',1,false);
+  rng('s3-ed','s3v-ed','editors','',0,true);
+  var c=el('s3-c');
+  if(c) c.addEventListener('input', function(){
+    S3.curve=parseFloat(c.value);
+    el('s3v-c').innerHTML=S3.curve+'<small>\u00b0</small>';
+    if(_s3) s3Rebuild(); s3Save();
+  });
+  var p=el('s3-p'); if(p) p.addEventListener('change', function(){ S3.panel=parseFloat(p.value); if(_s3) s3Rebuild(); s3Save(); });
+  var pp=el('s3-pp'); if(pp) pp.addEventListener('change', function(){ S3.pitch=parseFloat(pp.value); s3Readout(); s3Save(); });
+  var fr=el('s3-fr'); if(fr) fr.addEventListener('change', function(){ S3.frustum=fr.checked; s3Save(); });
+  var an=el('s3-an'); if(an) an.addEventListener('change', function(){ S3.animate=an.checked; s3Save(); });
+  var seg=el('s3-seg-n');
+  if(seg) seg.addEventListener('click', function(e){
+    var b=e.target.closest('button'); if(!b) return;
+    S3.nodes=parseInt(b.dataset.n,10);
+    Array.prototype.forEach.call(seg.querySelectorAll('button'), function(x){ x.classList.toggle('on', x===b); });
+    if(_s3) s3Rebuild(); s3Save();
+  });
+}
+var _s3RebT=null;
+function s3Rebuild(){ clearTimeout(_s3RebT); _s3RebT=setTimeout(function(){ if(_s3)_s3.build(); }, 120); }
+document.addEventListener('DOMContentLoaded', s3Bind);
+if(document.readyState!=='loading') s3Bind();
 </script>
 </body>
     

@@ -1175,6 +1175,19 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
 .s3-ro span{color:var(--ink3)}
 .s3-ro b{font-family:var(--mono);font-weight:600;color:var(--ink)}
 .s3-hint{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);font-size:10.5px;color:var(--ink3);background:rgba(16,18,23,.75);border:1px solid var(--line);border-radius:7px;padding:4px 11px;z-index:5;pointer-events:none;white-space:nowrap}
+.s3-topbtn{position:absolute;top:14px;right:14px;z-index:6;background:rgba(16,18,23,.9);backdrop-filter:blur(12px);border:1px solid var(--line2);color:var(--ink2);font-size:11px;font-weight:600;padding:7px 13px;border-radius:8px;cursor:pointer}
+.s3-topbtn.on{background:var(--brand-dim);border-color:var(--brand1);color:var(--brand1)}
+#s3-pop{position:absolute;z-index:7;width:248px;background:rgba(16,18,23,.95);backdrop-filter:blur(14px);border:1px solid var(--line2);border-radius:11px;padding:10px 11px;box-shadow:0 12px 32px rgba(0,0,0,.5)}
+.s3-pop-h{display:flex;align-items:center;justify-content:space-between;font-family:'Barlow Condensed',var(--sans);font-weight:800;font-size:12px;letter-spacing:.16em;color:var(--brand1);margin-bottom:8px}
+.s3-pop-x{background:none;border:none;color:var(--ink3);font-size:16px;cursor:pointer;padding:0 2px;line-height:1}
+.s3-pop-dev{display:flex;align-items:center;gap:8px;width:100%;background:var(--el);border:1px solid var(--line);border-radius:7px;padding:7px 9px;margin-bottom:5px;cursor:pointer;color:var(--ink);text-align:left}
+.s3-pop-dev:hover{border-color:var(--line2)}
+.s3-pop-dev.sel{border-color:var(--brand1);background:var(--brand-dim)}
+.s3-pop-led{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+.s3-pop-nm{font-size:11.5px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.s3-pop-cn{font-family:var(--mono);font-size:10px;color:var(--ink3);flex-shrink:0}
+.s3-pop-empty{font-size:11px;color:var(--ink3);padding:4px 0 8px}
+.s3-pop-hint{font-size:10px;color:var(--ink4);line-height:1.45;margin-top:3px}
 @media(max-width:900px){
   #pnl-stage3d.on{margin:-14px}
   .s3-rail{width:200px;padding:11px}
@@ -1483,7 +1496,9 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
         <div class="s3-ro"><span>Studio</span><b id="s3ro-room">&mdash;</b></div>
         <div class="s3-ro"><span>Cables routed</span><b id="s3ro-cables">0</b></div>
       </div>
-      <div class="s3-hint">drag to orbit &middot; scroll to zoom &middot; grab a machine to move it</div>
+      <button class="s3-topbtn" id="s3-topbtn" onclick="_s3TopToggle()" title="Toggle top-down plan view">Top view</button>
+      <div id="s3-pop" style="display:none"></div>
+      <div class="s3-hint">drag to orbit &middot; scroll to zoom &middot; drag racks to place &middot; click a rack to inspect</div>
     </div>
 
     <div class="pnl" id="pnl-plugin">
@@ -7078,25 +7093,61 @@ function s3Boot(){
     S3.machines.forEach(function(m){
       var g=new T.Group();
       if(m.t==='rack'){
-        var frame=new T.Mesh(new T.BoxGeometry(0.72,2.0,0.92),
-          new T.MeshStandardMaterial({ color:0x101319, roughness:0.5, metalness:0.55 }));
-        frame.position.y=1.0; g.add(frame);
+        var caseM=new T.MeshStandardMaterial({ color:0x14171d, roughness:0.55, metalness:0.5 });
+        var postM=new T.MeshStandardMaterial({ color:0x22262e, roughness:0.35, metalness:0.75 });
+        // corner posts
+        [[-0.33,-0.42],[0.33,-0.42],[-0.33,0.42],[0.33,0.42]].forEach(function(p){
+          var post=new T.Mesh(new T.BoxGeometry(0.055,2.0,0.055), postM);
+          post.position.set(p[0],1.0,p[1]); g.add(post);
+        });
+        // side, back and top panels (front left open)
+        [[-0.36,1.0,0,0.012,2.0,0.9],[0.36,1.0,0,0.012,2.0,0.9],[0,1.0,-0.45,0.72,2.0,0.012],[0,2.01,0,0.72,0.02,0.9],[0,0.05,0,0.72,0.1,0.9]].forEach(function(d){
+          var p=new T.Mesh(new T.BoxGeometry(d[3],d[4],d[5]), caseM);
+          p.position.set(d[0],d[1],d[2]); g.add(p);
+        });
+        // front mounting rails
+        [-0.295,0.295].forEach(function(rx){
+          var rail=new T.Mesh(new T.BoxGeometry(0.035,1.78,0.02), postM);
+          rail.position.set(rx,1.0,0.43); g.add(rail);
+        });
+        // feet
+        [[-0.3,-0.38],[0.3,-0.38],[-0.3,0.38],[0.3,0.38]].forEach(function(p){
+          var ft=new T.Mesh(new T.CylinderGeometry(0.035,0.045,0.06,10),
+            new T.MeshStandardMaterial({ color:0x0c0e12, roughness:0.7 }));
+          ft.position.set(p[0],0.03,p[1]); g.add(ft);
+        });
         var devs=components.filter(function(c){return c.rack===m.i;});
         var maxSlots=7;
         devs.slice(0,maxSlots).forEach(function(c, s){
-          var slab=new T.Mesh(new T.BoxGeometry(0.62,0.2,0.84),
-            new T.MeshStandardMaterial({ color:0x1c2027, roughness:0.4, metalness:0.6 }));
-          slab.position.set(0, 0.32+s*0.245, 0.02); g.add(slab);
-          var led=new T.Mesh(new T.BoxGeometry(0.5,0.035,0.015),
+          var y=0.32+s*0.245;
+          var unit=new T.Mesh(new T.BoxGeometry(0.56,0.19,0.8),
+            new T.MeshStandardMaterial({ color:0x191d24, roughness:0.45, metalness:0.55 }));
+          unit.position.set(0, y, -0.02); g.add(unit);
+          // faceplate + rack ears
+          var face=new T.Mesh(new T.BoxGeometry(0.66,0.21,0.02),
+            new T.MeshStandardMaterial({ color:0x21262f, roughness:0.35, metalness:0.65 }));
+          face.position.set(0, y, 0.4); g.add(face);
+          [-0.31,0.31].forEach(function(ex){
+            var ear=new T.Mesh(new T.BoxGeometry(0.04,0.21,0.015),
+              new T.MeshStandardMaterial({ color:0x2a2f39, metalness:0.7, roughness:0.3 }));
+            ear.position.set(ex, y, 0.412); g.add(ear);
+          });
+          // vent slots + status LEDs
+          for(var vsl=0; vsl<3; vsl++){
+            var vent=new T.Mesh(new T.BoxGeometry(0.3,0.012,0.005),
+              new T.MeshBasicMaterial({ color:0x0a0c10 }));
+            vent.position.set(-0.08, y-0.05+vsl*0.05, 0.412); g.add(vent);
+          }
+          var led=new T.Mesh(new T.BoxGeometry(0.05,0.025,0.012),
             new T.MeshBasicMaterial({ color:new T.Color(NODE_HUES[s%NODE_HUES.length]) }));
-          led.position.set(0, 0.32+s*0.245, 0.45); g.add(led);
+          led.position.set(0.2, y+0.05, 0.412); g.add(led);
           var nm=compName(c); if(nm.length>16) nm=nm.slice(0,15)+'\u2026';
           var dl=textSprite(nm, '#cfd6e4', 0.62);
-          dl.position.set(0.85, 0.32+s*0.245, 0.25); g.add(dl);
+          dl.position.set(0.92, y, 0.25); g.add(dl);
         });
         if(devs.length>maxSlots){
           var more=textSprite('+'+(devs.length-maxSlots)+' more', '#8b909b', 0.6);
-          more.position.set(0.85, 0.32+maxSlots*0.245, 0.25); g.add(more);
+          more.position.set(0.92, 0.32+maxSlots*0.245, 0.25); g.add(more);
         }
         var lbl=textSprite('RACK '+m.i, '#2b9fff', 0.95);
         lbl.position.y=2.35; g.add(lbl);
@@ -7184,8 +7235,9 @@ function s3Boot(){
     var s=devs.findIndex(function(c){return c.id===comp.id;});
     return 0.32 + Math.max(0,Math.min(s,6))*0.245;
   }
+  var _cables=[], pulseG=new T.Group(); scene.add(pulseG);
   function buildCables(){
-    dispose(cableG);
+    dispose(cableG); dispose(pulseG); _cables=[];
     var n=0;
     if(S3.cables!==false){
       var trayIdx={};   // stagger index per unordered rack pair
@@ -7207,13 +7259,69 @@ function s3Boot(){
         v[v.length-1]=new T.Vector3(pb.x, 0.12, pb.z);
         v.push(new T.Vector3(pb.x, slotY(b), pb.z));
         var curve=new T.CatmullRomCurve3(v, false, 'catmullrom', 0.04);
-        var tube=new T.Mesh(new T.TubeGeometry(curve, Math.max(24, v.length*8), 0.018, 6, false),
-          new T.MeshBasicMaterial({ color:new T.Color(col) }));
+        var rad=Math.max(0.045, (S3.roomW+S3.roomD)*0.0014);
+        var tube=new T.Mesh(new T.TubeGeometry(curve, Math.max(32, v.length*10), rad, 8, false),
+          new T.MeshBasicMaterial({ color:new T.Color(col), transparent:true, opacity:1 }));
         cableG.add(tube);
+        _cables.push({ mesh:tube, curve:curve, color:col, comps:[a.id,b.id] });
         n++;
       });
     }
     if(el('s3ro-cables')) el('s3ro-cables').textContent = String(n);
+    applySelection();
+  }
+
+  // ── Device selection: highlight + animate that device's cables ──
+  var selComp=null;
+  function applySelection(){
+    dispose(pulseG);
+    _cables.forEach(function(cb){
+      var hit = selComp!=null && cb.comps.indexOf(selComp)>=0;
+      cb.mesh.material.opacity = (selComp==null) ? 1 : (hit ? 1 : 0.12);
+      if(hit){
+        for(var pz=0; pz<3; pz++){
+          var s=new T.Mesh(new T.SphereGeometry(0.09,10,10),
+            new T.MeshBasicMaterial({ color:0xffffff }));
+          s.userData.cv=cb.curve; s.userData.off=pz/3;
+          pulseG.add(s);
+        }
+      }
+    });
+  }
+  function s3SelectComp(id){
+    selComp = (selComp===id) ? null : id;
+    applySelection();
+    s3PopRefresh();
+  }
+
+  // ── Rack popup ──
+  var popRack=null;
+  function s3PopRefresh(){
+    var pop=el('s3-pop'); if(!pop) return;
+    if(popRack==null){ pop.style.display='none'; return; }
+    var devs=components.filter(function(c){return c.rack===popRack;});
+    var h='<div class="s3-pop-h">RACK '+popRack+'<button class="s3-pop-x" onclick="window._s3PopClose()">\u00d7</button></div>';
+    if(!devs.length) h+='<div class="s3-pop-empty">Nothing assigned to this rack.</div>';
+    devs.forEach(function(c, s){
+      var cnt=connections.filter(function(cn){return cn.fromCompId===c.id||cn.toCompId===c.id;}).length;
+      h+='<button class="s3-pop-dev'+(selComp===c.id?' sel':'')+'" onclick="window._s3PopSel('+c.id+')">'
+        +'<span class="s3-pop-led" style="background:'+NODE_HUES[s%NODE_HUES.length]+'"></span>'
+        +'<span class="s3-pop-nm">'+esc(compName(c))+'</span>'
+        +'<span class="s3-pop-cn">'+(cnt?cnt+' cable'+(cnt>1?'s':''):'\u2014')+'</span>'
+        +'</button>';
+    });
+    h+='<div class="s3-pop-hint">'+(selComp!=null?'Cables for the selected device are animating \u2014 click again to clear.':'Select a device to trace its cables.')+'</div>';
+    pop.innerHTML=h;
+    pop.style.display='block';
+  }
+  window._s3PopClose=function(){ popRack=null; selComp=null; applySelection(); s3PopRefresh(); };
+  window._s3PopSel=function(id){ s3SelectComp(id); };
+  function openRackPopup(rackNum, cx, cy){
+    popRack=rackNum;
+    s3PopRefresh();
+    var pop=el('s3-pop'), r=host.getBoundingClientRect();
+    pop.style.left=Math.min(cx-r.left+14, r.width-260)+'px';
+    pop.style.top=Math.max(12, Math.min(cy-r.top-30, r.height-220))+'px';
   }
 
   function build(){ buildRoom(); buildWallMesh(); buildMachines(); buildRig(); buildCables(); s3Readout(); }
@@ -7221,7 +7329,23 @@ function s3Boot(){
   // ── Orbit + machine dragging ──
   var orb={ az:0.55, pol:1.15, dist:Math.max(S3.roomW,S3.roomD)*1.05, tAz:0.55, tPol:1.15, tDist:0 };
   orb.tDist=orb.dist;
-  var dragging=false, dragM=null, px=0, py=0, pinch0=0;
+  var dragging=false, dragM=null, dragMoved=false, px=0, py=0, pinch0=0;
+  var topView=false;
+  var topCam=new T.OrthographicCamera(-1,1,1,-1,0.1,200);
+  function fitTopCam(){
+    var w2=S3.roomW/2+2.5, d2=S3.roomD/2+2.5;
+    var ar=(host.clientWidth||1)/(host.clientHeight||1);
+    var hw=Math.max(w2, d2*ar), hh=hw/ar;
+    if(hh<d2){ hh=d2; hw=hh*ar; }
+    topCam.left=-hw; topCam.right=hw; topCam.top=hh; topCam.bottom=-hh;
+    topCam.position.set(0,60,0); topCam.up.set(0,0,-1); topCam.lookAt(0,0,0);
+    topCam.updateProjectionMatrix();
+  }
+  function activeCam(){ return topView?topCam:cam; }
+  window._s3TopToggle=function(){
+    topView=!topView; fitTopCam();
+    var b=el('s3-topbtn'); if(b) b.classList.toggle('on', topView);
+  };
   var ray=new T.Raycaster(), ndc=new T.Vector2(), floorPlane=new T.Plane(new T.Vector3(0,1,0),0);
 
   function setNdc(e){
@@ -7230,18 +7354,20 @@ function s3Boot(){
     ndc.y=-((e.clientY-r.top)/r.height)*2+1;
   }
   host.addEventListener('pointerdown', function(e){
-    setNdc(e); ray.setFromCamera(ndc, cam);
+    setNdc(e); ray.setFromCamera(ndc, activeCam());
     var hits=ray.intersectObjects(machG.children, true);
     if(hits.length){
       var g=hits[0].object; while(g.parent && g.parent!==machG) g=g.parent;
-      dragM=g; host.classList.add('s3-grab');
+      dragM=g; dragMoved=false; host.classList.add('s3-grab');
     } else { dragging=true; }
     px=e.clientX; py=e.clientY;
     host.setPointerCapture(e.pointerId);
   });
   host.addEventListener('pointermove', function(e){
     if(dragM){
-      setNdc(e); ray.setFromCamera(ndc, cam);
+      if(Math.hypot(e.clientX-px, e.clientY-py)>6) dragMoved=true;
+      if(!dragMoved) return;
+      setNdc(e); ray.setFromCamera(ndc, activeCam());
       var pt=new T.Vector3();
       if(ray.ray.intersectPlane(floorPlane, pt)){
         var m=dragM.userData.m;
@@ -7251,14 +7377,20 @@ function s3Boot(){
       }
       return;
     }
-    if(!dragging) return;
+    if(!dragging || topView) return;
     orb.tAz-=(e.clientX-px)*0.005; orb.tPol-=(e.clientY-py)*0.005;
     orb.tPol=Math.max(0.2, Math.min(1.5, orb.tPol));
     px=e.clientX; py=e.clientY;
   });
-  host.addEventListener('pointerup', function(){
-    if(dragM){ if(dragM.userData.m.t==='rack') buildCables(); s3Save(); }
-    dragM=null; dragging=false; host.classList.remove('s3-grab');
+  host.addEventListener('pointerup', function(e){
+    if(dragM){
+      var m=dragM.userData.m;
+      if(!dragMoved && m.t==='rack'){ openRackPopup(m.i, e.clientX, e.clientY); }
+      else if(dragMoved){ if(m.t==='rack') buildCables(); s3Save(); }
+    } else if(!dragMoved && popRack!=null && Math.hypot(e.clientX-px,e.clientY-py)<6){
+      window._s3PopClose();
+    }
+    dragM=null; dragging=false; dragMoved=false; host.classList.remove('s3-grab');
   });
   host.addEventListener('wheel', function(e){
     e.preventDefault();
@@ -7276,6 +7408,7 @@ function s3Boot(){
   function resize(){
     var w=host.clientWidth||1, h=host.clientHeight||1;
     cam.aspect=w/h; cam.updateProjectionMatrix();
+    fitTopCam();
     renderer.setSize(w,h);
   }
   if(window.ResizeObserver) new ResizeObserver(resize).observe(host);
@@ -7313,7 +7446,14 @@ function s3Boot(){
       ty+Math.cos(orb.pol)*orb.dist,
       Math.cos(orb.az)*Math.sin(orb.pol)*orb.dist+2);
     cam.lookAt(0,ty,0);
-    renderer.render(scene,cam);
+    if(pulseG.children.length){
+      var pt2=(S3.animate?clock.getElapsedTime():tPrev);
+      pulseG.children.forEach(function(s){
+        var u=((pt2*0.16)+s.userData.off)%1;
+        s.position.copy(s.userData.cv.getPointAt(u));
+      });
+    }
+    renderer.render(scene, activeCam());
   }
 
   _s3={ build:build, resize:resize };

@@ -6852,24 +6852,66 @@ function s3Boot(){
   scene.add(wallG); scene.add(roomG); scene.add(machG); scene.add(rigG);
 
   // Wall content texture
-  var tc = document.createElement('canvas'); tc.width=1024; tc.height=256;
+  var tc = document.createElement('canvas'); tc.width=2048; tc.height=410;
   var tx = tc.getContext('2d');
   var wallTex = new T.CanvasTexture(tc);
+  var oc = document.createElement('canvas');   // static layer: panel grid + numbers
+  var ox = oc.getContext('2d');
+
+  // Rebuilt whenever the wall specs change — grid lines, panel numbers,
+  // corner registration marks. Drawn once, composited every frame.
+  function buildPanelOverlay(cols, rows){
+    tc.height = Math.max(128, Math.min(640, Math.round(tc.width * (S3.wallH/Math.max(S3.wallW,0.1)))));
+    oc.width = tc.width; oc.height = tc.height;
+    ox.clearRect(0,0,oc.width,oc.height);
+    var cw = oc.width/cols, ch = oc.height/rows;
+    ox.strokeStyle = 'rgba(255,255,255,0.55)';
+    ox.lineWidth = 1.5;
+    for(var c=0;c<=cols;c++){ ox.beginPath(); ox.moveTo(c*cw,0); ox.lineTo(c*cw,oc.height); ox.stroke(); }
+    for(var r=0;r<=rows;r++){ ox.beginPath(); ox.moveTo(0,r*ch); ox.lineTo(oc.width,r*ch); ox.stroke(); }
+    var fpx = Math.max(9, Math.min(cw*0.42, ch*0.42));
+    ox.font = '700 '+fpx+'px "JetBrains Mono", monospace';
+    ox.textAlign = 'center'; ox.textBaseline = 'middle';
+    for(var rr=0; rr<rows; rr++){
+      for(var cc=0; cc<cols; cc++){
+        var x = cc*cw + cw/2, y = rr*ch + ch/2;
+        ox.fillStyle = 'rgba(0,0,0,0.45)';
+        ox.fillText((cc+1)+'-'+(rr+1), x+1, y+1);
+        ox.fillStyle = 'rgba(255,255,255,0.92)';
+        ox.fillText((cc+1)+'-'+(rr+1), x, y);
+        // corner registration tick per panel
+        ox.strokeStyle = 'rgba(255,255,255,0.8)'; ox.lineWidth = 1.5;
+        ox.beginPath(); ox.moveTo(cc*cw+2, rr*ch+ch*0.18); ox.lineTo(cc*cw+2, rr*ch+2); ox.lineTo(cc*cw+cw*0.12, rr*ch+2); ox.stroke();
+        ox.strokeStyle = 'rgba(255,255,255,0.55)';
+      }
+    }
+  }
   function drawContent(t, frU){
     var W=tc.width, H=tc.height;
-    var g=tx.createLinearGradient(0,0,0,H);
-    g.addColorStop(0,'#06121f'); g.addColorStop(.55,'#0b2238'); g.addColorStop(1,'#03070c');
+    // Vivid hue-cycling base — full-saturation gradient sweeping over time
+    var h0 = (t*22)%360;
+    var g = tx.createLinearGradient(0,0,W,H);
+    g.addColorStop(0,   'hsl('+h0+',92%,52%)');
+    g.addColorStop(0.5, 'hsl('+((h0+90)%360)+',92%,46%)');
+    g.addColorStop(1,   'hsl('+((h0+180)%360)+',92%,52%)');
     tx.fillStyle=g; tx.fillRect(0,0,W,H);
-    for(var b=0;b<2;b++){
-      tx.beginPath(); tx.moveTo(0,H);
-      for(var x=0;x<=W;x+=8) tx.lineTo(x, H*0.62+b*26+Math.sin(x*0.012+t*(0.25+b*0.13)+b*2.2)*16);
-      tx.lineTo(W,H); tx.closePath();
-      tx.fillStyle = b?'rgba(10,32,52,.85)':'rgba(16,48,76,.7)'; tx.fill();
+    // Diagonal moving light bars
+    tx.save();
+    tx.translate((t*120)%(W/3), 0);
+    tx.rotate(-0.35);
+    for(var bb=-2; bb<8; bb++){
+      tx.fillStyle='rgba(255,255,255,'+(bb%2?0.10:0.05)+')';
+      tx.fillRect(bb*W/3, -H, W/9, H*4);
     }
-    var sx=(0.5+0.32*Math.sin(t*0.1))*W;
-    var sun=tx.createRadialGradient(sx,H*0.34,2,sx,H*0.34,54);
-    sun.addColorStop(0,'rgba(150,210,255,.85)'); sun.addColorStop(1,'rgba(150,210,255,0)');
-    tx.fillStyle=sun; tx.fillRect(0,0,W,H);
+    tx.restore();
+    // Vertical scanline sweep
+    var sxp=((t*0.13)%1)*W;
+    var sg=tx.createLinearGradient(sxp-90,0,sxp+10,0);
+    sg.addColorStop(0,'rgba(255,255,255,0)'); sg.addColorStop(1,'rgba(255,255,255,0.5)');
+    tx.fillStyle=sg; tx.fillRect(sxp-90,0,100,H);
+    tx.fillStyle='rgba(255,255,255,0.95)'; tx.fillRect(sxp,0,3,H);
+    // Static layer: panel grid + numbers + registration ticks
+    if(oc.width) tx.drawImage(oc,0,0,W,H);
     if(S3.frustum && frU>=0){
       var fw=W*0.2, fh=H*0.78, fx=frU*W-fw/2, fy=(H-fh)/2;
       tx.save(); tx.beginPath(); tx.rect(fx,fy,fw,fh); tx.clip();
@@ -6967,6 +7009,8 @@ function s3Boot(){
     var th=S3.curve*Math.PI/180, flat=S3.curve<1;
     wp = flat ? {flat:true} : {flat:false, R:S3.wallW/th, a0:-th/2, a1:th/2, cz:S3.wallW/th};
     var cols=Math.max(2, Math.round(S3.wallW/(S3.panel/1000)));
+    var rows=Math.max(1, Math.round(S3.wallH/(S3.panel/1000)));
+    buildPanelOverlay(cols, rows);
     var segW=S3.wallW/cols, depth=0.09;
     var backM=new T.MeshStandardMaterial({ color:0x191c22, roughness:0.8, metalness:0.3 });
     for(var i=0;i<cols;i++){

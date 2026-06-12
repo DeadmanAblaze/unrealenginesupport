@@ -1174,6 +1174,9 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
 .s3-ro{display:flex;justify-content:space-between;gap:16px;font-size:11px;padding:2px 0}
 .s3-ro span{color:var(--ink3)}
 .s3-ro b{font-family:var(--mono);font-weight:600;color:var(--ink)}
+.s3-legend{display:flex;flex-wrap:wrap;gap:5px 10px;margin-top:7px;padding-top:7px;border-top:1px solid var(--line)}
+.s3-lg{display:inline-flex;align-items:center;gap:5px;font-size:9.5px;font-family:var(--mono);color:var(--ink3)}
+.s3-lg i{width:14px;height:3px;border-radius:2px;display:inline-block}
 .s3-hint{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);font-size:10.5px;color:var(--ink3);background:rgba(16,18,23,.75);border:1px solid var(--line);border-radius:7px;padding:4px 11px;z-index:5;pointer-events:none;white-space:nowrap}
 .s3-topbtn{position:absolute;top:14px;right:14px;z-index:6;background:rgba(16,18,23,.9);backdrop-filter:blur(12px);border:1px solid var(--line2);color:var(--ink2);font-size:11px;font-weight:600;padding:7px 13px;border-radius:8px;cursor:pointer}
 .s3-topbtn.on{background:var(--brand-dim);border-color:var(--brand1);color:var(--brand1)}
@@ -1542,6 +1545,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
         <div class="s3-ro"><span>Curve radius</span><b id="s3ro-rad">&mdash;</b></div>
         <div class="s3-ro"><span>Studio</span><b id="s3ro-room">&mdash;</b></div>
         <div class="s3-ro"><span>Cables routed</span><b id="s3ro-cables">0</b></div>
+        <div class="s3-legend" id="s3-leg"></div>
       </div>
       <button class="s3-topbtn" id="s3-topbtn" onclick="_s3TopToggle()" title="Toggle top-down plan view">Top view</button>
       <div id="s3-pop" style="display:none"></div>
@@ -7338,19 +7342,23 @@ function s3Boot(){
     dispose(cableG); dispose(pulseG); _cables=[];
     var n=0;
     if(S3.cables!==false){
-      var trayIdx={};   // stagger index per unordered rack pair
+      // One tray lane per signal category: all cables of a type run
+      // together, categories separated side by side and stepped in height.
+      var lanes={}, laneN=0, dupIdx={};
       connections.forEach(function(cn){
         var a=components.find(function(c){return c.id===cn.fromCompId;});
         var b=components.find(function(c){return c.id===cn.toCompId;});
         if(!a||!b||!a.rack||!b.rack) return;
         var pa=compAnchor(a), pb=compAnchor(b);
         if(!pa||!pb) return;
-        var key=Math.min(a.rack,b.rack)+'-'+Math.max(a.rack,b.rack);
-        var k=(trayIdx[key]=(trayIdx[key]||0)+1)-1;
         var port=(a.ports||[]).find(function(p){return p.id===cn.fromPortId;});
-        var col=SIGNAL_COLOR[(port||{}).signal]||'#9b9b9f';
+        var sig=(port||{}).signal||'Other';
+        var col=SIGNAL_COLOR[sig]||'#9b9b9f';
+        if(lanes[sig]===undefined) lanes[sig]=laneN++;
+        var dk=sig+':'+Math.min(a.rack,b.rack)+'-'+Math.max(a.rack,b.rack);
+        var k=lanes[sig]*2 + (((dupIdx[dk]=(dupIdx[dk]||0)+1)-1)%2)*0.7;
         var pts2=s3CablePath(pa.x,pa.z,pb.x,pb.z,S3.roomW,S3.roomD,k);
-        var floorY=0.05+k*0.03;
+        var floorY=0.06+lanes[sig]*0.07;
         var v=[];
         v.push(new T.Vector3(pa.x, pa.y, pa.z));
         pts2.forEach(function(pt,i){ v.push(new T.Vector3(pt[0], i===0?0.12:floorY, pt[1])); });
@@ -7366,6 +7374,10 @@ function s3Boot(){
       });
     }
     if(el('s3ro-cables')) el('s3ro-cables').textContent = String(n);
+    var lg=el('s3-leg');
+    if(lg) lg.innerHTML=Object.keys(lanes).map(function(s){
+      return '<span class="s3-lg"><i style="background:'+(SIGNAL_COLOR[s]||'#9b9b9f')+'"></i>'+esc(s)+'</span>';
+    }).join('');
     applySelection();
   }
 

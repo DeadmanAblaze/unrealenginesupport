@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="description" content="Live monitoring and support console for Unreal Engine virtual production stages — nDisplay diagnostics, rig specs, issue tracking and AI assistance.">
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#0d0d0f">
@@ -1228,6 +1231,31 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
 .mt-log{width:100%;font-size:11px;color:var(--ink3);line-height:1.55;border-top:1px solid var(--line);padding-top:6px;margin-top:3px}
 .mt-log b{color:var(--ink2);font-family:var(--mono);font-size:10px}
 .mt-empty{font-size:12px;color:var(--ink3)}
+
+/* ── MOBILE ── */
+.mtab,.msheet{display:none}
+@media(max-width:760px){
+  .rail{display:none!important}
+  .mtab{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:200;background:rgba(13,13,15,.96);backdrop-filter:blur(14px);border-top:1px solid var(--line2);padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
+  .mt-b{flex:1;background:none;border:none;color:var(--ink3);font-size:10.5px;font-weight:600;padding:10px 0;min-height:44px;border-radius:8px;cursor:pointer}
+  .mt-b.on{color:var(--brand1);background:var(--brand-dim)}
+  .msheet.show{display:flex;position:fixed;inset:0;z-index:201;background:rgba(0,0,0,.55);align-items:flex-end}
+  .msheet-in{width:100%;background:var(--card);border-top:1px solid var(--line2);border-radius:14px 14px 0 0;padding:14px 14px calc(18px + env(safe-area-inset-bottom));display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .msheet-in button{background:var(--el);border:1px solid var(--line2);color:var(--ink);font-size:13px;padding:13px;border-radius:9px;min-height:48px}
+  .main-scroll{padding-bottom:calc(76px + env(safe-area-inset-bottom))!important}
+  input,select,textarea{font-size:16px!important}
+  button{min-height:38px}
+  .mt-cell{min-height:0!important}
+  .mt-card{overflow-x:auto}
+  .mt-grid{min-width:560px}
+  #pnl-stage3d.on{margin:-14px -14px calc(-14px + 64px)}
+  .s3-rail{transform:translateX(-110%);transition:transform .2s}
+  .s3-rail.open{transform:none}
+  .s3-railbtn{display:block!important}
+  #s3-pop{width:calc(100vw - 28px);left:14px!important}
+  .s3-readout{display:none}
+}
+.s3-railbtn{display:none;position:absolute;top:14px;left:14px;z-index:6;background:rgba(16,18,23,.9);border:1px solid var(--line2);color:var(--ink2);font-size:11px;font-weight:600;padding:7px 13px;border-radius:8px;cursor:pointer}
 </style>
 </head>
 <body>
@@ -1460,6 +1488,22 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
       <button class="sobt" onclick="doSignOut()">Sign out</button>
     </div>
   </aside>
+<div class="msheet" id="msheet" onclick="if(event.target===this)mtabSheet(false)">
+  <div class="msheet-in">
+    <button onclick="mtabGo('cl')">Checklist</button><button onclick="mtabGo('cal')">Planner</button>
+    <button onclick="mtabGo('specs')">Rig specs</button><button onclick="mtabGo('gear')">Equipment</button>
+    <button onclick="mtabGo('plugin')">UE Plugin</button><button onclick="mtabGo('features')">Features</button>
+    <button onclick="mtabGo('quickstart')">Quick start</button><button id="msheet-admin" style="display:none" onclick="mtabGo('admin');adminLoadUsers()">Admin</button>
+  </div>
+</div>
+<nav class="mtab" id="mtab">
+  <button class="mt-b on" data-p="home" onclick="mtabGo('home')">Home</button>
+  <button class="mt-b" data-p="chat" onclick="mtabGo('chat')">Support</button>
+  <button class="mt-b" data-p="issues" onclick="mtabGo('issues')">Issues</button>
+  <button class="mt-b" data-p="maint" onclick="mtabGo('maint')">Maint.</button>
+  <button class="mt-b" data-p="stage3d" onclick="mtabGo('stage3d');stage3dEnter()">3D</button>
+  <button class="mt-b" data-p="" onclick="mtabSheet(true)">More</button>
+</nav>
 
   <div class="main-col">
     <div class="topbar">
@@ -1489,6 +1533,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
       <div id="s3-host">
         <div id="s3-loading">Loading 3D engine&hellip;</div>
       </div>
+      <button class="s3-railbtn" onclick="document.querySelector('.s3-rail').classList.toggle('open')">Specs</button>
       <aside class="s3-rail" aria-label="Stage specifications">
         <div class="s3-grp">Import</div>
         <button class="btn bp sm s3-import" onclick="s3ImportConfig()">Build from nDisplay config</button>
@@ -7829,6 +7874,20 @@ function s3ExportPDF(){
     +s+'</body></html>');
   win.document.close();
   setTimeout(function(){ win.print(); }, 400);
+}
+
+// ── Mobile tab bar ──
+function mtabGo(id){
+  mtabSheet(false);
+  var btn=document.querySelector('.nb[onclick*="\''+id+'\'"]');
+  go(id, btn);
+  document.querySelectorAll('.mt-b').forEach(function(b){ b.classList.toggle('on', b.dataset.p===id); });
+}
+function mtabSheet(open){
+  var s=el('msheet'); if(!s) return;
+  s.classList.toggle('show', !!open);
+  var ad=el('msheet-admin'), nb=el('nb-admin');
+  if(ad&&nb) ad.style.display=nb.style.display;
 }
 </script>
 </body>

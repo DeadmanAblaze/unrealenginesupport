@@ -1526,6 +1526,8 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
         <div class="s3-grp">Machines</div>
         <div class="s3-ctl"><div class="s3-ch"><span>Editor workstations</span><span class="s3-cv" id="s3v-ed">1</span></div>
           <input type="range" id="s3-ed" min="0" max="4" step="1" value="1" aria-label="Editor workstation count"></div>
+        <div class="s3-ctl"><div class="s3-ch"><span>Machine scale</span><span class="s3-cv" id="s3v-ms">1.0&times;</span></div>
+          <input type="range" id="s3-ms" min="0.5" max="2" step="0.1" value="1" aria-label="Machine scale"></div>
         <label class="s3-tog"><span>Show cabling</span><input type="checkbox" id="s3-cb" checked><span class="s3-pill"></span></label>
         <div class="s3-import-hint">Racks appear when devices are assigned to one on Rig specs. Racks and desks are draggable &mdash; cables re-route along the walls as you move them.</div>
 
@@ -1548,6 +1550,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
         <div class="s3-legend" id="s3-leg"></div>
       </div>
       <button class="s3-topbtn" id="s3-topbtn" onclick="_s3TopToggle()" title="Toggle top-down plan view">Top view</button>
+      <button class="s3-topbtn" style="right:104px" onclick="s3ExportPDF()" title="Export schematic plan as PDF">Export PDF</button>
       <div id="s3-pop" style="display:none"></div>
       <div class="s3-hint">orbit &middot; scroll to zoom &middot; click a rack to inspect &middot; reposition in Top view</div>
     </div>
@@ -6800,7 +6803,7 @@ var _s3SaveT = null;
 
 function s3Merge(d){
   ['wallW','wallH','curve','panel','pitch','nodes','camDist','frustum','animate',
-   'roomW','roomD','roomH','wallBack','editors','machines','cables'].forEach(function(k){
+   'roomW','roomD','roomH','wallBack','editors','machines','cables','machScale'].forEach(function(k){
     if(d[k] !== undefined) S3[k] = d[k];
   });
 }
@@ -7259,6 +7262,7 @@ function s3Boot(){
         new T.MeshBasicMaterial({ color:0x000000, transparent:true, opacity:0.35, depthWrite:false }));
       shadow.rotation.x=-Math.PI/2; shadow.position.y=0.006; g.add(shadow);
       g.position.set(m.x,0,m.z);
+      g.scale.setScalar(S3.machScale||1);
       g.userData.m=m;
       machG.add(g);
     });
@@ -7289,11 +7293,6 @@ function s3Boot(){
   function buildRig(){
     dispose(rigG);
     camRig=null;
-    talent=new T.Group();
-    var tM=new T.MeshStandardMaterial({ color:0x33363e, roughness:0.85 });
-    var torso=new T.Mesh(new T.CylinderGeometry(0.16,0.2,1.18,12), tM); torso.position.y=0.84; talent.add(torso);
-    var head=new T.Mesh(new T.SphereGeometry(0.13,14,12), tM); head.position.y=1.62; talent.add(head);
-    rigG.add(talent);
     var trussM=new T.MeshStandardMaterial({ color:0x1c1f25, metalness:0.6, roughness:0.5 });
     var ty=Math.min(S3.roomH-0.4, Math.max(S3.wallH+1.1,4.0)), span=Math.min(S3.wallW*0.45,7);
     var cz=backZ()+S3.camDist*0.65;
@@ -7587,7 +7586,6 @@ function s3Boot(){
     });
     var aim=frU>=0?wallPoint(frU,0.5):wallPoint(0.5,0.5);
     if(camGroup){ camGroup.lookAt(aim.x,0,aim.z); camGroup.rotation.x=0; camGroup.rotation.z=0; }
-    if(talent){ var tp=wallPoint(0.5,0); talent.position.set(tp.x,0,Math.min(tp.z+S3.camDist*0.45, S3.roomD/2-0.8)); }
     if(frLines){
       frLines.visible=!!S3.frustum && frU>=0;
       if(S3.frustum && frU>=0){
@@ -7651,6 +7649,7 @@ function s3Bind(){
   var fr=el('s3-fr'); if(fr) fr.addEventListener('change', function(){ S3.frustum=fr.checked; s3Save(); });
   var an=el('s3-an'); if(an) an.addEventListener('change', function(){ S3.animate=an.checked; s3Save(); });
   var cb=el('s3-cb'); if(cb) cb.addEventListener('change', function(){ S3.cables=cb.checked; if(_s3) s3Rebuild(); s3Save(); });
+  var ms=el('s3-ms'); if(ms) ms.addEventListener('input', function(){ S3.machScale=parseFloat(ms.value); el('s3v-ms').textContent=S3.machScale.toFixed(1)+'\u00d7'; if(_s3) s3Rebuild(); s3Save(); });
   var seg=el('s3-seg-n');
   if(seg) seg.addEventListener('click', function(e){
     var b=e.target.closest('button'); if(!b) return;
@@ -7776,6 +7775,60 @@ function renderMaint(){
   if(el('mt-sum')) el('mt-sum').innerHTML=
     '<b style="color:#fbbf24">'+cnt.dpx+'</b> dead pixel \u00b7 <b style="color:#fb923c">'+cnt.dln+'</b> dead line \u00b7 <b style="color:#f87171">'+cnt.out+'</b> out \u00b7 <b style="color:#4ade80">'+cnt.rep+'</b> replaced \u00b7 spares: <b style="color:var(--brand1)">'+(MAINT.spares||0)+'</b>';
   if(el('mt-slog')) el('mt-slog').innerHTML=(MAINT.spareLog||[]).slice(0,5).map(function(l){return '<div><b>'+l.date.slice(0,10)+'</b> '+esc(l.text)+'</div>';}).join('');
+}
+
+function s3ExportPDF(){
+  var W=S3.roomW, D=S3.roomD, sc=Math.min(680/W, 460/D);
+  function X(x){return 60+(x+W/2)*sc;} function Z(z){return 60+(z+D/2)*sc;}
+  var s='<svg xmlns="http://www.w3.org/2000/svg" width="800" height="'+(D*sc+170)+'" font-family="monospace">';
+  s+='<rect x="'+X(-W/2)+'" y="'+Z(-D/2)+'" width="'+(W*sc)+'" height="'+(D*sc)+'" fill="none" stroke="#000" stroke-width="2"/>';
+  s+='<text x="'+X(0)+'" y="'+(Z(D/2)+24)+'" text-anchor="middle" font-size="11">'+W.toFixed(1)+' m</text>';
+  s+='<text x="'+(X(-W/2)-22)+'" y="'+Z(0)+'" text-anchor="middle" font-size="11" transform="rotate(-90 '+(X(-W/2)-22)+' '+Z(0)+')">'+D.toFixed(1)+' m</text>';
+  for(var u=0;u<=24;u++){ var p=null; try{p=_s3?null:null;}catch(e){} }
+  // wall arc
+  var th=S3.curve*Math.PI/180, bz=-D/2+S3.wallBack, pts=[];
+  for(var i=0;i<=24;i++){ var uu=i/24, y;
+    if(S3.curve<1){ pts.push([(uu-0.5)*S3.wallW, bz]); }
+    else { var R=S3.wallW/th, a=-th/2+uu*th; pts.push([Math.sin(a)*R, bz+R-Math.cos(a)*R]); } }
+  s+='<polyline points="'+pts.map(function(p){return X(p[0])+','+Z(p[1]);}).join(' ')+'" fill="none" stroke="#0072ff" stroke-width="5"/>';
+  s+='<text x="'+X(0)+'" y="'+(Z(bz)-8)+'" text-anchor="middle" font-size="10" fill="#0072ff">LED WALL '+S3.wallW.toFixed(1)+'m \u00d7 '+S3.wallH.toFixed(1)+'m</text>';
+  // cables
+  var lanes={},ln=0;
+  connections.forEach(function(cn){
+    var a=components.find(function(c){return c.id===cn.fromCompId;}),b=components.find(function(c){return c.id===cn.toCompId;});
+    if(!a||!b||!a.rack||!b.rack)return;
+    function an(c){ if(c.rack>0){var m=S3.machines.find(function(x){return x.t==='rack'&&x.i===c.rack;});return m;} 
+      if(c.rack>=100){return S3.machines.find(function(x){return x.t==='ed'&&x.i===c.rack-101;});}
+      return S3.machines.find(function(x){return x.t==='float'&&x.i===c.id;}); }
+    var pa=an(a),pb=an(b); if(!pa||!pb)return;
+    var port=(a.ports||[]).find(function(p){return p.id===cn.fromPortId;});
+    var sig=(port||{}).signal||'Other', col=SIGNAL_COLOR[sig]||'#999';
+    if(lanes[sig]===undefined)lanes[sig]=ln++;
+    var path=s3CablePath(pa.x,pa.z,pb.x,pb.z,W,D,lanes[sig]*2);
+    s+='<polyline points="'+path.map(function(p){return X(p[0])+','+Z(p[1]);}).join(' ')+'" fill="none" stroke="'+col+'" stroke-width="1.5" opacity="0.85"/>';
+  });
+  // machines
+  S3.machines.forEach(function(m){
+    var x=X(m.x),z=Z(m.z);
+    if(m.t==='rack'){ s+='<rect x="'+(x-9)+'" y="'+(z-11)+'" width="18" height="22" fill="#fff" stroke="#000" stroke-width="1.5"/><text x="'+x+'" y="'+(z+3)+'" text-anchor="middle" font-size="8">R'+m.i+'</text>'; }
+    else if(m.t==='ed'){ s+='<rect x="'+(x-15)+'" y="'+(z-8)+'" width="30" height="16" fill="#fff" stroke="#000"/><text x="'+x+'" y="'+(z+3)+'" text-anchor="middle" font-size="7">WS'+(m.i+1)+'</text>'; }
+    else { var c=components.find(function(q){return q.id===m.i;});
+      s+='<circle cx="'+x+'" cy="'+z+'" r="8" fill="#fff" stroke="#000" stroke-width="1.5"/><text x="'+x+'" y="'+(z+22)+'" text-anchor="middle" font-size="7">'+esc(c?compName(c).slice(0,14):'?')+'</text>'; }
+  });
+  // legend
+  var ly=D*sc+90;
+  Object.keys(lanes).forEach(function(sg,i2){
+    s+='<rect x="'+(60+i2*130)+'" y="'+ly+'" width="18" height="4" fill="'+(SIGNAL_COLOR[sg]||'#999')+'"/><text x="'+(82+i2*130)+'" y="'+(ly+6)+'" font-size="9">'+esc(sg)+'</text>';
+  });
+  s+='</svg>';
+  var win=window.open('','_blank');
+  if(!win){ showToast('Pop-up blocked \u2014 allow pop-ups to export.', true); return; }
+  win.document.write('<html><head><title>Studio Layout \u2014 unrealsupport.net</title></head><body style="font-family:monospace;margin:30px">'
+    +'<h2 style="margin:0">STUDIO LAYOUT \u2014 LED VOLUME</h2>'
+    +'<div style="font-size:11px;color:#555;margin-bottom:14px">'+S3.roomW+'m \u00d7 '+S3.roomD+'m \u00d7 '+S3.roomH+'m studio \u00b7 wall '+S3.wallW.toFixed(1)+'\u00d7'+S3.wallH.toFixed(1)+'m @ '+S3.curve+'\u00b0 \u00b7 P'+S3.pitch+' \u00b7 generated '+new Date().toISOString().slice(0,10)+' \u00b7 unrealsupport.net</div>'
+    +s+'</body></html>');
+  win.document.close();
+  setTimeout(function(){ win.print(); }, 400);
 }
 </script>
 </body>

@@ -2778,6 +2778,7 @@ function renderStrip(comp){
       + '<span class="ck">Rack</span>'
       + '<select class="cv-edit" onchange="setCompRack('+comp.id+',this.value)">'
       + '<option value="0">Unassigned</option>'
+      + '<option value="-1"'+(comp.rack===-1?' selected':'')+'>Floating (free-standing)</option>'
       + [1,2,3,4,5,6,7,8].map(function(r){return '<option value="'+r+'"'+(comp.rack===r?' selected':'')+'>Rack '+r+'</option>';}).join('')
       + '</select></div>';
     body = nickRow + rackRow + body;    body += '<div class="crow cnotes-row"><span class="ck">Notes</span></div>'
@@ -2786,7 +2787,7 @@ function renderStrip(comp){
     body = fs.filter(function(fl){return (comp.fields[fl.k]||'').trim();}).map(function(fl){
       return '<div class="crow"><span class="ck">'+fl.l+'</span><span class="cv">'+esc(comp.fields[fl.k])+'</span></div>';
     }).join('');
-    if(comp.rack) body = '<div class="crow"><span class="ck">Rack</span><span class="cv" style="color:var(--brand1);font-weight:600">R'+comp.rack+'</span></div>' + body;
+    if(comp.rack) body = '<div class="crow"><span class="ck">Rack</span><span class="cv" style="color:var(--brand1);font-weight:600">'+(comp.rack===-1?'Floating':'R'+comp.rack)+'</span></div>' + body;
     if(!body) body = '<div class="crow"><span class="ck" style="color:var(--ink4)">Not configured</span></div>';
     if((comp.notes||'').trim()) body += '<div class="cnote-disp">'+esc(comp.notes)+'</div>';
   }
@@ -7085,6 +7086,10 @@ function s3Boot(){
       var ex2=(S3.machines||[]).find(function(m){return m.t==='ed'&&m.i===i;});
       list.push(ex2 || { t:'ed', i:i, x:S3.roomW/2-2.2, z:-S3.roomD/2+2.5+i*2.4 });
     }
+    components.filter(function(c){return c.rack===-1;}).forEach(function(c, idx){
+      var ex3=(S3.machines||[]).find(function(m){return m.t==='float'&&m.i===c.id;});
+      list.push(ex3 || { t:'float', i:c.id, x:-2+idx*1.6, z:S3.roomD/2-4 });
+    });
     S3.machines=list;
   }
   function buildMachines(){
@@ -7151,6 +7156,24 @@ function s3Boot(){
         }
         var lbl=textSprite('RACK '+m.i, '#2b9fff', 0.95);
         lbl.position.y=2.35; g.add(lbl);
+      } else if(m.t==='float'){
+        var fc=components.find(function(c){return c.id===m.i;});
+        var isCam=fc&&CTYPES[fc.type]&&CTYPES[fc.type].section==='camera';
+        if(isCam){
+          g.add(makeCameraModel());
+        } else {
+          var pole=new T.Mesh(new T.CylinderGeometry(0.035,0.045,0.9,10),
+            new T.MeshStandardMaterial({ color:0x22252c, metalness:0.6, roughness:0.4 }));
+          pole.position.y=0.45; g.add(pole);
+          var case2=new T.Mesh(new T.BoxGeometry(0.5,0.32,0.42),
+            new T.MeshStandardMaterial({ color:0x191d24, roughness:0.45, metalness:0.55 }));
+          case2.position.y=1.05; g.add(case2);
+          var led2=new T.Mesh(new T.BoxGeometry(0.06,0.025,0.012),
+            new T.MeshBasicMaterial({ color:0x4ade80 }));
+          led2.position.set(0.14,1.12,0.215); g.add(led2);
+        }
+        var fl=textSprite(fc?compName(fc):'?', '#cfd6e4', 0.78);
+        fl.position.y=isCam?2.0:1.55; g.add(fl);
       } else {
         var desk=new T.Mesh(new T.BoxGeometry(1.7,0.06,0.8),
           new T.MeshStandardMaterial({ color:0x23262e, roughness:0.6 }));
@@ -7180,25 +7203,29 @@ function s3Boot(){
 
   // ── Camera rig + talent + truss ──
   var camRig=null, talent=null, frLines=null, frPos=new Float32Array(24);
-  function buildRig(){
-    dispose(rigG);
-    camRig=new T.Group();
+  function makeCameraModel(){
+    var g=new T.Group();
     var legM=new T.MeshStandardMaterial({ color:0x22252c, roughness:0.6, metalness:0.5 });
     for(var l=0;l<3;l++){
       var leg=new T.Mesh(new T.CylinderGeometry(0.022,0.022,1.35,8), legM);
       var la=l*Math.PI*2/3;
       leg.position.set(Math.sin(la)*0.28,0.62,Math.cos(la)*0.28);
       leg.rotation.x=Math.cos(la)*0.32; leg.rotation.z=-Math.sin(la)*0.32;
-      camRig.add(leg);
+      g.add(leg);
     }
     var body=new T.Mesh(new T.BoxGeometry(0.34,0.3,0.62),
       new T.MeshStandardMaterial({ color:0x2a2e36, metalness:0.6, roughness:0.45 }));
-    body.position.y=1.42; camRig.add(body);
+    body.position.y=1.42; g.add(body);
     var lens=new T.Mesh(new T.CylinderGeometry(0.085,0.1,0.34,16),
       new T.MeshStandardMaterial({ color:0x111318, metalness:0.7, roughness:0.3 }));
-    lens.rotation.x=Math.PI/2; lens.position.set(0,1.45,-0.45); camRig.add(lens);
+    lens.rotation.x=Math.PI/2; lens.position.set(0,1.45,-0.45); g.add(lens);
     var tally=new T.Mesh(new T.SphereGeometry(0.035,10,10), new T.MeshBasicMaterial({ color:0xff3b30 }));
-    tally.position.set(0,1.62,-0.18); camRig.add(tally);
+    tally.position.set(0,1.62,-0.18); g.add(tally);
+    return g;
+  }
+  function buildRig(){
+    dispose(rigG);
+    camRig=makeCameraModel();
     rigG.add(camRig);
     talent=new T.Group();
     var tM=new T.MeshStandardMaterial({ color:0x33363e, roughness:0.85 });
@@ -7230,6 +7257,15 @@ function s3Boot(){
     var m=(S3.machines||[]).find(function(x){return x.t==='rack'&&x.i===r;});
     return m ? {x:m.x, z:m.z} : null;
   }
+  function compAnchor(c){
+    if(c.rack>0){ var p=rackPos(c.rack); return p?{x:p.x,z:p.z,y:slotY(c)}:null; }
+    if(c.rack===-1){
+      var fm=(S3.machines||[]).find(function(x){return x.t==='float'&&x.i===c.id;});
+      var isCam=CTYPES[c.type]&&CTYPES[c.type].section==='camera';
+      return fm?{x:fm.x,z:fm.z,y:isCam?1.42:1.0}:null;
+    }
+    return null;
+  }
   function slotY(comp){
     var devs=components.filter(function(c){return c.rack===comp.rack;});
     var s=devs.findIndex(function(c){return c.id===comp.id;});
@@ -7245,7 +7281,7 @@ function s3Boot(){
         var a=components.find(function(c){return c.id===cn.fromCompId;});
         var b=components.find(function(c){return c.id===cn.toCompId;});
         if(!a||!b||!a.rack||!b.rack) return;
-        var pa=rackPos(a.rack), pb=rackPos(b.rack);
+        var pa=compAnchor(a), pb=compAnchor(b);
         if(!pa||!pb) return;
         var key=Math.min(a.rack,b.rack)+'-'+Math.max(a.rack,b.rack);
         var k=(trayIdx[key]=(trayIdx[key]||0)+1)-1;
@@ -7254,10 +7290,10 @@ function s3Boot(){
         var pts2=s3CablePath(pa.x,pa.z,pb.x,pb.z,S3.roomW,S3.roomD,k);
         var floorY=0.05+k*0.012;
         var v=[];
-        v.push(new T.Vector3(pa.x, slotY(a), pa.z));
+        v.push(new T.Vector3(pa.x, pa.y, pa.z));
         pts2.forEach(function(pt,i){ v.push(new T.Vector3(pt[0], i===0?0.12:floorY, pt[1])); });
         v[v.length-1]=new T.Vector3(pb.x, 0.12, pb.z);
-        v.push(new T.Vector3(pb.x, slotY(b), pb.z));
+        v.push(new T.Vector3(pb.x, pb.y, pb.z));
         var curve=new T.CatmullRomCurve3(v, false, 'catmullrom', 0.04);
         var rad=Math.max(0.045, (S3.roomW+S3.roomD)*0.0014);
         var tube=new T.Mesh(new T.TubeGeometry(curve, Math.max(32, v.length*10), rad, 8, false),
@@ -7386,7 +7422,8 @@ function s3Boot(){
     if(dragM){
       var m=dragM.userData.m;
       if(!dragMoved && m.t==='rack'){ openRackPopup(m.i, e.clientX, e.clientY); }
-      else if(dragMoved){ if(m.t==='rack') buildCables(); s3Save(); }
+      else if(!dragMoved && m.t==='float'){ s3SelectComp(m.i); }
+      else if(dragMoved){ if(m.t==='rack'||m.t==='float') buildCables(); s3Save(); }
     } else if(!dragMoved && popRack!=null && Math.hypot(e.clientX-px,e.clientY-py)<6){
       window._s3PopClose();
     }

@@ -1080,6 +1080,14 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
 .home-fr-txt b{font-weight:600}
 .home-fr-go{margin-left:auto;font-size:12px;color:var(--warn);font-weight:600;flex-shrink:0}
 @media(max-width:760px){#fr-section{margin:10px 10px 0}}
+
+/* ── GROUPED PORTS (rig specs view mode) ── */
+.ports-grouped{flex-direction:column;align-items:stretch;gap:6px}
+.port-group{display:flex;align-items:flex-start;gap:8px;min-width:0}
+.port-group-label{flex-shrink:0;display:inline-flex;align-items:center;font-size:9px;font-weight:700;letter-spacing:.09em;font-family:var(--mono);padding:3px 7px;border-radius:4px;margin-top:1px;white-space:nowrap}
+.pg-in{color:var(--green);background:var(--gdim);border:1px solid rgba(74,222,128,.25)}
+.pg-out{color:var(--brand1);background:var(--brand-dim);border:1px solid rgba(43,159,255,.25)}
+.port-group-badges{display:flex;flex-wrap:wrap;gap:4px;min-width:0}
 </style>
 </head>
 <body>
@@ -2559,8 +2567,7 @@ function renderStrip(comp){
     }).join('');
     portsHTML += '</div>';
   } else if(ports.length){
-    portsHTML='<div class="ports-section ports-compact">';
-    portsHTML+=ports.map(function(p){
+    var portBadge=function(p){
       var conns=portConnections(comp.id,p.id), col=SIGNAL_COLOR[p.signal]||'#9b9b9f';
       var connCount=conns.length;
       return '<span class="port-badge'+(p.dir==='in'?' port-in':' port-out')+'"'
@@ -2568,10 +2575,24 @@ function renderStrip(comp){
         +' title="'+esc(p.dir==='out'?'OUT':'IN')+': '+esc(p.label||p.signal)+'">'
         +'<span class="port-sig-dot" style="background:'+col+'"></span>'
         +'<span class="port-badge-label">'+esc(p.label||p.signal)+'</span>'
-        +(p.dir==='out'?'<span class="port-dir-tag out">&#8594;</span>':'<span class="port-dir-tag in">&#8592;</span>')
         +(connCount?'<span class="port-conn-count-dot">'+connCount+'</span>':'')
         +'</span>';
-    }).join('');
+    };
+    var insP=ports.filter(function(p){return p.dir==='in';});
+    var outsP=ports.filter(function(p){return p.dir!=='in';});
+    portsHTML='<div class="ports-section ports-compact ports-grouped">';
+    if(insP.length){
+      portsHTML+='<div class="port-group">'
+        +'<span class="port-group-label pg-in" title="Inputs">&#8594;&#10072; IN</span>'
+        +'<div class="port-group-badges">'+insP.map(portBadge).join('')+'</div>'
+        +'</div>';
+    }
+    if(outsP.length){
+      portsHTML+='<div class="port-group">'
+        +'<span class="port-group-label pg-out" title="Outputs">&#10072;&#8594; OUT</span>'
+        +'<div class="port-group-badges">'+outsP.map(portBadge).join('')+'</div>'
+        +'</div>';
+    }
     portsHTML+='</div>';
   }
 

@@ -1088,6 +1088,46 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
 .pg-in{color:var(--green);background:var(--gdim);border:1px solid rgba(74,222,128,.25)}
 .pg-out{color:var(--brand1);background:var(--brand-dim);border:1px solid rgba(43,159,255,.25)}
 .port-group-badges{display:flex;flex-wrap:wrap;gap:4px;min-width:0}
+
+/* ── PLUGIN PAGE + NDISPLAY CONFIG ── */
+.plg-hero{display:flex;gap:18px;align-items:flex-start;background:linear-gradient(135deg,rgba(0,198,255,.07),rgba(0,114,255,.04));border:1px solid var(--line2);border-radius:12px;padding:22px 24px;margin-bottom:18px}
+.plg-hero-ic{flex-shrink:0;width:52px;height:52px;border-radius:12px;background:var(--brand-dim);color:var(--brand1);display:flex;align-items:center;justify-content:center}
+.plg-hero-ic svg{width:28px;height:28px}
+.plg-eyebrow{font-family:'Barlow Condensed',var(--sans);font-weight:900;font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:#5ad1ff;margin-bottom:5px}
+.plg-h{font-size:21px;font-weight:600;color:var(--ink);letter-spacing:-.02em;margin-bottom:5px}
+.plg-sub{font-size:13px;color:var(--ink2);line-height:1.6;max-width:680px}
+.plg-feats{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;margin-bottom:20px}
+.plg-feat{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:13px 15px}
+.plg-feat-h{font-size:12.5px;font-weight:600;color:var(--ink);margin-bottom:5px}
+.plg-feat-b{font-size:12px;color:var(--ink2);line-height:1.55}
+.plg-steps{margin:4px 0 20px;padding-left:22px;max-width:760px}
+.plg-steps li{font-size:13px;color:var(--ink2);line-height:1.6;margin-bottom:9px}
+.plg-steps b{color:var(--ink);font-weight:600}
+.mono-chip{font-family:var(--mono);font-size:.92em;background:var(--el);border:1px solid var(--line);border-radius:4px;padding:1px 5px;color:var(--ink)}
+.plg-dl-card{background:var(--card);border:1px solid var(--line2);border-radius:10px;padding:16px 18px;margin-bottom:20px;max-width:760px}
+.plg-dl-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.plg-dl-meta{font-size:12px;color:var(--ink3)}
+.plg-dl-meta b{color:var(--ink);font-weight:600;font-size:13px}
+.plg-dl-notes{font-size:12px;color:var(--ink2);line-height:1.5;margin-top:8px}
+.plg-dl-btn{display:inline-flex;align-items:center;gap:7px;background:linear-gradient(135deg,#00c6ff,#0072ff);color:#fff;font-size:13px;font-weight:600;border:none;border-radius:8px;padding:9px 16px;cursor:pointer;text-decoration:none;margin-left:auto}
+.plg-dl-btn:hover{filter:brightness(1.1)}
+.plg-empty{font-size:12.5px;color:var(--ink3)}
+.plg-admin-card{background:var(--card);border:1px dashed var(--line2);border-radius:10px;padding:15px 17px;max-width:760px;margin-bottom:20px}
+.plg-admin-row{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;margin-bottom:10px}
+.plg-admin-row:last-child{margin-bottom:0}
+.plg-file-inp{font-size:12px;color:var(--ink2);flex:1;min-width:200px}
+.plg-prog{height:5px;background:var(--el);border-radius:3px;overflow:hidden;margin-top:10px}
+.plg-prog-in{height:100%;width:0%;background:linear-gradient(90deg,#00c6ff,#0072ff);transition:width .25s ease}
+.nd-card{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:14px 16px;margin-bottom:18px;max-width:860px}
+.nd-info{font-size:12px;color:var(--ink2);line-height:1.6;margin-bottom:12px}
+.nd-info b{color:var(--ink);font-weight:600}
+.nd-file-chip{display:flex;align-items:center;gap:10px;background:var(--el);border:1px solid var(--line2);border-radius:8px;padding:10px 13px;flex-wrap:wrap}
+.nd-file-name{font-family:var(--mono);font-size:12px;color:var(--ink);font-weight:600}
+.nd-file-meta{font-size:11px;color:var(--ink3)}
+.nd-parsed{font-size:10px;font-weight:700;letter-spacing:.05em;border-radius:4px;padding:1px 6px;text-transform:uppercase}
+.nd-parsed.ok{color:var(--green);background:var(--gdim)}
+.nd-parsed.raw{color:var(--warn);background:var(--warn-dim)}
+.nd-actions{margin-left:auto;display:flex;gap:7px}
 </style>
 </head>
 <body>
@@ -1285,6 +1325,10 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
         <span class="nb-label">Equipment</span>
       </button>
+      <button aria-label="UE Plugin" title="UE Plugin" class="nb" onclick="go('plugin',this)">
+        <svg viewBox="0 0 24 24"><path d="M9 7V2M15 7V2M7 7h10v4a5 5 0 0 1-5 5 5 5 0 0 1-5-5V7zM12 16v6"/></svg>
+        <span class="nb-label">UE Plugin</span>
+      </button>
       <button aria-label="Features" title="Features" class="nb" onclick="go('features',this)">
         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
         <span class="nb-label">Features</span>
@@ -1320,6 +1364,55 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
       </div>
     </div>
     <div class="main-scroll"><div class="pnl on" id="pnl-home"></div>
+
+    <div class="pnl" id="pnl-plugin">
+      <div class="plg-hero">
+        <div class="plg-hero-ic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 7V2M15 7V2M7 7h10v4a5 5 0 0 1-5 5 5 5 0 0 1-5-5V7zM12 16v6"/></svg>
+        </div>
+        <div class="plg-hero-tx">
+          <div class="plg-eyebrow">Unreal Engine plugin</div>
+          <h2 class="plg-h">UnrealSupportPlugin</h2>
+          <p class="plg-sub">Live diagnostics from inside Unreal Engine, streamed straight to this console. Install it on every render node and the Live UE page lights up with real-time stage health &mdash; no log digging, no RDP sessions mid-show.</p>
+        </div>
+      </div>
+
+      <div class="plg-feats">
+        <div class="plg-feat"><div class="plg-feat-h">Live frame timing</div><div class="plg-feat-b">Game, render and GPU thread times with FPS, streamed every second so stutters are visible the moment they start.</div></div>
+        <div class="plg-feat"><div class="plg-feat-h">nDisplay cluster state</div><div class="plg-feat-b">Node role, cluster ID and sync policy read from the running nDisplay session &mdash; confirm every node is in the cluster it should be.</div></div>
+        <div class="plg-feat"><div class="plg-feat-h">Quadro Sync &amp; genlock</div><div class="plg-feat-b">House sync presence, framelock state and sync counters via NVAPI on Quadro Sync II cards &mdash; catch a dropped genlock before the wall does.</div></div>
+        <div class="plg-feat"><div class="plg-feat-h">System vitals</div><div class="plg-feat-b">GPU and VRAM utilisation, CPU load and memory per node, so you can see headroom shrinking before frames drop.</div></div>
+        <div class="plg-feat"><div class="plg-feat-h">Multi-node auto-discovery</div><div class="plg-feat-b">Connect to the primary node and the console discovers the display nodes from the nDisplay config automatically.</div></div>
+        <div class="plg-feat"><div class="plg-feat-h">Read-only &amp; lightweight</div><div class="plg-feat-b">A small WebSocket server on the production LAN (port 30011). It reports state &mdash; it never changes your project or scene.</div></div>
+      </div>
+
+      <div class="csec"><span class="ctick"></span><span class="csl">Install</span><span class="csec-rule"></span></div>
+      <ol class="plg-steps">
+        <li><b>Download</b> the plugin zip below.</li>
+        <li><b>Extract</b> it into your project&rsquo;s <span class="mono-chip">Plugins</span> folder (create the folder next to your <span class="mono-chip">.uproject</span> if it doesn&rsquo;t exist). You should end up with <span class="mono-chip">Plugins/UnrealSupportPlugin/UnrealSupportPlugin.uplugin</span>.</li>
+        <li><b>Enable</b> it: open the project, go to <span class="mono-chip">Edit &rarr; Plugins</span>, search for &ldquo;Unreal Support&rdquo;, tick it and restart the editor. Do this on the editor node and both display nodes.</li>
+        <li><b>Open the firewall</b> for TCP port <span class="mono-chip">30011</span> on each node (inbound, production LAN only).</li>
+        <li><b>Connect</b>: in this console open the Live UE page, enter the primary node&rsquo;s IP and hit Connect &mdash; the display nodes are discovered automatically.</li>
+      </ol>
+
+      <div class="csec"><span class="ctick"></span><span class="csl">Download</span><span class="csec-rule"></span></div>
+      <div class="plg-dl-card" id="plg-dl-body"></div>
+
+      <div class="plg-admin" id="plg-admin" style="display:none">
+        <div class="csec"><span class="ctick"></span><span class="csl">Publish a build</span><span class="csc">admin only</span><span class="csec-rule"></span></div>
+        <div class="plg-admin-card">
+          <div class="plg-admin-row">
+            <div class="afield" style="flex:0 0 130px"><label>Version</label><input id="plg-ver" maxlength="20" placeholder="e.g. 1.2.0"></div>
+            <div class="afield" style="flex:1;min-width:200px"><label>Release notes <span class="rep-opt">(optional)</span></label><input id="plg-notes" maxlength="300" placeholder="What changed in this build"></div>
+          </div>
+          <div class="plg-admin-row">
+            <input type="file" id="plg-file" accept=".zip" class="plg-file-inp">
+            <button class="btn bp sm" id="plg-up-btn" onclick="plgUpload()">Upload &amp; publish</button>
+          </div>
+          <div class="plg-prog" id="plg-prog" style="display:none"><div class="plg-prog-in" id="plg-prog-in"></div></div>
+        </div>
+      </div>
+    </div>
 
     <div class="pnl" id="pnl-features">
       <div style="max-width:820px;padding:8px 0 40px">
@@ -1637,6 +1730,21 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
 
         <!-- ── VP MODE ─────────────────────────────────────────────── -->
         <div id="components-host" class="vponly"></div>
+
+        <!-- ── NDISPLAY CONFIG FILE ───────────────────────────────── -->
+        <div class="vponly" id="nd-section">
+          <div class="csec">
+            <span class="ctick"></span>
+            <span class="csl">nDisplay config file</span>
+            <span class="csec-rule"></span>
+          </div>
+          <div class="nd-card">
+            <div class="nd-info">In the nDisplay Config Editor use <b>File &rarr; Export</b> to save a <span class="mono-chip">.ndisplay</span> file, then upload it here. The AI support assistant reads it for your exact cluster topology &mdash; nodes, hosts, viewports and resolutions.</div>
+            <div id="nd-card-body"></div>
+            <input type="file" id="nd-file" accept=".ndisplay,.json,.cfg,.txt,.uasset" style="display:none" onchange="ndFileChosen(this)">
+          </div>
+        </div>
+
 
         <!-- ── SIGNAL ROUTING VIEW ────────────────────────────────── -->
         <div class="vponly" id="routing-section" style="margin-top:0">
@@ -2117,6 +2225,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 <script>
 var FBCFG = {
   apiKey:"AIzaSyAtW-rocD37V23HGwA6xqwgxMFjhpRJMg4",
@@ -2127,7 +2236,7 @@ var FBCFG = {
   appId:"1:527614974337:web:8869def2eb03e78e51b080"
 };
 
-var fbapp, fbauth, fbdb;
+var fbapp, fbauth, fbdb, fbst;
 var cu = null;
 var specs={}, issues=[], checklist=[], chatHist=[], streaming=false, nextId=1;
 // ═══════════════════════════════════════════════════════════════════════════
@@ -2745,6 +2854,7 @@ try {
   fbapp = firebase.initializeApp(FBCFG);
   fbauth = firebase.auth();
   fbdb = firebase.firestore();
+  if(firebase.storage) fbst = firebase.storage();
 } catch(e) {
   el('lerr').textContent = 'Firebase init error: ' + e.message;
   el('lerr').style.display = 'block';
@@ -2886,9 +2996,18 @@ async function loadData(){
       dref('components').set({items:components,nextId:compNextId});
     }
 
+    var ndd = await dref('ndisplay').get();
+    ndConfig = (ndd.exists && ndd.data().content) ? ndd.data() : null;
+
   } catch(e) {
     console.error('Load error', e);
     showToast('Could not load saved data \u2014 check your connection and refresh', true);
+  }
+  try {
+    var pm = await fbdb.collection('meta').doc('plugin').get();
+    pluginMeta = pm.exists ? pm.data() : null;
+  } catch(e) {
+    console.error('Plugin meta load', e);
   }
   try {
     loadSpecFields();
@@ -2907,6 +3026,8 @@ async function loadData(){
     renderHome();
     renderGear();
     renderFaultReports();
+    renderNdCard();
+    renderPluginPage();
   } catch(e) {
     console.error('Render error', e);
   }
@@ -3003,7 +3124,7 @@ function go(id, btn){
   if(id==='cal') renderCalendar();
   if(id==='gear') renderGear();
   if(id==='chat') setTimeout(vidRefresh, 200);
-  var t={'home':['Home','Welcome to Unreal Support'],'specs':['Rig specs','Virtual production configuration'],'issues':['Issues','Open and recent stage issues'],'chat':['Support','VP and nDisplay assistance'],'cl':['Checklist','Daily session readiness'],'cal':['Planner','Schedule and stage activity'],'gear':['Equipment','Component manifest and product links'],'features':['Features','How Unreal Support works'],'quickstart':['Quick Start','nDisplay stage startup guide'],'admin':['Admin','User management']};
+  var t={'home':['Home','Welcome to Unreal Support'],'specs':['Rig specs','Virtual production configuration'],'issues':['Issues','Open and recent stage issues'],'chat':['Support','VP and nDisplay assistance'],'cl':['Checklist','Daily session readiness'],'cal':['Planner','Schedule and stage activity'],'gear':['Equipment','Component manifest and product links'],'plugin':['UE Plugin','Live diagnostics plugin for Unreal Engine'],'features':['Features','How Unreal Support works'],'quickstart':['Quick Start','nDisplay stage startup guide'],'admin':['Admin','User management']};
   if(t[id]&&el('tb-title')){el('tb-title').textContent=t[id][0];el('tb-meta').textContent=t[id][1];}
 }
 
@@ -3809,6 +3930,7 @@ function getSysVP(){
   + 'UE Version: ' + (function(){var e=components.find(function(c){return c.type==='workstation'&&c.fields.role==='Editor';});return (e&&e.fields.ue)||s['ue-version']||'not set';})() + '\n'
   + 'THEIR RIG (composed of these components — pay attention to the NOTE lines, they are user-supplied context):\n'
   + componentsToContext()
+  + ndContextBlock()
   + '\nSOURCE PRIORITY:\n1. docs.unrealengine.com\n2. dev.epicgames.com/community and forums.unrealengine.com\n3. Curated VP YouTube (fetch transcripts):\n- nDisplay+Switchboard LED wall: https://www.youtube.com/watch?v=4kVsIagsX50\n- nDisplay config class: https://www.youtube.com/watch?v=0-vUJhBHWfs\n- Vive Mars LiveLink ICVFX: https://www.youtube.com/watch?v=g_6_-htkIzU\n- ICVFX inner frustum resolution: https://www.youtube.com/watch?v=gAkJRcHMg1c\n4. Reddit r/virtualproduction, fxguide.com\n\nFor every question: search docs first, then community, then fetch YouTube transcript if needed.\nEnd every response with:\n===SOURCES===\n[{"title":"...","url":"...","type":"epic or community or youtube"}]\n===END===\nWrap every console command, CVar, command-line invocation, config snippet, or file path the user may need to copy in fenced code blocks (```).\nBe direct, technical, practical. Assume a capable VP professional.';
 }
 
@@ -6285,6 +6407,177 @@ function frDismiss(id){
 // Show the report screen immediately on a #report deep link (don't wait for
 // Firebase auth to resolve)
 if(isReportRoute()) showReportScreen();
+
+// ═══════════════════════════════════════════════════════════════════════════
+// NDISPLAY CONFIG FILE (rig specs) — uploaded once, read by the AI assistant
+// ═══════════════════════════════════════════════════════════════════════════
+var ndConfig = null;
+
+function fmtBytes(n){
+  n = n||0;
+  if(n < 1024) return n + ' B';
+  if(n < 1048576) return (n/1024).toFixed(1) + ' KB';
+  return (n/1048576).toFixed(1) + ' MB';
+}
+
+function ndFileChosen(inp){
+  var f = inp.files && inp.files[0];
+  inp.value = '';
+  if(!f) return;
+  if(/\.uasset$/i.test(f.name)){
+    showToast('A .uasset is binary \u2014 open the config in the nDisplay Config Editor and use File \u2192 Export to save a .ndisplay file, then upload that.', true);
+    return;
+  }
+  if(f.size > 900*1024){
+    showToast('Config file too large (900 KB max) \u2014 exported .ndisplay files are normally well under this.', true);
+    return;
+  }
+  var rd = new FileReader();
+  rd.onload = function(){ processNdFile(f.name, f.size, String(rd.result||'')); };
+  rd.onerror = function(){ showToast('Could not read the file \u2014 try again.', true); };
+  rd.readAsText(f);
+}
+
+function processNdFile(name, size, text){
+  if(!text.trim()){ showToast('That file appears to be empty.', true); return; }
+  var parsed = false;
+  try{ JSON.parse(text); parsed = true; }catch(e){}
+  ndConfig = { name:name, size:size, content:text, parsed:parsed, uploadedAt:new Date().toISOString() };
+  fsave('ndisplay', ndConfig);
+  buildSysPrompt();
+  renderNdCard();
+  showToast(parsed ? 'nDisplay config uploaded \u2014 the support assistant can now read your cluster topology'
+                   : 'Config uploaded as raw text \u2014 the assistant will read it, though it didn\u2019t parse as JSON');
+}
+
+function ndRemove(){
+  ndConfig = null;
+  fsave('ndisplay', { removed:true, content:'' });
+  buildSysPrompt();
+  renderNdCard();
+  showToast('nDisplay config removed');
+}
+
+function ndSummary(text){
+  try{
+    var cfg = JSON.parse(text);
+    var root = cfg.nDisplay || cfg;
+    var cluster = root.cluster || {};
+    var nodes = cluster.nodes || {};
+    var lines = [];
+    var primary = cluster.primaryNode || cluster.masterNode;
+    if(primary && primary.id) lines.push('Primary node: ' + primary.id);
+    Object.keys(nodes).forEach(function(k){
+      var n = nodes[k] || {};
+      var vps = n.viewports || {};
+      var vpDesc = Object.keys(vps).map(function(v){
+        var r = (vps[v]||{}).region || {};
+        return v + (r.w ? ' ('+r.w+'x'+r.h+' @ '+(r.x||0)+','+(r.y||0)+')' : '');
+      }).join(', ');
+      lines.push('Node '+k+': host '+(n.host||'?')
+        + (n.window ? (', window '+(n.window.w||'?')+'x'+(n.window.h||'?')) : '')
+        + (vpDesc ? (', viewports: '+vpDesc) : ''));
+    });
+    return lines.length ? ('CLUSTER SUMMARY:\n- ' + lines.join('\n- ')) : '';
+  }catch(e){ return ''; }
+}
+
+function ndContextBlock(){
+  if(!ndConfig || !ndConfig.content) return '';
+  var out = '\nTHEIR NDISPLAY CONFIG FILE ("'+ndConfig.name+'", uploaded '+String(ndConfig.uploadedAt||'').slice(0,10)+') \u2014 authoritative cluster topology, prefer this over guesses:\n';
+  var summ = ndSummary(ndConfig.content);
+  if(summ) out += summ + '\n';
+  out += 'RAW CONFIG (may be truncated):\n' + ndConfig.content.slice(0, 12000) + '\n';
+  return out;
+}
+
+function renderNdCard(){
+  var host = el('nd-card-body'); if(!host) return;
+  if(ndConfig && ndConfig.content){
+    var nNodes = 0;
+    try{
+      var root = JSON.parse(ndConfig.content); root = root.nDisplay || root;
+      nNodes = Object.keys((root.cluster||{}).nodes||{}).length;
+    }catch(e){}
+    host.innerHTML = '<div class="nd-file-chip">'
+      + '<span class="nd-file-name">'+esc(ndConfig.name)+'</span>'
+      + '<span class="nd-file-meta">'+fmtBytes(ndConfig.size)+' \u00b7 uploaded '+String(ndConfig.uploadedAt||'').slice(0,10)+'</span>'
+      + (ndConfig.parsed
+          ? '<span class="nd-parsed ok">parsed'+(nNodes?(' \u00b7 '+nNodes+' node'+(nNodes>1?'s':'')):'')+'</span>'
+          : '<span class="nd-parsed raw">raw text</span>')
+      + '<span class="nd-actions">'
+      + '<button class="btn sm" onclick="el(\'nd-file\').click()">Replace</button>'
+      + '<button class="btn sm fr-dismiss" onclick="ndRemove()">Remove</button>'
+      + '</span></div>';
+  } else {
+    host.innerHTML = '<button class="btn bp sm" onclick="el(\'nd-file\').click()">Upload config file</button>'
+      + '<span class="nd-file-meta" style="margin-left:10px">.ndisplay or .json \u00b7 max 900 KB</span>';
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// UE PLUGIN PAGE — download for everyone, publish for the admin
+// ═══════════════════════════════════════════════════════════════════════════
+var pluginMeta = null;
+
+function renderPluginPage(){
+  var dl = el('plg-dl-body');
+  if(dl){
+    if(pluginMeta && pluginMeta.url){
+      dl.innerHTML = '<div class="plg-dl-row">'
+        + '<div class="plg-dl-meta"><b>UnrealSupportPlugin v'+esc(pluginMeta.version||'?')+'</b><br>'
+        + esc(pluginMeta.fileName||'plugin.zip')+' \u00b7 '+fmtBytes(pluginMeta.size)
+        + ' \u00b7 published '+String(pluginMeta.uploadedAt||'').slice(0,10)+'</div>'
+        + '<a class="plg-dl-btn" href="'+esc(pluginMeta.url)+'" target="_blank" rel="noopener" download>'
+        + '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>'
+        + 'Download v'+esc(pluginMeta.version||'')+'</a>'
+        + '</div>'
+        + (pluginMeta.notes ? '<div class="plg-dl-notes">'+esc(pluginMeta.notes)+'</div>' : '');
+    } else {
+      dl.innerHTML = '<span class="plg-empty">No build published yet'
+        + (isAdmin() ? ' \u2014 upload one below.' : '. Check back soon, or ask Matt.')+'</span>';
+    }
+  }
+  var adm = el('plg-admin');
+  if(adm) adm.style.display = isAdmin() ? '' : 'none';
+}
+
+function plgUpload(){
+  if(!isAdmin()) return;
+  if(!fbst){ showToast('Firebase Storage is unavailable \u2014 hard-refresh the page.', true); return; }
+  var f = el('plg-file').files && el('plg-file').files[0];
+  if(!f){ showToast('Choose the packaged plugin .zip first.', true); return; }
+  if(!/\.zip$/i.test(f.name)){ showToast('Upload the packaged plugin as a .zip.', true); return; }
+  if(f.size > 300*1024*1024){ showToast('File too large (300 MB max).', true); return; }
+  var ver = el('plg-ver').value.trim() || '1.0.0';
+  var notes = el('plg-notes').value.trim();
+  var path = 'plugin/' + Date.now() + '_' + f.name.replace(/[^\w.\-]/g, '_');
+  var btn = el('plg-up-btn'); btn.disabled = true;
+  var bar = el('plg-prog'), barIn = el('plg-prog-in');
+  bar.style.display = 'block'; barIn.style.width = '0%';
+  function fail(msg){ btn.disabled = false; bar.style.display = 'none'; showToast(msg, true); }
+  var task = fbst.ref().child(path).put(f, { contentType: 'application/zip' });
+  task.on('state_changed', function(s){
+    var pct = s.totalBytes ? Math.round(s.bytesTransferred / s.totalBytes * 100) : 0;
+    barIn.style.width = pct + '%';
+  }, function(err){
+    fail('Upload failed: ' + (err && err.code === 'storage/unauthorized'
+      ? 'Storage rules are not configured for admin uploads yet.'
+      : 'check your connection and try again.'));
+  }, function(){
+    task.snapshot.ref.getDownloadURL().then(function(url){
+      var meta = { fileName:f.name, size:f.size, version:ver, notes:notes, url:url, path:path,
+                   uploadedAt:new Date().toISOString(), uploadedBy:cu?cu.email:'' };
+      fbdb.collection('meta').doc('plugin').set(meta).then(function(){
+        pluginMeta = meta;
+        btn.disabled = false; bar.style.display = 'none'; barIn.style.width = '0%';
+        el('plg-file').value = ''; el('plg-ver').value = ''; el('plg-notes').value = '';
+        renderPluginPage();
+        showToast('Plugin v'+ver+' published \u2014 it\u2019s now live on this page for everyone');
+      }).catch(function(){ fail('Uploaded, but could not save the metadata \u2014 check the Firestore meta rules.'); });
+    }).catch(function(){ fail('Uploaded, but could not get the download link \u2014 try again.'); });
+  });
+}
 </script>
 </body>
     

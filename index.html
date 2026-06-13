@@ -1268,6 +1268,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
 .hd-card:hover{border-color:var(--line2)}
 .hd-n{display:block;font-family:var(--mono);font-size:26px;font-weight:700;line-height:1.1}
 .hd-l{display:block;font-size:10.5px;color:var(--ink3);margin-top:4px;letter-spacing:.04em}
+.csn-iss{display:inline-flex;align-items:center;gap:3px;font-family:var(--mono);font-size:9.5px;font-weight:600;color:var(--warn);background:var(--warn-dim);border:1px solid rgba(251,191,36,.25);border-radius:4px;padding:1px 5px;margin-left:7px;cursor:pointer;flex-shrink:0;transition:background .12s}.csn-iss:hover{background:rgba(251,191,36,.2)}.iss-prop-link{cursor:pointer;color:var(--brand1)!important;border-color:rgba(91,157,255,.3)!important;background:var(--brand-dim)!important;transition:background .12s}.iss-prop-link:hover{background:rgba(91,157,255,.18)!important}.strip-flash{animation:stripflash 1.4s ease-out}@keyframes stripflash{0%{box-shadow:0 0 0 2px var(--brand1),0 0 14px var(--brand-glow)}100%{box-shadow:0 0 0 0 transparent}}#iss-compfilter-bar:empty{display:none}#iss-compfilter-bar{padding:8px 14px 0}.iss-cf-chip{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--ink2);background:var(--brand-dim);border:1px solid rgba(91,157,255,.25);border-radius:20px;padding:3px 6px 3px 11px}.iss-cf-chip strong{color:var(--brand1);font-weight:500}.iss-cf-x{background:none;border:none;color:var(--ink3);cursor:pointer;font-size:15px;line-height:1;padding:0 4px;border-radius:50%;transition:color .12s}.iss-cf-x:hover{color:var(--crit)}
 </style>
 </head>
 <body>
@@ -2133,6 +2134,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
               </select>
             </div>
           </div>
+          <div id="iss-compfilter-bar"></div>
           <div id="issues-list" class="iss-list-body"></div>
         </div>
 
@@ -2169,7 +2171,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
             </optgroup>
           </select>
         </div>
-        <div class="fspan"><div class="f"><label>Description</label><textarea id="ni-desc" placeholder="What are you seeing? Include context that will help diagnose it..."></textarea></div></div>
+        <div class="f"><label>Component (optional)</label><select id="ni-link" class="flt-select"><option value="">None</option></select></div>        <div class="fspan"><div class="f"><label>Description</label><textarea id="ni-desc" placeholder="What are you seeing? Include context that will help diagnose it..."></textarea></div></div>
         <div class="fspan" style="display:flex;gap:7px">
           <button class="btn bp sm" onclick="addIssue()">Log issue</button>
           <button class="btn bd sm" onclick="toggleNewIssue()">Cancel</button>
@@ -2809,6 +2811,38 @@ function renderComponents(){
   host.innerHTML = html;
 }
 
+function issuesBadge(comp){
+  var open=issues.filter(function(i){return i.linkComp===comp.id&&i.status!=='resolved';}).length;
+  if(!open) return '';
+  return '<span class="csn-iss" title="'+open+' open issue'+(open===1?'':'s')+' for this device" '
+    +'onclick="event.stopPropagation();jumpToIssuesForComp('+comp.id+')">&#9888; '+open+'</span>';
+}
+
+var issueCompFilter=null;
+
+function railBtn(pid){
+  var btns=document.querySelectorAll('.nb');
+  for(var k=0;k<btns.length;k++){ var oc=btns[k].getAttribute('onclick')||''; if(oc.indexOf("go('"+pid+"'")>-1) return btns[k]; }
+  return null;
+}
+
+function jumpToComp(compId){
+  go('specs', railBtn('specs'));
+  setTimeout(function(){
+    var card=document.getElementById('comp-strip-'+compId);
+    if(card){ card.scrollIntoView({behavior:'smooth',block:'center'}); card.classList.add('strip-flash');
+      setTimeout(function(){card.classList.remove('strip-flash');},1400); }
+  },120);
+}
+
+function jumpToIssuesForComp(compId){
+  issueCompFilter=compId;
+  go('issues', railBtn('issues'));
+  setTimeout(renderIssues,60);
+}
+
+function clearIssueCompFilter(){ issueCompFilter=null; renderIssues(); }
+
 function renderStrip(comp){
   var def = CTYPES[comp.type];
   var editing = (comp.id===compEditId);
@@ -2912,10 +2946,11 @@ function renderStrip(comp){
     portsHTML+='</div>';
   }
 
-  return '<div class="strip'+(led==='b'?' primary':'')+(editing?' editing':'')+'">'
+  return '<div id="comp-strip-'+comp.id+'" class="strip'+(led==='b'?' primary':'')+(editing?' editing':'')+'">'
     + '<div class="csh">'
     +   '<span class="led '+led+'"></span>'
     +   '<span class="csn">'+esc(compName(comp))+(comp.nickname&&comp.nickname.trim()?'<span class="cnick-badge" title="Nickname">✎</span>':'')+'</span>'
+    +issuesBadge(comp)
     +   '<span class="csr">'+esc(compTag(comp))+'</span>'
     +(editing?'<span class="editing-badge">● Editing</span>':'')
     +   (editing
@@ -4597,7 +4632,24 @@ function toggleNewIssue(){
   f.style.display=isOpen?'none':'grid';
   var shell=document.querySelector('.iss-shell');
   if(shell) shell.style.display=isOpen?'grid':'none';
-  if(!isOpen) el('ni-title').focus();
+  if(!isOpen){ fillIssueLinkPicker(); el('ni-title').focus(); }
+}
+
+function fillIssueLinkPicker(sel){
+  var s=el('ni-link'); if(!s) return;
+  var cur=(sel!=null)?sel:(s.value||'');
+  var byType={};
+  components.forEach(function(c){ (byType[c.type]=byType[c.type]||[]).push(c); });
+  var html='<option value="">None</option>';
+  Object.keys(byType).forEach(function(tp){
+    var def=CTYPES[tp]; var lbl=def?def.label:tp;
+    html+='<optgroup label="'+esc(lbl)+'">';
+    byType[tp].forEach(function(c){
+      html+='<option value="'+c.id+'"'+((''+c.id)===(''+cur)?' selected':'')+'>'+esc(compName(c))+'</option>';
+    });
+    html+='</optgroup>';
+  });
+  s.innerHTML=html;
 }
 
 function addIssue(){
@@ -4607,6 +4659,7 @@ function addIssue(){
     id:nextId++, title:t,
     status:el('ni-status').value,
     comp:el('ni-comp').value,
+    linkComp:(el('ni-link')&&el('ni-link').value)?parseInt(el('ni-link').value,10):null,
     desc:el('ni-desc').value,
     date:now, steps:[], log:[],
     mode:specs['mode']||'vp'
@@ -5309,8 +5362,15 @@ function renderIssues(){
   var filtered=issues.filter(function(i){
     if(fl!=='all'&&i.status!==fl) return false;
     if(fc!=='all'&&i.comp!==fc) return false;
+    if(issueCompFilter!=null&&i.linkComp!==issueCompFilter) return false;
     return true;
   });
+  var fcomp=issueCompFilter!=null?components.find(function(c){return c.id===issueCompFilter;}):null;
+  var fbar=el('iss-compfilter-bar');
+  if(fbar) fbar.innerHTML=fcomp
+    ? '<span class="iss-cf-chip">Filtered to <strong>'+esc(compName(fcomp))+'</strong>'
+      +'<button class="iss-cf-x" onclick="clearIssueCompFilter()" title="Clear filter">&times;</button></span>'
+    : '';
   var list=el('issues-list');
   if(!list) return;
 
@@ -5396,11 +5456,15 @@ function openIssue(id){
       }).join('')+'</div>'
     :'';
 
+  var linkedComp=iss.linkComp?components.find(function(c){return c.id===iss.linkComp;}):null;
   detail.innerHTML=''
     +'<div class="iss-det-hdr">'
     +'<div class="iss-det-title">'+iss.title+'</div>'
     +'<div class="iss-det-props">'
     +'<span class="iss-prop">'+( areaMap[iss.comp]||iss.comp)+'</span>'
+    +(linkedComp
+      ? '<span class="iss-prop iss-prop-link" title="Open device in Rig specs" onclick="jumpToComp('+linkedComp.id+')">&#128279; '+esc(compName(linkedComp))+'</span>'
+      : '')
     +'<span class="iss-prop">'+iss.date+'</span>'
     +'</div>'
     +'<div class="iss-status-row">'+statusBtns+'<button class="iss-del-btn" data-id="'+id+'" onclick="issDelete(this)">Delete</button></div>'

@@ -1261,6 +1261,13 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
 #subtabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
 .stab{background:var(--el);border:1px solid var(--line2);color:var(--ink3);font-size:12px;font-weight:600;padding:7px 15px;border-radius:18px;cursor:pointer}
 .stab.on{background:var(--brand-dim);border-color:var(--brand1);color:var(--brand1)}
+
+/* ── HOME DASHBOARD ── */
+.hd-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:20px}
+.hd-card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 12px;cursor:pointer;text-align:center;transition:border-color .12s}
+.hd-card:hover{border-color:var(--line2)}
+.hd-n{display:block;font-family:var(--mono);font-size:26px;font-weight:700;line-height:1.1}
+.hd-l{display:block;font-size:10.5px;color:var(--ink3);margin-top:4px;letter-spacing:.04em}
 </style>
 </head>
 <body>
@@ -3264,6 +3271,8 @@ document.addEventListener('keydown', function(ev){
   if(ev.key==='Escape'){
     var m=el('api-modal-bg');
     if(m && m.classList.contains('show')) hideApiModal();
+    var sh=el('msheet'); if(sh&&sh.classList.contains('show')) mtabSheet(false);
+    if(window._s3PopClose) try{window._s3PopClose();}catch(e){}
   }
 });
 
@@ -5004,6 +5013,7 @@ function renderHome(){
       +'<span class="home-fr-txt"><b>'+faultReports.length+' new fault report'+(faultReports.length>1?'s':'')+'</b> awaiting triage</span>'
       +'<span class="home-fr-go">Review \u2192</span></div>'
     :'')
+    + homeDashboard()
 
     // Stat grid
     +'<div class="home-stats">'
@@ -7854,6 +7864,26 @@ function mtabSheet(open){
   s.classList.toggle('show', !!open);
   var ad=el('msheet-admin'), nb=el('nb-admin');
   if(ad&&nb) ad.style.display=nb.style.display;
+}
+
+// ── Home dashboard strip ──
+function homeDashboard(){
+  var open=issues.filter(function(i){return i.status!=='resolved';}).length;
+  var out=Object.keys(MAINT.items||{}).filter(function(k){return MAINT.items[k].status==='out';}).length;
+  var faulty=Object.keys(MAINT.panels||{}).filter(function(k){return MAINT.panels[k].st!=='rep';}).length;
+  var today=new Date().toISOString().slice(0,10);
+  var plansToday=(typeof plans!=='undefined'?plans:[]).filter(function(p){return (p.date||'')===today;}).length;
+  function card(n,label,col,page){
+    return '<button class="hd-card" onclick="go(\''+page+'\',document.querySelector(\'.nb[onclick*='+page+']\'))">'
+      +'<span class="hd-n" style="color:'+col+'">'+n+'</span><span class="hd-l">'+label+'</span></button>';
+  }
+  return '<div class="hd-strip">'
+    + card(open,'Open issues',open?'#fbbf24':'var(--green)','issues')
+    + card(out,'Gear out of service',out?'#f87171':'var(--green)','maint')
+    + card(faulty,'Faulty panels',faulty?'#fb923c':'var(--green)','maint')
+    + card(MAINT.spares||0,'Spare panels',(MAINT.spares||0)>0?'var(--brand1)':'#f87171','maint')
+    + card(plansToday,'Planned today',plansToday?'var(--brand1)':'var(--ink3)','cal')
+    + '</div>';
 }
 </script>
 </body>

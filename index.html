@@ -974,6 +974,53 @@ select.cv-edit{text-align:left;cursor:pointer}
 .gear-finding{font-family:var(--mono);font-size:9px;color:#757682;letter-spacing:.08em;animation:gearfind 1.2s ease-in-out infinite}
 @keyframes gearfind{0%,100%{opacity:.4}50%{opacity:1}}
 .gear-empty{font-family:var(--mono);font-size:11px;color:#6b6c77;padding:24px 0;letter-spacing:.04em}
+/* ── RACK VIEW ─────────────────────────────────────────────────────────── */
+.rack-outer{background:#16181f;border:1px solid #252733;border-radius:8px;padding:14px 10px 18px;position:relative}
+.rack-lbl{display:flex;align-items:center;gap:8px;padding:0 4px 12px;border-bottom:1px solid #1e2030;margin-bottom:10px}
+.rack-lbl-dot{width:7px;height:7px;border-radius:50%;background:var(--brand1);flex-shrink:0}
+.rack-lbl-txt{font-family:'Barlow Condensed',var(--sans);font-weight:900;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink3)}
+.rack-lbl-id{font-family:var(--mono);font-size:9px;color:var(--ink4);letter-spacing:.1em;margin-left:auto}
+.rack-units{display:flex;flex-direction:column;gap:3px}
+.rack-sec-hd{display:flex;align-items:center;gap:8px;height:26px;padding:0 2px;margin-top:6px}
+.rack-sec-hd:first-child{margin-top:0}
+.rack-sec-pip{width:3px;border-radius:2px;height:14px;flex-shrink:0}
+.rack-sec-title{font-family:'Barlow Condensed',var(--sans);font-weight:900;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink4)}
+.rack-sec-rule{flex:1;height:1px;background:#1e2030}
+.rack-unit{display:flex;align-items:stretch;border-top:1px solid #333645;border-bottom:1px solid #09090c;border-radius:3px;overflow:hidden;cursor:pointer;height:46px;transition:filter .1s}
+.rack-unit.ru2{height:93px}
+.rack-unit:hover{filter:brightness(1.2)}
+.rack-unit:active{filter:brightness(.88)}
+.rack-ear{width:26px;background:#191b22;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;flex-shrink:0}
+.ru2 .rack-ear{justify-content:space-between;padding:12px 0}
+.rack-screw{width:9px;height:9px;border-radius:50%;border:1px solid #2e303e;background:#131520;display:flex;align-items:center;justify-content:center}
+.rack-screw::after{content:'';width:3px;height:3px;border-radius:50%;background:#1e2030}
+.rack-face{flex:1;background:#21232c;border-left:1px solid #2a2d3a;border-right:1px solid #2a2d3a;display:flex;align-items:center;padding:0 10px;gap:9px;min-width:0}
+.rack-stripe{width:3px;align-self:stretch;flex-shrink:0}
+.rack-rled{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.rack-rled.g{background:var(--live)}
+.rack-rled.b{background:var(--brand1)}
+.rack-rled.y{background:var(--warn)}
+.rack-rled.a{background:#fb923c}
+.rack-rled.r{background:#f87171}
+.rack-name-col{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.rack-dev-name{font-family:'Barlow Condensed',var(--sans);font-weight:900;font-size:13px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rack-dev-sub{font-family:var(--mono);font-size:8.5px;color:var(--ink3);letter-spacing:.05em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rack-vents{display:flex;gap:2px;flex-shrink:0}
+.rack-vent{width:2px;background:#0d0e14;border-radius:1px}
+.ru1 .rack-vent{height:20px}
+.ru2 .rack-vent{height:44px}
+.rack-utag{font-family:var(--mono);font-size:8px;color:var(--ink4);letter-spacing:.05em;flex-shrink:0;padding-right:2px}
+.rack-cempty{font-family:var(--mono);font-size:10px;color:var(--ink4);padding:6px 38px;letter-spacing:.04em}
+/* ── Rack modal ─────────────────────────────────────────────────────────── */
+.rack-mbg{position:absolute;inset:0;border-radius:8px;background:rgba(5,6,10,.88);display:none;align-items:flex-start;justify-content:center;padding-top:24px;z-index:50;overflow-y:auto}
+.rack-mbg.open{display:flex}
+.rack-minner{width:460px;background:var(--bg2);border:1px solid var(--line2);border-radius:10px;overflow:hidden;margin-bottom:24px;flex-shrink:0}
+.rack-mhd{display:flex;align-items:center;justify-content:space-between;padding:10px 14px 8px;border-bottom:1px solid var(--line)}
+.rack-mhd-title{font-family:'Barlow Condensed',var(--sans);font-weight:900;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3)}
+.rack-mclose{background:var(--el);border:1px solid var(--line2);color:var(--ink3);font-size:10px;font-weight:700;letter-spacing:.1em;border-radius:5px;padding:4px 10px;cursor:pointer;text-transform:uppercase}
+.rack-mclose:hover{background:var(--el2);color:var(--ink)}
+.rack-mbody{padding:10px 14px 14px}
+
 /* ── Support Tools ────────────────────────────────────────── */
 .st-tools{margin-top:16px;display:flex;flex-direction:column;gap:12px}
 .st-panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
@@ -2642,7 +2689,7 @@ var CSECTIONS = [
 
 // ── COMPONENT STATE ──────────────────────────────────────────────────────
 // components: array of {id, type, fields:{...}, notes}
-var components = [], compNextId = 1, compEditId = null;
+var components = [], compNextId = 1, compEditId = null, _rackModalId = null;
 
 function compIcon(name){
   var svgs = {
@@ -2752,6 +2799,19 @@ function duplicateComponent(id){
 
 function editComponent(id){ compEditId = (compEditId===id?null:id); renderComponents(); }
 
+function openRackModal(id){
+  _rackModalId=id;
+  var c=components.find(function(x){return x.id===id;}); if(!c) return;
+  var ms=el('rack-mstrip'); if(ms) ms.innerHTML=renderStrip(c);
+  var mbg=el('rack-mbg'); if(mbg) mbg.classList.add('open');
+}
+
+function closeRackModal(){
+  _rackModalId=null;
+  if(compEditId!==null){ compEditId=null; renderComponents(); return; }
+  var mbg=el('rack-mbg'); if(mbg) mbg.classList.remove('open');
+}
+
 function setCompField(id, key, val){
   var c = components.find(function(x){return x.id===id;}); if(!c) return;
   c.fields[key] = val;
@@ -2793,32 +2853,78 @@ function setCompNotes(id, val){
 // ── RENDER ───────────────────────────────────────────────────────────────
 function renderComponents(){
   var host = el('components-host'); if(!host) return;
-  var html = '';
+  var RACK_SEC_COLOR={compute:'#2b9fff',display:'#fbbf24',camera:'#a78bfa',tracking:'#22c8b7',syncnet:'#60a5fa',ctrlroom:'#848590',power:'#f87171'};
+  var RACK_U={workstation:2,ledwall:2,ledproc:2,camera:1,lens:1,fiz:1,tracking:1,sync:1,network:1,controlroom:1,power:1};
+  function screws(n){var s='';for(var i=0;i<n;i++)s+='<div class="rack-screw"></div>';return s;}
+  function vents(n){var s='';for(var i=0;i<n;i++)s+='<div class="rack-vent"></div>';return s;}
+
+  var html='<div class="rack-outer">';
+  html+='<div class="rack-lbl"><div class="rack-lbl-dot"></div><span class="rack-lbl-txt">Production Rack</span><span class="rack-lbl-id">RACK-01</span></div>';
+  html+='<div class="rack-units">';
+
   CSECTIONS.forEach(function(sec){
-    var items = components.filter(function(c){ return CTYPES[c.type] && CTYPES[c.type].section===sec.id; });
-    var count = items.length;
-    html += '<div class="csec">'
-      + '<span class="ctick"></span>'
-      + '<span class="csl">'+sec.label+'</span>'
-      + (count?'<span class="csc">'+count+' unit'+(count>1?'s':'')+'</span>':'')
-      + '<span class="csec-rule"></span>'
-      + '<div class="cadd-wrap">'
-      +   '<button class="cadd" onclick="toggleAddMenu('+"'"+sec.id+"'"+')">+ Add</button>'
-      +   '<div class="cadd-menu" id="addmenu-'+sec.id+'">'
-      +     sec.types.map(function(t){return '<button class="cadd-opt" onclick="addComponent('+"'"+t+"'"+');closeAddMenus()">'+compIcon(CTYPES[t].icon)+'<span>'+CTYPES[t].label+'</span></button>';}).join('')
-      +   '</div>'
-      + '</div>'
-      + '</div>';
-    if(!count){
-      html += '<div class="cempty">No '+sec.label.toLowerCase()+' components yet. Click <span style="color:var(--ink2)">+ Add</span> to start.</div>';
+    var items=components.filter(function(c){return CTYPES[c.type]&&CTYPES[c.type].section===sec.id;});
+    var col=RACK_SEC_COLOR[sec.id]||'#5a5b65';
+    html+='<div class="rack-sec-hd">'
+      +'<div class="rack-sec-pip" style="background:'+col+'"></div>'
+      +'<span class="rack-sec-title">'+sec.label+'</span>'
+      +'<span class="rack-sec-rule"></span>'
+      +'<div class="cadd-wrap" style="margin-left:6px">'
+      +  '<button class="cadd" onclick="toggleAddMenu(\''+sec.id+'\')">+ Add</button>'
+      +  '<div class="cadd-menu" id="addmenu-'+sec.id+'">'
+      +    sec.types.map(function(t){return '<button class="cadd-opt" onclick="addComponent(\''+t+'\');closeAddMenus()">'+compIcon(CTYPES[t].icon)+'<span>'+CTYPES[t].label+'</span></button>';}).join('')
+      +  '</div>'
+      +'</div>'
+      +'</div>';
+    if(!items.length){
+      html+='<div class="rack-cempty">Empty — click + Add to install a unit</div>';
     } else {
-      var cols = (sec.id==='compute') ? 'csg-3' : (sec.id==='display'||sec.id==='camera'||sec.id==='syncnet') ? 'csg-2' : 'csg-2';
-      html += '<div class="cgrid '+cols+'">' + items.map(renderStrip).join('') + '</div>';
+      items.forEach(function(c){
+        var u=RACK_U[c.type]||1;
+        var led=compLed(c);
+        var nScrews=u===2?2:1;
+        var nVents=u===2?9:5;
+        var subText=compTag(c);
+        var f=c.fields||{};
+        var model=f.machine||f.model||f.mfr||f.system||f.body||'';
+        if(model) subText=subText+' · '+model.toUpperCase();
+        html+='<div class="rack-unit ru'+u+'" onclick="openRackModal('+c.id+')" title="'+esc(compName(c))+'">'
+          +'<div class="rack-ear">'+screws(nScrews)+'</div>'
+          +'<div class="rack-face">'
+            +'<div class="rack-stripe" style="background:'+col+'"></div>'
+            +'<div class="rack-rled '+led+'"></div>'
+            +'<div class="rack-name-col">'
+              +'<div class="rack-dev-name">'+esc(compName(c))+'</div>'
+              +'<div class="rack-dev-sub">'+esc(subText)+'</div>'
+            +'</div>'
+            +'<div class="rack-vents">'+vents(nVents)+'</div>'
+            +'<span class="rack-utag">'+u+'U</span>'
+          +'</div>'
+          +'<div class="rack-ear">'+screws(nScrews)+'</div>'
+          +'</div>';
+      });
     }
   });
-  host.innerHTML = html;
-}
 
+  html+='</div>';
+  html+='<div id="rack-mbg" class="rack-mbg" onclick="if(event.target===this)closeRackModal()">'
+    +'<div class="rack-minner">'
+      +'<div class="rack-mhd"><span class="rack-mhd-title">Component</span><button class="rack-mclose" onclick="closeRackModal()">&#10005; Close</button></div>'
+      +'<div class="rack-mbody" id="rack-mstrip"></div>'
+    +'</div>'
+    +'</div>';
+  html+='</div>';
+
+  host.innerHTML=html;
+
+  if(_rackModalId!==null){
+    var mc=components.find(function(x){return x.id===_rackModalId;});
+    if(mc){
+      var ms=el('rack-mstrip'); if(ms) ms.innerHTML=renderStrip(mc);
+      var mbg=el('rack-mbg'); if(mbg) mbg.classList.add('open');
+    } else { _rackModalId=null; }
+  }
+}
 function issuesBadge(comp){
   var open=issues.filter(function(i){return i.linkComp===comp.id&&i.status!=='resolved';}).length;
   if(!open) return '';

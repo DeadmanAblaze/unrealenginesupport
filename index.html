@@ -291,6 +291,9 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:13p
 .tb-right{display:flex;align-items:center;gap:10px}
 .si{font-family:var(--mono);font-size:9px;color:var(--live);opacity:0;transition:opacity .25s;letter-spacing:.06em}
 .si.on{opacity:1}
+.tb-search{display:none;background:var(--el);border:1px solid var(--line2);border-radius:6px;color:var(--ink);font-family:var(--mono);font-size:11px;padding:4px 10px;width:150px;outline:none;transition:border-color .15s}
+.tb-search:focus{border-color:var(--brand1);box-shadow:0 0 0 2px rgba(91,157,255,.12)}
+.tb-search.vis{display:block}
 
 /* Status footer */
 .status-footer{
@@ -1469,6 +1472,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
         <span class="tb-meta" id="tb-meta">Virtual production configuration</span>
       </div>
       <div class="tb-right">
+        <input id="tb-search" class="tb-search" type="search" placeholder="Filter…" autocomplete="off" aria-label="Filter current page">
         <span class="si" id="ssaved">Saved</span>
       </div>
     </div>
@@ -1491,6 +1495,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
     <div class="pnl" id="pnl-stage3d">
       <div id="s3-host">
         <div id="s3-loading">Loading 3D engine&hellip;</div>
+        <div id="s3-empty" class="s3-fallback" style="display:none;flex-direction:column;gap:12px">No rig components yet &mdash; add components on Rig Specs first.<button class="btn bp sm" onclick="navTo('specs')">Go to Rig Specs</button></div>
       </div>
       <button class="s3-railbtn" onclick="document.querySelector('.s3-rail').classList.toggle('open')">Specs</button>
       <aside class="s3-rail" aria-label="Stage specifications">
@@ -1555,6 +1560,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
       </div>
       <button class="s3-topbtn" id="s3-topbtn" onclick="_s3TopToggle()" title="Toggle top-down plan view">Top view</button>
       <button class="s3-topbtn" style="right:104px" onclick="s3ExportPDF()" title="Export schematic plan as PDF">Export PDF</button>
+<button class="s3-topbtn" style="right:208px" onclick="if(window._s3FitView)_s3FitView()" title="Reset camera to default view">Fit view</button>
       <div id="s3-pop" style="display:none"></div>
       <div class="s3-hint">orbit &middot; scroll to zoom &middot; click a rack to inspect &middot; reposition in Top view</div>
     </div>
@@ -3186,7 +3192,22 @@ var DCL = [
 function uref(){ return fbdb.collection('users').doc(cu.uid); }
 function dref(name){ return uref().collection('data').doc(name); }
 
-var _toastT=null;
+var _toastT=null, _savedT=null;
+
+var SEARCH_PAGES=['issues','gear','cl'];
+function applySearch(){
+  var q=el('tb-search')?el('tb-search').value.trim().toLowerCase():'';
+  document.querySelectorAll('.iss-row').forEach(function(r){
+    r.style.display=(!q||r.textContent.toLowerCase().indexOf(q)>=0)?'':' none';
+  });
+  document.querySelectorAll('.gear-row').forEach(function(r){
+    r.style.display=(!q||r.textContent.toLowerCase().indexOf(q)>=0)?'':' none';
+  });
+  document.querySelectorAll('#cl-content .cli').forEach(function(r){
+    r.style.display=(!q||r.textContent.toLowerCase().indexOf(q)>=0)?'':' none';
+  });
+}
+
 function showToast(msg, isErr){
   var t=el('vp-toast');
   if(!t){ t=document.createElement('div'); t.id='vp-toast'; document.body.appendChild(t); }
@@ -3198,6 +3219,7 @@ function showToast(msg, isErr){
 
 function fsave(name, data){
   if(!cu) return;
+  var _ss=el('ssaved'); if(_ss){ _ss.classList.add('on'); clearTimeout(_savedT); _savedT=setTimeout(function(){ _ss.classList.remove('on'); },2000); }
   dref(name).set(data).catch(function(e){
     console.error('Save error',e);
     showToast('Could not save changes \u2014 check your connection and try again', true);
@@ -3379,11 +3401,22 @@ function renderSubtabs(id){
   }).join('');
 }
 
+function navTo(id){
+  var b=null;
+  document.querySelectorAll('.nb').forEach(function(n){
+    if((n.getAttribute('onclick')||"").indexOf("'"+id+"'")>=0) b=n;
+  });
+  go(id,b);
+}
+
 function go(id, btn){
   document.querySelectorAll('.pnl').forEach(function(p){ p.classList.remove('on'); });
   document.querySelectorAll('.nb').forEach(function(b){ b.classList.remove('on'); });
   var pnl=el('pnl-'+id); if(!pnl) return;
   renderSubtabs(id);
+  var _src=el('tb-search');
+  if(_src){ _src.value=''; _src.classList.toggle('vis',SEARCH_PAGES.indexOf(id)>=0); }
+  applySearch();
   pnl.classList.add('on');
   if(btn) btn.classList.add('on');
   // Always start new page at the top
@@ -3524,7 +3557,6 @@ function saveSpecs(){
   renderRigSum();
   updateDiagram();
   buildSysPrompt();
-  var s=el('ssaved'); s.classList.add('on'); setTimeout(function(){ s.classList.remove('on'); },2000);
 }
 
 function setMode(mode, silent){
@@ -5274,7 +5306,7 @@ function buildWallSVG(wall){
 function renderGear(){
   var host = el('gear-list'); if(!host) return;
   if(!components.length){
-    host.innerHTML='<div class="gear-empty">No components defined. Add components on the Rig specs page.</div>';
+    host.innerHTML='<div class="gear-empty">No rig components defined yet.<br><button class="btn bp sm" style="margin-top:10px" onclick="navTo(\'specs\')">Go to Rig Specs</button></div>';
     return;
   }
   host.innerHTML = components.map(function(comp){
@@ -7022,6 +7054,10 @@ function s3Readout(){
 }
 
 function stage3dEnter(){
+  var _s3emp=el('s3-empty');
+  var _hasRig=components.length>0;
+  if(_s3emp) _s3emp.style.display=_hasRig?'none':'flex';
+  if(!_hasRig) return;
   if(_s3){ _s3.resize(); _s3.build(); return; }
   var host = el('s3-host'); if(!host) return;
   if(window.THREE){ s3Boot(); return; }
@@ -7615,6 +7651,10 @@ function s3Boot(){
     topView=!topView; fitTopCam();
     var b=el('s3-topbtn'); if(b) b.classList.toggle('on', topView);
   };
+  window._s3FitView=function(){
+    if(topView){ topView=false; var b=el('s3-topbtn'); if(b) b.classList.remove('on'); }
+    orb.tAz=0.55; orb.tPol=1.15; orb.tDist=Math.max(S3.roomW,S3.roomD)*1.05;
+  };
   var ray=new T.Raycaster(), ndc=new T.Vector2(), floorPlane=new T.Plane(new T.Vector3(0,1,0),0);
 
   function setNdc(e){
@@ -7822,6 +7862,10 @@ var _s3RebT=null;
 function s3Rebuild(){ clearTimeout(_s3RebT); _s3RebT=setTimeout(function(){ if(_s3)_s3.build(); }, 120); }
 document.addEventListener('DOMContentLoaded', s3Bind);
 if(document.readyState!=='loading') s3Bind();
+document.addEventListener('DOMContentLoaded', function(){
+  var _tsrc=el('tb-search');
+  if(_tsrc) _tsrc.addEventListener('input', applySearch);
+});
 
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -7954,6 +7998,14 @@ function s3ExportPDF(){
   Object.keys(lanes).forEach(function(sg,i2){
     s+='<rect x="'+(60+i2*130)+'" y="'+ly+'" width="18" height="4" fill="'+(SIGNAL_COLOR[sg]||'#999')+'"/><text x="'+(82+i2*130)+'" y="'+(ly+6)+'" font-size="9">'+esc(sg)+'</text>';
   });
+  // Scale bar — round number of metres, bottom-right
+  var sbm=Math.min(5,Math.max(1,Math.round(W/4)||1));
+  var sbpx=sbm*sc;
+  var sbx=X(W/2)-sbpx-8, sby=D*sc+110;
+  s+='<line x1="'+sbx+'" y1="'+sby+'" x2="'+(sbx+sbpx)+'" y2="'+sby+'" stroke="#333" stroke-width="2"/>';
+  s+='<line x1="'+sbx+'" y1="'+(sby-4)+'" x2="'+sbx+'" y2="'+(sby+4)+'" stroke="#333" stroke-width="1.5"/>';
+  s+='<line x1="'+(sbx+sbpx)+'" y1="'+(sby-4)+'" x2="'+(sbx+sbpx)+'" y2="'+(sby+4)+'" stroke="#333" stroke-width="1.5"/>';
+  s+='<text x="'+(sbx+sbpx/2)+'" y="'+(sby-7)+'" text-anchor="middle" font-size="9" fill="#333">'+sbm+' m</text>';
   s+='</svg>';
   var win=window.open('','_blank');
   if(!win){ showToast('Pop-up blocked \u2014 allow pop-ups to export.', true); return; }

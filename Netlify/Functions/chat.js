@@ -1,72 +1,81 @@
 ﻿const https = require('https');
 
 function makeRequest(options, postData) {
-  return new Promise(function(resolve, reject) {
-    var req = https.request(options, function(res) {
-      var data = '';
-      res.on('data', function(chunk) { data += chunk; });
-      res.on('end', function() { resolve({ status: res.statusCode, body: data }); });
+  return new Promise((resolve, reject) => {
+    const req = https.request(options, (res) => {
+      let data = '';
+      res.on('data', (chunk) => { data += chunk; });
+      res.on('end', () => resolve({ status: res.statusCode, body: data }));
     });
-    req.on('error', function(e) { reject(e); });
-    req.setTimeout(25000, function() {
-      req.destroy(new Error('Request timed out'));
+    req.on('error', (e) => reject(e));
+    // 9s hard timeout — keeps us inside Netlify's wall-clock limit
+    req.setTimeout(9000, () => {
+      req.destroy(new Error('Claude is taking too long. Please try a shorter question.'));
     });
     req.write(postData);
     req.end();
   });
 }
 
+function trimMessages(messages, maxMessages = 10) {
+  // Always keep full pairs; never cut mid-conversation
+  if (!Array.isArray(messages)) return [];
+  const trimmed = messages.slice(-maxMessages);
+  // Ensure we start with a user message (not assistant)
+  const firstUser = trimmed.findIndex(m => m.role === 'user');
+  return firstUser > 0 ? trimmed.slice(firstUser) : trimmed;
+}
+
+function trimSystem(system, maxChars = 3000) {
+  if (!system || system.length <= maxChars) return system;
+  // Keep the beginning (role + rig) and cut the source priority boilerplate
+  return system.slice(0, maxChars) + '\n\n[System prompt truncated for length]';
+}
+
 exports.handler = async function(event) {
-  var respHeaders = {
+  const headers = {
     'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type',
     'Access-Control-Allow-Methods': 'POST, OPTIONS'
   };
 
-  if (event.httpMethod === 'OPTIONS') {
-    return { statusCode: 200, headers: respHeaders, body: '' };
-  }
-
+  if (event.httpMethod === 'OPTIONS') return { statusCode: 200, headers, body: '' };
   if (event.httpMethod !== 'POST') {
-    return { statusCode: 405, headers: respHeaders, body: JSON.stringify({ error: { message: 'Method not allowed' } }) };
+    return { statusCode: 405, headers, body: JSON.stringify({ error: { message: 'Method not allowed' } }) };
   }
 
-  var body;
+  let body;
   try {
     body = JSON.parse(event.body);
   } catch(e) {
-    return { statusCode: 400, headers: respHeaders, body: JSON.stringify({ error: { message: 'Invalid request body: ' + e.message } }) };
+    return { statusCode: 400, headers, body: JSON.stringify({ error: { message: 'Invalid request body: ' + e.message } }) };
   }
 
-  var ownerEmail = 'matthew.whalen87@icloud.com';
-  var apiKey = null;
-
-  if (body.userApiKey && body.userApiKey.trim().startsWith('sk-ant-')) {
-    apiKey = body.userApiKey.trim();
-  } else if (body.userEmail === ownerEmail) {
-    apiKey = process.env.ANTHROPIC_API_KEY;
-  }
-
+  // Per-user key (stored only in the user's browser, sent by the app) takes
+  // priority; otherwise fall back to the site-wide key configured in Netlify.
+  const userKey = (typeof body.userApiKey === 'string' && body.userApiKey.trim().startsWith('sk-ant-')) ? body.userApiKey.trim() : '';
+  const apiKey = userKey || process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
-    return {
-      statusCode: 403,
-      headers: respHeaders,
-      body: JSON.stringify({ error: { message: 'NO_API_KEY' } })
-    };
+    return { statusCode: 500, headers, body: JSON.stringify({ error: { message: 'No API key available. Set one in the app (Config > API key) or add ANTHROPIC_API_KEY in Netlify > Site config > Environment variables.' } }) };
   }
 
-  var payload = {
-    model: 'claude-haiku-4-5-20251001',
-    max_tokens: body.max_tokens || 1000,
-    system: body.system || '',
-    messages: body.messages || [],
-    tools: [{ type: 'web_search_20250305', name: 'web_search' }]
+  const payload = {
+    // Use sonnet — higher TPM limit (80k vs 50k for haiku) and faster on long context
+    // Allow the app to pick from known-good models (Haiku for fast
+    // structured lookups, Sonnet for support chat); anything else falls
+    // back to Sonnet so a stale frontend can never send a dead model id.
+    model: (body.model === 'claude-haiku-4-5-20251001' || body.model === 'claude-sonnet-4-6') ? body.model : 'claude-sonnet-4-6',
+    max_tokens: Math.min(Math.max(parseInt(body.max_tokens, 10) || 1400, 1), 2000),
+    // Trim system prompt to prevent token bloat
+    system: trimSystem(body.system || '', 3000),
+    // Only send last 10 messages — prevents conversation history from causing rate limits
+    messages: trimMessages(body.messages || [], 10)
   };
 
-  var postData = JSON.stringify(payload);
+  const postData = JSON.stringify(payload);
 
-  var reqOptions = {
+  const options = {
     hostname: 'api.anthropic.com',
     path: '/v1/messages',
     method: 'POST',
@@ -74,24 +83,27 @@ exports.handler = async function(event) {
       'Content-Type': 'application/json',
       'Content-Length': Buffer.byteLength(postData),
       'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01',
-      'anthropic-beta': 'web-search-2025-03-05'
+      'anthropic-version': '2023-06-01'
     }
   };
 
   try {
-    var result = await makeRequest(reqOptions, postData);
+    const result = await makeRequest(options, postData);
+
     if (!result.body || result.body.trim() === '') {
-      return { statusCode: 502, headers: respHeaders, body: JSON.stringify({ error: { message: 'Empty response. HTTP: ' + result.status } }) };
+      return { statusCode: 502, headers, body: JSON.stringify({ error: { message: 'Empty response from Anthropic. HTTP status: ' + result.status } }) };
     }
-    var parsed;
+
+    let parsed;
     try {
       parsed = JSON.parse(result.body);
     } catch(e) {
-      return { statusCode: 502, headers: respHeaders, body: JSON.stringify({ error: { message: 'Bad JSON: ' + result.body.slice(0, 200) } }) };
+      return { statusCode: 502, headers, body: JSON.stringify({ error: { message: 'Bad JSON from Anthropic: ' + result.body.slice(0, 200) } }) };
     }
-    return { statusCode: result.status, headers: respHeaders, body: JSON.stringify(parsed) };
+
+    return { statusCode: result.status, headers, body: JSON.stringify(parsed) };
+
   } catch(e) {
-    return { statusCode: 502, headers: respHeaders, body: JSON.stringify({ error: { message: 'Request failed: ' + e.message } }) };
+    return { statusCode: 502, headers, body: JSON.stringify({ error: { message: e.message } }) };
   }
 };

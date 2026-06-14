@@ -1269,6 +1269,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
 .hd-n{display:block;font-family:var(--mono);font-size:26px;font-weight:700;line-height:1.1}
 .hd-l{display:block;font-size:10.5px;color:var(--ink3);margin-top:4px;letter-spacing:.04em}
 .csn-iss{display:inline-flex;align-items:center;gap:3px;font-family:var(--mono);font-size:9.5px;font-weight:600;color:var(--warn);background:var(--warn-dim);border:1px solid rgba(251,191,36,.25);border-radius:4px;padding:1px 5px;margin-left:7px;cursor:pointer;flex-shrink:0;transition:background .12s}.csn-iss:hover{background:rgba(251,191,36,.2)}.iss-prop-link{cursor:pointer;color:var(--brand1)!important;border-color:rgba(91,157,255,.3)!important;background:var(--brand-dim)!important;transition:background .12s}.iss-prop-link:hover{background:rgba(91,157,255,.18)!important}.strip-flash{animation:stripflash 1.4s ease-out}@keyframes stripflash{0%{box-shadow:0 0 0 2px var(--brand1),0 0 14px var(--brand-glow)}100%{box-shadow:0 0 0 0 transparent}}#iss-compfilter-bar:empty{display:none}#iss-compfilter-bar{padding:8px 14px 0}.iss-cf-chip{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--ink2);background:var(--brand-dim);border:1px solid rgba(91,157,255,.25);border-radius:20px;padding:3px 6px 3px 11px}.iss-cf-chip strong{color:var(--brand1);font-weight:500}.iss-cf-x{background:none;border:none;color:var(--ink3);cursor:pointer;font-size:15px;line-height:1;padding:0 4px;border-radius:50%;transition:color .12s}.iss-cf-x:hover{color:var(--crit)}
+.mt-faulty{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:10px 0 4px}.mt-faulty:empty{display:none}.mt-faulty-lbl{width:100%;font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);margin-bottom:2px}.mt-fchip{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--ink2);background:var(--card);border:1px solid var(--line2);border-radius:6px;padding:4px 9px;cursor:pointer;transition:border-color .12s,background .12s}.mt-fchip:hover{border-color:var(--line3);background:var(--el)}.mt-fdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}.mt-fst{color:var(--ink3);font-family:var(--mono);font-size:10px}.mt-flog{font-family:var(--mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--brand1);border-left:1px solid var(--line2);padding-left:7px;margin-left:1px}
 </style>
 </head>
 <body>
@@ -1479,6 +1480,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
       <div class="mt-card">
         <div class="mt-sum" id="mt-sum"></div>
         <div class="mt-grid" id="mt-grid"></div>
+        <div class="mt-faulty" id="mt-faulty"></div>
         <div class="mt-leg">Click a panel to cycle: OK &rarr; dead pixel &rarr; dead line &rarr; out &rarr; replaced (uses a spare) &rarr; OK</div>
         <div class="mt-sprow"><button class="btn sm" onclick="mSpares(-1)">&minus;</button><button class="btn bp sm" onclick="mSpares(1)">+ Spare panel</button><div class="mt-slog" id="mt-slog"></div></div>
       </div>
@@ -4633,6 +4635,39 @@ function toggleNewIssue(){
   var shell=document.querySelector('.iss-shell');
   if(shell) shell.style.display=isOpen?'grid':'none';
   if(!isOpen){ fillIssueLinkPicker(); el('ni-title').focus(); }
+}
+
+var COMP_AREA={sync:'sync',tracking:'tracking',ledwall:'novastar',ledproc:'novastar',camera:'sdi',lens:'sdi',workstation:'render'};
+
+function startIssuePrefill(opts){
+  opts=opts||{};
+  go('issues', railBtn('issues'));
+  setTimeout(function(){
+    var f=el('new-issue-form');
+    var isOpen=f&&f.style.display==='grid';
+    if(!isOpen) toggleNewIssue(); else fillIssueLinkPicker();
+    if(opts.title!=null&&el('ni-title')) el('ni-title').value=opts.title;
+    if(opts.desc!=null&&el('ni-desc')) el('ni-desc').value=opts.desc;
+    if(opts.comp!=null&&el('ni-comp')) el('ni-comp').value=opts.comp;
+    if(opts.linkComp!=null) fillIssueLinkPicker(opts.linkComp);
+    if(el('ni-title')) el('ni-title').focus();
+  },90);
+}
+
+function logDeviceIssue(compId){
+  var c=components.find(function(x){return x.id===compId;}); if(!c) return;
+  startIssuePrefill({ title:compName(c)+' \u2014 ', comp:COMP_AREA[c.type]||'other', linkComp:compId });
+}
+
+function logPanelIssue(k){
+  var p=MAINT.panels[k]||{}; var st=PANEL_ST[p.st]?PANEL_ST[p.st][0]:'Fault';
+  var proc=components.find(function(x){return x.type==='ledproc';});
+  startIssuePrefill({
+    title:'LED panel '+k+' \u2014 '+st,
+    desc:'Panel '+k+' flagged as '+st.toLowerCase()+(p.date?' on '+p.date:'')+' on the LED wall map.',
+    comp:'novastar',
+    linkComp:proc?proc.id:null
+  });
 }
 
 function fillIssueLinkPicker(sel){
@@ -7841,7 +7876,7 @@ function renderMaint(){
       +'<span class="mt-st" style="background:'+(out?'var(--rdim)':'var(--gdim)')+';color:'+(out?'var(--crit)':'var(--green)')+'">'+(out?'OUT':'IN SERVICE')+'</span>'
       +'<span class="mt-nm">'+esc(compName(c))+'</span>'
       +'<span class="mt-act"><button class="btn sm" onclick="mNote('+c.id+')">+ Note</button>'
-      +'<button class="btn sm '+(out?'bp':'')+'" onclick="mToggle('+c.id+')">'+(out?'Return to service':'Check out')+'</button></span>'
+      +'<button class="btn sm '+(out?'bp':'')+'" onclick="mToggle('+c.id+')">'+(out?'Return to service':'Check out')+'</button>'+'<button class="btn sm" title="Create an issue for this device" onclick="logDeviceIssue('+c.id+')">Log issue</button></span>'
       +(it.log.length?'<div class="mt-log">'+it.log.slice(0,4).map(function(l){return '<div><b>'+l.date.slice(0,10)+'</b> '+esc(l.text)+'</div>';}).join('')+'</div>':'')
       +'</div>';
   }).join('')||'<div class="mt-empty">No equipment yet \u2014 add devices on Rig specs.</div>';
@@ -7860,6 +7895,20 @@ function renderMaint(){
   if(el('mt-sum')) el('mt-sum').innerHTML=
     '<b style="color:#fbbf24">'+cnt.dpx+'</b> dead pixel \u00b7 <b style="color:#fb923c">'+cnt.dln+'</b> dead line \u00b7 <b style="color:#f87171">'+cnt.out+'</b> out \u00b7 <b style="color:#4ade80">'+cnt.rep+'</b> replaced \u00b7 spares: <b style="color:var(--brand1)">'+(MAINT.spares||0)+'</b>';
   if(el('mt-slog')) el('mt-slog').innerHTML=(MAINT.spareLog||[]).slice(0,5).map(function(l){return '<div><b>'+l.date.slice(0,10)+'</b> '+esc(l.text)+'</div>';}).join('');
+  var fb=el('mt-faulty');
+  if(fb){
+    var faulty=Object.keys(MAINT.panels).filter(function(k){var s=MAINT.panels[k].st;return s==='dpx'||s==='dln'||s==='out';});
+    faulty.sort();
+    fb.innerHTML=faulty.length
+      ? '<div class="mt-faulty-lbl">Faulty panels</div>'+faulty.map(function(k){
+          var st=MAINT.panels[k].st;
+          return '<span class="mt-fchip" title="Log this panel as an issue" onclick="logPanelIssue(\''+k+'\')">'
+            +'<span class="mt-fdot" style="background:'+PANEL_ST[st][1]+'"></span>'
+            +'Panel '+k+' <span class="mt-fst">'+PANEL_ST[st][0]+'</span>'
+            +'<span class="mt-flog">Log issue</span></span>';
+        }).join('')
+      : '';
+  }
 }
 
 function s3ExportPDF(){

@@ -1267,7 +1267,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
 .mt-card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:18px;max-width:980px}
 .mt-sum{font-size:12px;color:var(--ink2);margin-bottom:10px}
 .mt-grid{display:grid;gap:2px;margin-bottom:8px}
-.mt-cell{aspect-ratio:1;border:1px solid #14161b;border-radius:2px;cursor:pointer;font-size:7px;font-family:var(--mono);color:#0a0c10;padding:0;min-width:0}
+.mt-cell{aspect-ratio:1;border:1px solid #14161b;border-radius:2px;cursor:pointer;font-size:7px;font-weight:700;font-family:var(--mono);color:rgba(8,10,14,.82);padding:0;min-width:0;text-shadow:0 1px 0 rgba(255,255,255,.18)}
 .mt-cell:hover{filter:brightness(1.4)}
 .mt-leg{font-size:10.5px;color:var(--ink4);margin-bottom:10px}
 .mt-sprow{display:flex;gap:7px;align-items:flex-start}
@@ -1318,6 +1318,39 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
 .hd-card:hover{border-color:var(--line2)}
 .hd-n{display:block;font-family:var(--mono);font-size:26px;font-weight:700;line-height:1.1}
 .hd-l{display:block;font-size:10.5px;color:var(--ink3);margin-top:4px;letter-spacing:.04em}
+/* ── HOME HERO DASHBOARD ───────────────────────────────────────────────── */
+.hd-hero{display:flex;gap:22px;align-items:stretch;margin-bottom:18px;flex-wrap:wrap}
+.hd-gauge{position:relative;width:150px;height:172px;flex-shrink:0;cursor:pointer;display:flex;align-items:flex-start;justify-content:center;padding-top:0}
+.hd-ring{width:150px;height:150px;display:block}
+.hd-ring-bg{fill:none;stroke:rgba(255,255,255,.07);stroke-width:9}
+.hd-ring-fg{fill:none;stroke-width:9;stroke-linecap:round;transition:stroke-dasharray 1.1s cubic-bezier(.22,1,.36,1)}
+.hd-gauge-ctr{position:absolute;top:0;left:0;right:0;height:150px;display:flex;align-items:center;justify-content:center}
+.hd-gauge-num{font-family:var(--mono);font-size:38px;font-weight:700;line-height:1}
+.hd-gauge-pct{font-family:var(--mono);font-size:15px;font-weight:700;color:var(--ink4);align-self:flex-start;margin-top:14px;margin-left:2px}
+.hd-gauge-cap{position:absolute;bottom:0;left:0;right:0;text-align:center;font-family:var(--mono);font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink3)}
+.hd-hero-r{flex:1;min-width:240px;display:flex;flex-direction:column;gap:12px}
+.hd-verdict-row{display:flex;align-items:center;gap:10px}
+.hd-verdict-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;box-shadow:0 0 0 0 currentColor;animation:hdpulse 2.4s ease-out infinite}
+.hd-verdict{font-family:'Barlow Condensed',var(--sans);font-weight:900;font-size:19px;letter-spacing:.02em;color:var(--ink);text-transform:uppercase;line-height:1.05}
+.hd-verdict-sub{font-family:var(--mono);font-size:10px;color:var(--ink3);letter-spacing:.03em;margin-top:3px}
+.hd-hero-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:12px;flex:1}
+.hd-mini{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:11px 12px;cursor:pointer;transition:border-color .12s;display:flex;flex-direction:column;gap:8px}
+.hd-mini:hover{border-color:var(--line2)}
+.hd-mini-head{display:flex;justify-content:space-between;align-items:baseline;font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3)}
+.hd-mini-pct{font-weight:700;font-size:11px}
+.hd-mini-grid{display:grid;gap:2px;flex:1;align-content:center}
+.hd-mini-cell{aspect-ratio:1;border-radius:1px;min-height:4px}
+.hd-sync{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:11px 12px;cursor:pointer;transition:border-color .12s;display:flex;flex-direction:column;gap:5px}
+.hd-sync:hover{border-color:var(--line2)}
+.hd-sync.off{border-color:rgba(248,113,113,.3)}
+.hd-sync-head{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3)}
+.hd-sync-dot{width:6px;height:6px;border-radius:50%;background:var(--ink4);flex-shrink:0}
+.hd-sync-dot.live{background:var(--green);box-shadow:0 0 0 0 var(--green);animation:hdpulse 2.4s ease-out infinite}
+.hd-sync-rate{font-family:var(--mono);font-size:15px;font-weight:700;color:var(--ink);letter-spacing:.02em}
+.hd-sync-type{font-family:var(--mono);font-size:9px;color:var(--ink4);letter-spacing:.03em}
+@keyframes hdpulse{0%{box-shadow:0 0 0 0 currentColor}70%{box-shadow:0 0 0 7px transparent}100%{box-shadow:0 0 0 0 transparent}}
+@media(max-width:560px){.hd-hero{gap:16px}.hd-hero-grid{grid-template-columns:1fr}}
+
 .csn-iss{display:inline-flex;align-items:center;gap:3px;font-family:var(--mono);font-size:9.5px;font-weight:600;color:var(--warn);background:var(--warn-dim);border:1px solid rgba(251,191,36,.25);border-radius:4px;padding:1px 5px;margin-left:7px;cursor:pointer;flex-shrink:0;transition:background .12s}.csn-iss:hover{background:rgba(251,191,36,.2)}.iss-prop-link{cursor:pointer;color:var(--brand1)!important;border-color:rgba(91,157,255,.3)!important;background:var(--brand-dim)!important;transition:background .12s}.iss-prop-link:hover{background:rgba(91,157,255,.18)!important}.strip-flash{animation:stripflash 1.4s ease-out}@keyframes stripflash{0%{box-shadow:0 0 0 2px var(--brand1),0 0 14px var(--brand-glow)}100%{box-shadow:0 0 0 0 transparent}}#iss-compfilter-bar:empty{display:none}#iss-compfilter-bar{padding:8px 14px 0}.iss-cf-chip{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--ink2);background:var(--brand-dim);border:1px solid rgba(91,157,255,.25);border-radius:20px;padding:3px 6px 3px 11px}.iss-cf-chip strong{color:var(--brand1);font-weight:500}.iss-cf-x{background:none;border:none;color:var(--ink3);cursor:pointer;font-size:15px;line-height:1;padding:0 4px;border-radius:50%;transition:color .12s}.iss-cf-x:hover{color:var(--crit)}
 .mt-faulty{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:10px 0 4px}.mt-faulty:empty{display:none}.mt-faulty-lbl{width:100%;font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);margin-bottom:2px}.mt-fchip{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--ink2);background:var(--card);border:1px solid var(--line2);border-radius:6px;padding:4px 9px;cursor:pointer;transition:border-color .12s,background .12s}.mt-fchip:hover{border-color:var(--line3);background:var(--el)}.mt-fdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}.mt-fst{color:var(--ink3);font-family:var(--mono);font-size:10px}.mt-flog{font-family:var(--mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--brand1);border-left:1px solid var(--line2);padding-left:7px;margin-left:1px}
 </style>
@@ -1486,7 +1519,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
         <span class="rail-brand-sub">Production console</span>
       </div>
     </div>
-    <div class="rail-nav-section">// Nav</div><nav class="rail-nav"><button aria-label="Home" title="Home" class="nb on" onclick="go('home',this)"><svg viewBox="0 0 24 24"><path d="M3 10l9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V10z"/></svg><span class="nb-label">Home</span></button><button aria-label="Support" title="Support" class="nb" onclick="go('chat',this)"><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5z"/></svg><span class="nb-label">Support</span></button><button aria-label="Operations" title="Operations" class="nb" onclick="go('issues',this)"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><span class="nb-label">Operations</span><span class="nbadge" id="bi">0</span></button><button aria-label="Rig specs" title="Rig specs" class="nb" onclick="go('specs',this)"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg><span class="nb-label">Rig specs</span></button><button aria-label="Stage 3D" title="Stage 3D" class="nb" onclick="go('stage3d',this);stage3dEnter()"><svg viewBox="0 0 24 24"><path d="M12 2l9 5v10l-9 5-9-5V7l9-5z"/><path d="M12 22V12M12 12L3 7M12 12l9-5"/></svg><span class="nb-label">Stage 3D</span></button><button aria-label="Production" title="Production" class="nb" onclick="go('cl',this)"><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span class="nb-label">Production</span><span class="nbadge" id="bc">0</span></button><button aria-label="Docs" title="Docs" class="nb" onclick="go('quickstart',this)"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M4 19.5A2.5 2.5 0 0 0 6.5 22H20V2H6.5A2.5 2.5 0 0 0 4 4.5v15z"/></svg><span class="nb-label">Docs</span></button><button aria-label="Admin" title="Admin" class="nb" id="nb-admin" style="display:none" onclick="go('admin',this);adminLoadUsers()"><svg viewBox="0 0 24 24"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></svg><span class="nb-label">Admin</span></button></nav>
+    <div class="rail-nav-section">// Nav</div><nav class="rail-nav"><button aria-label="Home" title="Home" class="nb on" onclick="go('home',this)"><svg viewBox="0 0 24 24"><path d="M3 10l9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V10z"/></svg><span class="nb-label">Home</span></button><button aria-label="Support" title="Support" class="nb" onclick="go('chat',this)"><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5z"/></svg><span class="nb-label">Support</span></button><button aria-label="Maintenance" title="Maintenance" class="nb" onclick="go('issues',this)"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><span class="nb-label">Maintenance</span><span class="nbadge" id="bi">0</span></button><button aria-label="Rig specs" title="Rig specs" class="nb" onclick="go('specs',this)"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg><span class="nb-label">Rig specs</span></button><button aria-label="Stage 3D" title="Stage 3D" class="nb" onclick="go('stage3d',this);stage3dEnter()"><svg viewBox="0 0 24 24"><path d="M12 2l9 5v10l-9 5-9-5V7l9-5z"/><path d="M12 22V12M12 12L3 7M12 12l9-5"/></svg><span class="nb-label">Stage 3D</span></button><button aria-label="Production" title="Production" class="nb" onclick="go('cl',this)"><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span class="nb-label">Production</span><span class="nbadge" id="bc">0</span></button><button aria-label="Docs" title="Docs" class="nb" onclick="go('quickstart',this)"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M4 19.5A2.5 2.5 0 0 0 6.5 22H20V2H6.5A2.5 2.5 0 0 0 4 4.5v15z"/></svg><span class="nb-label">Docs</span></button><button aria-label="Admin" title="Admin" class="nb" id="nb-admin" style="display:none" onclick="go('admin',this);adminLoadUsers()"><svg viewBox="0 0 24 24"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></svg><span class="nb-label">Admin</span></button></nav>
     <div class="rail-spacer"></div>
 
     <div class="rail-user">
@@ -2165,7 +2198,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
         <div class="iss-list-col">
           <div class="iss-list-hdr">
             <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px">
-              <span style="font-size:11px;font-weight:500;color:var(--ink3);letter-spacing:.06em;text-transform:uppercase;flex:1">Issues</span>
+              <span style="font-size:11px;font-weight:500;color:var(--ink3);letter-spacing:.06em;text-transform:uppercase;flex:1">Fault reports</span>
               <button class="btn bp sm" onclick="toggleNewIssue()">+ New</button>
             </div>
             <div style="display:flex;gap:5px">
@@ -3492,7 +3525,7 @@ function checkApiKeyOnLogin(){
 }
 
 var PAGE_GROUPS=[
-  {ids:['issues','maint'],labels:['Issues','Service & panel map']},
+  {ids:['issues','maint'],labels:['Fault Reports','Service & panel map']},
   {ids:['cl','cal'],labels:['Checklist','Planner']},
   {ids:['quickstart','features','plugin'],labels:['Quick start','Features','UE Plugin']},
   {ids:['specs','gear'],labels:['Specs & devices','Product links']}
@@ -5178,7 +5211,7 @@ function selectCalDate(dateStr){
   dayIssues.forEach(function(iss){
     var statusColor = {open:'#fbbf24','in-progress':'#60a5fa',waiting:'#9b9b9f',resolved:'#4ade80'};
     evHTML += '<div class="cal-ev cal-ev-issue">'
-      +'<div class="cal-ev-head"><span class="cal-ev-dot" style="background:#fbbf24"></span><span class="cal-ev-label">Issue</span></div>'
+      +'<div class="cal-ev-head"><span class="cal-ev-dot" style="background:#fbbf24"></span><span class="cal-ev-label">Fault report</span></div>'
       +'<div class="cal-ev-title">'+esc(iss.title)+'</div>'
       +(iss.status?'<div class="cal-ev-meta" style="color:'+(statusColor[iss.status]||'#9b9b9f')+'">'+iss.status+'</div>':'')
       +'</div>';
@@ -5245,7 +5278,7 @@ function renderHome(){
     +'<div class="home-stats">'
     +'<div class="home-stat"><div class="home-stat-val">'+components.length+'</div><div class="home-stat-lbl">Components</div></div>'
     +'<div class="home-stat"><div class="home-stat-val">'+connections.length+'</div><div class="home-stat-lbl">Connections</div></div>'
-    +'<div class="home-stat'+(openIssues.length?' home-stat-warn':'')+'"><div class="home-stat-val">'+openIssues.length+'</div><div class="home-stat-lbl">Open issues</div></div>'
+    +'<div class="home-stat'+(openIssues.length?' home-stat-warn':'')+'"><div class="home-stat-val">'+openIssues.length+'</div><div class="home-stat-lbl">Open faults</div></div>'
     +'<div class="home-stat"><div class="home-stat-val">'+esc('UE '+ue)+'</div><div class="home-stat-lbl">Engine</div></div>'
     +'</div>'
 
@@ -5261,7 +5294,7 @@ function renderHome(){
     +'<span class="home-nav-btn-name">Rig specs</span><span class="home-nav-btn-sub">'+components.length+' components</span></button>'
     +'<button class="home-nav-btn" onclick="go(\'issues\',document.querySelector(\'.nb[onclick*=issues]\')">'
     +'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>'
-    +'<span class="home-nav-btn-name">Issues</span><span class="home-nav-btn-sub">'+openIssues.length+' open</span></button>'
+    +'<span class="home-nav-btn-name">Fault reports</span><span class="home-nav-btn-sub">'+openIssues.length+' open</span></button>'
     +'<button class="home-nav-btn" onclick="go(\'chat\',document.querySelector(\'.nb[onclick*=chat]\')">'
     +'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>'
     +'<span class="home-nav-btn-name">Support</span><span class="home-nav-btn-sub">AI assistant</span></button>'
@@ -5290,7 +5323,7 @@ function renderHome(){
 
     // Right: recent issues
     +'<div class="home-col">'
-    +'<div class="home-section-head"><span class="home-tick"></span>Recent issues</div>'
+    +'<div class="home-section-head"><span class="home-tick"></span>Recent fault reports</div>'
     +(recentIssues.length
       ? '<div class="home-issue-list">'
         +recentIssues.map(function(iss){
@@ -5302,12 +5335,30 @@ function renderHome(){
             +'</div>';
         }).join('')
         +'</div>'
-      : '<div class="home-no-issues">No issues logged. Good rig.</div>'
+      : '<div class="home-no-issues">No fault reports logged. Good rig.</div>'
     )
     +'</div>'
 
     +'</div>' // home-body
     +'</div>'; // home-wrap
+  if(window.requestAnimationFrame) requestAnimationFrame(_hdCountUp);
+}
+
+function _hdCountUp(){
+  var els=document.querySelectorAll('#pnl-home [data-count]');
+  els.forEach(function(elm){
+    var target=parseInt(elm.getAttribute('data-count'),10)||0;
+    if(target<=0){ elm.textContent='0'; return; }
+    var dur=620, t0=null;
+    function step(ts){
+      if(t0===null) t0=ts;
+      var p=Math.min(1,(ts-t0)/dur);
+      var eased=1-Math.pow(1-p,3);
+      elm.textContent=Math.round(target*eased);
+      if(p<1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  });
 }
 
 
@@ -8036,7 +8087,7 @@ function renderMaint(){
     var hh='';
     for(var r=1;r<=d.r;r++) for(var c2=1;c2<=d.c;c2++){
       var k=c2+'-'+r, st=(MAINT.panels[k]||{}).st||'ok';
-      hh+='<button class="mt-cell" style="background:'+PANEL_ST[st][1]+(st==='ok'?'':'cc')+'" title="Panel '+k+': '+PANEL_ST[st][0]+((MAINT.panels[k]||{}).date?' ('+MAINT.panels[k].date+')':'')+'" onclick="mPanelClick(\''+k+'\')">'+(st==='ok'?'':k)+'</button>';
+      hh+='<button class="mt-cell" style="background:'+PANEL_ST[st][1]+(st==='ok'?'':'cc')+'" title="Panel '+k+': '+PANEL_ST[st][0]+((MAINT.panels[k]||{}).date?' ('+MAINT.panels[k].date+')':'')+'" onclick="mPanelClick(\''+k+'\')">'+k+'</button>';
     }
     grid.innerHTML=hh;
   }
@@ -8140,21 +8191,106 @@ function mtabSheet(open){
 // ── Home dashboard strip ──
 function homeDashboard(){
   var open=issues.filter(function(i){return i.status!=='resolved';}).length;
+  var openCrit=issues.filter(function(i){return i.status!=='resolved'&&(i.priority==='high'||i.priority==='critical');}).length;
   var out=Object.keys(MAINT.items||{}).filter(function(k){return MAINT.items[k].status==='out';}).length;
-  var faulty=Object.keys(MAINT.panels||{}).filter(function(k){return MAINT.panels[k].st!=='rep';}).length;
+  var faulty=Object.keys(MAINT.panels||{}).filter(function(k){var s=MAINT.panels[k].st;return s==='dpx'||s==='dln'||s==='out';}).length;
   var today=new Date().toISOString().slice(0,10);
   var plansToday=(typeof plans!=='undefined'?plans:[]).filter(function(p){return (p.date||'')===today;}).length;
-  function card(n,label,col,page){
-    return '<button class="hd-card" onclick="go(\''+page+'\',document.querySelector(\'.nb[onclick*='+page+']\'))">'
-      +'<span class="hd-n" style="color:'+col+'">'+n+'</span><span class="hd-l">'+label+'</span></button>';
+
+  // ── Panel grid health ──
+  var d=mPanelDims(); var totalPanels=d.c*d.r;
+  var panelsOut=Object.keys(MAINT.panels||{}).filter(function(k){return (MAINT.panels[k].st||'ok')==='out';}).length;
+  var wallHealthPct=totalPanels?Math.round((totalPanels-panelsOut)/totalPanels*100):100;
+
+  // ── Sync / genlock ──
+  var syncComp=components.find(function(c){return c.type==='sync';});
+  var syncRate=syncComp&&syncComp.fields.rate?syncComp.fields.rate:'';
+  var syncType=syncComp&&syncComp.fields.type?syncComp.fields.type:'';
+  var syncOk=!!syncComp;
+
+  // ── Rig readiness scoring ──
+  // configured components / total, minus deductions for faults
+  var configured=components.filter(function(c){
+    var fs=c.fields||{}; return Object.keys(fs).some(function(k){return (fs[k]||'').trim();});
+  }).length;
+  var configPct=components.length?Math.round(configured/components.length*100):0;
+  var score=100;
+  if(components.length===0) score=0;
+  else {
+    score-=Math.min(40,(100-configPct)*0.4);
+    score-=openCrit*12; score-=(open-openCrit)*4;
+    score-=out*6;
+    score-=panelsOut*8; score-=faulty*1.5;
+    if(!syncOk) score-=10;
   }
-  return '<div class="hd-strip">'
-    + card(open,'Open issues',open?'#fbbf24':'var(--green)','issues')
+  score=Math.max(0,Math.min(100,Math.round(score)));
+  var ring = score>=85 ? 'var(--green)' : score>=60 ? '#fbbf24' : '#f87171';
+  var verdict = components.length===0 ? 'Add your rig to begin'
+    : score>=85 ? 'All systems nominal'
+    : score>=60 ? 'Operational — minor attention'
+    : 'Needs attention';
+  var verdictSub = (open?open+' open fault report'+(open>1?'s':''):'No open faults')
+    + ' · ' + (panelsOut?panelsOut+' panel'+(panelsOut>1?'s':'')+' out':'wall '+wallHealthPct+'%')
+    + (out?' · '+out+' gear out':'');
+
+  var R=52, C=2*Math.PI*R, dash=C*score/100;
+
+  // ── LED-wall mini-map ──
+  var miniCells='';
+  for(var rr=1;rr<=d.r;rr++){
+    for(var cc=1;cc<=d.c;cc++){
+      var key=cc+'-'+rr; var stt=(MAINT.panels[key]||{}).st||'ok';
+      var col=stt==='ok'?'#2c3038':PANEL_ST[stt][1];
+      miniCells+='<span class="hd-mini-cell" style="background:'+col+'" title="Panel '+key+': '+PANEL_ST[stt][0]+'"></span>';
+    }
+  }
+
+  return '<div class="hd-hero">'
+    // Readiness gauge
+    +'<div class="hd-gauge" onclick="go(\'specs\',document.querySelector(\'.nb[onclick*=specs]\'))">'
+    +'<svg viewBox="0 0 130 130" class="hd-ring">'
+    +'<circle cx="65" cy="65" r="'+R+'" class="hd-ring-bg"/>'
+    +'<circle cx="65" cy="65" r="'+R+'" class="hd-ring-fg" stroke="'+ring+'" '
+    +'stroke-dasharray="'+dash.toFixed(1)+' '+C.toFixed(1)+'" '
+    +'transform="rotate(-90 65 65)"/>'
+    +'</svg>'
+    +'<div class="hd-gauge-ctr"><span class="hd-gauge-num" data-count="'+score+'" style="color:'+ring+'">'+score+'</span><span class="hd-gauge-pct">%</span></div>'
+    +'<div class="hd-gauge-cap">Rig readiness</div>'
+    +'</div>'
+    // Verdict + wall mini-map + sync
+    +'<div class="hd-hero-r">'
+    +'<div class="hd-verdict-row">'
+    +'<span class="hd-verdict-dot" style="background:'+ring+'"></span>'
+    +'<div><div class="hd-verdict">'+verdict+'</div><div class="hd-verdict-sub">'+verdictSub+'</div></div>'
+    +'</div>'
+    +'<div class="hd-hero-grid">'
+    // mini wall
+    +'<div class="hd-mini" onclick="go(\'maint\',document.querySelector(\'.nb[onclick*=issues]\'))">'
+    +'<div class="hd-mini-head"><span>LED wall</span><span class="hd-mini-pct" style="color:'+(wallHealthPct>=100?'var(--green)':wallHealthPct>=90?'#fbbf24':'#f87171')+'">'+wallHealthPct+'%</span></div>'
+    +'<div class="hd-mini-grid" style="grid-template-columns:repeat('+d.c+',1fr)">'+miniCells+'</div>'
+    +'</div>'
+    // sync chip
+    +'<div class="hd-sync'+(syncOk?'':' off')+'" onclick="go(\'specs\',document.querySelector(\'.nb[onclick*=specs]\'))">'
+    +'<div class="hd-sync-head"><span class="hd-sync-dot'+(syncOk?' live':'')+'"></span>Genlock</div>'
+    +'<div class="hd-sync-rate">'+(syncRate?esc(syncRate):(syncOk?'Configured':'Not set'))+'</div>'
+    +'<div class="hd-sync-type">'+(syncType?esc(syncType):(syncOk?'':'Add a sync source'))+'</div>'
+    +'</div>'
+    +'</div>'
+    +'</div>'
+    +'</div>'
+    // Stat strip
+    +'<div class="hd-strip">'
+    + card(open,'Open fault reports',open?'#fbbf24':'var(--green)','issues')
     + card(out,'Gear out of service',out?'#f87171':'var(--green)','maint')
     + card(faulty,'Faulty panels',faulty?'#fb923c':'var(--green)','maint')
     + card(MAINT.spares||0,'Spare panels',(MAINT.spares||0)>0?'var(--brand1)':'#f87171','maint')
     + card(plansToday,'Planned today',plansToday?'var(--brand1)':'var(--ink3)','cal')
     + '</div>';
+
+  function card(n,label,col,page){
+    return '<button class="hd-card" onclick="go(\''+page+'\',document.querySelector(\'.nb[onclick*='+page+']\'))">'
+      +'<span class="hd-n" data-count="'+n+'" style="color:'+col+'">'+n+'</span><span class="hd-l">'+label+'</span></button>';
+  }
 }
 </script>
 </body>

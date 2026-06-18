@@ -1341,177 +1341,104 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
 @media(max-width:560px){.hs-stage{height:280px}.hs-verdict{font-size:21px}.hs-eyebrow{display:none}.hs-chip{min-width:78px;padding:6px 9px}.hs-chip-val{font-size:13px}}
 
 /* ── HOME EQUIPMENT RACK (hero) ─────────────────────────────────────────── */
-.hero-rk{display:grid;grid-template-columns:1fr 332px;gap:14px;margin-bottom:20px;align-items:stretch}
-.hero-rk .hs-stage{height:auto;min-height:480px;margin-bottom:0}
-/* slim cinematic label on the volume canvas */
+.hero-rk{display:grid;grid-template-columns:1fr 360px;gap:14px;margin-bottom:20px;align-items:stretch}
+.hero-rk .hs-stage{height:auto;min-height:500px;margin-bottom:0}
 .hs-vlabel{position:absolute;left:18px;top:16px;pointer-events:none}
 .hs-vlabel-1{font-family:'Barlow Condensed',var(--sans);font-weight:800;font-size:12px;letter-spacing:.26em;text-transform:uppercase;color:#c4c6d2;text-shadow:0 2px 14px rgba(0,0,0,.6)}
 .hs-vlabel-2{font-family:var(--mono);font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:#7d808c;margin-top:3px}
 .hs-vspec{position:absolute;left:18px;bottom:15px;pointer-events:none;font-family:var(--mono);font-size:8px;letter-spacing:.13em;text-transform:uppercase;color:#5d606b;text-shadow:0 1px 8px rgba(0,0,0,.7)}
 
-/* rack frame — front elevation of a 19" rack */
-.rk{position:relative;display:flex;flex-direction:column;gap:5px;
-  background:linear-gradient(180deg,#16181f,#0f1116);
-  border:1px solid #23262f;border-radius:12px;padding:11px 11px 13px;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.045),0 22px 48px -26px rgba(0,0,0,.9);overflow:hidden}
-/* faint vertical airflow seams behind devices */
-.rk::before{content:'';position:absolute;inset:0;pointer-events:none;
-  background:repeating-linear-gradient(90deg,transparent 0 7px,rgba(255,255,255,.012) 7px 8px);opacity:.5}
+/* clean flat monitoring panel */
+.rk2{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line2);border-radius:14px;overflow:hidden}
+.rk2-hd{display:flex;align-items:center;gap:12px;padding:15px 16px 12px}
+.rk2-statdot{width:9px;height:9px;border-radius:50%;flex-shrink:0;background:var(--c,#4ade80);position:relative}
+.rk2-statdot::after{content:'';position:absolute;inset:-4px;border-radius:50%;border:1.5px solid var(--c,#4ade80);opacity:.45;animation:rk2ring 2.6s ease-out infinite}
+@keyframes rk2ring{0%{transform:scale(.5);opacity:.55}80%,100%{transform:scale(1.7);opacity:0}}
+.rk2-hd-main{flex:1;min-width:0}
+.rk2-eyebrow{font-family:var(--mono);font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink4);margin-bottom:3px}
+.rk2-verdict{font-family:'Barlow Condensed',var(--sans);font-weight:900;font-size:21px;line-height:.95;letter-spacing:.01em;text-transform:uppercase;color:var(--ink)}
+.rk2-hd-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
+.rk2-live{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:8px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3)}
+.rk2-live i{width:5px;height:5px;border-radius:50%;background:#f0533a;animation:rk2blink 1.6s steps(1,end) infinite}
+@keyframes rk2blink{0%,55%{opacity:1}56%,100%{opacity:.25}}
+.rk2-clock{font-family:var(--mono);font-size:15px;font-weight:500;letter-spacing:.04em;color:var(--ink2);font-variant-numeric:tabular-nums}
+.rk2-scoreline{display:flex;align-items:center;gap:9px;padding:0 16px 13px}
+.rk2-scoretrack{flex:1;height:3px;border-radius:3px;background:var(--bg);overflow:hidden}
+.rk2-scoretrack i{display:block;height:100%;border-radius:3px;transition:width .8s cubic-bezier(.2,.7,.2,1)}
+.rk2-scorenum{font-family:var(--mono);font-size:9px;font-weight:500;color:var(--ink3);font-variant-numeric:tabular-nums}
 
-/* rack head — master status + studio clock */
-.rk-head{position:relative;z-index:1;display:flex;flex-direction:column;gap:9px;
-  padding:11px 13px;border-radius:7px;
-  background:linear-gradient(180deg,#1c1f29,#13151c);border:1px solid #282c38;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.05),inset 0 -3px 8px rgba(0,0,0,.3)}
-.rk-head-row{display:flex;align-items:center;gap:11px}
-.rk-stat-dot{width:11px;height:11px;border-radius:50%;flex-shrink:0;background:currentColor;box-shadow:0 0 10px currentColor;position:relative}
-.rk-stat-dot::after{content:'';position:absolute;inset:-4px;border-radius:50%;border:1.5px solid currentColor;opacity:.5;animation:rkring 2.4s ease-out infinite}
-@keyframes rkring{0%{transform:scale(.6);opacity:.65}80%,100%{transform:scale(1.7);opacity:0}}
-.rk-head-txt{flex:1;min-width:0}
-.rk-head-lbl{font-family:var(--mono);font-size:8px;letter-spacing:.22em;text-transform:uppercase;color:#6a6c78;margin-bottom:2px}
-.rk-verdict{font-family:'Barlow Condensed',var(--sans);font-weight:900;font-size:20px;line-height:.95;letter-spacing:.02em;text-transform:uppercase;color:#f0f1f6}
-.rk-head-r{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
-.rk-rec{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:8px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#8b8d99}
-.rk-rec b{width:6px;height:6px;border-radius:50%;background:#f0533a;box-shadow:0 0 7px rgba(240,83,58,.8);animation:rkblink 1.5s steps(1,end) infinite}
-@keyframes rkblink{0%,55%{opacity:1}56%,100%{opacity:.18}}
-.rk-clock{font-family:var(--mono);font-weight:700;font-size:16px;letter-spacing:.04em;color:#cfd2dc;font-variant-numeric:tabular-nums}
-.rk-score{display:flex;align-items:center;gap:8px}
-.rk-scorebar{flex:1;height:4px;border-radius:3px;background:#0c0e13;overflow:hidden}
-.rk-scorebar i{display:block;height:100%;border-radius:3px;transition:width .8s cubic-bezier(.2,.7,.2,1)}
-.rk-scorenum{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.04em;color:#9a9ca8;flex-shrink:0;font-variant-numeric:tabular-nums}
+.rk2-list{display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.rk2-mod{display:flex;align-items:stretch;text-align:left;background:none;border:none;border-bottom:1px solid var(--line);padding:0;cursor:pointer;transition:background .12s;width:100%;font-family:var(--sans)}
+.rk2-mod:hover{background:var(--el)}
+.rk2-mod:focus-visible{outline:none;box-shadow:inset 2px 0 0 var(--brand1),inset 0 0 0 1px rgba(43,159,255,.22)}
+.rk2-acc{width:3px;flex-shrink:0;background:var(--c,#4ade80);margin:11px 0;border-radius:2px;opacity:.9}
+.rk2-mod-id{flex:1;min-width:0;padding:11px 12px 11px 13px;display:flex;flex-direction:column;justify-content:center;gap:3px}
+.rk2-name{font-family:var(--sans);font-weight:600;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rk2-sub{font-family:var(--mono);font-size:8.5px;letter-spacing:.04em;color:var(--ink4);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rk2-mod-val{flex-shrink:0;padding:11px 14px;display:flex;flex-direction:column;align-items:flex-end;justify-content:center;gap:5px}
+.rk2-readout{font-family:var(--mono);font-weight:600;font-size:16px;line-height:1;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
+.rk2-pct{font-size:10px;color:var(--ink3);margin-left:1px}
+.rk2-status{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:.04em;white-space:nowrap}
+.rk2-status i{width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0}
+.rk2-status.ok{color:#4ade80}.rk2-status.warn{color:#fbbf24}.rk2-status.bad{color:#f87171}.rk2-status.idle{color:var(--ink4)}
+.rk2-status i.live{animation:rk2blink 1.6s steps(1,end) infinite}
 
-/* generic device bay (mirrors app rack-unit vocabulary) */
-.rk-bay{position:relative;z-index:1;display:flex;align-items:stretch;
-  border-top:1px solid #343a4b;border-bottom:1px solid #07080b;border-radius:4px;overflow:hidden;
-  cursor:pointer;transition:filter .12s,box-shadow .12s;background:#1b1d25}
-.rk-bay:hover{filter:brightness(1.13);box-shadow:0 0 0 1px var(--brand1),0 0 16px rgba(43,159,255,.2)}
-.rk-bay:active{filter:brightness(.9)}
-.rk-bay:focus-visible{outline:none;box-shadow:0 0 0 2px var(--brand1)}
-.rk-1u{height:42px}.rk-2u{height:90px}
-/* mounting ears + screws */
-.rk-ear{width:23px;flex-shrink:0;background:linear-gradient(90deg,#1a1c23,#141620);
-  display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:7px 0}
-.rk-2u .rk-ear{padding:11px 0}
-.rk-screw{width:8px;height:8px;border-radius:50%;flex-shrink:0;
-  background:radial-gradient(circle at 34% 30%,#30333f,#0d0f15);box-shadow:inset 0 0 0 1px #0b0c11,0 1px 1px rgba(0,0,0,.4);position:relative}
-.rk-screw::after{content:'';position:absolute;inset:0;margin:auto;width:4px;height:1.2px;background:#43475408;background:#414552;transform:rotate(var(--sd,42deg))}
-.rk-screw.s2::after{transform:rotate(118deg)}
-/* faceplate */
-.rk-face{flex:1;min-width:0;display:flex;align-items:center;gap:10px;padding:0 11px;
-  background:linear-gradient(180deg,#262934,#1a1c24);
-  border-left:1px solid #2c2f3b;border-right:1px solid #2c2f3b;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.05),inset 0 -2px 7px rgba(0,0,0,.35)}
-.rk-2u .rk-face{flex-direction:column;align-items:stretch;justify-content:center;gap:6px;padding:8px 11px}
-.rk-stripe{width:3px;align-self:stretch;flex-shrink:0;border-radius:2px}
-.rk-2u .rk-face .rk-stripe{position:absolute;left:23px;top:0;bottom:0;height:auto}
-.rk-id{min-width:0;flex-shrink:0}
-.rk-dev{font-family:'Barlow Condensed',var(--sans);font-weight:900;font-size:13px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink);white-space:nowrap;line-height:1}
-.rk-sub{font-family:var(--mono);font-size:8px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);white-space:nowrap;margin-top:3px}
-.rk-face-row{display:flex;align-items:center;gap:10px;width:100%;min-width:0}
-.rk-vents{display:flex;gap:2px;flex-shrink:0;margin-left:auto}
-.rk-vent{width:2px;height:20px;background:#0c0e14;border-radius:1px}
+.rk2-mod.rk2-tall{align-items:stretch}
+.rk2-mod-body{flex:1;min-width:0;padding:11px 14px 12px 13px;display:flex;flex-direction:column;gap:9px}
+.rk2-mod-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.rk2-mod-top .rk2-mod-id{flex:1;padding:0}
+.rk2-mod-top .rk2-readout{font-size:18px}
 
-/* LCD readout */
-.rk-lcd{margin-left:auto;flex-shrink:0;display:flex;align-items:baseline;gap:5px;
-  background:#070a09;border:1px solid #0b0f0e;border-radius:5px;padding:5px 10px;position:relative;overflow:hidden;
-  box-shadow:inset 0 0 11px rgba(0,0,0,.75),inset 0 0 0 1px rgba(255,255,255,.018)}
-.rk-lcd::after{content:'';position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(255,255,255,.035) 0 1px,transparent 1px 3px)}
-.rk-lcd-v{font-family:var(--mono);font-weight:700;font-size:17px;line-height:1;letter-spacing:.02em;color:var(--lcd,#7cffb0);text-shadow:0 0 9px var(--lcdg,rgba(124,255,176,.5));font-variant-numeric:tabular-nums}
-.rk-lcd-u{font-family:var(--mono);font-size:9px;letter-spacing:.06em;color:#5f6570}
+.rk2-wall{display:flex;gap:2px;height:8px}
+.rk2-wseg{flex:1;border-radius:1px;background:#2f7d49}
+.rk2-wseg.out{background:#f87171}
+.rk2-wseg.fault{background:#fb923c}
 
-/* status pill */
-.rk-pill{font-family:var(--mono);font-size:8px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;
-  padding:3px 7px;border-radius:4px;display:inline-flex;align-items:center;gap:5px;flex-shrink:0;white-space:nowrap}
-.rk-pill .pd{width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0}
-.rk-pill.ok{color:#4ade80;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25)}
-.rk-pill.warn{color:#fbbf24;background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.25)}
-.rk-pill.bad{color:#f87171;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.25)}
-.rk-pill.idle{color:#7d808c;background:rgba(255,255,255,.035);border:1px solid var(--line2)}
-.rk-pill .pd.live{animation:rkblink 1.5s steps(1,end) infinite}
+.rk2-nodes{display:flex;flex-direction:column;gap:7px}
+.rk2-node{display:flex;align-items:center;gap:9px;min-width:0}
+.rk2-ndot{width:6px;height:6px;border-radius:50%;flex-shrink:0;background:var(--c,#4ade80)}
+.rk2-nname{font-family:var(--mono);font-size:9.5px;letter-spacing:.03em;color:var(--ink2);flex-shrink:0;width:100px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rk2-nbar{flex:1;height:4px;border-radius:3px;background:var(--bg);overflow:hidden;min-width:24px}
+.rk2-nbar i{display:block;height:100%;border-radius:3px;background:linear-gradient(90deg,#22c55e,#4ade80)}
+.rk2-nbar i.l0{animation:rk2l0 3.1s ease-in-out infinite}
+.rk2-nbar i.l1{animation:rk2l1 2.6s ease-in-out infinite}
+.rk2-nbar i.l2{animation:rk2l2 3.7s ease-in-out infinite}
+@keyframes rk2l0{0%,100%{width:48%}50%{width:78%}}
+@keyframes rk2l1{0%,100%{width:60%}45%{width:42%}}
+@keyframes rk2l2{0%,100%{width:55%}55%{width:83%}}
+.rk2-npct{font-family:var(--mono);font-size:8.5px;color:var(--ink3);width:30px;text-align:right;flex-shrink:0;font-variant-numeric:tabular-nums}
+.rk2-node.off .rk2-nname{color:var(--ink4)}.rk2-node.off .rk2-npct{color:#f87171}
 
-/* LED processor — segmented health bargraph + wall strip */
-.rk-led-top{display:flex;align-items:center;gap:9px}
-.rk-meter{display:flex;gap:2px;align-items:stretch;height:13px;flex:1}
-.rk-seg{flex:1;border-radius:1px;background:#1d2029;transition:background .3s,box-shadow .3s}
-.rk-seg.on{background:var(--sc,#4ade80);box-shadow:0 0 5px var(--sg,rgba(74,222,128,.45))}
-.rk-seg.tip{animation:rkvu 1.7s ease-in-out infinite}
-@keyframes rkvu{0%,100%{opacity:.55}50%{opacity:1}}
-.rk-wallstrip{display:grid;grid-template-columns:repeat(28,1fr);grid-auto-rows:1fr;gap:1.5px;width:100%;height:18px}
-.rk-pcell{border-radius:1px;background:#1c3a26;box-shadow:inset 0 0 0 .5px rgba(74,222,128,.12)}
-.rk-pcell.lit{background:#2f7d49;box-shadow:inset 0 0 2px rgba(120,255,170,.4)}
-.rk-pcell.out{background:#f87171;box-shadow:0 0 4px rgba(248,113,113,.6);animation:rkblink 1.7s steps(1,end) infinite}
-.rk-pcell.fault{background:#fb923c;box-shadow:0 0 4px rgba(251,146,60,.5)}
+.rk2-irs{display:flex;gap:5px}
+.rk2-ir{width:5px;height:5px;border-radius:50%;background:#a78bfa}
+.rk2-ir.b0{animation:rk2ir 1.9s ease-in-out infinite}.rk2-ir.b1{animation:rk2ir 1.9s ease-in-out .5s infinite}
+.rk2-ir.b2{animation:rk2ir 1.9s ease-in-out 1s infinite}.rk2-ir.b3{animation:rk2ir 1.9s ease-in-out 1.4s infinite}
+@keyframes rk2ir{0%,100%{opacity:.35}50%{opacity:1}}
+.rk2-xyz{font-family:var(--mono);font-size:8.5px;letter-spacing:.02em;color:#8a7fb8;font-variant-numeric:tabular-nums;white-space:nowrap}
 
-/* render cluster node bays */
-.rk-nodes{display:flex;flex-direction:column;gap:4px;flex:1;min-width:0}
-.rk-node{display:flex;align-items:center;gap:8px;background:#14161d;border:1px solid #232733;border-radius:4px;padding:4px 8px;min-width:0}
-.rk-node-led{width:6px;height:6px;border-radius:50%;flex-shrink:0;background:currentColor;box-shadow:0 0 6px currentColor}
-.rk-node-nm{font-family:var(--mono);font-size:8.5px;letter-spacing:.05em;color:var(--ink2);width:58px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-transform:uppercase}
-.rk-node-load{flex:1;height:5px;background:#0a0c11;border-radius:3px;overflow:hidden;position:relative;min-width:20px}
-.rk-node-load i{position:absolute;left:0;top:0;bottom:0;border-radius:3px;background:linear-gradient(90deg,#22c55e,#4ade80)}
-.rk-node-load i.l0{width:64%;animation:rkl0 3.1s ease-in-out infinite}
-.rk-node-load i.l1{width:52%;animation:rkl1 2.6s ease-in-out infinite}
-.rk-node-load i.l2{width:71%;animation:rkl2 3.7s ease-in-out infinite}
-@keyframes rkl0{0%,100%{width:48%}50%{width:78%}}
-@keyframes rkl1{0%,100%{width:60%}45%{width:42%}}
-@keyframes rkl2{0%,100%{width:55%}55%{width:83%}}
-.rk-node-pct{font-family:var(--mono);font-size:8px;color:var(--ink3);width:26px;text-align:right;flex-shrink:0;font-variant-numeric:tabular-nums}
-.rk-node.off .rk-node-nm{color:var(--ink4)}
-.rk-node.off .rk-node-pct{color:#f87171}
-.rk-2u .rk-face.row2{flex-direction:row;align-items:center;gap:12px;padding:8px 11px}
-.rk-render-id{flex-shrink:0;width:98px;min-width:0;display:flex;flex-direction:column;align-items:flex-start}
+.rk2-trio{display:flex;align-items:center}
+.rk2-mini{display:flex;flex-direction:column;align-items:flex-end;gap:2px;padding-left:18px}
+.rk2-mini-v{font-family:var(--mono);font-weight:600;font-size:15px;line-height:1;color:var(--ink);font-variant-numeric:tabular-nums}
+.rk2-mini-l{font-family:var(--mono);font-size:7.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink4)}
 
-/* tracking IR constellation */
-.rk-irs{display:flex;gap:5px;flex-shrink:0}
-.rk-ir{width:6px;height:6px;border-radius:50%;background:#a78bfa;box-shadow:0 0 6px rgba(167,139,250,.75)}
-.rk-ir.b0{animation:rkir 1.9s ease-in-out infinite}.rk-ir.b1{animation:rkir 1.9s ease-in-out .5s infinite}
-.rk-ir.b2{animation:rkir 1.9s ease-in-out 1s infinite}.rk-ir.b3{animation:rkir 1.9s ease-in-out 1.4s infinite}
-@keyframes rkir{0%,100%{opacity:.4;transform:scale(.85)}50%{opacity:1;transform:scale(1)}}
-.rk-xyz{font-family:var(--mono);font-size:8px;letter-spacing:.04em;color:#8a7fb8;flex-shrink:0;font-variant-numeric:tabular-nums}
+.rk2-count{display:flex;align-items:baseline;gap:5px}
+.rk2-count b{font-family:var(--mono);font-weight:600;font-size:20px;line-height:1;font-variant-numeric:tabular-nums}
+.rk2-count span{font-family:var(--mono);font-size:9px;color:var(--ink3)}
 
-/* fault monitor */
-.rk-fault-r{margin-left:auto;display:flex;align-items:center;gap:9px;flex-shrink:0}
-.rk-crit{font-family:var(--mono);font-size:8px;letter-spacing:.06em;text-transform:uppercase;color:#f87171;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.22);border-radius:4px;padding:2px 6px}
-
-/* service mini-trio */
-.rk-trio{margin-left:auto;display:flex;align-items:stretch;gap:0;flex-shrink:0}
-.rk-mini{display:flex;flex-direction:column;align-items:center;gap:2px;padding:0 11px;border-right:1px solid #2a2d39}
-.rk-mini:last-child{border-right:none}
-.rk-mini-v{font-family:var(--mono);font-weight:700;font-size:15px;line-height:1;color:var(--ink);font-variant-numeric:tabular-nums}
-.rk-mini-l{font-family:var(--mono);font-size:7px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink4)}
-
-/* PDU strip — system info */
-.rk-pdu{position:relative;z-index:1;display:flex;align-items:center;gap:9px;height:38px;padding:0 11px;border-radius:5px;
-  background:linear-gradient(180deg,#1a1c24,#111319);border:1px solid #23262f;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
-.rk-pdu-tag{font-family:var(--mono);font-size:8px;font-weight:700;letter-spacing:.14em;color:#6a6c78}
-.rk-outlets{display:flex;gap:4px}
-.rk-outlet{width:6px;height:6px;border-radius:50%;background:#4ade80;box-shadow:0 0 5px rgba(74,222,128,.55)}
-.rk-outlet.o1{animation:rkflk 4s steps(1,end) infinite}.rk-outlet.o2{animation:rkflk 5.3s steps(1,end) infinite}
-.rk-outlet.o3{animation:rkflk 6.1s steps(1,end) infinite}
-@keyframes rkflk{0%,96%{opacity:1}97%,100%{opacity:.4}}
-.rk-pdu-cells{display:flex;align-items:center;gap:0;margin-left:auto}
-.rk-pcell-r{display:flex;align-items:baseline;gap:4px;padding:0 10px;border-left:1px solid #23262f;cursor:pointer;transition:color .12s}
-.rk-pcell-r:hover .rk-pc-v{color:var(--brand1)}
-.rk-pc-v{font-family:var(--mono);font-weight:700;font-size:12px;color:#c4c6d2;font-variant-numeric:tabular-nums}
-.rk-pc-l{font-family:var(--mono);font-size:7px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink4)}
+.rk2-foot{display:flex;align-items:stretch;background:var(--bg)}
+.rk2-foot-cell{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 6px;cursor:pointer;border-right:1px solid var(--line);transition:background .12s}
+.rk2-foot-cell:last-child{border-right:none}
+.rk2-foot-cell:hover{background:var(--el)}
+.rk2-foot-cell b{font-family:var(--mono);font-weight:600;font-size:13px;color:var(--ink);font-variant-numeric:tabular-nums}
+.rk2-foot-cell span{font-family:var(--mono);font-size:7.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink4)}
 
 @media(prefers-reduced-motion:reduce){
-  .rk-stat-dot::after,.rk-rec b,.rk-seg.tip,.rk-pcell.out,.rk-pill .pd.live,
-  .rk-node-load i,.rk-ir,.rk-outlet{animation:none!important}
+  .rk2-statdot::after,.rk2-live i,.rk2-status i.live,.rk2-nbar i,.rk2-ir{animation:none!important}
 }
 @media(max-width:840px){
   .hero-rk{grid-template-columns:1fr;gap:12px}
-  .hero-rk .hs-stage{min-height:300px}
-  .rk{padding:10px}
+  .hero-rk .hs-stage{min-height:320px}
 }
-@media(max-width:430px){
-  .rk-verdict{font-size:17px}.rk-clock{font-size:14px}
-  .rk-dev{font-size:12px}.rk-lcd-v{font-size:15px}
-  .rk-wallstrip{grid-template-columns:repeat(20,1fr)}
-  .rk-node-nm{width:46px}
-}
-
 .csn-iss{display:inline-flex;align-items:center;gap:3px;font-family:var(--mono);font-size:9.5px;font-weight:600;color:var(--warn);background:var(--warn-dim);border:1px solid rgba(251,191,36,.25);border-radius:4px;padding:1px 5px;margin-left:7px;cursor:pointer;flex-shrink:0;transition:background .12s}.csn-iss:hover{background:rgba(251,191,36,.2)}.iss-prop-link{cursor:pointer;color:var(--brand1)!important;border-color:rgba(91,157,255,.3)!important;background:var(--brand-dim)!important;transition:background .12s}.iss-prop-link:hover{background:rgba(91,157,255,.18)!important}.strip-flash{animation:stripflash 1.4s ease-out}@keyframes stripflash{0%{box-shadow:0 0 0 2px var(--brand1),0 0 14px var(--brand-glow)}100%{box-shadow:0 0 0 0 transparent}}#iss-compfilter-bar:empty{display:none}#iss-compfilter-bar{padding:8px 14px 0}.iss-cf-chip{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--ink2);background:var(--brand-dim);border:1px solid rgba(91,157,255,.25);border-radius:20px;padding:3px 6px 3px 11px}.iss-cf-chip strong{color:var(--brand1);font-weight:500}.iss-cf-x{background:none;border:none;color:var(--ink3);cursor:pointer;font-size:15px;line-height:1;padding:0 4px;border-radius:50%;transition:color .12s}.iss-cf-x:hover{color:var(--crit)}
 .mt-faulty{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:10px 0 4px}.mt-faulty:empty{display:none}.mt-faulty-lbl{width:100%;font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);margin-bottom:2px}.mt-fchip{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--ink2);background:var(--card);border:1px solid var(--line2);border-radius:6px;padding:4px 9px;cursor:pointer;transition:border-color .12s,background .12s}.mt-fchip:hover{border-color:var(--line3);background:var(--el)}.mt-fdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}.mt-fst{color:var(--ink3);font-family:var(--mono);font-size:10px}.mt-flog{font-family:var(--mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--brand1);border-left:1px solid var(--line2);padding-left:7px;margin-left:1px}
 </style>
@@ -8414,132 +8341,111 @@ function homeDashboard(){
   window._HDLIVE = { tracking: trackOk };
 
   function nav(p){ return 'go(\''+p+'\',document.querySelector(\'.nb[onclick*='+p+']\'))'; }
-  var EAR='<div class="rk-ear"><div class="rk-screw"></div><div class="rk-screw s2"></div></div>';
-
   // ── the animated volume (left) ──────────────────────────────────────────
   var stage='<div class="hs-stage"><canvas id="hs-canvas"></canvas>'
     +'<div class="hs-vlabel"><div class="hs-vlabel-1">The Volume</div><div class="hs-vlabel-2">ICVFX \u00b7 Live Sports</div></div>'
     +'<div class="hs-vspec">15 m \u00d7 3 m \u00b7 3\u00b0 curve \u00b7 50 Hz</div>'
     +'</div>';
 
-  // ── rack head: master status + studio clock ─────────────────────────────
-  var head='<div class="rk-head">'
-    +'<div class="rk-head-row">'
-    +'<span class="rk-stat-dot" style="color:'+stateClr+'"></span>'
-    +'<div class="rk-head-txt"><div class="rk-head-lbl">Stage status</div><div class="rk-verdict">'+verdict+'</div></div>'
-    +'<div class="rk-head-r"><span class="rk-rec"><b></b>'+(components.length?'Online':'Idle')+'</span>'
-    +'<span class="rk-clock" id="rk-clock">--:--:--</span></div>'
+  // ── panel header: master status + studio clock ──────────────────────────
+  var head='<div class="rk2-hd">'
+    +'<span class="rk2-statdot" style="--c:'+stateClr+'"></span>'
+    +'<div class="rk2-hd-main"><div class="rk2-eyebrow">Stage status</div><div class="rk2-verdict">'+verdict+'</div></div>'
+    +'<div class="rk2-hd-right"><div class="rk2-live"><i></i>'+(components.length?'Online':'Idle')+'</div>'
+    +'<div class="rk2-clock" id="rk-clock">--:--:--</div></div>'
     +'</div>'
-    +'<div class="rk-score"><div class="rk-scorebar"><i style="width:'+score+'%;background:'+stateClr+'"></i></div>'
-    +'<span class="rk-scorenum">'+score+'%</span></div>'
-    +'</div>';
+    +'<div class="rk2-scoreline"><div class="rk2-scoretrack"><i style="width:'+score+'%;background:'+stateClr+'"></i></div>'
+    +'<span class="rk2-scorenum">'+score+'%</span></div>';
 
-  // ── 1U sync generator ───────────────────────────────────────────────────
-  var sync='<div class="rk-bay rk-1u" tabindex="0" role="button" onclick="'+nav('specs')+'">'+EAR
-    +'<div class="rk-face">'
-    +'<div class="rk-stripe" style="background:'+(syncOk?'#4ade80':'#f87171')+'"></div>'
-    +'<div class="rk-id"><div class="rk-dev">Sync Generator</div><div class="rk-sub">Genlock \u00b7 Black-burst</div></div>'
-    +'<div class="rk-lcd" style="--lcd:'+(syncOk?'#7cffb0':'#f87171')+';--lcdg:'+(syncOk?'rgba(124,255,176,.5)':'rgba(248,113,113,.5)')+'">'
-    +'<span class="rk-lcd-v">'+(syncOk?(syncRate?esc(syncRate):'SYNC'):'FREE')+'</span></div>'
-    +'<span class="rk-pill '+(syncOk?'ok':'bad')+'"><span class="pd'+(syncOk?' live':'')+'"></span>'+(syncOk?'lock':'no ref')+'</span>'
-    +'</div></div>';
+  // simple (1-row) module
+  function mod(page,acc,name,sub,right){
+    return '<button class="rk2-mod" tabindex="0" onclick="'+nav(page)+'">'
+      +'<span class="rk2-acc" style="--c:'+acc+'"></span>'
+      +'<div class="rk2-mod-id"><div class="rk2-name">'+name+'</div><div class="rk2-sub">'+sub+'</div></div>'
+      +'<div class="rk2-mod-val">'+right+'</div></button>';
+  }
 
-  // ── 2U LED processor: bargraph + miniature wall strip ───────────────────
-  var zc = wallHealthPct>=98?['#4ade80','rgba(74,222,128,.45)']
-         : wallHealthPct>=90?['#fbbf24','rgba(251,191,36,.45)']
-         : ['#f87171','rgba(248,113,113,.45)'];
-  var segN=18, lit=Math.round(wallHealthPct/100*segN), meter='';
-  for(var si=0;si<segN;si++){ var on=si<lit;
-    meter+='<div class="rk-seg'+(on?' on':'')+(on&&si===lit-1?' tip':'')+'"'
-      +(on?' style="--sc:'+zc[0]+';--sg:'+zc[1]+'"':'')+'></div>'; }
-  var totalCells=56, outSet={}, fSet={};
-  for(var oi=0;oi<panelsOut&&oi<totalCells;oi++){ outSet[Math.floor((oi+1)*totalCells/(panelsOut+1))]=1; }
-  for(var fi=0;fi<faulty&&fi<totalCells;fi++){ var fidx=Math.floor((fi+0.5)*totalCells/(faulty+1)); if(outSet[fidx])fidx++; fSet[fidx]=1; }
-  var strip='';
-  for(var ci=0;ci<totalCells;ci++){ var pcls=outSet[ci]?'out':(fSet[ci]?'fault':'lit'); strip+='<div class="rk-pcell '+pcls+'"></div>'; }
-  var led='<div class="rk-bay rk-2u" tabindex="0" role="button" onclick="'+nav('maint')+'">'+EAR
-    +'<div class="rk-face">'
-    +'<div class="rk-stripe" style="background:'+zc[0]+'"></div>'
-    +'<div class="rk-led-top">'
-    +'<div class="rk-id"><div class="rk-dev">LED Processor</div><div class="rk-sub">Novastar \u00b7 15 m \u00d7 3 m</div></div>'
-    +'<div class="rk-lcd" style="margin-left:auto;--lcd:'+zc[0]+';--lcdg:'+zc[1]+'"><span class="rk-lcd-v" data-count="'+wallHealthPct+'">'+wallHealthPct+'</span><span class="rk-lcd-u">%</span></div>'
-    +'<span class="rk-pill '+(panelsOut?(wallHealthPct>=90?'warn':'bad'):'ok')+'"><span class="pd"></span>'+(panelsOut?panelsOut+' out':'all ok')+'</span>'
-    +'</div>'
-    +'<div class="rk-meter">'+meter+'</div>'
-    +'<div class="rk-wallstrip">'+strip+'</div>'
-    +'</div></div>';
+  // sync
+  var sync=mod('specs', syncOk?'#4ade80':'#f87171', 'Sync Generator','Genlock \u00b7 Black-burst',
+    '<div class="rk2-readout">'+(syncRate?esc(syncRate):(syncOk?'Locked':'Free'))+'</div>'
+    +'<div class="rk2-status '+(syncOk?'ok':'bad')+'"><i'+(syncOk?' class="live"':'')+'></i>'+(syncOk?'Locked':'No ref')+'</div>');
 
-  // ── 2U render cluster: per-node bays w/ live load ───────────────────────
+  // LED processor (tall) — single health bar
+  var zc = wallHealthPct>=98?'#4ade80':wallHealthPct>=90?'#fbbf24':'#f87171';
+  var wsegN=24, wOut={}, wF={};
+  for(var i=0;i<panelsOut&&i<wsegN;i++){ wOut[Math.floor((i+1)*wsegN/(panelsOut+1))]=1; }
+  for(var i=0;i<faulty&&i<wsegN;i++){ var ix=Math.floor((i+0.5)*wsegN/(faulty+1)); if(wOut[ix])ix++; wF[ix]=1; }
+  var wall='';
+  for(var i=0;i<wsegN;i++){ var wc=wOut[i]?' out':(wF[i]?' fault':''); wall+='<span class="rk2-wseg'+wc+'"></span>'; }
+  var ledStatus = panelsOut?(panelsOut+' panel'+(panelsOut>1?'s':'')+' out') : (faulty?(faulty+' flagged'):'All panels nominal');
+  var ledStatusCls = panelsOut?(wallHealthPct>=90?'warn':'bad'):(faulty?'warn':'ok');
+  var led='<button class="rk2-mod rk2-tall" tabindex="0" onclick="'+nav('maint')+'">'
+    +'<span class="rk2-acc" style="--c:'+zc+'"></span>'
+    +'<div class="rk2-mod-body">'
+    +'<div class="rk2-mod-top"><div class="rk2-mod-id"><div class="rk2-name">LED Processor</div><div class="rk2-sub">Novastar \u00b7 15 m \u00d7 3 m</div></div>'
+    +'<div class="rk2-readout" style="color:'+zc+'"><span data-count="'+wallHealthPct+'">'+wallHealthPct+'</span><span class="rk2-pct">%</span></div></div>'
+    +'<div class="rk2-wall">'+wall+'</div>'
+    +'<div class="rk2-status '+ledStatusCls+'" style="font-size:8.5px"><i></i>'+ledStatus+'</div>'
+    +'</div></button>';
+
+  // render cluster (tall) — full node names
   var loadCls=['l0','l1','l2'], loadPct=[64,52,71], nodeRows='';
   nodeList.slice(0,3).forEach(function(n,i){
     if(n.online){
-      nodeRows+='<div class="rk-node"><span class="rk-node-led" style="color:#4ade80"></span>'
-        +'<span class="rk-node-nm">'+esc(n.nm)+'</span>'
-        +'<span class="rk-node-load"><i class="'+loadCls[i%3]+'"></i></span>'
-        +'<span class="rk-node-pct">'+loadPct[i%3]+'%</span></div>';
+      nodeRows+='<div class="rk2-node"><span class="rk2-ndot" style="--c:#4ade80"></span>'
+        +'<span class="rk2-nname">'+esc(n.nm)+'</span>'
+        +'<span class="rk2-nbar"><i class="'+loadCls[i%3]+'" style="width:'+loadPct[i%3]+'%"></i></span>'
+        +'<span class="rk2-npct">'+loadPct[i%3]+'%</span></div>';
     } else {
-      nodeRows+='<div class="rk-node off"><span class="rk-node-led" style="color:#f87171"></span>'
-        +'<span class="rk-node-nm">'+esc(n.nm)+'</span>'
-        +'<span class="rk-node-load"></span><span class="rk-node-pct">\u2014</span></div>';
+      nodeRows+='<div class="rk2-node off"><span class="rk2-ndot" style="--c:#f87171"></span>'
+        +'<span class="rk2-nname">'+esc(n.nm)+'</span>'
+        +'<span class="rk2-nbar"></span><span class="rk2-npct">\u2014</span></div>';
     }
   });
-  if(nodeList.length===0){ nodeRows='<div class="rk-node off"><span class="rk-node-led" style="color:#5a5b65"></span><span class="rk-node-nm">No nodes</span><span class="rk-node-load"></span><span class="rk-node-pct">\u2014</span></div>'; }
-  var rPillCls=(nodes&&nodesOnline===nodes)?'ok':(nodesOnline?'warn':'idle');
-  var rPillTxt=nodes?(nodesOnline+' / '+nodes+' online'):'no nodes';
-  var render='<div class="rk-bay rk-2u" tabindex="0" role="button" onclick="'+nav('specs')+'">'+EAR
-    +'<div class="rk-face row2">'
-    +'<div class="rk-stripe" style="position:static;height:auto;align-self:stretch;background:'+(rPillCls==='ok'?'#4ade80':rPillCls==='warn'?'#fbbf24':'#5a5b65')+'"></div>'
-    +'<div class="rk-render-id"><div class="rk-dev">Render Cluster</div><div class="rk-sub">HP Z8 \u00b7 nDisplay</div>'
-    +'<span class="rk-pill '+rPillCls+'" style="margin-top:6px"><span class="pd"></span>'+rPillTxt+'</span></div>'
-    +'<div class="rk-nodes">'+nodeRows+'</div>'
-    +'</div></div>';
+  if(nodeList.length===0){ nodeRows='<div class="rk2-node off"><span class="rk2-ndot" style="--c:#5a5b65"></span><span class="rk2-nname">No nodes</span><span class="rk2-nbar"></span><span class="rk2-npct">\u2014</span></div>'; }
+  var rCls=(nodes&&nodesOnline===nodes)?'ok':(nodesOnline?'warn':'idle');
+  var rAcc=(rCls==='ok')?'#4ade80':rCls==='warn'?'#fbbf24':'#5a5b65';
+  var rTxt=nodes?(nodesOnline+' / '+nodes+' online'):'no nodes';
+  var render='<button class="rk2-mod rk2-tall" tabindex="0" onclick="'+nav('specs')+'">'
+    +'<span class="rk2-acc" style="--c:'+rAcc+'"></span>'
+    +'<div class="rk2-mod-body">'
+    +'<div class="rk2-mod-top"><div class="rk2-mod-id"><div class="rk2-name">Render Cluster</div><div class="rk2-sub">HP Z8 \u00b7 nDisplay</div></div>'
+    +'<div class="rk2-status '+rCls+'"><i></i>'+rTxt+'</div></div>'
+    +'<div class="rk2-nodes">'+nodeRows+'</div>'
+    +'</div></button>';
 
-  // ── 1U tracking ─────────────────────────────────────────────────────────
-  var tracking='<div class="rk-bay rk-1u" tabindex="0" role="button" onclick="'+nav('specs')+'">'+EAR
-    +'<div class="rk-face">'
-    +'<div class="rk-stripe" style="background:'+(trackOk?'#a78bfa':'#5a5b65')+'"></div>'
-    +'<div class="rk-id"><div class="rk-dev">Tracking</div><div class="rk-sub">Vive Mars \u00b7 4\u00d7 IR</div></div>'
-    +(trackOk?'<div class="rk-irs" style="margin-left:auto"><span class="rk-ir b0"></span><span class="rk-ir b1"></span><span class="rk-ir b2"></span><span class="rk-ir b3"></span></div>'
-      +'<span class="rk-xyz" id="rk-xyz">X +0.00  Y +0.00  Z +1.50</span>':'')
-    +'<span class="rk-pill '+(trackOk?'ok':'idle')+'" style="margin-left:'+(trackOk?'0':'auto')+'"><span class="pd'+(trackOk?' live':'')+'"></span>'+(trackOk?'live':'offline')+'</span>'
-    +'</div></div>';
+  // tracking
+  var trackRight = trackOk
+    ? '<div class="rk2-irs"><span class="rk2-ir b0"></span><span class="rk2-ir b1"></span><span class="rk2-ir b2"></span><span class="rk2-ir b3"></span></div>'
+      +'<div class="rk2-xyz" id="rk-xyz">X +0.00  Y +0.00  Z +1.50</div>'
+      +'<div class="rk2-status ok"><i class="live"></i>Live</div>'
+    : '<div class="rk2-status idle"><i></i>Offline</div>';
+  var tracking=mod('specs', trackOk?'#a78bfa':'#5a5b65','Tracking','Vive Mars \u00b7 4\u00d7 IR', trackRight);
 
-  // ── 1U fault monitor ────────────────────────────────────────────────────
-  var fault='<div class="rk-bay rk-1u" tabindex="0" role="button" onclick="'+nav('issues')+'">'+EAR
-    +'<div class="rk-face">'
-    +'<div class="rk-stripe" style="background:'+(open?(openCrit?'#f87171':'#fbbf24'):'#4ade80')+'"></div>'
-    +'<div class="rk-id"><div class="rk-dev">Fault Monitor</div><div class="rk-sub">Issue tracker</div></div>'
-    +'<div class="rk-fault-r">'
-    +(openCrit?'<span class="rk-crit">'+openCrit+' crit</span>':'')
-    +'<div class="rk-lcd" style="--lcd:'+(open?(openCrit?'#f87171':'#fbbf24'):'#7cffb0')+';--lcdg:'+(open?(openCrit?'rgba(248,113,113,.5)':'rgba(251,191,36,.5)'):'rgba(124,255,176,.5)')+'"><span class="rk-lcd-v" data-count="'+open+'">'+open+'</span><span class="rk-lcd-u">open</span></div>'
-    +'<span class="rk-pill '+(open?(openCrit?'bad':'warn'):'ok')+'"><span class="pd'+(open?' live':'')+'"></span>'+(open?(openCrit?'action':'review'):'clear')+'</span>'
-    +'</div></div></div>';
+  // fault monitor
+  var fClr = open?(openCrit?'#f87171':'#fbbf24'):'#4ade80';
+  var fault=mod('issues', fClr,'Fault Monitor','Issue tracker',
+    '<div class="rk2-count" style="color:'+fClr+'"><b data-count="'+open+'">'+open+'</b><span>open</span></div>'
+    +'<div class="rk2-status '+(open?(openCrit?'bad':'warn'):'ok')+'"><i'+(open?' class="live"':'')+'></i>'+(open?(openCrit?openCrit+' critical':'Review'):'Clear')+'</div>');
 
-  // ── 1U service / maintenance trio ───────────────────────────────────────
+  // service trio
   var spares=MAINT.spares||0;
-  var service='<div class="rk-bay rk-1u" tabindex="0" role="button" onclick="'+nav('maint')+'">'+EAR
-    +'<div class="rk-face">'
-    +'<div class="rk-stripe" style="background:'+((out||faulty)?'#fb923c':'#4ade80')+'"></div>'
-    +'<div class="rk-id"><div class="rk-dev">Service</div><div class="rk-sub">Maintenance</div></div>'
-    +'<div class="rk-trio">'
-    +'<div class="rk-mini"><span class="rk-mini-v" data-count="'+out+'" style="color:'+(out?'#f87171':'var(--ink)')+'">'+out+'</span><span class="rk-mini-l">Out</span></div>'
-    +'<div class="rk-mini"><span class="rk-mini-v" data-count="'+faulty+'" style="color:'+(faulty?'#fb923c':'var(--ink)')+'">'+faulty+'</span><span class="rk-mini-l">Faulty</span></div>'
-    +'<div class="rk-mini"><span class="rk-mini-v" data-count="'+spares+'" style="color:'+(spares>0?'var(--brand1)':'#f87171')+'">'+spares+'</span><span class="rk-mini-l">Spares</span></div>'
-    +'</div></div></div>';
+  var service=mod('maint', (out||faulty)?'#fb923c':'#4ade80','Service','Maintenance',
+    '<div class="rk2-trio">'
+    +'<div class="rk2-mini"><span class="rk2-mini-v" style="color:'+(out?'#f87171':'var(--ink)')+'" data-count="'+out+'">'+out+'</span><span class="rk2-mini-l">Out</span></div>'
+    +'<div class="rk2-mini"><span class="rk2-mini-v" style="color:'+(faulty?'#fb923c':'var(--ink)')+'" data-count="'+faulty+'">'+faulty+'</span><span class="rk2-mini-l">Faulty</span></div>'
+    +'<div class="rk2-mini"><span class="rk2-mini-v" style="color:'+(spares>0?'var(--brand1)':'#f87171')+'" data-count="'+spares+'">'+spares+'</span><span class="rk2-mini-l">Spares</span></div>'
+    +'</div>');
 
-  // ── PDU strip: system info ──────────────────────────────────────────────
-  var pdu='<div class="rk-pdu">'
-    +'<span class="rk-pdu-tag">PDU</span>'
-    +'<div class="rk-outlets"><span class="rk-outlet o1"></span><span class="rk-outlet o2"></span><span class="rk-outlet"></span><span class="rk-outlet o3"></span><span class="rk-outlet"></span><span class="rk-outlet o1"></span></div>'
-    +'<div class="rk-pdu-cells">'
-    +'<div class="rk-pcell-r" onclick="'+nav('specs')+'"><span class="rk-pc-v" data-count="'+components.length+'">'+components.length+'</span><span class="rk-pc-l">Comp</span></div>'
-    +'<div class="rk-pcell-r" onclick="'+nav('specs')+'"><span class="rk-pc-v" data-count="'+connections.length+'">'+connections.length+'</span><span class="rk-pc-l">Conn</span></div>'
-    +'<div class="rk-pcell-r" onclick="'+nav('specs')+'"><span class="rk-pc-v">'+esc(ue)+'</span><span class="rk-pc-l">Engine</span></div>'
-    +'<div class="rk-pcell-r" onclick="'+nav('cal')+'"><span class="rk-pc-v" data-count="'+plansToday+'">'+plansToday+'</span><span class="rk-pc-l">Today</span></div>'
-    +'</div></div>';
+  // footer system strip
+  var foot='<div class="rk2-foot">'
+    +'<div class="rk2-foot-cell" onclick="'+nav('specs')+'"><b data-count="'+components.length+'">'+components.length+'</b><span>Components</span></div>'
+    +'<div class="rk2-foot-cell" onclick="'+nav('specs')+'"><b data-count="'+connections.length+'">'+connections.length+'</b><span>Connections</span></div>'
+    +'<div class="rk2-foot-cell" onclick="'+nav('specs')+'"><b>'+esc(ue)+'</b><span>Engine</span></div>'
+    +'<div class="rk2-foot-cell" onclick="'+nav('cal')+'"><b data-count="'+plansToday+'">'+plansToday+'</b><span>Today</span></div>'
+    +'</div>';
 
-  var rack='<div class="rk">'+head+sync+led+render+tracking+fault+service+pdu+'</div>';
-
+  var rack='<div class="rk2">'+head+'<div class="rk2-list">'+sync+led+render+tracking+fault+service+'</div>'+foot+'</div>';
   return '<div class="hero-rk">'+stage+rack+'</div>';
 }
 

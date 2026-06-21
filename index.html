@@ -1501,8 +1501,11 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
 .msg-act:hover{color:var(--ink);border-color:var(--brand1);background:var(--el2)}
 .msg-act svg{width:13px;height:13px;flex-shrink:0}
 .msg-act.ok{color:var(--live);border-color:rgba(74,222,128,.42);background:rgba(74,222,128,.08)}
-/* checklist copyable command */
-.cli-cmd{display:flex;align-items:flex-start;gap:9px;margin:7px 0 2px;background:#1a1a1d;border:1px solid var(--line);border-radius:6px;padding:7px 8px 7px 10px}
+/* checklist problem summary (from the response intro) */
+.cl-desc{font-family:var(--sans);font-size:12px;line-height:1.55;color:var(--ink3);background:rgba(43,159,255,.05);border-left:2px solid var(--brand1);border-radius:0 6px 6px 0;padding:8px 11px;margin:0 0 11px}
+/* checklist copyable command(s) */
+.cli-cmds{display:flex;flex-direction:column;gap:6px;margin:8px 0 2px}
+.cli-cmd{display:flex;align-items:flex-start;gap:9px;margin:0;background:#1a1a1d;border:1px solid var(--line);border-radius:6px;padding:7px 8px 7px 10px}
 .cli-cmd code{flex:1;min-width:0;font-family:var(--mono);font-size:11.5px;line-height:1.55;color:#cdd3da;white-space:pre-wrap;word-break:break-word}
 .cli-cmd-copy{flex-shrink:0;font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink3);background:var(--el);border:1px solid var(--line2);border-radius:5px;padding:3px 8px;cursor:pointer;transition:color .12s,border-color .12s}
 .cli-cmd-copy:hover{color:var(--ink);border-color:var(--brand1)}
@@ -4538,7 +4541,7 @@ function getSysVP(){
   + 'THEIR RIG (composed of these components — pay attention to the NOTE lines, they are user-supplied context):\n'
   + componentsToContext()
   + ndContextBlock()
-  + '\nSOURCE PRIORITY:\n1. docs.unrealengine.com\n2. dev.epicgames.com/community and forums.unrealengine.com\n3. Curated VP YouTube (fetch transcripts):\n- nDisplay+Switchboard LED wall: https://www.youtube.com/watch?v=4kVsIagsX50\n- nDisplay config class: https://www.youtube.com/watch?v=0-vUJhBHWfs\n- Vive Mars LiveLink ICVFX: https://www.youtube.com/watch?v=g_6_-htkIzU\n- ICVFX inner frustum resolution: https://www.youtube.com/watch?v=gAkJRcHMg1c\n4. Reddit r/virtualproduction, fxguide.com\n\nFor every question: search docs first, then community, then fetch YouTube transcript if needed.\nEnd every response with:\n===SOURCES===\n[{"title":"...","url":"...","type":"epic or community or youtube"}]\n===END===\nWrap every console command, CVar, command-line invocation, config snippet, or file path the user may need to copy in fenced code blocks (```).\nBe direct, technical, practical. Assume a capable VP professional.';
+  + '\nSOURCE PRIORITY:\n1. docs.unrealengine.com\n2. dev.epicgames.com/community and forums.unrealengine.com\n3. Curated VP YouTube (fetch transcripts):\n- nDisplay+Switchboard LED wall: https://www.youtube.com/watch?v=4kVsIagsX50\n- nDisplay config class: https://www.youtube.com/watch?v=0-vUJhBHWfs\n- Vive Mars LiveLink ICVFX: https://www.youtube.com/watch?v=g_6_-htkIzU\n- ICVFX inner frustum resolution: https://www.youtube.com/watch?v=gAkJRcHMg1c\n4. Reddit r/virtualproduction, fxguide.com\n\nFor every question: search docs first, then community, then fetch YouTube transcript if needed.\nEnd every response with:\n===SOURCES===\n[{"title":"...","url":"...","type":"epic or community or youtube"}]\n===END===\nWrap every console command, CVar, command-line invocation, config snippet, or file path the user may need to copy in fenced code blocks (```).\nWhen you give multiple suggested fixes or troubleshooting steps, format EACH as its own one-line Markdown heading "### N. <short imperative title>" (### 1, ### 2, and so on), with the explanation and any commands beneath it. Put one short paragraph summarising the likely problem BEFORE the first heading. Keep each command on its own line inside the code block.\nBe direct, technical, practical. Assume a capable VP professional.';
 }
 
 function getSysGD(){
@@ -4556,7 +4559,7 @@ function getSysGD(){
   + 'Target res/fps: ' + (s['gd-res']||'not set') + ' / ' + (s['gd-fps']||'not set') + ' / AA: ' + (s['gd-aa']||'not set') + '\n'
   + 'Version control: ' + (s['gd-vcs']||'not set') + ' / Team: ' + (s['gd-team']||'not set') + ' / Stage: ' + (s['gd-stage']||'not set') + '\n'
   + (s['gd-notes'] ? 'Notes: ' + s['gd-notes'] + '\n' : '')
-  + '\nSOURCE PRIORITY:\n1. docs.unrealengine.com\n2. dev.epicgames.com/community and forums.unrealengine.com\n3. YouTube: Unreal Engine official channel, William Faucher (lighting/rendering), Alex Forsythe (UE C++), Gorka Games, Matt Aspland\n4. Reddit r/unrealengine, r/gamedev\n\nFor every question: search docs first, then community sources, then YouTube if needed.\nEnd every response with:\n===SOURCES===\n[{"title":"...","url":"...","type":"epic or community or youtube"}]\n===END===\nWrap every console command, CVar, command-line invocation, config snippet, or file path the user may need to copy in fenced code blocks (```).\nBe direct, technical, practical. Tailor all advice to the user\'s specific platform target, project type, and UE version.';
+  + '\nSOURCE PRIORITY:\n1. docs.unrealengine.com\n2. dev.epicgames.com/community and forums.unrealengine.com\n3. YouTube: Unreal Engine official channel, William Faucher (lighting/rendering), Alex Forsythe (UE C++), Gorka Games, Matt Aspland\n4. Reddit r/unrealengine, r/gamedev\n\nFor every question: search docs first, then community sources, then YouTube if needed.\nEnd every response with:\n===SOURCES===\n[{"title":"...","url":"...","type":"epic or community or youtube"}]\n===END===\nWrap every console command, CVar, command-line invocation, config snippet, or file path the user may need to copy in fenced code blocks (```).\nWhen you give multiple suggested fixes or troubleshooting steps, format EACH as its own one-line Markdown heading "### N. <short imperative title>" (### 1, ### 2, and so on), with the explanation and any commands beneath it. Put one short paragraph summarising the likely problem BEFORE the first heading. Keep each command on its own line inside the code block.\nBe direct, technical, practical. Tailor all advice to the user\'s specific platform target, project type, and UE version.';
 }
 
 
@@ -6817,36 +6820,68 @@ function appendChatActions(bubble){
 function saveResponseAsChecklist(btn){
   var grp=btn.closest('.msg-group'); if(!grp) return;
   var bubble=grp.querySelector('.msg-bubble'); if(!bubble) return;
-  var items=[], cur=null;
-  function pushText(line){
-    var c=line.replace(/^[\s\-*\u2022\u2023\u25aa\u25cf\u25e6\d.)\]:]+/,'').trim();
-    if(c.length<4) return;
-    cur={t:c,d:false,tag:'tmrw'}; items.push(cur);
-  }
+
+  // Flatten the rendered reply into an ordered stream of prose lines + command lines.
+  var toks=[];
   Array.prototype.forEach.call(bubble.childNodes,function(node){
     if(node.nodeType===3){
-      node.textContent.split('\n').forEach(function(line){ if(line.trim().length>=4) pushText(line); });
+      node.textContent.split('\n').forEach(function(line){ toks.push({c:false,t:line}); });
     } else if(node.nodeType===1 && node.classList && node.classList.contains('code-blk')){
-      var pre=node.querySelector('pre'); var code=pre?pre.textContent.replace(/\s+$/,''):'';
-      if(!code.trim()) return;
-      if(cur && !cur.cmd){ cur.cmd=code; }
-      else { cur={t:'Run command',d:false,tag:'tmrw',cmd:code}; items.push(cur); }
+      var pre=node.querySelector('pre'); var code=pre?pre.textContent:'';
+      // each command LINE is captured separately so it can be copied on its own
+      code.split('\n').forEach(function(cl){ if(cl.trim()) toks.push({c:true,t:cl.replace(/\s+$/,'')}); });
     } else if(node.nodeType===1){
-      (node.textContent||'').split('\n').forEach(function(line){ if(line.trim().length>=4) pushText(line); });
+      (node.textContent||'').split('\n').forEach(function(line){ toks.push({c:false,t:line}); });
     }
   });
-  items=items.slice(0,25);
-  if(!items.length){ flashAct(btn,'Nothing to save'); return; }
+
+  function clMd(s){ return String(s).replace(/\*\*(.+?)\*\*/g,'$1').replace(/`([^`]+)`/g,'$1').replace(/^#+\s*/,'').trim(); }
+  var HEAD=/^\s*#{1,6}\s+\S/;     // markdown heading -> a suggested fix
+  var hasHead=toks.some(function(t){return !t.c && HEAD.test(t.t);});
+  var NUM=/^\s*\d+[.)]\s+\S/;     // "1. " / "1) " numbered fix (fallback)
+  var hasNum=!hasHead && toks.some(function(t){return !t.c && NUM.test(t.t);});
+  function headingTitle(line){
+    if(hasHead && HEAD.test(line)) return clMd(line.replace(/^\s*#{1,6}\s+/,''));
+    if(hasNum && NUM.test(line)) return clMd(line.replace(/^\s*\d+[.)]\s+/,''));
+    return null;
+  }
+
+  // Everything before the first fix = the problem summary. Each fix = one item.
+  var summaryLines=[], summaryCmds=[], items=[], cur=null;
+  toks.forEach(function(t){
+    if(t.c){ (cur?cur.cmds:summaryCmds).push(t.t); return; }
+    if(!t.t.trim()) return;
+    var ht=(hasHead||hasNum)?headingTitle(t.t):null;
+    if(ht!==null){ cur={t:ht,d:false,tag:'tmrw',body:[],cmds:[]}; items.push(cur); }
+    else { var line=clMd(t.t); if(line) (cur?cur.body:summaryLines).push(line); }
+  });
+  items.forEach(function(it){
+    if(/^\d+[.)]?$/.test(it.t) && it.body.length) it.t=it.body.shift(); // bare "### 1" -> use first line
+    it.n=it.body.join('\n'); delete it.body;
+  });
+
+  // Fallback: no headings/numbering at all -> keep it as a single item.
+  if(!items.length){
+    if(!summaryLines.join('').trim() && !summaryCmds.length){ flashAct(btn,'Nothing to save'); return; }
+    var first=summaryLines[0]||'Suggested fix';
+    items.push({t:first.length>90?first.slice(0,90)+'\u2026':first, n:summaryLines.slice(1).join('\n'), d:false, tag:'tmrw', cmds:summaryCmds});
+    summaryLines=[]; summaryCmds=[];
+  } else if(summaryCmds.length && items[0]){
+    items[0].cmds=summaryCmds.concat(items[0].cmds); // intro commands attach to the first fix
+  }
+
+  items=items.slice(0,30);
+  var desc=summaryLines.join(' ').trim();
   var prev=grp.previousElementSibling;
   var q=(prev && prev.classList.contains('you')) ? ((prev.querySelector('.msg-bubble')||{}).textContent||'') : '';
   q=q.trim();
   var title=q ? ('Chat: '+q.slice(0,46)+(q.length>46?'\u2026':'')) : ('Support '+new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short'}));
-  checklist.push({id:'cl'+Date.now(),title:title,open:true,items:items});
+  checklist.push({id:'cl'+Date.now(),title:title,open:true,desc:desc,items:items});
   fsave('checklist',{sections:checklist});
   if(typeof renderCL==='function') renderCL();
   else if(typeof updateCLBadge==='function') updateCLBadge();
-  var nCmd=items.filter(function(i){return i.cmd;}).length;
-  flashAct(btn,'Saved \u2713 '+items.length+' item'+(items.length>1?'s':'')+(nCmd?(' \u00b7 '+nCmd+' cmd'):''));
+  var nCmd=items.reduce(function(a,i){return a+(i.cmds?i.cmds.length:0);},0);
+  flashAct(btn,'Saved \u2713 '+items.length+' fix'+(items.length===1?'':'es')+(nCmd?(' \u00b7 '+nCmd+' cmd'+(nCmd===1?'':'s')):''));
 }
 
 function flashAct(btn,msg){
@@ -6993,12 +7028,16 @@ function renderCL(){
     var ihtml=sec.items.map(function(item,idx){
       var linkedIssue=item.issueId?issues.find(function(x){return x.id===item.issueId;}):null;
       var issueTag=linkedIssue?'<span class="cl-issue-tag">'+linkedIssue.title.slice(0,32)+(linkedIssue.title.length>32?'...':'')+'</span>':'';
+      var _cmds=item.cmds||(item.cmd?[item.cmd]:[]);
+      var _cmdHTML=_cmds.length?'<div class="cli-cmds" onclick="event.stopPropagation()">'
+        +_cmds.map(function(cc){return '<div class="cli-cmd"><code>'+esc(cc)+'</code><button class="cli-cmd-copy" type="button" onclick="clCopyCmd(event,this)">Copy</button></div>';}).join('')
+        +'</div>':'';
       return '<div class="cli'+(item.d?' done':'')+'" data-sec="'+sec.id+'" data-idx="'+idx+'" onclick="clItemClick(this)">'
         +'<div class="clc">'+(item.d?'&#10003;':'')+'</div>'
         +'<div style="flex:1;min-width:0">'
         +'<div class="clt">'+esc(item.t)+'</div>'
-        +(item.n?'<div class="cln">'+esc(item.n)+'</div>':'')
-        +(item.cmd?'<div class="cli-cmd" onclick="event.stopPropagation()"><code>'+esc(item.cmd)+'</code><button class="cli-cmd-copy" type="button" onclick="clCopyCmd(event,this)">Copy</button></div>':'')
+        +(item.n?'<div class="cln" style="white-space:pre-wrap">'+esc(item.n)+'</div>':'')
+        +_cmdHTML
         +issueTag
         +'</div>'
         +(item.tag?'<div class="cltag '+(TC[item.tag]||'ttmrw')+'">'+(TL[item.tag]||item.tag)+'</div>':'')
@@ -7015,7 +7054,7 @@ function renderCL(){
       +'<span style="font-size:11px;color:var(--ink3);margin-left:7px">'+(sec.open?'&#9662;':'&#9658;')+'</span>'
       +'<button class="btn bg sm" data-delsec="'+sec.id+'" style="margin-left:7px;padding:1px 6px;font-size:9px" onclick="clDelSec(this)">&#215;</button>'
       +'</div>'
-      +(sec.open?'<div style="padding-left:10px">'+ihtml
+      +(sec.open?'<div style="padding-left:10px">'+(sec.desc?'<div class="cl-desc">'+esc(sec.desc)+'</div>':'')+ihtml
         +'<div class="addi">'
         +'<input id="cli-'+sec.id+'" placeholder="Add item...">'
         +issueOptions

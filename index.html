@@ -1495,6 +1495,19 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
   .ai-para{font-size:14.5px}
 }
 
+/* chat message action (save as checklist) */
+.msg-acts{display:flex;gap:8px;margin-top:7px;padding-left:1px}
+.msg-act{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:10px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink3);background:var(--el);border:1px solid var(--line2);border-radius:7px;padding:5px 10px;cursor:pointer;transition:color .12s,border-color .12s,background .12s}
+.msg-act:hover{color:var(--ink);border-color:var(--brand1);background:var(--el2)}
+.msg-act svg{width:13px;height:13px;flex-shrink:0}
+.msg-act.ok{color:var(--live);border-color:rgba(74,222,128,.42);background:rgba(74,222,128,.08)}
+/* checklist copyable command */
+.cli-cmd{display:flex;align-items:flex-start;gap:9px;margin:7px 0 2px;background:#1a1a1d;border:1px solid var(--line);border-radius:6px;padding:7px 8px 7px 10px}
+.cli-cmd code{flex:1;min-width:0;font-family:var(--mono);font-size:11.5px;line-height:1.55;color:#cdd3da;white-space:pre-wrap;word-break:break-word}
+.cli-cmd-copy{flex-shrink:0;font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink3);background:var(--el);border:1px solid var(--line2);border-radius:5px;padding:3px 8px;cursor:pointer;transition:color .12s,border-color .12s}
+.cli-cmd-copy:hover{color:var(--ink);border-color:var(--brand1)}
+.cli-cmd-copy.ok{color:var(--live);border-color:rgba(74,222,128,.42)}
+
 .csn-iss{display:inline-flex;align-items:center;gap:3px;font-family:var(--mono);font-size:9.5px;font-weight:600;color:var(--warn);background:var(--warn-dim);border:1px solid rgba(251,191,36,.25);border-radius:4px;padding:1px 5px;margin-left:7px;cursor:pointer;flex-shrink:0;transition:background .12s}.csn-iss:hover{background:rgba(251,191,36,.2)}.iss-prop-link{cursor:pointer;color:var(--brand1)!important;border-color:rgba(91,157,255,.3)!important;background:var(--brand-dim)!important;transition:background .12s}.iss-prop-link:hover{background:rgba(91,157,255,.18)!important}.strip-flash{animation:stripflash 1.4s ease-out}@keyframes stripflash{0%{box-shadow:0 0 0 2px var(--brand1),0 0 14px var(--brand-glow)}100%{box-shadow:0 0 0 0 transparent}}#iss-compfilter-bar:empty{display:none}#iss-compfilter-bar{padding:8px 14px 0}.iss-cf-chip{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--ink2);background:var(--brand-dim);border:1px solid rgba(91,157,255,.25);border-radius:20px;padding:3px 6px 3px 11px}.iss-cf-chip strong{color:var(--brand1);font-weight:500}.iss-cf-x{background:none;border:none;color:var(--ink3);cursor:pointer;font-size:15px;line-height:1;padding:0 4px;border-radius:50%;transition:color .12s}.iss-cf-x:hover{color:var(--crit)}
 .mt-faulty{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:10px 0 4px}.mt-faulty:empty{display:none}.mt-faulty-lbl{width:100%;font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);margin-bottom:2px}.mt-fchip{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--ink2);background:var(--card);border:1px solid var(--line2);border-radius:6px;padding:4px 9px;cursor:pointer;transition:border-color .12s,background .12s}.mt-fchip:hover{border-color:var(--line3);background:var(--el)}.mt-fdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}.mt-fst{color:var(--ink3);font-family:var(--mono);font-size:10px}.mt-flog{font-family:var(--mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--brand1);border-left:1px solid var(--line2);padding-left:7px;margin-left:1px}
 </style>
@@ -2424,7 +2437,6 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
             <span class="chat-header-label">Support assistant</span>
             <span class="live-pulse" style="margin-left:2px"></span>
             <span class="chat-header-status">Online</span>
-            <button class="btn sm" style="margin-left:auto" onclick="saveAsChecklist()">Save as checklist</button>
           </div>
           <div class="msgs" id="msgs"></div>
           <div class="ci">
@@ -6729,7 +6741,7 @@ function sendChat(){
     var disp=ps.t || (full.indexOf('===SOURCES===')>=0?full.slice(0,full.indexOf('===SOURCES===')).trim():full) || 'No response content received.';
     if(!bubble){ bubble=addMsg('assistant', disp, ps.s||[]); }
     else { bubble.innerHTML=''; renderBubble(bubble, disp); if(ps.s&&ps.s.length&&bubble.parentElement) bubble.parentElement.appendChild(buildSrcMeta(ps.s)); }
-    if(full.trim()){ chatHist.push({role:'assistant',content:full}); fsave('chat',{history:chatHist.slice(-20)}); }
+    if(full.trim()){ chatHist.push({role:'assistant',content:full}); fsave('chat',{history:chatHist.slice(-20)}); appendChatActions(bubble); }
     m.scrollTop=m.scrollHeight; endTurn();
   }
   function fail(msg, isKey){
@@ -6782,18 +6794,70 @@ function sendChat(){
   }).finally(function(){ if(!done){ done=true; endTurn(); } });
 }
 
-function saveAsChecklist(){
-  var bubbles=document.querySelectorAll('.msg.a .mb');
-  if(!bubbles.length) return;
-  var last=bubbles[bubbles.length-1].textContent;
-  var lines=last.split('\n').filter(function(l){return l.trim().length>10&&l.trim().length<200;});
-  var items=lines.slice(0,8).map(function(l){return{t:l.replace(/^[-*\u2022\d.)\s]+/,'').trim(),d:false,tag:'tmrw'};}).filter(function(i){return i.t.length>5;});
-  if(!items.length){alert('No actionable items found.');return;}
-  var title='Session '+new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+var CL_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 5.5h9M9.5 12h9M9.5 18.5h9"/><path d="M4 5.3l1.3 1.3L7.6 4.2"/><path d="M4 11.8l1.3 1.3 2.3-2.4"/><path d="M4 18.3l1.3 1.3 2.3-2.4"/></svg>';
+
+// Append a "Save as checklist" action under a finished assistant message.
+function appendChatActions(bubble){
+  if(!bubble || !bubble.parentElement) return;
+  var grp=bubble.parentElement;
+  if(grp.querySelector('.msg-acts')) return;
+  var row=document.createElement('div'); row.className='msg-acts';
+  var btn=document.createElement('button'); btn.className='msg-act'; btn.type='button';
+  btn.innerHTML=CL_ICON+'<span>Save as checklist</span>';
+  btn.onclick=function(){ saveResponseAsChecklist(btn); };
+  row.appendChild(btn);
+  grp.appendChild(row);
+}
+
+// Turn ONE specific assistant response into a checklist section. Prose lines
+// become items; fenced command blocks attach to the step above them (or stand
+// alone) and render with a Copy button on the Checklist page.
+function saveResponseAsChecklist(btn){
+  var grp=btn.closest('.msg-group'); if(!grp) return;
+  var bubble=grp.querySelector('.msg-bubble'); if(!bubble) return;
+  var items=[], cur=null;
+  function pushText(line){
+    var c=line.replace(/^[\s\-*\u2022\u2023\u25aa\u25cf\u25e6\d.)\]:]+/,'').trim();
+    if(c.length<4) return;
+    cur={t:c,d:false,tag:'tmrw'}; items.push(cur);
+  }
+  Array.prototype.forEach.call(bubble.childNodes,function(node){
+    if(node.nodeType===3){
+      node.textContent.split('\n').forEach(function(line){ if(line.trim().length>=4) pushText(line); });
+    } else if(node.nodeType===1 && node.classList && node.classList.contains('code-blk')){
+      var pre=node.querySelector('pre'); var code=pre?pre.textContent.replace(/\s+$/,''):'';
+      if(!code.trim()) return;
+      if(cur && !cur.cmd){ cur.cmd=code; }
+      else { cur={t:'Run command',d:false,tag:'tmrw',cmd:code}; items.push(cur); }
+    } else if(node.nodeType===1){
+      (node.textContent||'').split('\n').forEach(function(line){ if(line.trim().length>=4) pushText(line); });
+    }
+  });
+  items=items.slice(0,25);
+  if(!items.length){ flashAct(btn,'Nothing to save'); return; }
+  var prev=grp.previousElementSibling;
+  var q=(prev && prev.classList.contains('you')) ? ((prev.querySelector('.msg-bubble')||{}).textContent||'') : '';
+  q=q.trim();
+  var title=q ? ('Chat: '+q.slice(0,46)+(q.length>46?'\u2026':'')) : ('Support '+new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short'}));
   checklist.push({id:'cl'+Date.now(),title:title,open:true,items:items});
   fsave('checklist',{sections:checklist});
-  updateCLBadge();
-  if(confirm('Saved '+items.length+' items. Go to checklist?')) document.querySelectorAll('.nb')[3].click();
+  if(typeof updateCLBadge==='function') updateCLBadge();
+  var nCmd=items.filter(function(i){return i.cmd;}).length;
+  flashAct(btn,'Saved \u2713 '+items.length+' item'+(items.length>1?'s':'')+(nCmd?(' \u00b7 '+nCmd+' cmd'):''));
+}
+
+function flashAct(btn,msg){
+  var orig=btn.innerHTML;
+  btn.classList.add('ok'); btn.innerHTML='<span>'+esc(msg)+'</span>';
+  setTimeout(function(){ if(btn){ btn.classList.remove('ok'); btn.innerHTML=orig; } },1900);
+}
+
+function clCopyCmd(ev,btn){
+  ev.stopPropagation();
+  var code=btn.parentElement.querySelector('code'); var txt=code?code.textContent:'';
+  function done(){ btn.textContent='Copied'; btn.classList.add('ok'); setTimeout(function(){ btn.textContent='Copy'; btn.classList.remove('ok'); },1400); }
+  if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(done,done); }
+  else { var t=document.createElement('textarea'); t.value=txt; document.body.appendChild(t); t.select(); try{document.execCommand('copy');}catch(e){} t.remove(); done(); }
 }
 
 // Checklist
@@ -6929,8 +6993,9 @@ function renderCL(){
       return '<div class="cli'+(item.d?' done':'')+'" data-sec="'+sec.id+'" data-idx="'+idx+'" onclick="clItemClick(this)">'
         +'<div class="clc">'+(item.d?'&#10003;':'')+'</div>'
         +'<div style="flex:1;min-width:0">'
-        +'<div class="clt">'+item.t+'</div>'
-        +(item.n?'<div class="cln">'+item.n+'</div>':'')
+        +'<div class="clt">'+esc(item.t)+'</div>'
+        +(item.n?'<div class="cln">'+esc(item.n)+'</div>':'')
+        +(item.cmd?'<div class="cli-cmd" onclick="event.stopPropagation()"><code>'+esc(item.cmd)+'</code><button class="cli-cmd-copy" type="button" onclick="clCopyCmd(event,this)">Copy</button></div>':'')
         +issueTag
         +'</div>'
         +(item.tag?'<div class="cltag '+(TC[item.tag]||'ttmrw')+'">'+(TL[item.tag]||item.tag)+'</div>':'')

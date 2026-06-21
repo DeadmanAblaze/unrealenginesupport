@@ -50,16 +50,20 @@ export default async function handler(req) {
   // Stream only when the caller opts in (the support chat). Other callers
   // (port research, device auto-fill) want a single buffered JSON response.
   const wantStream = body.stream === true;
+  // Real web search (support chat only) so answers are grounded in actual docs
+  // instead of the model's memory. Server-side tool: Anthropic runs the searches.
+  const wantSearch = body.search === true;
 
   const payload = {
     // Allow the app to pick a known-good model; anything else falls back to
     // Sonnet so a stale frontend can never send a dead model id.
     model: (body.model === 'claude-haiku-4-5-20251001' || body.model === 'claude-sonnet-4-6') ? body.model : 'claude-sonnet-4-6',
     max_tokens: Math.min(Math.max(parseInt(body.max_tokens, 10) || 1400, 1), 2000),
-    system: trimSystem(body.system || '', 3000),
+    system: trimSystem(body.system || '', 8000),
     messages: trimMessages(body.messages || [], 10)
   };
   if (wantStream) payload.stream = true;
+  if (wantSearch) payload.tools = [{ type: 'web_search_20250305', name: 'web_search', max_uses: 6 }];
 
   let upstream;
   try {

@@ -6600,6 +6600,7 @@ function addMsg(role, text, sources){
     group.appendChild(buildSrcMeta(sources));
   }
   m.appendChild(group);
+  if(role==='assistant' && String(text||'').trim()) appendChatActions(bubble);
   m.scrollTop=m.scrollHeight;
   return bubble;
 }

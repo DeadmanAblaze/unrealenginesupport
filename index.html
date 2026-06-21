@@ -1511,6 +1511,24 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
 .cli-cmd-copy:hover{color:var(--ink);border-color:var(--brand1)}
 .cli-cmd-copy.ok{color:var(--live);border-color:rgba(74,222,128,.42)}
 
+/* network / IP address list (rig specs) */
+.ipt-count{font-family:var(--mono);font-size:10px;letter-spacing:.04em;color:var(--ink4);margin-left:8px}
+.ipt-empty{font-family:var(--sans);font-size:12.5px;color:var(--ink3);line-height:1.55;background:var(--card);border:1px solid var(--line);border-radius:9px;padding:13px 15px;margin-bottom:6px}
+.ipt-empty b{color:var(--ink2);font-weight:600}
+.ipt-card{background:var(--card);border:1px solid var(--line2);border-radius:10px;overflow:hidden;margin-bottom:6px}
+.ipt-row{display:flex;align-items:center;gap:11px;padding:9px 13px;border-bottom:1px solid var(--line);cursor:pointer;transition:background .12s}
+.ipt-row:last-child{border-bottom:none}
+.ipt-row:hover{background:var(--el)}
+.ipt-ico{display:inline-flex;flex-shrink:0}
+.ipt-ico svg{width:17px;height:17px}
+.ipt-name{font-family:var(--sans);font-size:13px;font-weight:500;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px}
+.ipt-type{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink4);white-space:nowrap}
+.ipt-ip{margin-left:auto;font-family:var(--mono);font-size:12.5px;color:var(--brand1);background:rgba(43,159,255,.08);border:1px solid rgba(43,159,255,.22);border-radius:5px;padding:3px 8px;white-space:nowrap}
+.ipt-copy{flex-shrink:0;font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink3);background:var(--el);border:1px solid var(--line2);border-radius:5px;padding:3px 7px;cursor:pointer;transition:color .12s,border-color .12s}
+.ipt-copy:hover{color:var(--ink);border-color:var(--brand1)}
+.ipt-copy.ok{color:var(--live);border-color:rgba(74,222,128,.42)}
+@media(max-width:560px){.ipt-type{display:none}.ipt-name{max-width:120px}}
+
 .csn-iss{display:inline-flex;align-items:center;gap:3px;font-family:var(--mono);font-size:9.5px;font-weight:600;color:var(--warn);background:var(--warn-dim);border:1px solid rgba(251,191,36,.25);border-radius:4px;padding:1px 5px;margin-left:7px;cursor:pointer;flex-shrink:0;transition:background .12s}.csn-iss:hover{background:rgba(251,191,36,.2)}.iss-prop-link{cursor:pointer;color:var(--brand1)!important;border-color:rgba(91,157,255,.3)!important;background:var(--brand-dim)!important;transition:background .12s}.iss-prop-link:hover{background:rgba(91,157,255,.18)!important}.strip-flash{animation:stripflash 1.4s ease-out}@keyframes stripflash{0%{box-shadow:0 0 0 2px var(--brand1),0 0 14px var(--brand-glow)}100%{box-shadow:0 0 0 0 transparent}}#iss-compfilter-bar:empty{display:none}#iss-compfilter-bar{padding:8px 14px 0}.iss-cf-chip{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--ink2);background:var(--brand-dim);border:1px solid rgba(91,157,255,.25);border-radius:20px;padding:3px 6px 3px 11px}.iss-cf-chip strong{color:var(--brand1);font-weight:500}.iss-cf-x{background:none;border:none;color:var(--ink3);cursor:pointer;font-size:15px;line-height:1;padding:0 4px;border-radius:50%;transition:color .12s}.iss-cf-x:hover{color:var(--crit)}
 .mt-faulty{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:10px 0 4px}.mt-faulty:empty{display:none}.mt-faulty-lbl{width:100%;font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);margin-bottom:2px}.mt-fchip{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--ink2);background:var(--card);border:1px solid var(--line2);border-radius:6px;padding:4px 9px;cursor:pointer;transition:border-color .12s,background .12s}.mt-fchip:hover{border-color:var(--line3);background:var(--el)}.mt-fdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}.mt-fst{color:var(--ink3);font-family:var(--mono);font-size:10px}.mt-flog{font-family:var(--mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--brand1);border-left:1px solid var(--line2);padding-left:7px;margin-left:1px}
 </style>
@@ -2170,6 +2188,9 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
 
         <!-- ── VP MODE ─────────────────────────────────────────────── -->
         <div id="components-host" class="vponly"></div>
+
+        <!-- ── NETWORK / IP ADDRESSES ─────────────────────────────── -->
+        <div id="ip-host" class="vponly"></div>
 
         <!-- ── NDISPLAY CONFIG FILE ───────────────────────────────── -->
         <div class="vponly" id="nd-section">
@@ -2910,6 +2931,7 @@ function compFieldset(type, comp){
     fs = fs.concat(def.systemFields[sys]||[]);
     fs = fs.concat(def.commonFields||[]);
   }
+  fs = fs.concat([{k:'ip', l:'IP address', ph:'192.168.1.10'}]);
   return fs;
 }
 
@@ -3009,7 +3031,7 @@ function setCompField(id, key, val){
   c.fields[key] = val;
   // tracking system change rebuilds fieldset → re-render in place
   if(c.type==='tracking' && key==='system'){ saveComponents(); }
-  else { fsave('components',{items:components,nextId:compNextId}); renderRigSum(); updateRigMini(); buildSysPrompt(); updateDiagram(); }
+  else { fsave('components',{items:components,nextId:compNextId}); renderRigSum(); updateRigMini(); buildSysPrompt(); updateDiagram(); if(key==='ip' && typeof renderIPTable==='function') renderIPTable(); }
 }
 var _nickTimer = null;
 function setCompRack(id, val){
@@ -3116,6 +3138,39 @@ function renderComponents(){
       var mbg=el('rack-mbg'); if(mbg) mbg.classList.add('open');
     } else { _rackModalId=null; }
   }
+  renderIPTable();
+}
+
+// IPv4 -> sortable number (non-IPv4 strings sort to the end)
+function ipNum(ip){
+  var p=String(ip).trim().split('.');
+  if(p.length!==4) return 1e12;
+  return ((+p[0]||0)*16777216)+((+p[1]||0)*65536)+((+p[2]||0)*256)+(+p[3]||0);
+}
+
+// Consolidated list of every component that has an IP address.
+function renderIPTable(){
+  var host=el('ip-host'); if(!host) return;
+  var SEC={compute:'#2b9fff',display:'#fbbf24',camera:'#a78bfa',tracking:'#22c8b7',syncnet:'#60a5fa',ctrlroom:'#848590',power:'#f87171'};
+  var withIP=components.filter(function(c){return ((c.fields&&c.fields.ip)||'').trim();});
+  var html='<div class="csec"><span class="ctick"></span><span class="csl">Network addresses</span><span class="csec-rule"></span>'
+    +(withIP.length?'<span class="ipt-count">'+withIP.length+' device'+(withIP.length===1?'':'s')+'</span>':'')+'</div>';
+  if(!withIP.length){
+    html+='<div class="ipt-empty">No IP addresses recorded yet. Open any component above and fill in its <b>IP address</b> field \u2014 every device with an IP shows here for quick reference.</div>';
+  } else {
+    withIP=withIP.slice().sort(function(a,b){return ipNum((a.fields.ip||'').trim())-ipNum((b.fields.ip||'').trim());});
+    html+='<div class="ipt-card">'+withIP.map(function(c){
+      var def=CTYPES[c.type]||{}; var col=SEC[def.section]||'#5a5b65';
+      return '<div class="ipt-row" onclick="openRackModal('+c.id+')" title="Open '+esc(compName(c))+'">'
+        +'<span class="ipt-ico" style="color:'+col+'">'+compIcon(def.icon||'cpu')+'</span>'
+        +'<span class="ipt-name">'+esc(compName(c))+'</span>'
+        +'<span class="ipt-type">'+esc(def.label||c.type)+'</span>'
+        +'<code class="ipt-ip">'+esc((c.fields.ip||'').trim())+'</code>'
+        +'<button class="ipt-copy" type="button" onclick="clCopyCmd(event,this)">Copy</button>'
+        +'</div>';
+    }).join('')+'</div>';
+  }
+  host.innerHTML=html;
 }
 function issuesBadge(comp){
   var open=issues.filter(function(i){return i.linkComp===comp.id&&i.status!=='resolved';}).length;

@@ -3730,6 +3730,7 @@ function go(id, btn){
   if(id==='home') renderHome();
   if(id==='cal') renderCalendar();
   if(id==='gear') renderGear();
+  if(id==='cl') renderCL();
   if(id==='chat') setTimeout(vidRefresh, 200);
   var t={'home':['Home','Welcome to Unreal Support'],'specs':['Rig specs','Virtual production configuration'],'issues':['Issues','Open and recent stage issues'],'chat':['Support','VP and nDisplay assistance'],'cl':['Checklist','Daily session readiness'],'cal':['Planner','Schedule and stage activity'],'gear':['Equipment','Component manifest and product links'],'plugin':['UE Plugin','Live diagnostics plugin for Unreal Engine'],'stage3d':['Stage 3D','Interactive LED volume and studio planner'],'maint':['Maintenance','Equipment service tracking and LED panel map'],'features':['Features','How Unreal Support works'],'quickstart':['Quick Start','nDisplay stage startup guide'],'admin':['Admin','User management']};
   if(t[id]&&el('tb-title')){el('tb-title').textContent=t[id][0];el('tb-meta').textContent=t[id][1];}
@@ -6842,7 +6843,8 @@ function saveResponseAsChecklist(btn){
   var title=q ? ('Chat: '+q.slice(0,46)+(q.length>46?'\u2026':'')) : ('Support '+new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short'}));
   checklist.push({id:'cl'+Date.now(),title:title,open:true,items:items});
   fsave('checklist',{sections:checklist});
-  if(typeof updateCLBadge==='function') updateCLBadge();
+  if(typeof renderCL==='function') renderCL();
+  else if(typeof updateCLBadge==='function') updateCLBadge();
   var nCmd=items.filter(function(i){return i.cmd;}).length;
   flashAct(btn,'Saved \u2713 '+items.length+' item'+(items.length>1?'s':'')+(nCmd?(' \u00b7 '+nCmd+' cmd'):''));
 }

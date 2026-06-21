@@ -3328,16 +3328,20 @@ function el(id){ return document.getElementById(id); }
 
 // Init Firebase using compat SDK v9
 try {
+  if (typeof firebase === 'undefined' || !firebase.initializeApp) {
+    throw new Error('Firebase SDK did not load \u2014 check your network connection or any content/ad blocker.');
+  }
   fbapp = firebase.initializeApp(FBCFG);
   fbauth = firebase.auth();
   fbdb = firebase.firestore();
   if(firebase.storage) fbst = firebase.storage();
 } catch(e) {
-  el('lerr').textContent = 'Firebase init error: ' + e.message;
-  el('lerr').style.display = 'block';
+  var _le = el('lerr');
+  if(_le){ _le.textContent = 'Firebase init error: ' + e.message; _le.style.display = 'block'; }
 }
 
-// Auth state
+// Auth state — guard so a failed Firebase load shows the login screen instead of crashing
+if (fbauth && fbauth.onAuthStateChanged) {
 fbauth.onAuthStateChanged(function(user) {
   hide('loading');
   if(isReportRoute()){ if(user) cu = user; showReportScreen(); return; }
@@ -3358,6 +3362,11 @@ fbauth.onAuthStateChanged(function(user) {
     show('auth-screen');
   }
 });
+} else {
+  // Firebase unavailable — surface the auth screen rather than a blank crash.
+  hide('loading');
+  show('auth-screen');
+}
 
 // Default data
 var DS = {
@@ -6559,51 +6568,72 @@ function sendChat(){
   var si=document.createElement('div'); si.className='msg-group ai'; si.id='sind';
   si.innerHTML='<div class="msg-from">Support</div><div class="typing-bubble">Searching docs &amp; community<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>';
   m.appendChild(si); m.scrollTop=m.scrollHeight;
-  var storedKey = getStoredKey();
+  var storedKey=getStoredKey();
+
+  var bubble=null, full='', done=false, rafPending=false;
+  function endTurn(){ streaming=false; var b=el('csend'); if(b) b.disabled=false; }
+  function dropInd(){ var s=el('sind'); if(s) s.remove(); }
+  function ensureBubble(){ if(!bubble){ dropInd(); bubble=addMsg('assistant',''); } }
+  function liveText(){ var cut=full.indexOf('===SOURCES==='); return cut>=0?full.slice(0,cut):full; }
+  function liveRender(){ rafPending=false; if(!bubble) return; bubble.innerHTML=''; renderBubble(bubble, liveText()); m.scrollTop=m.scrollHeight; }
+  function scheduleRender(){ if(rafPending) return; rafPending=true; (window.requestAnimationFrame||function(f){return setTimeout(f,16);})(liveRender); }
+  function finish(){
+    if(done) return; done=true; dropInd();
+    var ps=parseSrc(full);
+    var disp=ps.t || (full.indexOf('===SOURCES===')>=0?full.slice(0,full.indexOf('===SOURCES===')).trim():full) || 'No response content received.';
+    if(!bubble){ bubble=addMsg('assistant', disp, ps.s||[]); }
+    else { bubble.innerHTML=''; renderBubble(bubble, disp); if(ps.s&&ps.s.length&&bubble.parentElement) bubble.parentElement.appendChild(buildSrcMeta(ps.s)); }
+    if(full.trim()){ chatHist.push({role:'assistant',content:full}); fsave('chat',{history:chatHist.slice(-20)}); }
+    m.scrollTop=m.scrollHeight; endTurn();
+  }
+  function fail(msg, isKey){
+    if(done) return; done=true; dropInd();
+    if(isKey) showApiModal();
+    if(!bubble) bubble=addMsg('assistant','');
+    bubble.innerHTML=''; renderBubble(bubble, msg); m.scrollTop=m.scrollHeight; endTurn();
+  }
+  function handleBlock(block){
+    var data=''; block.split('\n').forEach(function(ln){ if(ln.slice(0,5)==='data:') data+=ln.slice(5).replace(/^ /,''); });
+    if(!data || data==='[DONE]') return;
+    var ev=null; try{ ev=JSON.parse(data); }catch(e){ return; }
+    if(ev.type==='content_block_delta' && ev.delta && ev.delta.type==='text_delta'){ ensureBubble(); full+=ev.delta.text; scheduleRender(); }
+    else if(ev.type==='error'){ var em=(ev.error&&ev.error.message)?ev.error.message:'stream error';
+      if(full.trim()){ full+='\n\n[stream interrupted: '+em+']'; ensureBubble(); scheduleRender(); } else { fail('API error: '+em); } }
+  }
+
   fetch('/.netlify/functions/chat',{
     method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1400,system:SYS,
+    body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1400,system:SYS,stream:true,
       messages:chatHist.slice(-10),userEmail:cu?cu.email:'',userApiKey:storedKey})
   }).then(function(r){
-    return r.text().then(function(text){
-      var si=el('sind'); if(si) si.remove();
-      // Show raw response if we can't parse it
-      if(!text || text.trim()===''){
-        addMsg('assistant','Error: Empty response from server. Check Netlify function logs.');
-        return;
-      }
-      var data;
-      try{ data=JSON.parse(text); }
-      catch(e){
-        // Show first 300 chars of raw response so we can diagnose
-        addMsg('assistant','Server returned non-JSON response:\n\n'+text.slice(0,400));
-        return;
-      }
-      var full='';
-      if(data.content) data.content.forEach(function(b){if(b.type==='text') full+=b.text;});
-      if(!full&&data.error){
-        if(data.error.message==='NO_API_KEY'){
-          full='No API key configured. Go to Rig Specs to enter your Anthropic API key, or visit console.anthropic.com to get one.';
-          showApiModal();
-        } else {
-          full='API error: '+(data.error.message||JSON.stringify(data.error));
+    var ct=(r.headers.get('content-type')||'');
+    // Non-stream response (error JSON, or a buffered fallback) — parse as JSON.
+    if(!r.ok || ct.indexOf('text/event-stream')<0 || !r.body || !r.body.getReader){
+      return r.text().then(function(t){
+        var d=null; try{ d=JSON.parse(t); }catch(e){}
+        if(d && d.content){ d.content.forEach(function(b){ if(b.type==='text') full+=b.text; }); ensureBubble(); finish(); return; }
+        if(d && d.error){
+          if(d.error.message==='NO_API_KEY'){ fail('No API key configured. Go to Rig Specs to enter your Anthropic API key, or visit console.anthropic.com to get one.', true); return; }
+          fail('API error: '+(d.error.message||JSON.stringify(d.error))); return;
         }
-      }
-      if(!full) full='No response content received.';
-      var ps=parseSrc(full);
-      chatHist.push({role:'assistant',content:full});
-      // If ps.t is empty but full contains SOURCES, strip it manually rather than showing raw text
-      var displayText = ps.t || (full.indexOf('===SOURCES===') >= 0 ? full.slice(0, full.indexOf('===SOURCES===')).trim() : full);
-      addMsg('assistant', displayText, ps.s||[]);
-      m.scrollTop=m.scrollHeight;
-      fsave('chat',{history:chatHist.slice(-20)});
-    });
+        fail(t ? ('Server error: '+t.slice(0,300)) : 'Empty response from server.');
+      });
+    }
+    // Stream the SSE body and render tokens as they arrive.
+    var reader=r.body.getReader(), dec=new TextDecoder(), buf='';
+    function pump(){
+      return reader.read().then(function(res){
+        if(res.done){ if(buf.trim()) handleBlock(buf); buf=''; finish(); return; }
+        buf+=dec.decode(res.value,{stream:true});
+        var parts=buf.split('\n\n'); buf=parts.pop();
+        parts.forEach(handleBlock);
+        return pump();
+      });
+    }
+    return pump();
   }).catch(function(e){
-    var si=el('sind'); if(si) si.remove();
-    addMsg('assistant','Connection error: '+e.message+'\n\nMake sure the Netlify function is deployed and ANTHROPIC_API_KEY is set.');
-  }).finally(function(){
-    streaming=false; el('csend').disabled=false;
-  });
+    fail('Connection error: '+e.message+'\n\nMake sure the Netlify function is deployed and ANTHROPIC_API_KEY is set.');
+  }).finally(function(){ if(!done){ done=true; endTurn(); } });
 }
 
 function saveAsChecklist(){

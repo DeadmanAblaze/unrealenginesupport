@@ -59,7 +59,7 @@ export default async function handler(req) {
     // Sonnet so a stale frontend can never send a dead model id.
     model: (body.model === 'claude-haiku-4-5-20251001' || body.model === 'claude-sonnet-4-6') ? body.model : 'claude-sonnet-4-6',
     max_tokens: Math.min(Math.max(parseInt(body.max_tokens, 10) || 1400, 1), 2000),
-    system: trimSystem(body.system || '', 8000),
+    system: trimSystem(body.system || '', 12000),
     messages: trimMessages(body.messages || [], 10)
   };
   if (wantStream) payload.stream = true;

@@ -783,8 +783,44 @@ select.cv-edit{text-align:left;cursor:pointer}
 .chat-header{padding:11px 14px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px}
 .chat-header-label{font-size:12px;font-weight:500;color:var(--ink);letter-spacing:-.01em}
 .chat-header-status{font-size:10px;color:var(--live);font-family:var(--mono);letter-spacing:.04em}
-.chat-clear-btn{margin-left:auto;font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);background:var(--el);border:1px solid var(--line2);border-radius:6px;padding:4px 9px;cursor:pointer;transition:color .12s,border-color .12s}
-.chat-clear-btn:hover{color:var(--crit);border-color:var(--crit)}
+.chat-head-actions{margin-left:auto;display:flex;gap:6px}
+.chat-clear-btn{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);background:var(--el);border:1px solid var(--line2);border-radius:6px;padding:4px 9px;cursor:pointer;transition:color .12s,border-color .12s}
+.chat-clear-btn:hover{color:var(--ink);border-color:var(--accent)}
+.chat-clear-btn:last-child:hover{color:var(--crit);border-color:var(--crit)}
+/* video summary confirmation + manual transcript fallback */
+.kb-added{font-family:var(--mono);font-size:10px;color:var(--live);margin:6px 0 2px 2px;letter-spacing:.02em}
+.kb-manual{border:1px solid var(--line2)!important;background:var(--el)!important}
+.kb-manual-reason{font-size:12px;color:var(--warn);margin-bottom:6px;font-weight:500}
+.kb-manual-help{font-size:11.5px;color:var(--ink3);line-height:1.5;margin-bottom:9px}
+.kb-manual-help b{color:var(--ink2)}
+.kb-manual-title{width:100%;box-sizing:border-box;background:var(--card);border:1px solid var(--line);border-radius:7px;color:var(--ink);font-size:12px;padding:7px 9px;margin-bottom:6px;font-family:inherit}
+.kb-manual-ta{width:100%;box-sizing:border-box;min-height:110px;resize:vertical;background:var(--card);border:1px solid var(--line);border-radius:7px;color:var(--ink2);font-size:12px;padding:8px 10px;font-family:var(--mono);line-height:1.45}
+.kb-manual-row{display:flex;gap:7px;margin-top:8px}
+.kb-manual-go{background:var(--accent);color:#0b0b0d;border:0;border-radius:7px;padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer}
+.kb-manual-cancel{background:transparent;color:var(--ink3);border:1px solid var(--line2);border-radius:7px;padding:7px 12px;font-size:12px;cursor:pointer}
+/* knowledge base modal */
+.kb-ov{position:fixed;inset:0;background:rgba(6,6,9,.66);backdrop-filter:blur(3px);z-index:1000;display:flex;align-items:flex-start;justify-content:center;padding:6vh 16px 16px;overflow-y:auto}
+.kb-modal{width:100%;max-width:620px;background:var(--card);border:1px solid var(--line2);border-radius:14px;box-shadow:0 24px 60px rgba(0,0,0,.5);overflow:hidden}
+.kb-modal-head{display:flex;align-items:center;justify-content:space-between;padding:15px 18px 4px;font-size:15px;font-weight:600;color:var(--ink);letter-spacing:-.01em}
+.kb-modal-x{background:none;border:0;color:var(--ink3);font-size:22px;line-height:1;cursor:pointer;padding:0 2px}
+.kb-modal-x:hover{color:var(--ink)}
+.kb-modal-sub{padding:0 18px 12px;font-size:11.5px;color:var(--ink3)}
+.kb-modal-add{display:flex;gap:8px;padding:0 18px 14px}
+.kb-add-url{flex:1;background:var(--el);border:1px solid var(--line2);border-radius:8px;color:var(--ink);font-size:13px;padding:9px 11px;font-family:var(--mono)}
+.kb-add-btn{background:var(--accent);color:#0b0b0d;border:0;border-radius:8px;padding:9px 14px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap}
+.kb-list{max-height:54vh;overflow-y:auto;padding:0 18px 18px;border-top:1px solid var(--line)}
+.kb-empty{font-size:12.5px;color:var(--ink3);padding:22px 4px;text-align:center;line-height:1.6}
+.kb-item{border:1px solid var(--line);border-radius:10px;padding:11px 13px;margin-top:12px;background:var(--el)}
+.kb-item-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.kb-item-title{font-size:13.5px;font-weight:600;color:var(--ink);text-decoration:none;line-height:1.3}
+.kb-item-title:hover{color:var(--accent);text-decoration:underline}
+.kb-item-del{background:none;border:0;color:var(--ink3);font-size:18px;line-height:1;cursor:pointer;padding:0 2px;flex:none}
+.kb-item-del:hover{color:var(--crit)}
+.kb-item-author{font-size:11px;color:var(--ink3);font-family:var(--mono);margin-top:2px}
+.kb-item-sum{font-size:12px;color:var(--ink2);margin-top:7px;line-height:1.5}
+.kb-item-sum h3{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);margin:9px 0 4px}
+.kb-item-sum ul{margin:4px 0;padding-left:17px}
+.kb-item-sum li{margin:2px 0}
 .chat-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px 28px;gap:14px}
 .chat-empty-mark{opacity:.9}
 .chat-empty-title{font-size:15px;font-weight:600;color:var(--ink);letter-spacing:-.015em}
@@ -2463,7 +2499,10 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
             <span class="chat-header-label">Support assistant</span>
             <span class="live-pulse" style="margin-left:2px"></span>
             <span class="chat-header-status">Online</span>
-            <button class="chat-clear-btn" onclick="clearChat()" title="Clear the conversation">Clear chat</button>
+            <div class="chat-head-actions">
+              <button class="chat-clear-btn" id="kb-count" onclick="openKBModal()" title="Knowledge base">Knowledge</button>
+              <button class="chat-clear-btn" onclick="clearChat()" title="Clear the conversation">Clear chat</button>
+            </div>
           </div>
           <div class="msgs" id="msgs"></div>
           <div class="ci">
@@ -2703,6 +2742,7 @@ var FBCFG = {
 var fbapp, fbauth, fbdb, fbst;
 var cu = null;
 var specs={}, issues=[], checklist=[], chatHist=[], streaming=false, nextId=1;
+var kb=[], kbNextId=1;
 // ═══════════════════════════════════════════════════════════════════════════
 // COMPOSABLE RIG COMPONENT SYSTEM
 // ═══════════════════════════════════════════════════════════════════════════
@@ -3607,6 +3647,10 @@ async function loadData(){
 
     var hd = await dref('chat').get();
     chatHist = hd.exists ? (hd.data().history || []) : [];
+
+    var kbd = await dref('knowledge').get();
+    if(kbd.exists && kbd.data().items){ kb = kbd.data().items; kbNextId = kbd.data().nextId || (kb.length+1); }
+    if(typeof updateKBCount==='function') updateKBCount();
 
     var pland = await dref('plans').get();
     if(pland.exists && pland.data().items){ plans=pland.data().items; planNextId=pland.data().nextId||1; }
@@ -4583,6 +4627,16 @@ function getNodeForComp(comp, nodes){
 }
 
 
+function kbContextBlock(){
+  if(!kb || !kb.length) return '';
+  var lines = kb.map(function(v){
+    var sum = String(v.summary||'').replace(/\s+/g,' ').trim();
+    if(sum.length>800) sum = sum.slice(0,800)+'...';
+    return '- "'+(v.title||('Video '+v.videoId))+'"'+(v.author?' ('+v.author+')':'')+' ['+(v.url||'')+']\n  '+sum;
+  });
+  return '\nKNOWLEDGE BASE - user-curated YouTube summaries. Treat these as trusted reference the user has deliberately added; draw on them when relevant and cite the video by title if you use it:\n'+lines.join('\n')+'\n';
+}
+
 function buildSysPrompt(){
   var mode = specs['mode'] || 'vp';
   if(mode === 'vp'){
@@ -4600,6 +4654,7 @@ function getSysVP(){
   + 'THEIR RIG (composed of these components — pay attention to the NOTE lines, they are user-supplied context):\n'
   + componentsToContext()
   + ndContextBlock()
+  + kbContextBlock()
   + '\nOPERATING PRINCIPLES (non-negotiable):\n- Stay in your lane: Unreal Engine support for the exact setup described above. Do not drift into unrelated topics.\n- No feel-good filler. No flattery, no reassurance padding, no "great question", no softening. Lead with the answer; be blunt when something is wrong, risky, or a bad idea on a live broadcast rig.\n- Only state what you can back up. Every substantive technical claim must rest on a real, retrievable source (Unreal documentation first, then reputable community pages, articles, or video) OR be clearly flagged as your own inference / something to verify. If you cannot back it up, say so plainly. Never dress a guess up as fact to seem helpful.\n- Use EVERYTHING before answering: (a) the rig/system details and NOTE lines above, (b) the whole conversation so far, (c) any fault reports, checklist items, or specs the user has referenced, and (d) the web via your search tool - Unreal docs, forums, community sites, articles, YouTube, anything you can find. Cross-check it all against the actual UE version and hardware above; generic advice that ignores this rig is a failure.\n\nSOURCE PRIORITY:\n1. docs.unrealengine.com\n2. dev.epicgames.com/community and forums.unrealengine.com\n3. Curated VP YouTube (fetch transcripts):\n- nDisplay+Switchboard LED wall: https://www.youtube.com/watch?v=4kVsIagsX50\n- nDisplay config class: https://www.youtube.com/watch?v=0-vUJhBHWfs\n- Vive Mars LiveLink ICVFX: https://www.youtube.com/watch?v=g_6_-htkIzU\n- ICVFX inner frustum resolution: https://www.youtube.com/watch?v=gAkJRcHMg1c\n4. Reddit r/virtualproduction, fxguide.com\n\nFor every question: search docs first, then community, then fetch YouTube transcript if needed.\nYou HAVE a web_search tool - USE it. For any specific claim (exact node names, console commands, CVars, menu paths, Blueprint/Material/API nodes, setting locations, version-specific behaviour) search to confirm it before stating it; do not answer such specifics from memory.\nACCURACY RULES (critical):\n- NEVER invent a node, command, CVar, menu path, setting, or API you have not confirmed exists. If you cannot confirm it, say so plainly and tell the user how to check - do not guess.\n- Keep concepts distinct: a Material is a node graph (it has NODES, never console commands); console commands and CVars are typed in the console or set in config files; project and editor settings live in menus. Never tell the user to add a command to a Material or otherwise mix these up.\n- Tie every answer to the relevant Unreal Engine version. If a feature changed between versions, or you are not sure it exists in that version, say so.\n- When uncertain, prefer "I am not certain - here is how to verify" over a confident guess. A correct "not sure" beats a wrong instruction on a live rig.\nEnd every response with a SOURCES block listing ONLY pages you actually retrieved via web_search (use the real result URLs). If you did not search, return an empty array. Format:\n===SOURCES===\n[{"title":"...","url":"...","type":"epic or community or youtube"}]\n===END===\nWrap every console command, CVar, command-line invocation, config snippet, or file path the user may need to copy in fenced code blocks (```).\nWhen you give multiple suggested fixes or troubleshooting steps, format EACH as its own one-line Markdown heading "### N. <short imperative title>" (### 1, ### 2, and so on), with the explanation and any commands beneath it. Put one short paragraph summarising the likely problem BEFORE the first heading. Keep each command on its own line inside the code block.\nBe direct, technical, practical. Assume a capable VP professional.';
 }
 
@@ -4618,6 +4673,7 @@ function getSysGD(){
   + 'Target res/fps: ' + (s['gd-res']||'not set') + ' / ' + (s['gd-fps']||'not set') + ' / AA: ' + (s['gd-aa']||'not set') + '\n'
   + 'Version control: ' + (s['gd-vcs']||'not set') + ' / Team: ' + (s['gd-team']||'not set') + ' / Stage: ' + (s['gd-stage']||'not set') + '\n'
   + (s['gd-notes'] ? 'Notes: ' + s['gd-notes'] + '\n' : '')
+  + kbContextBlock()
   + '\nOPERATING PRINCIPLES (non-negotiable):\n- Stay in your lane: Unreal Engine support for the exact setup described above. Do not drift into unrelated topics.\n- No feel-good filler. No flattery, no reassurance padding, no "great question", no softening. Lead with the answer; be blunt when something is wrong, risky, or a bad idea on a live broadcast rig.\n- Only state what you can back up. Every substantive technical claim must rest on a real, retrievable source (Unreal documentation first, then reputable community pages, articles, or video) OR be clearly flagged as your own inference / something to verify. If you cannot back it up, say so plainly. Never dress a guess up as fact to seem helpful.\n- Use EVERYTHING before answering: (a) the rig/system details and NOTE lines above, (b) the whole conversation so far, (c) any fault reports, checklist items, or specs the user has referenced, and (d) the web via your search tool - Unreal docs, forums, community sites, articles, YouTube, anything you can find. Cross-check it all against the actual UE version and hardware above; generic advice that ignores this rig is a failure.\n\nSOURCE PRIORITY:\n1. docs.unrealengine.com\n2. dev.epicgames.com/community and forums.unrealengine.com\n3. YouTube: Unreal Engine official channel, William Faucher (lighting/rendering), Alex Forsythe (UE C++), Gorka Games, Matt Aspland\n4. Reddit r/unrealengine, r/gamedev\n\nFor every question: search docs first, then community sources, then YouTube if needed.\nYou HAVE a web_search tool - USE it. For any specific claim (exact node names, console commands, CVars, menu paths, Blueprint/Material/API nodes, setting locations, version-specific behaviour) search to confirm it before stating it; do not answer such specifics from memory.\nACCURACY RULES (critical):\n- NEVER invent a node, command, CVar, menu path, setting, or API you have not confirmed exists. If you cannot confirm it, say so plainly and tell the user how to check - do not guess.\n- Keep concepts distinct: a Material is a node graph (it has NODES, never console commands); console commands and CVars are typed in the console or set in config files; project and editor settings live in menus. Never tell the user to add a command to a Material or otherwise mix these up.\n- Tie every answer to the relevant Unreal Engine version. If a feature changed between versions, or you are not sure it exists in that version, say so.\n- When uncertain, prefer "I am not certain - here is how to verify" over a confident guess. A correct "not sure" beats a wrong instruction on a live rig.\nEnd every response with a SOURCES block listing ONLY pages you actually retrieved via web_search (use the real result URLs). If you did not search, return an empty array. Format:\n===SOURCES===\n[{"title":"...","url":"...","type":"epic or community or youtube"}]\n===END===\nWrap every console command, CVar, command-line invocation, config snippet, or file path the user may need to copy in fenced code blocks (```).\nWhen you give multiple suggested fixes or troubleshooting steps, format EACH as its own one-line Markdown heading "### N. <short imperative title>" (### 1, ### 2, and so on), with the explanation and any commands beneath it. Put one short paragraph summarising the likely problem BEFORE the first heading. Keep each command on its own line inside the code block.\nBe direct, technical, practical. Tailor all advice to the user\'s specific platform target, project type, and UE version.';
 }
 
@@ -5181,6 +5237,71 @@ function relDate(iso){
 
 function ibadge(){ var b=el('bi'); if(b) b.textContent=issues.filter(function(i){return i.status!=='resolved';}).length; }
 
+// ── PDF EXPORT SHARED CHROME (cover / running header+footer / styling) ───────
+function pdfLogo(px, idsfx){
+  var id='pdflg'+(idsfx||'');
+  return '<svg width="'+px+'" height="'+Math.round(px*52/48)+'" viewBox="0 0 48 52"><defs><linearGradient id="'+id+'" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4a7af5"/><stop offset="1" stop-color="#1ab8d4"/></linearGradient></defs>'
+    +'<path d="M13 32 A10 10 0 0 0 33 32 L33 18 A6.3 6.3 0 0 0 20.4 18 L20.4 26" fill="none" stroke="url(#'+id+')" stroke-width="4.6" stroke-linecap="round"/>'
+    +'<path d="M13 32 L13 16" fill="none" stroke="url(#'+id+')" stroke-width="4.6" stroke-linecap="round"/></svg>';
+}
+function pdfCSS(orient){
+  var land = orient==='landscape';
+  var sm = land ? '13mm' : '14mm';
+  return '*{margin:0;padding:0;box-sizing:border-box}'
+    +'html,body{background:#fff}'
+    +'body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Helvetica,Arial,sans-serif;font-size:11px;color:#15161a;line-height:1.5;-webkit-font-smoothing:antialiased}'
+    +'@page{size:A4 '+(land?'landscape':'portrait')+';margin:'+(land?'18mm 13mm 15mm 13mm':'19mm 14mm 16mm 14mm')+'}'
+    +'.run-h{position:fixed;top:0;left:0;right:0;height:12mm;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:5mm '+sm+' 0;font-size:8.5px;color:#9aa0a8;letter-spacing:.05em}'
+    +'.run-h .rh-l{display:flex;align-items:center;gap:6px}'
+    +'.run-h .rh-name{font-weight:700;color:#3a3f47;letter-spacing:-.01em;font-size:9.5px}'
+    +'.run-h .rh-r{text-transform:uppercase;font-weight:600}'
+    +'.run-f{position:fixed;bottom:0;left:0;right:0;height:10mm;background:#fff;border-top:1px solid #e7e9ec;display:flex;align-items:center;justify-content:space-between;padding:3px '+sm+' 0;font-size:8px;color:#9aa0a8;letter-spacing:.04em}'
+    +'.run-f .rf-c{font-weight:600;color:#6b7178;text-transform:uppercase}'
+    +'.content{padding-top:2mm}'
+    +'.cover{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;padding-bottom:14px;margin-bottom:20px;border-bottom:2px solid #0b0b0c;position:relative}'
+    +'.cover:after{content:"";position:absolute;left:0;bottom:-2px;width:128px;height:2px;background:linear-gradient(90deg,#4a7af5,#1ab8d4)}'
+    +'.cov-l{display:flex;align-items:center;gap:13px}'
+    +'.cov-title{font-size:22px;font-weight:800;letter-spacing:-.025em;color:#0b0b0c;line-height:1.04}'
+    +'.cov-sub{font-size:11px;color:#6b7178;margin-top:3px}'
+    +'.cov-kicker{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.16em;color:#4a7af5;margin-bottom:5px}'
+    +'.cov-meta{text-align:right;font-size:9.5px;color:#6b7178;line-height:1.65;white-space:nowrap}'
+    +'.cov-meta b{color:#15161a}'
+    +'.glance{display:flex;gap:10px;margin-bottom:22px}'
+    +'.stat{flex:1;border:1px solid #e7e9ec;border-radius:9px;padding:9px 12px;background:#fafbfc}'
+    +'.stat .s-n{font-size:17px;font-weight:750;color:#0b0b0c;letter-spacing:-.02em}'
+    +'.stat .s-l{font-size:8.5px;color:#888f97;text-transform:uppercase;letter-spacing:.07em;margin-top:2px}'
+    +'.section{margin-bottom:22px}'
+    +'.section-head{display:flex;align-items:center;gap:8px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#3a3f47;margin-bottom:11px;padding-bottom:6px;border-bottom:1px solid #e7e9ec}'
+    +'.section-tick{width:3px;height:13px;border-radius:2px;background:linear-gradient(#4a7af5,#1ab8d4);flex-shrink:0}'
+    +'.section-count{font-size:8.5px;color:#9aa0a8;font-weight:500;margin-left:auto;letter-spacing:.04em}'
+    +'@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}.no-print{display:none!important}}';
+}
+function buildPdfDoc(o){
+  return '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>'+esc(o.title)+' \u2014 Unreal Support</title>'
+    +'<style>'+pdfCSS(o.orientation)+(o.extraCSS||'')+'</style></head><body>'
+    +'<div class="no-print" style="background:#0b0b0c;color:#fff;padding:11px 18px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:14px;border-radius:9px">'
+    +'<span style="font-size:12.5px;font-weight:600">'+esc(o.title)+'</span>'
+    +'<span style="display:flex;align-items:center;gap:14px">'
+    +'<span style="font-size:10.5px;color:#aeb3bb">Tip: set Margins to Default and turn Headers and footers Off in the print dialog</span>'
+    +'<button onclick="window.print()" style="background:#4a7af5;color:#fff;border:0;border-radius:7px;padding:8px 18px;font-size:12px;font-weight:600;cursor:pointer">Print / Save as PDF</button>'
+    +'</span></div>'
+    +'<div class="run-h"><div class="rh-l">'+pdfLogo(15,'h')+'<span class="rh-name">Unreal Support</span></div><div class="rh-r">'+esc(o.docType||'')+'</div></div>'
+    +'<div class="run-f"><div>unrealsupport.net</div><div class="rf-c">'+esc(o.footerTitle||o.title)+'</div><div>'+esc(o.dateStr||'')+'</div></div>'
+    +'<div class="content">'
+    +'<div class="cover"><div class="cov-l">'+pdfLogo(40,'c')+'<div>'+(o.kicker?'<div class="cov-kicker">'+esc(o.kicker)+'</div>':'')+'<div class="cov-title">'+esc(o.title)+'</div>'+(o.subtitle?'<div class="cov-sub">'+o.subtitle+'</div>':'')+'</div></div>'
+    +'<div class="cov-meta">'+(o.metaHTML||'')+'</div></div>'
+    +(o.glanceHTML||'')
+    +(o.bodyHTML||'')
+    +'</div></body></html>';
+}
+function openPrintWindow(html){
+  var win=window.open('','_blank');
+  if(!win){ if(typeof showToast==='function'){ showToast('Pop-up blocked \u2014 allow pop-ups to export this PDF.', true); } else { alert('Please allow pop-ups to export this PDF.'); } return null; }
+  win.document.write(html); win.document.close();
+  setTimeout(function(){ try{ win.focus(); }catch(e){} }, 300);
+  return win;
+}
+
 function exportRigPDF(){
   var svgEl = document.getElementById('vp-diagram');
   var svgHTML = svgEl ? svgEl.outerHTML : '<p>No diagram generated</p>';
@@ -5240,78 +5361,58 @@ function exportRigPDF(){
   var exportDate = new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
   var editorComp = components.find(function(c){return c.type==='workstation'&&c.fields.role==='Editor';});
   var ueVersion = editorComp ? (editorComp.fields.ue||'') : '';
+  var nWS = components.filter(function(c){return c.type==='workstation';}).length;
 
-  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8">'
-    +'<title>Rig Configuration Export</title>'
-    +'<style>'
-    +'*{margin:0;padding:0;box-sizing:border-box}'
-    +'body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:11px;color:#1a1a1a;background:#fff;line-height:1.5}'
-    +'@page{size:A4;margin:18mm 16mm 18mm 16mm}'
-    +'.page-header{display:flex;align-items:center;justify-content:space-between;padding-bottom:14px;border-bottom:2px solid #0b0b0c;margin-bottom:22px}'
-    +'.brand{display:flex;align-items:center;gap:10px}'
-    +'.brand-name{font-size:15px;font-weight:700;letter-spacing:-.02em;color:#0b0b0c}'
-    +'.brand-sub{font-size:10px;color:#888;letter-spacing:.04em;text-transform:uppercase}'
-    +'.export-meta{text-align:right;font-size:10px;color:#666}'
-    +'.export-meta strong{display:block;font-size:12px;color:#1a1a1a;margin-bottom:2px}'
-    +'.section{margin-bottom:24px;break-inside:avoid-page}'
-    +'.section-head{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:#444;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #e8e8e8}'
-    +'.section-tick{width:3px;height:12px;border-radius:2px;background:linear-gradient(#4a7af5,#1ab8d4);flex-shrink:0}'
-    +'.section-count{font-size:9px;color:#999;font-weight:400;margin-left:auto;letter-spacing:.04em}'
-    +'.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}'
-    +'.card{border:1px solid #e4e4e4;border-radius:8px;overflow:hidden;break-inside:avoid}'
-    +'.card-head{display:flex;align-items:center;gap:7px;padding:8px 11px;background:#f8f8f8;border-bottom:1px solid #e8e8e8;font-size:11px;font-weight:600}'
-    +'.card-tag{margin-left:auto;font-size:8.5px;color:#888;text-transform:uppercase;letter-spacing:.05em;font-family:ui-monospace,monospace}'
-    +'.led{width:6px;height:6px;border-radius:50%;flex-shrink:0}'
-    +'.led.g{background:#22c55e}.led.b{background:#4a7af5}'
+  var extraCSS =
+     '.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(205px,1fr));gap:10px}'
+    +'.card{border:1px solid #e7e9ec;border-radius:9px;overflow:hidden;break-inside:avoid}'
+    +'.card-head{display:flex;align-items:center;gap:7px;padding:8px 11px;background:#fafbfc;border-bottom:1px solid #eef0f2;font-size:11px;font-weight:650}'
+    +'.card-tag{margin-left:auto;font-size:8.5px;color:#888f97;text-transform:uppercase;letter-spacing:.05em;font-family:ui-monospace,monospace}'
+    +'.led{width:6px;height:6px;border-radius:50%;flex-shrink:0}.led.g{background:#22c55e}.led.b{background:#4a7af5}'
     +'table{width:100%;border-collapse:collapse}'
-    +'td{padding:5px 11px;border-bottom:1px solid #f0f0f0;vertical-align:top}'
-    +'tr:last-child td{border-bottom:none}'
-    +'.k{color:#777;width:38%;white-space:nowrap;font-size:10px}'
-    +'.v{color:#1a1a1a;font-size:10.5px}'
+    +'td{padding:5px 11px;border-bottom:1px solid #f2f3f5;vertical-align:top}tr:last-child td{border-bottom:none}'
+    +'.k{color:#7b818a;width:38%;white-space:nowrap;font-size:10px}.v{color:#15161a;font-size:10.5px}'
     +'.mono{font-family:ui-monospace,monospace;font-size:10px}'
-    +'.notes{color:#555;font-style:italic;font-size:10px}'
+    +'.notes{color:#646a72;font-style:italic;font-size:10px}'
     +'.ports-list{display:flex;flex-wrap:wrap;gap:3px}'
-    +'.port-pill{font-size:9px;font-family:ui-monospace,monospace;padding:1px 5px;border-radius:3px;border:1px solid #ddd;color:#555}'
+    +'.port-pill{font-size:9px;font-family:ui-monospace,monospace;padding:1px 5px;border-radius:3px;border:1px solid #dde0e4;color:#646a72}'
     +'.port-pill.out{border-color:#4a7af5;color:#4a7af5;background:#f0f4ff}'
-    +'.port-pill.in{border-color:#1ab8d4;color:#1ab8d4;background:#f0fbfd}'
-    +'.diagram-section{margin-bottom:24px}'
-    +'.diagram-section h3{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:#444;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #e8e8e8;display:flex;align-items:center;gap:7px}'
-    +'.diagram-wrap{border:1px solid #e4e4e4;border-radius:8px;padding:16px;background:#f8f8f8}'
+    +'.port-pill.in{border-color:#1ab8d4;color:#1ab8d4;background:#eefafd}'
+    +'.diagram-wrap{border:1px solid #e7e9ec;border-radius:9px;padding:16px;background:#fafbfc;break-inside:avoid}'
     +'.diagram-wrap svg{width:100%;height:auto;display:block}'
-    +'.conn-table{width:100%;border-collapse:collapse;margin-top:2px}'
-    +'.conn-table th{text-align:left;font-size:9.5px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.06em;padding:5px 10px;border-bottom:1px solid #e8e8e8;background:#f8f8f8}'
-    +'.conn-table td{padding:5px 10px;border-bottom:1px solid #f0f0f0;font-size:10.5px}'
-    +'.conn-table .arrow{color:#999;text-align:center}'
-    +'@media print{'
-    +'  body{-webkit-print-color-adjust:exact;print-color-adjust:exact}'
-    +'  .no-print{display:none}'
-    +'  .section{break-inside:auto}'
-    +'  .card{break-inside:avoid}'
-    +'}'
-    +'</style></head><body>'
-    +'<div class="no-print" style="background:#f0f4ff;border:1px solid #4a7af5;border-radius:8px;padding:12px 16px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between">'
-    +'<span style="font-size:12px;color:#1a1a1a"><strong>Rig Configuration Export</strong> — Use your browser\'s Print function (Ctrl/Cmd+P) and choose "Save as PDF"</span>'
-    +'<button onclick="window.print()" style="background:#4a7af5;color:#fff;border:none;border-radius:6px;padding:7px 16px;font-size:12px;font-weight:600;cursor:pointer">Print / Save as PDF</button>'
-    +'</div>'
-    +'<div class="page-header">'
-    +'<div class="brand">'
-    +'<svg width="28" height="30" viewBox="0 0 48 52"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4a7af5"/><stop offset="1" stop-color="#1ab8d4"/></linearGradient></defs><path d="M13 32 A10 10 0 0 0 33 32 L33 18 A6.3 6.3 0 0 0 20.4 18 L20.4 26" fill="none" stroke="url(#g)" stroke-width="4.6" stroke-linecap="round"/><path d="M13 32 L13 16" fill="none" stroke="url(#g)" stroke-width="4.6" stroke-linecap="round"/></svg>'
-    +'<div><div class="brand-name">Unreal Support</div><div class="brand-sub">Rig Configuration Export</div></div>'
-    +'</div>'
-    +'<div class="export-meta"><strong>Virtual Production Configuration</strong>'+(ueVersion?'Unreal Engine '+ueVersion+'<br>':'')+'Exported '+exportDate+'</div>'
-    +'</div>'
-    + sectionsHTML
-    + connHTML
-    +'<div class="diagram-section"><h3><span class="section-tick"></span>System Architecture Diagram</h3>'
-    +'<div class="diagram-wrap">'+svgHTML+'</div></div>'
-    +'</body></html>';
+    +'.conn-table{width:100%;border-collapse:collapse}'
+    +'.conn-table thead{display:table-header-group}'
+    +'.conn-table th{text-align:left;font-size:9px;font-weight:650;color:#888f97;text-transform:uppercase;letter-spacing:.06em;padding:6px 10px;border-bottom:1px solid #e7e9ec;background:#fafbfc}'
+    +'.conn-table td{padding:6px 10px;border-bottom:1px solid #f2f3f5;font-size:10.5px}'
+    +'.conn-table tr{break-inside:avoid}'
+    +'.conn-table .arrow{color:#9aa0a8;text-align:center}';
 
-  var win = window.open('', '_blank');
-  if(!win){ alert('Please allow popups for this site to export.'); return; }
-  win.document.write(html);
-  win.document.close();
-  // Small delay to let fonts/SVG render before print dialog
-  setTimeout(function(){ win.focus(); }, 400);
+  var glance =
+     '<div class="glance">'
+    +'<div class="stat"><div class="s-n">'+components.length+'</div><div class="s-l">Components</div></div>'
+    +'<div class="stat"><div class="s-n">'+nWS+'</div><div class="s-l">Workstations</div></div>'
+    +'<div class="stat"><div class="s-n">'+connections.length+'</div><div class="s-l">Signal links</div></div>'
+    +'<div class="stat"><div class="s-n">'+(ueVersion?esc(ueVersion):'\u2014')+'</div><div class="s-l">Unreal Engine</div></div>'
+    +'</div>';
+
+  var body = sectionsHTML + connHTML
+    +'<div class="section"><div class="section-head"><span class="section-tick"></span>System Architecture<span class="section-count">signal flow diagram</span></div>'
+    +'<div class="diagram-wrap">'+svgHTML+'</div></div>';
+
+  var html = buildPdfDoc({
+    orientation:'portrait',
+    docType:'Rig Configuration',
+    kicker:'Virtual Production',
+    title:'Rig Configuration',
+    subtitle:components.length+' components \u00b7 '+connections.length+' signal connections',
+    metaHTML:'<b>System Specification</b><br>'+(ueVersion?'Unreal Engine '+esc(ueVersion)+'<br>':'')+'Generated '+exportDate,
+    dateStr:exportDate,
+    footerTitle:'Rig Configuration',
+    extraCSS:extraCSS,
+    glanceHTML:glance,
+    bodyHTML:body
+  });
+  openPrintWindow(html);
 }
 
 function updateStatusFooter(){
@@ -6803,6 +6904,13 @@ function sq(t){ el('cinput').value=t; sendChat(); }
 function sendChat(){
   if(streaming) return;
   var input=el('cinput'), text=input.value.trim(); if(!text) return;
+  // If the message is essentially a YouTube link (optionally with an "add/summarise"
+  // style intent), treat it as a request to summarise the video into the knowledge base.
+  var ytid=ytIdFrom(text);
+  var nonUrl=text.replace(YT_URL_RE,' ').replace(/https?:\/\/\S+/g,' ').replace(/\s+/g,' ').trim();
+  if(ytid && (nonUrl==='' || /(summar|\badd\b|knowledge|\blearn\b|watch this|remember|ingest|transcript|save this|\bkb\b)/i.test(text))){
+    handleVideoMessage(text, ytid); return;
+  }
   var ce=document.querySelector('.chat-empty'); if(ce) el('msgs').innerHTML='';
   input.value=''; input.style.height='auto';
   el('csend').disabled=true; streaming=true;
@@ -6881,6 +6989,186 @@ function sendChat(){
 }
 
 var CL_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 5.5h9M9.5 12h9M9.5 18.5h9"/><path d="M4 5.3l1.3 1.3L7.6 4.2"/><path d="M4 11.8l1.3 1.3 2.3-2.4"/><path d="M4 18.3l1.3 1.3 2.3-2.4"/></svg>';
+
+// ── YOUTUBE KNOWLEDGE BASE ─────────────────────────────────────────────────
+var YT_URL_RE=/https?:\/\/(?:www\.|m\.)?(?:youtube\.com\/(?:watch\?\S*v=|shorts\/|live\/|embed\/)|youtu\.be\/)[A-Za-z0-9_-]{11}\S*/gi;
+function ytIdFrom(t){
+  var m=String(t||'').match(/(?:youtube\.com\/(?:watch\?\S*v=|shorts\/|live\/|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/i);
+  if(m) return m[1];
+  if(/^[A-Za-z0-9_-]{11}$/.test(String(t||'').trim())) return String(t).trim();
+  return null;
+}
+function saveKB(){ fsave('knowledge',{items:kb,nextId:kbNextId}); }
+function updateKBCount(){ var b=el('kb-count'); if(b) b.textContent = kb.length?('Knowledge '+kb.length):'Knowledge'; }
+
+// Step 1: user dropped a YouTube link in the chat (or the KB modal). Fetch transcript.
+function handleVideoMessage(rawText, videoId){
+  if(streaming) return;
+  var input=el('cinput'); if(input){ input.value=''; input.style.height='auto'; }
+  var ce=document.querySelector('.chat-empty'); if(ce) el('msgs').innerHTML='';
+  streaming=true; var sb=el('csend'); if(sb) sb.disabled=true;
+  chatHist.push({role:'user',content:rawText});
+  addMsg('user', rawText);
+  var m=el('msgs');
+  var si=document.createElement('div'); si.className='msg-group ai'; si.id='sind';
+  si.innerHTML='<div class="msg-from">Support</div><div class="typing-bubble">Fetching transcript<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>';
+  m.appendChild(si); m.scrollTop=m.scrollHeight;
+
+  fetch('/.netlify/functions/yt',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url:rawText,videoId:videoId})})
+    .then(function(r){ return r.text(); })
+    .then(function(t){
+      var d=null; try{ d=JSON.parse(t); }catch(e){}
+      if(d && d.ok && d.transcript){
+        summarizeAndSave({videoId:d.videoId,title:d.title,author:d.author,lengthSeconds:d.lengthSeconds,url:'https://www.youtube.com/watch?v='+d.videoId}, d.transcript, d.truncated);
+      } else {
+        showManualTranscript(videoId, (d&&d.title)||'', (d&&d.author)||'', (d&&d.error)||'Could not fetch the transcript automatically.');
+      }
+    })
+    .catch(function(e){
+      showManualTranscript(videoId, '', '', 'Could not reach the transcript service ('+(e&&e.message?e.message:'network error')+').');
+    });
+}
+
+// Step 2 (fallback): auto-fetch failed - let the user paste the transcript.
+function showManualTranscript(videoId, title, author, reason){
+  streaming=false; var sb=el('csend'); if(sb) sb.disabled=false;
+  var s=el('sind'); if(s) s.remove();
+  var m=el('msgs');
+  var pid='mt-'+videoId+'-'+Date.now();
+  var wrap=document.createElement('div'); wrap.className='msg-group ai';
+  wrap.innerHTML='<div class="msg-from">Support</div>'
+    +'<div class="msg-bubble kb-manual">'
+    +'<div class="kb-manual-reason">'+esc(reason)+'</div>'
+    +'<div class="kb-manual-help">Open the video on YouTube, click <b>...more</b> under it, then <b>Show transcript</b>. Copy the text and paste it here \u2014 I will summarise it and add it to the knowledge base.</div>'
+    +'<input id="'+pid+'-t" class="kb-manual-title" placeholder="Video title (optional)" value="'+esc(title||'')+'">'
+    +'<textarea id="'+pid+'" class="kb-manual-ta" placeholder="Paste the transcript here..."></textarea>'
+    +'<div class="kb-manual-row">'
+    +'<button class="kb-manual-go" onclick="manualGo(\''+videoId+'\',\''+pid+'\')">Summarise &amp; save</button>'
+    +'<button class="kb-manual-cancel" onclick="var g=this.closest(\'.msg-group\'); if(g) g.remove();">Cancel</button>'
+    +'</div></div>';
+  m.appendChild(wrap); m.scrollTop=m.scrollHeight;
+}
+function manualGo(videoId, pid){
+  var ta=el(pid); if(!ta) return;
+  var txt=(ta.value||'').trim();
+  if(txt.length<40){ if(typeof showToast==='function') showToast('Paste a bit more of the transcript first.', true); return; }
+  var te=el(pid+'-t'); var title=te?(te.value||'').trim():'';
+  var grp=ta.closest?ta.closest('.msg-group'):null; if(grp) grp.remove();
+  summarizeAndSave({videoId:videoId,title:title,author:'',url:'https://www.youtube.com/watch?v='+videoId}, txt, txt.length>60000);
+}
+
+// Step 3: summarise the transcript (streamed), then store + inject into the agent.
+function summarizeAndSave(meta, transcript, truncated){
+  streaming=true; var sb=el('csend'); if(sb) sb.disabled=true;
+  var m=el('msgs');
+  var old=el('sind'); if(old) old.remove();
+  var ind=document.createElement('div'); ind.className='msg-group ai'; ind.id='sind';
+  ind.innerHTML='<div class="msg-from">Support</div><div class="typing-bubble">Summarising '+(meta.title?esc(meta.title):'the video')+'<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>';
+  m.appendChild(ind); m.scrollTop=m.scrollHeight;
+
+  var sys='You are summarising a YouTube video transcript for a virtual production engineer who runs an Unreal Engine ICVFX LED-volume rig. Produce a tight, factual briefing he can rely on later.\n'
+    +'Structure your answer exactly like this:\n'
+    +'First, one line describing what the video is and what it covers.\n'
+    +'Then a heading "### Key points" followed by 4 to 8 concise bullets of the concrete, actionable technical content - settings, workflows, gotchas, and the exact terms, console commands, CVars or menu paths the video uses.\n'
+    +'Then a heading "### Relevance to the rig" with 1 to 3 bullets on how it applies to an Unreal Engine LED volume, nDisplay or ICVFX setup. If it is only loosely relevant, say so plainly.\n'
+    +'Rules: summarise ONLY what the transcript actually says - do not invent, pad, or add outside knowledge. Preserve product names, commands and paths exactly. No hype, no filler. Stay under 250 words.';
+  var user='VIDEO: "'+(meta.title||'Untitled')+'"'+(meta.author?' by '+meta.author:'')+'\nURL: '+meta.url+(truncated?'\n(NOTE: the transcript was truncated for length.)':'')+'\n\nTRANSCRIPT:\n'+transcript;
+
+  var bubble=null, full='', done=false, raf=false;
+  function ensureBubble(){ if(!bubble){ var s=el('sind'); if(s) s.remove(); bubble=addMsg('assistant',''); } }
+  function render(){ raf=false; if(bubble){ bubble.innerHTML=''; renderBubble(bubble, full); m.scrollTop=m.scrollHeight; } }
+  function sched(){ if(raf) return; raf=true; (window.requestAnimationFrame||function(f){return setTimeout(f,16);})(render); }
+  function endTurn(){ streaming=false; var b=el('csend'); if(b) b.disabled=false; }
+  function finish(){
+    if(done) return; done=true;
+    var s=el('sind'); if(s) s.remove();
+    var body=full.trim();
+    if(!bubble) bubble=addMsg('assistant', body||'Could not summarise the video.');
+    else { bubble.innerHTML=''; renderBubble(bubble, body||'Could not summarise the video.'); }
+    if(body){
+      kb=kb.filter(function(v){ return v.videoId!==meta.videoId; });
+      kb.unshift({ id:kbNextId++, videoId:meta.videoId, url:meta.url, title:meta.title||('Video '+meta.videoId), author:meta.author||'', summary:body, addedAt:Date.now() });
+      saveKB(); buildSysPrompt(); updateKBCount();
+      chatHist.push({role:'assistant',content:'[Saved to knowledge base] '+(meta.title||('Video '+meta.videoId))+'\n'+body});
+      fsave('chat',{history:chatHist.slice(-20)});
+      if(bubble.parentElement){
+        var conf=document.createElement('div'); conf.className='kb-added';
+        conf.innerHTML='\u2713 Added to the knowledge base \u2014 the agent will use this from now on.';
+        bubble.parentElement.appendChild(conf);
+      }
+    }
+    m.scrollTop=m.scrollHeight; endTurn();
+  }
+  function fail(msg){ if(done) return; done=true; var s=el('sind'); if(s) s.remove(); if(!bubble) bubble=addMsg('assistant',''); bubble.innerHTML=''; renderBubble(bubble, msg); endTurn(); m.scrollTop=m.scrollHeight; }
+  function handleBlock(block){
+    var data=''; block.split('\n').forEach(function(ln){ if(ln.slice(0,5)==='data:') data+=ln.slice(5).replace(/^ /,''); });
+    if(!data || data==='[DONE]') return;
+    var ev=null; try{ ev=JSON.parse(data); }catch(e){ return; }
+    if(ev.type==='content_block_delta' && ev.delta && ev.delta.type==='text_delta'){ ensureBubble(); full+=ev.delta.text; sched(); }
+    else if(ev.type==='error'){ fail('Summary error: '+((ev.error&&ev.error.message)||'stream error')); }
+  }
+  var storedKey=getStoredKey();
+  fetch('/.netlify/functions/chat',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:900,system:sys,stream:true,messages:[{role:'user',content:user}],userEmail:cu?cu.email:'',userApiKey:storedKey})
+  }).then(function(r){
+    var ct=(r.headers.get('content-type')||'');
+    if(!r.ok || ct.indexOf('text/event-stream')<0 || !r.body || !r.body.getReader){
+      return r.text().then(function(t){
+        var d=null; try{ d=JSON.parse(t); }catch(e){}
+        if(d && d.content){ d.content.forEach(function(b){ if(b.type==='text') full+=b.text; }); ensureBubble(); finish(); return; }
+        if(d && d.error){ if(d.error.message==='NO_API_KEY'){ fail('No API key configured. Add your Anthropic key in Rig Specs.'); return; } fail('API error: '+(d.error.message||JSON.stringify(d.error))); return; }
+        fail(t ? ('Server error: '+t.slice(0,200)) : 'Empty response from server.');
+      });
+    }
+    var reader=r.body.getReader(), dec=new TextDecoder(), buf='';
+    function pump(){ return reader.read().then(function(res){ if(res.done){ if(buf.trim()) handleBlock(buf); finish(); return; } buf+=dec.decode(res.value,{stream:true}); var parts=buf.split('\n\n'); buf=parts.pop(); parts.forEach(handleBlock); return pump(); }); }
+    return pump();
+  }).catch(function(e){ fail('Connection error: '+(e&&e.message?e.message:'failed')); }).finally(function(){ if(!done){ done=true; endTurn(); } });
+}
+
+// Knowledge base modal (view / add / remove)
+function openKBModal(){
+  if(el('kb-ov')) return;
+  var ov=document.createElement('div'); ov.className='kb-ov'; ov.id='kb-ov';
+  ov.onclick=function(e){ if(e.target===ov) closeKBModal(); };
+  ov.innerHTML='<div class="kb-modal">'
+    +'<div class="kb-modal-head"><span>Knowledge base</span><button class="kb-modal-x" onclick="closeKBModal()" aria-label="Close">&times;</button></div>'
+    +'<div class="kb-modal-sub">YouTube videos the agent has summarised and will draw on in answers.</div>'
+    +'<div class="kb-modal-add"><input id="kb-add-url" class="kb-add-url" placeholder="Paste a YouTube link..."><button class="kb-add-btn" onclick="kbAddFromModal()">Summarise &amp; add</button></div>'
+    +'<div class="kb-list" id="kb-list"></div>'
+    +'</div>';
+  document.body.appendChild(ov);
+  var inp=el('kb-add-url'); if(inp){ inp.focus(); inp.onkeydown=function(e){ if(e.key==='Enter'){ e.preventDefault(); kbAddFromModal(); } }; }
+  renderKBList();
+}
+function closeKBModal(){ var o=el('kb-ov'); if(o) o.remove(); }
+function kbAddFromModal(){
+  var i=el('kb-add-url'); var u=i?(i.value||'').trim():'';
+  var id=ytIdFrom(u);
+  if(!id){ if(typeof showToast==='function') showToast('That does not look like a YouTube link.', true); return; }
+  closeKBModal();
+  if(typeof go==='function') go('chat');
+  handleVideoMessage(u, id);
+}
+function renderKBList(){
+  var host=el('kb-list'); if(!host) return;
+  if(!kb.length){ host.innerHTML='<div class="kb-empty">No videos yet. Paste a YouTube link above, or drop one into the chat, and I will summarise it and remember it.</div>'; return; }
+  host.innerHTML=kb.map(function(v,i){
+    return '<div class="kb-item">'
+      +'<div class="kb-item-head">'
+      +'<a href="'+esc(v.url||'')+'" target="_blank" rel="noopener" class="kb-item-title">'+esc(v.title||('Video '+v.videoId))+'</a>'
+      +'<button class="kb-item-del" title="Remove from knowledge base" onclick="deleteKB('+v.id+')">&times;</button>'
+      +'</div>'
+      +(v.author?'<div class="kb-item-author">'+esc(v.author)+'</div>':'')
+      +'<div class="kb-item-sum" data-i="'+i+'"></div>'
+      +'</div>';
+  }).join('');
+  kb.forEach(function(v,i){ var c=host.querySelector('.kb-item-sum[data-i="'+i+'"]'); if(c) renderBubble(c, v.summary||''); });
+}
+function deleteKB(id){
+  kb=kb.filter(function(v){ return v.id!==id; });
+  saveKB(); buildSysPrompt(); updateKBCount(); renderKBList();
+}
 
 // Append a "Save as checklist" action under a finished assistant message.
 function appendChatActions(bubble){
@@ -8540,26 +8828,28 @@ function renderMaint(){
 }
 
 function s3ExportPDF(){
-  var W=S3.roomW, D=S3.roomD, sc=Math.min(680/W, 460/D);
+  var W=S3.roomW, D=S3.roomD, sc=Math.min(700/W, 450/D);
+  var CW=Math.round(W*sc+120), CH=Math.round(D*sc+150);
   function X(x){return 60+(x+W/2)*sc;} function Z(z){return 60+(z+D/2)*sc;}
-  var s='<svg xmlns="http://www.w3.org/2000/svg" width="800" height="'+(D*sc+170)+'" font-family="monospace">';
-  s+='<rect x="'+X(-W/2)+'" y="'+Z(-D/2)+'" width="'+(W*sc)+'" height="'+(D*sc)+'" fill="none" stroke="#000" stroke-width="2"/>';
-  s+='<text x="'+X(0)+'" y="'+(Z(D/2)+24)+'" text-anchor="middle" font-size="11">'+W.toFixed(1)+' m</text>';
-  s+='<text x="'+(X(-W/2)-22)+'" y="'+Z(0)+'" text-anchor="middle" font-size="11" transform="rotate(-90 '+(X(-W/2)-22)+' '+Z(0)+')">'+D.toFixed(1)+' m</text>';
-  for(var u=0;u<=24;u++){ var p=null; try{p=_s3?null:null;}catch(e){} }
-  // wall arc
+  var s='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+CW+' '+CH+'" width="'+CW+'" height="'+CH+'" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif">';
+  var gx,gz;
+  for(gx=Math.ceil(-W/2);gx<=W/2+1e-6;gx++){ s+='<line x1="'+X(gx)+'" y1="'+Z(-D/2)+'" x2="'+X(gx)+'" y2="'+Z(D/2)+'" stroke="#eef0f2" stroke-width="1"/>'; }
+  for(gz=Math.ceil(-D/2);gz<=D/2+1e-6;gz++){ s+='<line x1="'+X(-W/2)+'" y1="'+Z(gz)+'" x2="'+X(W/2)+'" y2="'+Z(gz)+'" stroke="#eef0f2" stroke-width="1"/>'; }
+  s+='<rect x="'+X(-W/2)+'" y="'+Z(-D/2)+'" width="'+(W*sc)+'" height="'+(D*sc)+'" fill="none" stroke="#0b0b0c" stroke-width="1.6"/>';
+  s+='<text x="'+X(0)+'" y="'+(Z(D/2)+22)+'" text-anchor="middle" font-size="11" fill="#555">'+W.toFixed(1)+' m</text>';
+  s+='<text x="'+(X(-W/2)-20)+'" y="'+Z(0)+'" text-anchor="middle" font-size="11" fill="#555" transform="rotate(-90 '+(X(-W/2)-20)+' '+Z(0)+')">'+D.toFixed(1)+' m</text>';
   var th=S3.curve*Math.PI/180, bz=-D/2+S3.wallBack, pts=[];
-  for(var i=0;i<=24;i++){ var uu=i/24, y;
+  for(var i=0;i<=24;i++){ var uu=i/24;
     if(S3.curve<1){ pts.push([(uu-0.5)*S3.wallW, bz]); }
     else { var R=S3.wallW/th, a=-th/2+uu*th; pts.push([Math.sin(a)*R, bz+R-Math.cos(a)*R]); } }
-  s+='<polyline points="'+pts.map(function(p){return X(p[0])+','+Z(p[1]);}).join(' ')+'" fill="none" stroke="#0072ff" stroke-width="5"/>';
-  s+='<text x="'+X(0)+'" y="'+(Z(bz)-8)+'" text-anchor="middle" font-size="10" fill="#0072ff">LED WALL '+S3.wallW.toFixed(1)+'m \u00d7 '+S3.wallH.toFixed(1)+'m</text>';
-  // cables
+  s+='<polyline points="'+pts.map(function(p){return X(p[0])+','+Z(p[1]);}).join(' ')+'" fill="none" stroke="#4a7af5" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>';
+  s+='<text x="'+X(0)+'" y="'+(Z(bz)-9)+'" text-anchor="middle" font-size="10" font-weight="600" fill="#4a7af5">LED WALL  '+S3.wallW.toFixed(1)+'m \u00d7 '+S3.wallH.toFixed(1)+'m</text>';
+  s+='<text x="'+X(0)+'" y="'+(Z(D/2)+40)+'" text-anchor="middle" font-size="8.5" letter-spacing="1.5" fill="#9aa0a8">CAMERA / FRONT</text>';
   var lanes={},ln=0;
   connections.forEach(function(cn){
     var a=components.find(function(c){return c.id===cn.fromCompId;}),b=components.find(function(c){return c.id===cn.toCompId;});
     if(!a||!b||!a.rack||!b.rack)return;
-    function an(c){ if(c.rack>0){var m=S3.machines.find(function(x){return x.t==='rack'&&x.i===c.rack;});return m;} 
+    function an(c){ if(c.rack>0){var m=S3.machines.find(function(x){return x.t==='rack'&&x.i===c.rack;});return m;}
       if(c.rack>=100){return S3.machines.find(function(x){return x.t==='ed'&&x.i===c.rack-101;});}
       return S3.machines.find(function(x){return x.t==='float'&&x.i===c.id;}); }
     var pa=an(a),pb=an(b); if(!pa||!pb)return;
@@ -8567,38 +8857,77 @@ function s3ExportPDF(){
     var sig=(port||{}).signal||'Other', col=SIGNAL_COLOR[sig]||'#999';
     if(lanes[sig]===undefined)lanes[sig]=ln++;
     var path=s3CablePath(pa.x,pa.z,pb.x,pb.z,W,D,lanes[sig]*2);
-    s+='<polyline points="'+path.map(function(p){return X(p[0])+','+Z(p[1]);}).join(' ')+'" fill="none" stroke="'+col+'" stroke-width="1.5" opacity="0.85"/>';
+    s+='<polyline points="'+path.map(function(p){return X(p[0])+','+Z(p[1]);}).join(' ')+'" fill="none" stroke="'+col+'" stroke-width="1.6" opacity="0.9"/>';
   });
-  // machines
   S3.machines.forEach(function(m){
     var x=X(m.x),z=Z(m.z);
-    if(m.t==='rack'){ s+='<rect x="'+(x-9)+'" y="'+(z-11)+'" width="18" height="22" fill="#fff" stroke="#000" stroke-width="1.5"/><text x="'+x+'" y="'+(z+3)+'" text-anchor="middle" font-size="8">R'+m.i+'</text>'; }
-    else if(m.t==='ed'){ s+='<rect x="'+(x-15)+'" y="'+(z-8)+'" width="30" height="16" fill="#fff" stroke="#000"/><text x="'+x+'" y="'+(z+3)+'" text-anchor="middle" font-size="7">WS'+(m.i+1)+'</text>'; }
+    if(m.t==='rack'){ s+='<rect x="'+(x-10)+'" y="'+(z-12)+'" width="20" height="24" rx="2.5" fill="#fff" stroke="#0b0b0c" stroke-width="1.4"/><text x="'+x+'" y="'+(z+3)+'" text-anchor="middle" font-size="8" font-weight="600">R'+m.i+'</text>'; }
+    else if(m.t==='ed'){ s+='<rect x="'+(x-16)+'" y="'+(z-9)+'" width="32" height="18" rx="2.5" fill="#0b0b0c" stroke="#0b0b0c"/><text x="'+x+'" y="'+(z+3)+'" text-anchor="middle" font-size="7.5" font-weight="600" fill="#fff">WS'+(m.i+1)+'</text>'; }
     else { var c=components.find(function(q){return q.id===m.i;});
-      s+='<circle cx="'+x+'" cy="'+z+'" r="8" fill="#fff" stroke="#000" stroke-width="1.5"/><text x="'+x+'" y="'+(z+22)+'" text-anchor="middle" font-size="7">'+esc(c?compName(c).slice(0,14):'?')+'</text>'; }
+      s+='<circle cx="'+x+'" cy="'+z+'" r="7" fill="#fff" stroke="#0b0b0c" stroke-width="1.4"/><circle cx="'+x+'" cy="'+z+'" r="2.4" fill="#4a7af5"/><text x="'+x+'" y="'+(z+20)+'" text-anchor="middle" font-size="7.5" fill="#3a3f47">'+esc(c?compName(c).slice(0,16):'?')+'</text>'; }
   });
-  // legend
-  var ly=D*sc+90;
-  Object.keys(lanes).forEach(function(sg,i2){
-    s+='<rect x="'+(60+i2*130)+'" y="'+ly+'" width="18" height="4" fill="'+(SIGNAL_COLOR[sg]||'#999')+'"/><text x="'+(82+i2*130)+'" y="'+(ly+6)+'" font-size="9">'+esc(sg)+'</text>';
-  });
-  // Scale bar — round number of metres, bottom-right
-  var sbm=Math.min(5,Math.max(1,Math.round(W/4)||1));
-  var sbpx=sbm*sc;
-  var sbx=X(W/2)-sbpx-8, sby=D*sc+110;
-  s+='<line x1="'+sbx+'" y1="'+sby+'" x2="'+(sbx+sbpx)+'" y2="'+sby+'" stroke="#333" stroke-width="2"/>';
-  s+='<line x1="'+sbx+'" y1="'+(sby-4)+'" x2="'+sbx+'" y2="'+(sby+4)+'" stroke="#333" stroke-width="1.5"/>';
-  s+='<line x1="'+(sbx+sbpx)+'" y1="'+(sby-4)+'" x2="'+(sbx+sbpx)+'" y2="'+(sby+4)+'" stroke="#333" stroke-width="1.5"/>';
-  s+='<text x="'+(sbx+sbpx/2)+'" y="'+(sby-7)+'" text-anchor="middle" font-size="9" fill="#333">'+sbm+' m</text>';
+  var sbm=Math.min(5,Math.max(1,Math.round(W/4)||1)), sbpx=sbm*sc;
+  var sbx=X(W/2)-sbpx, sby=Z(D/2)+34;
+  s+='<line x1="'+sbx+'" y1="'+sby+'" x2="'+(sbx+sbpx)+'" y2="'+sby+'" stroke="#3a3f47" stroke-width="2"/>';
+  s+='<line x1="'+sbx+'" y1="'+(sby-4)+'" x2="'+sbx+'" y2="'+(sby+4)+'" stroke="#3a3f47" stroke-width="1.5"/>';
+  s+='<line x1="'+(sbx+sbpx)+'" y1="'+(sby-4)+'" x2="'+(sbx+sbpx)+'" y2="'+(sby+4)+'" stroke="#3a3f47" stroke-width="1.5"/>';
+  s+='<text x="'+(sbx+sbpx/2)+'" y="'+(sby-7)+'" text-anchor="middle" font-size="9" fill="#3a3f47">'+sbm+' m</text>';
   s+='</svg>';
-  var win=window.open('','_blank');
-  if(!win){ showToast('Pop-up blocked \u2014 allow pop-ups to export.', true); return; }
-  win.document.write('<html><head><title>Studio Layout \u2014 unrealsupport.net</title></head><body style="font-family:monospace;margin:30px">'
-    +'<h2 style="margin:0">STUDIO LAYOUT \u2014 LED VOLUME</h2>'
-    +'<div style="font-size:11px;color:#555;margin-bottom:14px">'+S3.roomW+'m \u00d7 '+S3.roomD+'m \u00d7 '+S3.roomH+'m studio \u00b7 wall '+S3.wallW.toFixed(1)+'\u00d7'+S3.wallH.toFixed(1)+'m @ '+S3.curve+'\u00b0 \u00b7 P'+S3.pitch+' \u00b7 generated '+new Date().toISOString().slice(0,10)+' \u00b7 unrealsupport.net</div>'
-    +s+'</body></html>');
-  win.document.close();
-  setTimeout(function(){ win.print(); }, 400);
+
+  var keys=Object.keys(lanes), legendHTML;
+  if(keys.length){
+    legendHTML='<div class="legend">'+keys.map(function(sg){return '<span class="leg-item"><span class="swatch" style="background:'+(SIGNAL_COLOR[sg]||'#999')+'"></span>'+esc(sg)+'</span>';}).join('')+'</div>';
+  } else {
+    legendHTML='<div class="leg-empty">No signal routing defined on placed devices.</div>';
+  }
+
+  var nRack=S3.machines.filter(function(m){return m.t==='rack';}).length;
+  var nDev=S3.machines.filter(function(m){return m.t==='float';}).length;
+  var specTable='<table class="spec-t">'
+    +'<tr><td class="k">Studio footprint</td><td class="v">'+S3.roomW+' \u00d7 '+S3.roomD+' m</td></tr>'
+    +'<tr><td class="k">Studio height</td><td class="v">'+S3.roomH+' m</td></tr>'
+    +'<tr><td class="k">LED wall</td><td class="v">'+S3.wallW.toFixed(1)+' \u00d7 '+S3.wallH.toFixed(1)+' m</td></tr>'
+    +'<tr><td class="k">Wall curvature</td><td class="v">'+S3.curve+'\u00b0</td></tr>'
+    +'<tr><td class="k">Pixel pitch</td><td class="v">P'+S3.pitch+'</td></tr>'
+    +'<tr><td class="k">Equipment racks</td><td class="v">'+nRack+'</td></tr>'
+    +'<tr><td class="k">Devices placed</td><td class="v">'+nDev+'</td></tr>'
+    +'</table>';
+
+  var extraCSS=
+     '.plan-frame{border:1px solid #e7e9ec;border-radius:10px;background:#fff;padding:14px 16px 8px;margin-bottom:16px;break-inside:avoid}'
+    +'.plan-frame svg{width:100%;height:auto;display:block}'
+    +'.plan-cols{display:flex;gap:14px;align-items:stretch}'
+    +'.panel{flex:1;border:1px solid #e7e9ec;border-radius:9px;background:#fafbfc;overflow:hidden;break-inside:avoid}'
+    +'.panel-h{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:#3a3f47;padding:9px 12px;border-bottom:1px solid #eef0f2;background:#fff}'
+    +'.spec-t{width:100%;border-collapse:collapse}'
+    +'.spec-t td{padding:6px 12px;border-bottom:1px solid #f2f3f5;font-size:10.5px}.spec-t tr:last-child td{border-bottom:none}'
+    +'.spec-t .k{color:#7b818a;width:54%}.spec-t .v{color:#15161a;font-weight:600;font-family:ui-monospace,monospace}'
+    +'.legend{display:flex;flex-wrap:wrap;gap:8px 16px;padding:12px}'
+    +'.leg-item{display:flex;align-items:center;gap:6px;font-size:10.5px;color:#3a3f47}'
+    +'.swatch{width:15px;height:5px;border-radius:2px;display:inline-block;flex-shrink:0}'
+    +'.leg-empty{padding:12px;font-size:10.5px;color:#9aa0a8}';
+
+  var body='<div class="plan-frame">'+s+'</div>'
+    +'<div class="plan-cols">'
+    +'<div class="panel"><div class="panel-h">Stage specification</div>'+specTable+'</div>'
+    +'<div class="panel"><div class="panel-h">Signal legend</div>'+legendHTML+'</div>'
+    +'</div>';
+
+  var exportDate=new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+  var html=buildPdfDoc({
+    orientation:'landscape',
+    docType:'Studio Layout',
+    kicker:'Studio Layout',
+    title:'LED Volume Schematic',
+    subtitle:S3.roomW+'m \u00d7 '+S3.roomD+'m \u00d7 '+S3.roomH+'m studio \u00b7 '+S3.wallW.toFixed(1)+'\u00d7'+S3.wallH.toFixed(1)+'m wall @ '+S3.curve+'\u00b0 \u00b7 P'+S3.pitch,
+    metaHTML:'<b>Plan view (to scale)</b><br>Generated '+exportDate,
+    dateStr:exportDate,
+    footerTitle:'LED Volume Schematic',
+    extraCSS:extraCSS,
+    glanceHTML:'',
+    bodyHTML:body
+  });
+  openPrintWindow(html);
 }
 
 // ── Mobile tab bar ──

@@ -5314,6 +5314,9 @@ var USPDF=(function(){
            "Timecode":"TC","USB":"USB","Power":"PWR","Audio":"AUDIO","Other":"OTHER"};
   function esc(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
   function F(n){return (Math.round(n*10)/10);}
+  // width-aware fit: truncate s with ellipsis to fit maxpx at font-size sz (cw = char-width ratio)
+  function fit(s,maxpx,sz,cw){s=String(s==null?"":s);var per=sz*cw;var max=Math.floor(maxpx/per);if(s.length<=max)return s;if(max<=1)return s.slice(0,1);return s.slice(0,max-1)+"\u2026";}
+  var CW_BODY=0.56, CW_MONO=0.62, CW_DISP=0.46;
   function logo(x,y,sc,col){col=col||ACC;return '<g transform="translate('+x+','+y+') scale('+sc+')">'
     +'<path d="M-2 8 A10 10 0 0 0 18 8 L18 -6 A6.3 6.3 0 0 0 5.4 -6 L5.4 2" fill="none" stroke="'+col+'" stroke-width="4.4" stroke-linecap="round"/>'
     +'<path d="M-2 8 L-2 -8" fill="none" stroke="'+col+'" stroke-width="4.4" stroke-linecap="round"/></g>';}
@@ -5354,19 +5357,20 @@ var USPDF=(function(){
     S.push(logo(tx0+18,by0+19,0.58));
     S.push('<text x="'+(tx0+37)+'" y="'+(by0+22)+'" font-family="'+DISP+'" font-weight="600" font-size="16" letter-spacing="1.2" fill="'+INK+'">UNREAL SUPPORT</text>');
     S.push('<text x="'+(tx0+tw-10)+'" y="'+(by0+21)+'" text-anchor="end" font-family="'+MONO+'" font-size="7.5" letter-spacing="1" fill="'+INK3+'">'+esc(rows.tag||"")+'</text>');
-    function cell(cx,cy,lab,val,vs){S.push('<text x="'+(cx+9)+'" y="'+(cy+12)+'" font-family="'+MONO+'" font-size="7.5" letter-spacing="1.2" fill="'+INK3+'">'+esc(lab)+'</text>');
-      S.push('<text x="'+(cx+9)+'" y="'+(cy+25)+'" font-family="'+MONO+'" font-size="'+(vs||11)+'" fill="'+INK+'">'+esc(val)+'</text>');}
+    function cell(cx,cy,lab,val,vs,cw2){var fs=vs||11;var mp=(cw2||tw)-18;
+      S.push('<text x="'+(cx+9)+'" y="'+(cy+12)+'" font-family="'+MONO+'" font-size="7.5" letter-spacing="1.2" fill="'+INK3+'">'+esc(lab)+'</text>');
+      S.push('<text x="'+(cx+9)+'" y="'+(cy+25)+'" font-family="'+MONO+'" font-size="'+fs+'" fill="'+INK+'">'+esc(fit(val,mp,fs,CW_MONO))+'</text>');}
     var r1=by0+30;
     S.push('<line x1="'+tx0+'" y1="'+(r1+30)+'" x2="'+(tx0+tw)+'" y2="'+(r1+30)+'" stroke="'+HAIR+'" stroke-width="1"/>');
-    cell(tx0,r1,"DRAWING TITLE",rows.title,12);
+    cell(tx0,r1,"DRAWING TITLE",rows.title,12,tw);
     S.push('<line x1="'+tx0+'" y1="'+(r1+60)+'" x2="'+(tx0+tw)+'" y2="'+(r1+60)+'" stroke="'+HAIR+'" stroke-width="1"/>');
-    cell(tx0,r1+30,"PROJECT",rows.project,11);
+    cell(tx0,r1+30,"PROJECT",rows.project,11,tw);
     var cw=tw/3;
     S.push('<line x1="'+(tx0+cw)+'" y1="'+(r1+60)+'" x2="'+(tx0+cw)+'" y2="'+(by0+byh)+'" stroke="'+HAIR+'" stroke-width="1"/>');
     S.push('<line x1="'+(tx0+2*cw)+'" y1="'+(r1+60)+'" x2="'+(tx0+2*cw)+'" y2="'+(by0+byh)+'" stroke="'+HAIR+'" stroke-width="1"/>');
-    cell(tx0,r1+60,"SCALE",rows.scale,10.5);cell(tx0+cw,r1+60,"DATE",rows.date,10.5);cell(tx0+2*cw,r1+60,"SHEET",rows.sheet,10.5);
+    cell(tx0,r1+60,"SCALE",rows.scale,10.5,cw);cell(tx0+cw,r1+60,"DATE",rows.date,10.5,cw);cell(tx0+2*cw,r1+60,"SHEET",rows.sheet,10.5,cw);
     S.push('<line x1="'+tx0+'" y1="'+(r1+90)+'" x2="'+(tx0+tw)+'" y2="'+(r1+90)+'" stroke="'+HAIR+'" stroke-width="1"/>');
-    cell(tx0,r1+90,"DRAWN",rows.drawn,10.5);cell(tx0+cw,r1+90,"REV",rows.rev,10.5);cell(tx0+2*cw,r1+90,"DWG No.",rows.dwgno,10);
+    cell(tx0,r1+90,"DRAWN",rows.drawn,10.5,cw);cell(tx0+cw,r1+90,"REV",rows.rev,10.5,cw);cell(tx0+2*cw,r1+90,"DWG No.",rows.dwgno,10,cw);
   }
   function panelHead(S,x,y,w,title){
     S.push('<rect x="'+x+'" y="'+y+'" width="'+w+'" height="22" fill="'+FILL+'"/>');
@@ -5411,7 +5415,7 @@ var USPDF=(function(){
     (d.devs||[]).forEach(function(v){var cx=X(v[1]),cy=Z(v[2]);
       S.push('<circle cx="'+F(cx)+'" cy="'+F(cy)+'" r="7.5" fill="#fff" stroke="'+INK+'" stroke-width="1.3"/>');
       S.push('<circle cx="'+F(cx)+'" cy="'+F(cy)+'" r="2.6" fill="'+ACC+'"/>');
-      S.push('<text x="'+F(cx)+'" y="'+F(cy+19)+'" text-anchor="middle" font-family="'+BODY+'" font-size="8.5" fill="'+INK2+'">'+esc(v[0])+'</text>');});
+      S.push('<text x="'+F(cx)+'" y="'+F(cy+19)+'" text-anchor="middle" font-family="'+BODY+'" font-size="8.5" fill="'+INK2+'">'+esc(fit(v[0],96,8.5,CW_BODY))+'</text>');});
     // dims
     function tick(x,y){var d=Math.cos(Math.PI/4)*5;return '<line x1="'+F(x-d)+'" y1="'+F(y-d)+'" x2="'+F(x+d)+'" y2="'+F(y+d)+'" stroke="'+INK+'" stroke-width="1.2"/>';}
     var dyb=Z(D/2)+40;
@@ -5457,7 +5461,7 @@ var USPDF=(function(){
     var ly=by0+42;
     present.forEach(function(sg){
       S.push('<rect x="'+(lx0+14)+'" y="'+(ly-7)+'" width="18" height="6" rx="1" fill="'+(SIG[sg]||"#999")+'"/>');
-      S.push('<text x="'+(lx0+40)+'" y="'+ly+'" font-family="'+BODY+'" font-size="11" fill="'+INK+'">'+esc(sg)+'</text>');ly+=20;});
+      S.push('<text x="'+(lx0+40)+'" y="'+ly+'" font-family="'+BODY+'" font-size="11" fill="'+INK+'">'+esc(fit(sg,lw-58,11,CW_BODY))+'</text>');ly+=20;});
     // spec
     var sx0=330,sw=360;
     S.push('<rect x="'+sx0+'" y="'+by0+'" width="'+sw+'" height="'+byh+'" fill="none" stroke="'+HAIR+'" stroke-width="1.1"/>');
@@ -5468,7 +5472,7 @@ var USPDF=(function(){
     var col2=sx0+sw/2+6;
     specs.forEach(function(kv,idx){var cx=idx<3?sx0+14:col2,yr=by0+42+(idx%3)*36;
       S.push('<text x="'+cx+'" y="'+yr+'" font-family="'+MONO+'" font-size="8" letter-spacing="1.2" fill="'+INK3+'">'+kv[0]+'</text>');
-      S.push('<text x="'+cx+'" y="'+(yr+16)+'" font-family="'+MONO+'" font-size="12.5" fill="'+INK+'">'+esc(kv[1])+'</text>');});
+      S.push('<text x="'+cx+'" y="'+(yr+16)+'" font-family="'+MONO+'" font-size="12.5" fill="'+INK+'">'+esc(fit(kv[1],(sw/2)-24,12.5,CW_MONO))+'</text>');});
     S.push('<line x1="'+(col2-8)+'" y1="'+(by0+34)+'" x2="'+(col2-8)+'" y2="'+(by0+byh-12)+'" stroke="'+HAIR+'" stroke-width="1"/>');
     // title block
     titleBlock(S,704,by0,389,byh,{tag:"PLAN VIEW",title:"STAGE PLAN - SIGNAL ROUTING",
@@ -5483,7 +5487,7 @@ var USPDF=(function(){
     var n=stats.length,gap=10,bw=(w-(n-1)*gap)/n;
     stats.forEach(function(st,i){var bx=x+i*(bw+gap);
       S.push('<rect x="'+bx+'" y="'+y+'" width="'+bw+'" height="44" rx="6" fill="'+FILL+'" stroke="'+HAIR+'" stroke-width="1"/>');
-      S.push('<text x="'+(bx+13)+'" y="'+(y+25)+'" font-family="'+DISP+'" font-weight="600" font-size="20" fill="'+INK+'">'+esc(st[0])+'</text>');
+      S.push('<text x="'+(bx+13)+'" y="'+(y+25)+'" font-family="'+DISP+'" font-weight="600" font-size="20" fill="'+INK+'">'+esc(fit(st[0],bw-26,20,CW_DISP))+'</text>');
       S.push('<text x="'+(bx+13)+'" y="'+(y+37)+'" font-family="'+MONO+'" font-size="7.5" letter-spacing="1.2" fill="'+INK3+'">'+esc(st[1])+'</text>');});
   }
   function buildRigSVG(d){
@@ -5512,20 +5516,26 @@ var USPDF=(function(){
       S.push('<text x="'+(cx[0]+9)+'" y="'+ty+'" font-family="'+MONO+'" font-size="9" fill="'+INK3+'">'+(idx+1)+'</text>');
       // device name + dot
       S.push('<circle cx="'+(cx[1]+6)+'" cy="'+(y0+rh/2)+'" r="3" fill="'+(c.role==="Editor"?ACC:"#22a06b")+'"/>');
-      S.push('<text x="'+(cx[1]+16)+'" y="'+ty+'" font-family="'+BODY+'" font-size="11" font-weight="500" fill="'+INK+'">'+esc((c.name||"").slice(0,30))+'</text>');
-      S.push('<text x="'+(cx[2]+10)+'" y="'+ty+'" font-family="'+BODY+'" font-size="10" fill="'+INK2+'">'+esc((c.type||"").slice(0,20))+'</text>');
-      S.push('<text x="'+(cx[3]+10)+'" y="'+ty+'" font-family="'+MONO+'" font-size="9.5" fill="'+INK2+'">'+esc((c.spec||"").slice(0,30))+'</text>');
-      S.push('<text x="'+(cx[4]+10)+'" y="'+ty+'" font-family="'+MONO+'" font-size="9.5" fill="'+INK2+'">'+esc(c.ip||"\u2014")+'</text>');
+      S.push('<text x="'+(cx[1]+16)+'" y="'+ty+'" font-family="'+BODY+'" font-size="11" font-weight="500" fill="'+INK+'">'+esc(fit(c.name,cx[2]-(cx[1]+16)-6,11,CW_BODY))+'</text>');
+      S.push('<text x="'+(cx[2]+10)+'" y="'+ty+'" font-family="'+BODY+'" font-size="10" fill="'+INK2+'">'+esc(fit(c.type,cx[3]-(cx[2]+10)-6,10,CW_BODY))+'</text>');
+      S.push('<text x="'+(cx[3]+10)+'" y="'+ty+'" font-family="'+MONO+'" font-size="9.5" fill="'+INK2+'">'+esc(fit(c.spec,cx[4]-(cx[3]+10)-6,9.5,CW_MONO))+'</text>');
+      S.push('<text x="'+(cx[4]+10)+'" y="'+ty+'" font-family="'+MONO+'" font-size="9.5" fill="'+INK2+'">'+esc(fit(c.ip||"\u2014",cx[5]-(cx[4]+10)-6,9.5,CW_MONO))+'</text>');
       // ports pills
-      var pxp=cx[5]+10;
-      (c.ports||[]).slice(0,5).forEach(function(p){
-        var col=SIG[p.signal]||"#9aa0a8", lab=SHORT[p.signal]||(p.signal||"");
-        var w=lab.length*5.6+14;
+      var pxp=cx[5]+10, plim=cx[6]-8, allp=(c.ports||[]), shown=0;
+      for(var pi=0;pi<allp.length;pi++){
+        var p=allp[pi], col=SIG[p.signal]||"#9aa0a8", lab=SHORT[p.signal]||(p.signal||"");
+        var w=lab.length*5.6+14, rest=allp.length-pi;
+        // reserve ~26px for a +N badge if more ports remain after this one
+        var needBadge=(pi<allp.length-1);
+        if(pxp+w > plim-(needBadge?24:0)){
+          S.push('<text x="'+pxp+'" y="'+(y0+rh/2+3)+'" font-family="'+MONO+'" font-size="8" fill="'+INK3+'">+'+rest+'</text>');
+          shown=-1;break;
+        }
         S.push('<rect x="'+pxp+'" y="'+(y0+rh/2-7)+'" width="'+w.toFixed(0)+'" height="14" rx="3" fill="none" stroke="'+col+'" stroke-width="1"/>');
         S.push('<circle cx="'+(pxp+6)+'" cy="'+(y0+rh/2)+'" r="2.2" fill="'+col+'"/>');
         S.push('<text x="'+(pxp+12)+'" y="'+(y0+rh/2+3)+'" font-family="'+MONO+'" font-size="7.5" fill="'+INK2+'">'+esc(lab)+'</text>');
-        pxp+=w+5;
-      });
+        pxp+=w+5; shown++;
+      }
       S.push('<line x1="'+rx+'" y1="'+(y0+rh)+'" x2="'+(rx+rw)+'" y2="'+(y0+rh)+'" stroke="'+HAIR+'" stroke-width="0.6"/>');
     });
     // column separators (header..last row)
@@ -5544,12 +5554,12 @@ var USPDF=(function(){
     S.push('<line x1="'+sgx+'" y1="'+(by0+42)+'" x2="'+(sgx+sgw)+'" y2="'+(by0+42)+'" stroke="'+INK+'" stroke-width="0.8"/>');
     var conns=d.connections.slice(0,6), cry=by0+42, crh=15;
     conns.forEach(function(cn,idx){var y0=cry+idx*crh,ty=y0+11;
-      S.push('<text x="'+(sc2[0]+10)+'" y="'+ty+'" font-family="'+BODY+'" font-size="9.5" fill="'+INK+'">'+esc((cn.from||"").slice(0,26))+'</text>');
-      S.push('<text x="'+(sc2[1]+10)+'" y="'+ty+'" font-family="'+MONO+'" font-size="8.5" fill="'+INK2+'">'+esc((cn.fromPort||"").slice(0,9))+'</text>');
+      S.push('<text x="'+(sc2[0]+10)+'" y="'+ty+'" font-family="'+BODY+'" font-size="9.5" fill="'+INK+'">'+esc(fit(cn.from,sc2[1]-(sc2[0]+10)-6,9.5,CW_BODY))+'</text>');
+      S.push('<text x="'+(sc2[1]+10)+'" y="'+ty+'" font-family="'+MONO+'" font-size="8.5" fill="'+INK2+'">'+esc(fit(cn.fromPort,sc2[2]-(sc2[1]+10)-12,8.5,CW_MONO))+'</text>');
       S.push('<text x="'+(sc2[2]+6)+'" y="'+ty+'" font-family="'+MONO+'" font-size="9" fill="'+INK3+'">&#8594;</text>');
-      S.push('<text x="'+(sc2[3]+10)+'" y="'+ty+'" font-family="'+BODY+'" font-size="9.5" fill="'+INK+'">'+esc((cn.to||"").slice(0,26))+'</text>');
+      S.push('<text x="'+(sc2[3]+10)+'" y="'+ty+'" font-family="'+BODY+'" font-size="9.5" fill="'+INK+'">'+esc(fit(cn.to,sc2[4]-(sc2[3]+10)-6,9.5,CW_BODY))+'</text>');
       S.push('<circle cx="'+(sc2[4]+6)+'" cy="'+(y0+7)+'" r="2.6" fill="'+(SIG[cn.signal]||"#999")+'"/>');
-      S.push('<text x="'+(sc2[4]+13)+'" y="'+ty+'" font-family="'+MONO+'" font-size="8.5" fill="'+INK2+'">'+esc(cn.signal||"")+'</text>');
+      S.push('<text x="'+(sc2[4]+13)+'" y="'+ty+'" font-family="'+MONO+'" font-size="8.5" fill="'+INK2+'">'+esc(fit(cn.signal,sc2[5]-(sc2[4]+13)-6,8.5,CW_MONO))+'</text>');
     });
     if(d.connections.length>6)
       S.push('<text x="'+(sc2[0]+10)+'" y="'+(cry+6*crh+11)+'" font-family="'+MONO+'" font-size="8" fill="'+INK3+'">+ '+(d.connections.length-6)+' more connections</text>');
@@ -5560,10 +5570,81 @@ var USPDF=(function(){
       drawn:d.drawn||"M. WHALEN",rev:"A",dwgno:d.docno||"US-RIG-001"});
     return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+PW+' '+PH+'" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">'+S.join("")+'</svg>';
   }
-  return {buildSchematicSVG:buildSchematicSVG, buildRigSVG:buildRigSVG};
+
+
+  // ---------- RIG SIGNAL FLOW (landscape block diagram) ----------
+  function buildRigFlowSVG(d){
+    var PW=1123,PH=794;
+    var S=sheet({W:PW,H:PH,docno:d.docno||"US-RIG-001",date:d.date,status:"FOR REVIEW"});
+    var laneNames=["SOURCES","SYNC / REF","RENDER NODES","PROCESSING","LED WALL"];
+    function laneOf(c){var t=((c.type||"")+" "+(c.role||"")).toLowerCase();
+      if(/cam|track/.test(t))return 0;
+      if(/sync|genlock|spg|\bref\b/.test(t))return 1;
+      if(/process|novastar/.test(t)||(/\bled\b/.test(t)&&!/wall/.test(t)))return 3;
+      return 2;}
+    var bx0=30,bw=1063,bandTop=98,bandBot=566;
+    function laneCx(i){return bx0+bw*(i+0.5)/5;}
+    for(var i=0;i<5;i++){var lx=bx0+bw*i/5;
+      if(i>0)S.push('<line x1="'+lx+'" y1="'+(bandTop+10)+'" x2="'+lx+'" y2="'+bandBot+'" stroke="'+GRID+'" stroke-width="1"/>');
+      S.push('<text x="'+laneCx(i)+'" y="'+bandTop+'" text-anchor="middle" font-family="'+DISP+'" font-weight="600" font-size="11.5" letter-spacing="1.8" fill="'+INK3+'">'+laneNames[i]+'</text>');}
+    S.push('<line x1="'+bx0+'" y1="'+(bandTop+10)+'" x2="'+(bx0+bw)+'" y2="'+(bandTop+10)+'" stroke="'+HAIR+'" stroke-width="1"/>');
+    var lanes=[[],[],[],[],[]];
+    (d.components||[]).forEach(function(c){lanes[laneOf(c)].push(c);});
+    var BW=176,BH=46,top=bandTop+34,bot=bandBot-14,pos={};
+    for(var L=0;L<4;L++){var arr=lanes[L],n=arr.length;if(!n)continue;var cx=laneCx(L);
+      var step=n>1?Math.min((bot-top)/(n-1),BH+30):0; if(n>1&&step<BH+14)step=BH+14;
+      var total=step*(n-1), startY=((top+bot)/2-total/2);
+      for(var k=0;k<n;k++){var cy=startY+step*k;
+        pos[arr[k].name]={x:cx-BW/2,y:cy-BH/2,w:BW,h:BH,cx:cx,cy:cy,lane:L,c:arr[k]};}}
+    var wallX=laneCx(4)-32,wallW2=64,wallY=top-4,wallH2=(bot)-(top-4);
+    // links (under boxes)
+    var conns=d.connections||[];
+    var inCnt={},outCnt={},inSeen={},outSeen={};
+    conns.forEach(function(cn){if(pos[cn.to])inCnt[cn.to]=(inCnt[cn.to]||0)+1;if(pos[cn.from])outCnt[cn.from]=(outCnt[cn.from]||0)+1;});
+    conns.forEach(function(cn,idx){var A=pos[cn.from],B=pos[cn.to];if(!A||!B)return;
+      var ko=outCnt[cn.from]||1,jo=(outSeen[cn.from]=(outSeen[cn.from]||0)+1)-1,sxo=(jo-(ko-1)/2)*8;
+      var ki=inCnt[cn.to]||1,ji=(inSeen[cn.to]=(inSeen[cn.to]||0)+1)-1,eyo=(ji-(ki-1)/2)*8;
+      var col=SIG[cn.signal]||"#9aa0a8",ax=A.x+A.w,ay=A.cy+sxo,bxx=B.x,by=B.cy+eyo,off=((idx%6)-2.5)*6;
+      if(bxx>ax+8){var midx=(ax+bxx)/2+off;
+        S.push('<path d="M'+ax+' '+ay+' H'+midx+' V'+by+' H'+bxx+'" fill="none" stroke="'+col+'" stroke-width="1.7" opacity="0.92"/>');}
+      else{var topy=Math.min(ay,by)-24-Math.abs(off);
+        S.push('<path d="M'+ax+' '+ay+' H'+(ax+14)+' V'+topy+' H'+(bxx-14)+' V'+by+' H'+bxx+'" fill="none" stroke="'+col+'" stroke-width="1.5" opacity="0.85" stroke-dasharray="4 3"/>');}
+      S.push('<path d="M'+(bxx-7)+' '+(by-4.5)+' L'+bxx+' '+by+' L'+(bxx-7)+' '+(by+4.5)+' Z" fill="'+col+'"/>');});
+    // processor -> wall
+    lanes[3].forEach(function(pc){var P=pos[pc.name];if(!P)return;var ax=P.x+P.w,ay=P.cy,wy=wallY+wallH2/2;
+      S.push('<path d="M'+ax+' '+ay+' H'+((ax+wallX)/2)+' V'+wy+' H'+wallX+'" fill="none" stroke="'+ACC+'" stroke-width="2.2" opacity="0.95"/>');
+      S.push('<path d="M'+(wallX-7)+' '+(wy-4.5)+' L'+wallX+' '+wy+' L'+(wallX-7)+' '+(wy+4.5)+' Z" fill="'+ACC+'"/>');});
+    // boxes
+    Object.keys(pos).forEach(function(nm){var b=pos[nm],c=b.c,accent=(c.role==="Editor")?ACC:"#22a06b";
+      S.push('<rect x="'+b.x+'" y="'+b.y+'" width="'+b.w+'" height="'+b.h+'" rx="6" fill="#fff" stroke="'+HAIR+'" stroke-width="1.2"/>');
+      S.push('<rect x="'+b.x+'" y="'+b.y+'" width="4" height="'+b.h+'" rx="2" fill="'+accent+'"/>');
+      S.push('<text x="'+(b.x+12)+'" y="'+(b.y+19)+'" font-family="'+BODY+'" font-weight="600" font-size="10.5" fill="'+INK+'">'+esc(fit(c.name,b.w-20,10.5,CW_BODY))+'</text>');
+      S.push('<text x="'+(b.x+12)+'" y="'+(b.y+33)+'" font-family="'+MONO+'" font-size="8" fill="'+INK3+'">'+esc(fit((c.type||"")+(c.spec?(" / "+c.spec):""),b.w-20,8,CW_MONO))+'</text>');});
+    // wall
+    S.push('<rect x="'+wallX+'" y="'+wallY+'" width="'+wallW2+'" height="'+wallH2+'" rx="5" fill="#eef3ff" stroke="'+ACC+'" stroke-width="2"/>');
+    S.push('<g transform="translate('+(wallX+wallW2/2)+','+(wallY+wallH2/2)+') rotate(-90)"><text x="0" y="5" text-anchor="middle" font-family="'+DISP+'" font-weight="600" font-size="16" letter-spacing="2" fill="'+ACC+'">LED WALL</text></g>');
+    // bottom band: legend + title block
+    var by0=600,byh=150,lx0=30,lw=410;
+    S.push('<rect x="'+lx0+'" y="'+by0+'" width="'+lw+'" height="'+byh+'" fill="none" stroke="'+HAIR+'" stroke-width="1.1"/>');
+    panelHead(S,lx0,by0,lw,"SIGNAL LEGEND");
+    var used={};conns.forEach(function(cn){if(cn.signal)used[cn.signal]=1;});
+    var keys=Object.keys(used);if(!keys.length)keys=["SDI","Genlock/Ref","Ethernet/10GbE"];
+    var colw=(lw-20)/2;
+    keys.slice(0,8).forEach(function(sg,ix){var coli=ix%2,row=Math.floor(ix/2),px=lx0+14+coli*colw,py=by0+42+row*22;
+      S.push('<rect x="'+px+'" y="'+(py-7)+'" width="18" height="6" rx="1" fill="'+(SIG[sg]||"#999")+'"/>');
+      S.push('<text x="'+(px+26)+'" y="'+py+'" font-family="'+BODY+'" font-size="10.5" fill="'+INK+'">'+esc(fit(sg,colw-32,10.5,CW_BODY))+'</text>');});
+    titleBlock(S,704,by0,389,byh,{tag:"FLOW",title:"RIG SIGNAL FLOW",
+      project:d.project||"ICVFX LED VOLUME",scale:"NTS",date:d.date,sheet:"1 / 1",
+      drawn:d.drawn||"M. WHALEN",rev:"A",dwgno:d.docno||"US-RIG-001"});
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+PW+' '+PH+'" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">'+S.join("")+'</svg>';
+  }
+
+  return {buildSchematicSVG:buildSchematicSVG, buildRigSVG:buildRigSVG, buildRigFlowSVG:buildRigFlowSVG, _esc:esc};
 })();
 
 function svgSheetHTML(svg, title){
+  var svgs = Array.isArray(svg)?svg:[svg];
+  var sheets = svgs.map(function(s){return '<div class="sheet">'+s+'</div>';}).join('');
   return '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>'+title+' \u2014 Unreal Support</title>'
     +'<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
     +'<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">'
@@ -5575,11 +5656,11 @@ function svgSheetHTML(svg, title){
     +'.bar button{background:#3b6fe0;color:#fff;border:0;border-radius:7px;padding:8px 18px;font-size:13px;font-weight:600;cursor:pointer}'
     +'.sheet{width:297mm;height:210mm;margin:18px auto;background:#fff;box-shadow:0 6px 30px rgba(0,0,0,.18)}'
     +'.sheet svg{width:100%;height:100%;display:block}'
-    +'@media print{body{background:#fff}.bar{display:none}.sheet{width:100%;height:100%;margin:0;box-shadow:none}}'
+    +'@media print{body{background:#fff}.bar{display:none}.sheet{width:100%;height:100%;margin:0;box-shadow:none;page-break-after:always}.sheet:last-child{page-break-after:auto}}'
     +'</style></head><body>'
     +'<div class="bar"><b>'+title+'</b><span class="r"><span class="tip">For an exact result set Margins to None and turn Headers and footers Off</span>'
     +'<button onclick="window.print()">Print / Save as PDF</button></span></div>'
-    +'<div class="sheet">'+svg+'</div></body></html>';
+    +sheets+'</body></html>';
 }
 
 function exportRigPDF(){
@@ -5608,7 +5689,7 @@ function exportRigPDF(){
     counts:{components:components.length,works:components.filter(function(c){return c.type==='workstation';}).length,
       links:connections.length,ue:ue||'\u2014'},
     components:regs,connections:conns};
-  openPrintWindow(svgSheetHTML(USPDF.buildRigSVG(d),'Rig Configuration'));
+  openPrintWindow(svgSheetHTML([USPDF.buildRigSVG(d), USPDF.buildRigFlowSVG(d)],'Rig Configuration'));
 }
 
 function updateStatusFooter(){

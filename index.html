@@ -5302,117 +5302,313 @@ function openPrintWindow(html){
   return win;
 }
 
-function exportRigPDF(){
-  var svgEl = document.getElementById('vp-diagram');
-  var svgHTML = svgEl ? svgEl.outerHTML : '<p>No diagram generated</p>';
+var USPDF=(function(){
+  var INK="#15171c",INK2="#5b626c",INK3="#8b929c",PAPER="#ffffff",
+      FRAME="#23272e",HAIR="#d7dbe1",GRID="#eef1f5",ACC="#3b6fe0",FILL="#f6f7f9";
+  var DISP="Barlow Condensed",BODY="Geist",MONO="Geist Mono";
+  var SIG={"SDI":"#e0556b","12G-SDI":"#a8456e","HDMI":"#d65a9e","DisplayPort":"#16a0c4",
+           "Ethernet/10GbE":"#3b6fe0","Fiber":"#7c5cff","Genlock/Ref":"#f0a52a",
+           "Timecode":"#e0822a","USB":"#9aa0a8","Power":"#c25a45","Audio":"#1fa971","Other":"#8b929c"};
+  var SHORT={"SDI":"SDI","12G-SDI":"12G-SDI","HDMI":"HDMI","DisplayPort":"DP",
+           "Ethernet/10GbE":"10GbE","Fiber":"FIBER","Genlock/Ref":"GENLOCK",
+           "Timecode":"TC","USB":"USB","Power":"PWR","Audio":"AUDIO","Other":"OTHER"};
+  function esc(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+  function F(n){return (Math.round(n*10)/10);}
+  function logo(x,y,sc,col){col=col||ACC;return '<g transform="translate('+x+','+y+') scale('+sc+')">'
+    +'<path d="M-2 8 A10 10 0 0 0 18 8 L18 -6 A6.3 6.3 0 0 0 5.4 -6 L5.4 2" fill="none" stroke="'+col+'" stroke-width="4.4" stroke-linecap="round"/>'
+    +'<path d="M-2 8 L-2 -8" fill="none" stroke="'+col+'" stroke-width="4.4" stroke-linecap="round"/></g>';}
 
-  // Build component sections HTML
-  var sectionsHTML = '';
-  CSECTIONS.forEach(function(sec){
-    var items = components.filter(function(c){ return CTYPES[c.type] && CTYPES[c.type].section===sec.id; });
-    if(!items.length) return;
-    sectionsHTML += '<div class="section"><div class="section-head"><span class="section-tick"></span>'+sec.label+'<span class="section-count">'+items.length+' unit'+(items.length>1?'s':'')+'</span></div>';
-    sectionsHTML += '<div class="cards">';
-    items.forEach(function(comp){
-      var def = CTYPES[comp.type];
-      var fs = compFieldset(comp.type, comp);
-      var rows = fs.filter(function(fl){ return (comp.fields[fl.k]||'').trim(); }).map(function(fl){
-        return '<tr><td class="k">'+fl.l+'</td><td class="v">'+comp.fields[fl.k]+'</td></tr>';
-      }).join('');
-      var ports = (comp.ports||[]);
-      var portsHTML = '';
-      if(ports.length){
-        portsHTML = '<tr><td class="k">Ports</td><td class="v ports-list">'
-          + ports.map(function(p){ return '<span class="port-pill '+(p.dir==='out'?'out':'in')+'">'+p.dir.toUpperCase()+' '+p.signal+(p.label?' · '+p.label:'')+'</span>'; }).join('')
-          + '</td></tr>';
-      }
-      var notes = (comp.notes||'').trim();
-      var notesHTML = notes ? '<tr><td class="k">Notes</td><td class="v notes">'+notes+'</td></tr>' : '';
-      sectionsHTML += '<div class="card">'
-        +'<div class="card-head"><span class="led '+(comp.fields.role==='Editor'?'b':'g')+'"></span>'+compName(comp)+'<span class="card-tag">'+compTag(comp)+'</span></div>'
-        +'<table>'+rows+portsHTML+notesHTML+'</table>'
-        +'</div>';
+  // shared sheet chrome: frame + corner ticks + masthead + bottom title block frame
+  function sheet(o){
+    // o: {W:pageW,H:pageH,title,docno,date,status,project}
+    var PW=o.W,PH=o.H,S=[];
+    S.push('<rect x="0" y="0" width="'+PW+'" height="'+PH+'" fill="'+PAPER+'"/>');
+    S.push('<rect x="14" y="14" width="'+(PW-28)+'" height="'+(PH-28)+'" fill="none" stroke="'+FRAME+'" stroke-width="0.8"/>');
+    S.push('<rect x="22" y="22" width="'+(PW-44)+'" height="'+(PH-44)+'" fill="none" stroke="'+FRAME+'" stroke-width="1.4"/>');
+    var corners=[[22,22,1,1],[PW-22,22,-1,1],[22,PH-22,1,-1],[PW-22,PH-22,-1,-1]];
+    corners.forEach(function(c){
+      S.push('<line x1="'+c[0]+'" y1="'+c[1]+'" x2="'+(c[0]+c[2]*14)+'" y2="'+c[1]+'" stroke="'+FRAME+'" stroke-width="1.4"/>');
+      S.push('<line x1="'+c[0]+'" y1="'+c[1]+'" x2="'+c[0]+'" y2="'+(c[1]+c[3]*14)+'" stroke="'+FRAME+'" stroke-width="1.4"/>');
     });
-    sectionsHTML += '</div></div>';
-  });
-
-  // Build connections section if any exist
-  var connHTML = '';
-  if(connections.length){
-    connHTML = '<div class="section"><div class="section-head"><span class="section-tick"></span>Signal Routing<span class="section-count">'+connections.length+' connection'+(connections.length>1?'s':'')+'</span></div>';
-    connHTML += '<table class="conn-table"><thead><tr><th>From device</th><th>Output port</th><th></th><th>To device</th><th>Input port</th><th>Signal</th></tr></thead><tbody>';
-    connections.forEach(function(cn){
-      var fc=components.find(function(x){return x.id===cn.fromCompId;});
-      var tc=components.find(function(x){return x.id===cn.toCompId;});
-      var fp=fc?(fc.ports||[]).find(function(p){return p.id===cn.fromPortId;}):null;
-      var tp=tc?(tc.ports||[]).find(function(p){return p.id===cn.toPortId;}):null;
-      connHTML += '<tr>'
-        +'<td>'+(fc?compName(fc):'?')+'</td>'
-        +'<td class="mono">'+(fp?fp.label||fp.signal:'?')+'</td>'
-        +'<td class="arrow">→</td>'
-        +'<td>'+(tc?compName(tc):'?')+'</td>'
-        +'<td class="mono">'+(tp?tp.label||tp.signal:'?')+'</td>'
-        +'<td class="mono">'+(fp?fp.signal:'?')+(cn.mismatch?' ⚠':'')+'</td>'
-        +'</tr>';
+    // masthead
+    S.push(logo(44,40,0.92));
+    S.push('<text x="72" y="40" font-family="'+DISP+'" font-weight="600" font-size="26" letter-spacing="1.5" fill="'+INK+'">UNREAL SUPPORT</text>');
+    S.push('<text x="73" y="56" font-family="'+MONO+'" font-size="9.5" letter-spacing="2.5" fill="'+INK3+'">VIRTUAL PRODUCTION SYSTEMS</text>');
+    var meta=[["DOCUMENT",o.docno||""],["ISSUE","REV A  /  "+(o.date||"")],["STATUS",o.status||"FOR REVIEW"]];
+    var yy=28;
+    meta.forEach(function(m){
+      S.push('<text x="'+(PW-44)+'" y="'+yy+'" text-anchor="end" font-family="'+MONO+'" font-size="8" letter-spacing="1.5" fill="'+INK3+'">'+esc(m[0])+'</text>');
+      S.push('<text x="'+(PW-44)+'" y="'+(yy+12)+'" text-anchor="end" font-family="'+MONO+'" font-size="10.5" fill="'+INK+'">'+esc(m[1])+'</text>');
+      yy+=24;
     });
-    connHTML += '</tbody></table></div>';
+    S.push('<line x1="22" y1="74" x2="'+(PW-22)+'" y2="74" stroke="'+HAIR+'" stroke-width="1"/>');
+    S.push('<rect x="22" y="73" width="120" height="2" fill="'+ACC+'"/>');
+    return S;
   }
 
-  var exportDate = new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
-  var editorComp = components.find(function(c){return c.type==='workstation'&&c.fields.role==='Editor';});
-  var ueVersion = editorComp ? (editorComp.fields.ue||'') : '';
-  var nWS = components.filter(function(c){return c.type==='workstation';}).length;
+  // reusable CAD title block (bottom-right)
+  function titleBlock(S,tx0,by0,tw,byh,rows){
+    // rows: [drawingTitle, project, [scale,date,sheet], [drawn,rev,dwgno]]
+    S.push('<rect x="'+tx0+'" y="'+by0+'" width="'+tw+'" height="'+byh+'" fill="none" stroke="'+INK+'" stroke-width="1.3"/>');
+    S.push('<line x1="'+tx0+'" y1="'+(by0+30)+'" x2="'+(tx0+tw)+'" y2="'+(by0+30)+'" stroke="'+INK+'" stroke-width="1"/>');
+    S.push(logo(tx0+18,by0+19,0.58));
+    S.push('<text x="'+(tx0+37)+'" y="'+(by0+22)+'" font-family="'+DISP+'" font-weight="600" font-size="16" letter-spacing="1.2" fill="'+INK+'">UNREAL SUPPORT</text>');
+    S.push('<text x="'+(tx0+tw-10)+'" y="'+(by0+21)+'" text-anchor="end" font-family="'+MONO+'" font-size="7.5" letter-spacing="1" fill="'+INK3+'">'+esc(rows.tag||"")+'</text>');
+    function cell(cx,cy,lab,val,vs){S.push('<text x="'+(cx+9)+'" y="'+(cy+12)+'" font-family="'+MONO+'" font-size="7.5" letter-spacing="1.2" fill="'+INK3+'">'+esc(lab)+'</text>');
+      S.push('<text x="'+(cx+9)+'" y="'+(cy+25)+'" font-family="'+MONO+'" font-size="'+(vs||11)+'" fill="'+INK+'">'+esc(val)+'</text>');}
+    var r1=by0+30;
+    S.push('<line x1="'+tx0+'" y1="'+(r1+30)+'" x2="'+(tx0+tw)+'" y2="'+(r1+30)+'" stroke="'+HAIR+'" stroke-width="1"/>');
+    cell(tx0,r1,"DRAWING TITLE",rows.title,12);
+    S.push('<line x1="'+tx0+'" y1="'+(r1+60)+'" x2="'+(tx0+tw)+'" y2="'+(r1+60)+'" stroke="'+HAIR+'" stroke-width="1"/>');
+    cell(tx0,r1+30,"PROJECT",rows.project,11);
+    var cw=tw/3;
+    S.push('<line x1="'+(tx0+cw)+'" y1="'+(r1+60)+'" x2="'+(tx0+cw)+'" y2="'+(by0+byh)+'" stroke="'+HAIR+'" stroke-width="1"/>');
+    S.push('<line x1="'+(tx0+2*cw)+'" y1="'+(r1+60)+'" x2="'+(tx0+2*cw)+'" y2="'+(by0+byh)+'" stroke="'+HAIR+'" stroke-width="1"/>');
+    cell(tx0,r1+60,"SCALE",rows.scale,10.5);cell(tx0+cw,r1+60,"DATE",rows.date,10.5);cell(tx0+2*cw,r1+60,"SHEET",rows.sheet,10.5);
+    S.push('<line x1="'+tx0+'" y1="'+(r1+90)+'" x2="'+(tx0+tw)+'" y2="'+(r1+90)+'" stroke="'+HAIR+'" stroke-width="1"/>');
+    cell(tx0,r1+90,"DRAWN",rows.drawn,10.5);cell(tx0+cw,r1+90,"REV",rows.rev,10.5);cell(tx0+2*cw,r1+90,"DWG No.",rows.dwgno,10);
+  }
+  function panelHead(S,x,y,w,title){
+    S.push('<rect x="'+x+'" y="'+y+'" width="'+w+'" height="22" fill="'+FILL+'"/>');
+    S.push('<line x1="'+x+'" y1="'+(y+22)+'" x2="'+(x+w)+'" y2="'+(y+22)+'" stroke="'+HAIR+'" stroke-width="1"/>');
+    S.push('<text x="'+(x+12)+'" y="'+(y+15)+'" font-family="'+DISP+'" font-weight="600" font-size="12" letter-spacing="1.4" fill="'+INK+'">'+esc(title)+'</text>');
+  }
 
-  var extraCSS =
-     '.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(205px,1fr));gap:10px}'
-    +'.card{border:1px solid #e7e9ec;border-radius:9px;overflow:hidden;break-inside:avoid}'
-    +'.card-head{display:flex;align-items:center;gap:7px;padding:8px 11px;background:#fafbfc;border-bottom:1px solid #eef0f2;font-size:11px;font-weight:650}'
-    +'.card-tag{margin-left:auto;font-size:8.5px;color:#888f97;text-transform:uppercase;letter-spacing:.05em;font-family:ui-monospace,monospace}'
-    +'.led{width:6px;height:6px;border-radius:50%;flex-shrink:0}.led.g{background:#22c55e}.led.b{background:#4a7af5}'
-    +'table{width:100%;border-collapse:collapse}'
-    +'td{padding:5px 11px;border-bottom:1px solid #f2f3f5;vertical-align:top}tr:last-child td{border-bottom:none}'
-    +'.k{color:#7b818a;width:38%;white-space:nowrap;font-size:10px}.v{color:#15161a;font-size:10.5px}'
-    +'.mono{font-family:ui-monospace,monospace;font-size:10px}'
-    +'.notes{color:#646a72;font-style:italic;font-size:10px}'
-    +'.ports-list{display:flex;flex-wrap:wrap;gap:3px}'
-    +'.port-pill{font-size:9px;font-family:ui-monospace,monospace;padding:1px 5px;border-radius:3px;border:1px solid #dde0e4;color:#646a72}'
-    +'.port-pill.out{border-color:#4a7af5;color:#4a7af5;background:#f0f4ff}'
-    +'.port-pill.in{border-color:#1ab8d4;color:#1ab8d4;background:#eefafd}'
-    +'.diagram-wrap{border:1px solid #e7e9ec;border-radius:9px;padding:16px;background:#fafbfc;break-inside:avoid}'
-    +'.diagram-wrap svg{width:100%;height:auto;display:block}'
-    +'.conn-table{width:100%;border-collapse:collapse}'
-    +'.conn-table thead{display:table-header-group}'
-    +'.conn-table th{text-align:left;font-size:9px;font-weight:650;color:#888f97;text-transform:uppercase;letter-spacing:.06em;padding:6px 10px;border-bottom:1px solid #e7e9ec;background:#fafbfc}'
-    +'.conn-table td{padding:6px 10px;border-bottom:1px solid #f2f3f5;font-size:10.5px}'
-    +'.conn-table tr{break-inside:avoid}'
-    +'.conn-table .arrow{color:#9aa0a8;text-align:center}';
+  // ---------- SCHEMATIC (landscape) ----------
+  function buildSchematicSVG(d){
+    var PW=1123,PH=794;
+    var W=d.W,D=d.D,H=d.H,wallW=d.wallW,wallH=d.wallH,curve=d.curve,pitch=d.pitch,wallBack=d.wallBack;
+    var S=sheet({W:PW,H:PH,docno:d.docno||"US-STG-001",date:d.date,status:"FOR REVIEW"});
+    var px0=30,py0=104,pw=1063,ph=486,ml=138,mr=150,mt=64,mb=66;
+    var uw=pw-ml-mr,uh=ph-mt-mb,sc=Math.min(uw/W,uh/D),rw=W*sc,rh=D*sc;
+    var rx0=px0+ml+(uw-rw)/2, ry0=py0+mt+(uh-rh)/2;
+    function X(x){return rx0+(x+W/2)*sc;} function Z(z){return ry0+(z+D/2)*sc;}
+    var bz=-D/2+wallBack;
+    // grid
+    var gx=Math.ceil(-W/2);for(;gx<=W/2+1e-6;gx++)S.push('<line x1="'+F(X(gx))+'" y1="'+F(Z(-D/2))+'" x2="'+F(X(gx))+'" y2="'+F(Z(D/2))+'" stroke="'+GRID+'" stroke-width="1"/>');
+    var gz=Math.ceil(-D/2);for(;gz<=D/2+1e-6;gz++)S.push('<line x1="'+F(X(-W/2))+'" y1="'+F(Z(gz))+'" x2="'+F(X(W/2))+'" y2="'+F(Z(gz))+'" stroke="'+GRID+'" stroke-width="1"/>');
+    S.push('<rect x="'+F(X(-W/2))+'" y="'+F(Z(-D/2))+'" width="'+F(rw)+'" height="'+F(rh)+'" fill="none" stroke="'+INK+'" stroke-width="1.5"/>');
+    // cables
+    (d.cables||[]).forEach(function(c,i){
+      var midz=(c.z1+c.z2)/2+(i-3)*0.16;
+      var pts=[[X(c.x1),Z(c.z1)],[X(c.x1),Z(midz)],[X(c.x2),Z(midz)],[X(c.x2),Z(c.z2)]];
+      S.push('<polyline points="'+pts.map(function(p){return F(p[0])+','+F(p[1]);}).join(' ')+'" fill="none" stroke="'+(SIG[c.sig]||"#999")+'" stroke-width="1.6" opacity="0.92"/>');
+    });
+    // wall arc
+    var th=curve*Math.PI/180,pts=[];
+    for(var k=0;k<=24;k++){var u=k/24;
+      if(curve<1)pts.push([(u-0.5)*wallW,bz]);
+      else{var R=wallW/th,a=-th/2+u*th;pts.push([Math.sin(a)*R,bz+R-Math.cos(a)*R]);}}
+    S.push('<polyline points="'+pts.map(function(p){return F(X(p[0]))+','+F(Z(p[1]));}).join(' ')+'" fill="none" stroke="'+ACC+'" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>');
+    [pts[0],pts[pts.length-1]].forEach(function(p){S.push('<circle cx="'+F(X(p[0]))+'" cy="'+F(Z(p[1]))+'" r="3" fill="'+ACC+'"/>');});
+    // markers
+    (d.racks||[]).forEach(function(r){var cx=X(r[1]),cy=Z(r[2]);
+      S.push('<rect x="'+F(cx-11)+'" y="'+F(cy-13)+'" width="22" height="26" rx="3" fill="#fff" stroke="'+INK+'" stroke-width="1.3"/>');
+      S.push('<text x="'+F(cx)+'" y="'+F(cy+3.5)+'" text-anchor="middle" font-family="'+MONO+'" font-size="9" fill="'+INK+'">'+esc(r[0])+'</text>');});
+    (d.works||[]).forEach(function(w){var cx=X(w[1]),cy=Z(w[2]);
+      S.push('<rect x="'+F(cx-17)+'" y="'+F(cy-10)+'" width="34" height="20" rx="3" fill="'+INK+'"/>');
+      S.push('<text x="'+F(cx)+'" y="'+F(cy+3.5)+'" text-anchor="middle" font-family="'+MONO+'" font-size="8.5" fill="#fff">'+esc(w[0])+'</text>');});
+    (d.devs||[]).forEach(function(v){var cx=X(v[1]),cy=Z(v[2]);
+      S.push('<circle cx="'+F(cx)+'" cy="'+F(cy)+'" r="7.5" fill="#fff" stroke="'+INK+'" stroke-width="1.3"/>');
+      S.push('<circle cx="'+F(cx)+'" cy="'+F(cy)+'" r="2.6" fill="'+ACC+'"/>');
+      S.push('<text x="'+F(cx)+'" y="'+F(cy+19)+'" text-anchor="middle" font-family="'+BODY+'" font-size="8.5" fill="'+INK2+'">'+esc(v[0])+'</text>');});
+    // dims
+    function tick(x,y){var d=Math.cos(Math.PI/4)*5;return '<line x1="'+F(x-d)+'" y1="'+F(y-d)+'" x2="'+F(x+d)+'" y2="'+F(y+d)+'" stroke="'+INK+'" stroke-width="1.2"/>';}
+    var dyb=Z(D/2)+40;
+    S.push('<line x1="'+F(X(-W/2))+'" y1="'+F(Z(D/2)+6)+'" x2="'+F(X(-W/2))+'" y2="'+F(dyb+6)+'" stroke="'+INK3+'" stroke-width="0.7"/>');
+    S.push('<line x1="'+F(X(W/2))+'" y1="'+F(Z(D/2)+6)+'" x2="'+F(X(W/2))+'" y2="'+F(dyb+6)+'" stroke="'+INK3+'" stroke-width="0.7"/>');
+    S.push('<line x1="'+F(X(-W/2))+'" y1="'+F(dyb)+'" x2="'+F(X(W/2))+'" y2="'+F(dyb)+'" stroke="'+INK+'" stroke-width="1"/>');
+    S.push(tick(X(-W/2),dyb));S.push(tick(X(W/2),dyb));
+    S.push('<rect x="'+F(X(0)-34)+'" y="'+F(dyb-9)+'" width="68" height="16" fill="'+PAPER+'"/>');
+    S.push('<text x="'+F(X(0))+'" y="'+F(dyb+4)+'" text-anchor="middle" font-family="'+MONO+'" font-size="11" fill="'+INK+'">'+F(W)+' m</text>');
+    var dxl=X(-W/2)-40;
+    S.push('<line x1="'+F(X(-W/2)-6)+'" y1="'+F(Z(-D/2))+'" x2="'+F(dxl-6)+'" y2="'+F(Z(-D/2))+'" stroke="'+INK3+'" stroke-width="0.7"/>');
+    S.push('<line x1="'+F(X(-W/2)-6)+'" y1="'+F(Z(D/2))+'" x2="'+F(dxl-6)+'" y2="'+F(Z(D/2))+'" stroke="'+INK3+'" stroke-width="0.7"/>');
+    S.push('<line x1="'+F(dxl)+'" y1="'+F(Z(-D/2))+'" x2="'+F(dxl)+'" y2="'+F(Z(D/2))+'" stroke="'+INK+'" stroke-width="1"/>');
+    S.push(tick(dxl,Z(-D/2)));S.push(tick(dxl,Z(D/2)));
+    S.push('<g transform="translate('+F(dxl)+','+F(Z(0))+') rotate(-90)"><rect x="-34" y="-9" width="68" height="16" fill="'+PAPER+'"/><text x="0" y="4" text-anchor="middle" font-family="'+MONO+'" font-size="11" fill="'+INK+'">'+F(D)+' m</text></g>');
+    var wy=Z(bz)-30,wx1=X(-wallW/2),wx2=X(wallW/2);
+    S.push('<line x1="'+F(wx1)+'" y1="'+F(Z(bz)-6)+'" x2="'+F(wx1)+'" y2="'+F(wy-6)+'" stroke="'+INK3+'" stroke-width="0.7"/>');
+    S.push('<line x1="'+F(wx2)+'" y1="'+F(Z(bz)-6)+'" x2="'+F(wx2)+'" y2="'+F(wy-6)+'" stroke="'+INK3+'" stroke-width="0.7"/>');
+    S.push('<line x1="'+F(wx1)+'" y1="'+F(wy)+'" x2="'+F(wx2)+'" y2="'+F(wy)+'" stroke="'+ACC+'" stroke-width="1"/>');
+    S.push(tick(wx1,wy));S.push(tick(wx2,wy));
+    S.push('<rect x="'+F(X(0)-82)+'" y="'+F(wy-9)+'" width="164" height="16" fill="'+PAPER+'"/>');
+    S.push('<text x="'+F(X(0))+'" y="'+F(wy+4)+'" text-anchor="middle" font-family="'+MONO+'" font-size="10.5" fill="'+ACC+'">LED WALL  '+F(wallW)+' m  \u00b7  '+(curve)+'\u00b0</text>');
+    // key cluster
+    var cxk=(X(W/2)+(PW-40))/2,cyk=Z(0),oy=cyk-34;
+    S.push('<circle cx="'+F(cxk)+'" cy="'+F(oy)+'" r="16" fill="none" stroke="'+INK2+'" stroke-width="1.2"/>');
+    S.push('<line x1="'+F(cxk)+'" y1="'+F(oy+13)+'" x2="'+F(cxk)+'" y2="'+F(oy-19)+'" stroke="'+INK+'" stroke-width="1.5"/>');
+    S.push('<path d="M'+F(cxk-4.5)+' '+F(oy-13)+' L'+F(cxk)+' '+F(oy-21)+' L'+F(cxk+4.5)+' '+F(oy-13)+' Z" fill="'+INK+'"/>');
+    S.push('<text x="'+F(cxk)+'" y="'+F(oy+24)+'" text-anchor="middle" font-family="'+DISP+'" font-weight="600" font-size="11" letter-spacing="1" fill="'+INK+'">CAMERA</text>');
+    S.push('<text x="'+F(cxk)+'" y="'+F(oy+36)+'" text-anchor="middle" font-family="'+MONO+'" font-size="7" letter-spacing="1.5" fill="'+INK3+'">SHOOTING DIRECTION</text>');
+    var sbpx=5*sc,sbx=cxk-sbpx/2,sby=cyk+44;
+    S.push('<text x="'+F(cxk)+'" y="'+F(sby-9)+'" text-anchor="middle" font-family="'+MONO+'" font-size="7" letter-spacing="1.5" fill="'+INK3+'">SCALE</text>');
+    S.push('<line x1="'+F(sbx)+'" y1="'+F(sby)+'" x2="'+F(sbx+sbpx)+'" y2="'+F(sby)+'" stroke="'+INK+'" stroke-width="2"/>');
+    for(var t=0;t<=5;t++){var xx=sbx+t*sc;S.push('<line x1="'+F(xx)+'" y1="'+F(sby-3)+'" x2="'+F(xx)+'" y2="'+F(sby+3)+'" stroke="'+INK+'" stroke-width="1"/>');}
+    S.push('<text x="'+F(sbx)+'" y="'+F(sby+14)+'" text-anchor="middle" font-family="'+MONO+'" font-size="7.5" fill="'+INK2+'">0</text>');
+    S.push('<text x="'+F(sbx+sbpx)+'" y="'+F(sby+14)+'" text-anchor="middle" font-family="'+MONO+'" font-size="7.5" fill="'+INK2+'">5 m</text>');
+    // bottom band
+    var by0=600,byh=150;
+    // legend
+    var lx0=30,lw=286;
+    S.push('<rect x="'+lx0+'" y="'+by0+'" width="'+lw+'" height="'+byh+'" fill="none" stroke="'+HAIR+'" stroke-width="1.1"/>');
+    panelHead(S,lx0,by0,lw,"SIGNAL LEGEND");
+    var present=(d.legend&&d.legend.length)?d.legend:["SDI","Genlock","Ethernet","Reference","Tracking"];
+    var ly=by0+42;
+    present.forEach(function(sg){
+      S.push('<rect x="'+(lx0+14)+'" y="'+(ly-7)+'" width="18" height="6" rx="1" fill="'+(SIG[sg]||"#999")+'"/>');
+      S.push('<text x="'+(lx0+40)+'" y="'+ly+'" font-family="'+BODY+'" font-size="11" fill="'+INK+'">'+esc(sg)+'</text>');ly+=20;});
+    // spec
+    var sx0=330,sw=360;
+    S.push('<rect x="'+sx0+'" y="'+by0+'" width="'+sw+'" height="'+byh+'" fill="none" stroke="'+HAIR+'" stroke-width="1.1"/>');
+    panelHead(S,sx0,by0,sw,"STAGE SPECIFICATION");
+    var specs=[["STUDIO",F(W)+" x "+F(D)+" x "+F(H)+" m"],["LED WALL",F(wallW)+" x "+F(wallH)+" m"],
+      ["CURVATURE",curve+" deg"],["PIXEL PITCH","P"+pitch],["RACKS",String((d.racks||[]).length)],
+      ["DEVICES",String(((d.works||[]).length+(d.devs||[]).length))]];
+    var col2=sx0+sw/2+6;
+    specs.forEach(function(kv,idx){var cx=idx<3?sx0+14:col2,yr=by0+42+(idx%3)*36;
+      S.push('<text x="'+cx+'" y="'+yr+'" font-family="'+MONO+'" font-size="8" letter-spacing="1.2" fill="'+INK3+'">'+kv[0]+'</text>');
+      S.push('<text x="'+cx+'" y="'+(yr+16)+'" font-family="'+MONO+'" font-size="12.5" fill="'+INK+'">'+esc(kv[1])+'</text>');});
+    S.push('<line x1="'+(col2-8)+'" y1="'+(by0+34)+'" x2="'+(col2-8)+'" y2="'+(by0+byh-12)+'" stroke="'+HAIR+'" stroke-width="1"/>');
+    // title block
+    titleBlock(S,704,by0,389,byh,{tag:"PLAN VIEW",title:"STAGE PLAN - SIGNAL ROUTING",
+      project:d.project||"ICVFX LED VOLUME",scale:"TO SCALE",date:d.date,sheet:"1 / 1",
+      drawn:d.drawn||"M. WHALEN",rev:"A",dwgno:d.docno||"US-STG-001"});
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+PW+' '+PH+'" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">'+S.join("")+'</svg>';
+  }
 
-  var glance =
-     '<div class="glance">'
-    +'<div class="stat"><div class="s-n">'+components.length+'</div><div class="s-l">Components</div></div>'
-    +'<div class="stat"><div class="s-n">'+nWS+'</div><div class="s-l">Workstations</div></div>'
-    +'<div class="stat"><div class="s-n">'+connections.length+'</div><div class="s-l">Signal links</div></div>'
-    +'<div class="stat"><div class="s-n">'+(ueVersion?esc(ueVersion):'\u2014')+'</div><div class="s-l">Unreal Engine</div></div>'
-    +'</div>';
 
-  var body = sectionsHTML + connHTML
-    +'<div class="section"><div class="section-head"><span class="section-tick"></span>System Architecture<span class="section-count">signal flow diagram</span></div>'
-    +'<div class="diagram-wrap">'+svgHTML+'</div></div>';
+  // ---------- RIG CONFIGURATION (landscape datasheet) ----------
+  function statRow(S,x,y,w,stats){
+    var n=stats.length,gap=10,bw=(w-(n-1)*gap)/n;
+    stats.forEach(function(st,i){var bx=x+i*(bw+gap);
+      S.push('<rect x="'+bx+'" y="'+y+'" width="'+bw+'" height="44" rx="6" fill="'+FILL+'" stroke="'+HAIR+'" stroke-width="1"/>');
+      S.push('<text x="'+(bx+13)+'" y="'+(y+25)+'" font-family="'+DISP+'" font-weight="600" font-size="20" fill="'+INK+'">'+esc(st[0])+'</text>');
+      S.push('<text x="'+(bx+13)+'" y="'+(y+37)+'" font-family="'+MONO+'" font-size="7.5" letter-spacing="1.2" fill="'+INK3+'">'+esc(st[1])+'</text>');});
+  }
+  function buildRigSVG(d){
+    var PW=1123,PH=794;
+    var S=sheet({W:PW,H:PH,docno:d.docno||"US-RIG-001",date:d.date,status:"FOR REVIEW"});
+    // stat row
+    statRow(S,30,104,1063,[[String(d.counts.components),"COMPONENTS"],[String(d.counts.works),"WORKSTATIONS"],
+      [String(d.counts.links),"SIGNAL LINKS"],[d.counts.ue||"\u2014","UNREAL ENGINE"]]);
+    // component register
+    var rx=30,rw=1063,ry=166;
+    panelHead(S,rx,ry,rw,"COMPONENT REGISTER");
+    var cols=[34,250,150,250,140]; // #,DEVICE,TYPE,KEY SPEC,NETWORK ; last col = rest
+    var cx=[rx];for(var i=0;i<cols.length;i++)cx.push(cx[i]+cols[i]); cx.push(rx+rw);
+    var labels=["#","DEVICE","TYPE","KEY SPEC","NETWORK","SIGNAL I/O"];
+    var hy=ry+22;
+    // header labels row
+    var lhy=hy+16;
+    labels.forEach(function(l,i){S.push('<text x="'+(cx[i]+(i===0?9:10))+'" y="'+lhy+'" font-family="'+MONO+'" font-size="7.5" letter-spacing="1.1" fill="'+INK3+'">'+esc(l)+'</text>');});
+    S.push('<line x1="'+rx+'" y1="'+(hy+24)+'" x2="'+(rx+rw)+'" y2="'+(hy+24)+'" stroke="'+INK+'" stroke-width="1"/>');
+    var rowy=hy+24, rh=26, maxRows=15;
+    var comps=d.components.slice(0,maxRows);
+    comps.forEach(function(c,idx){
+      var y0=rowy+idx*rh;
+      if(idx%2===1) S.push('<rect x="'+rx+'" y="'+y0+'" width="'+rw+'" height="'+rh+'" fill="#fafbfc"/>');
+      var ty=y0+17;
+      S.push('<text x="'+(cx[0]+9)+'" y="'+ty+'" font-family="'+MONO+'" font-size="9" fill="'+INK3+'">'+(idx+1)+'</text>');
+      // device name + dot
+      S.push('<circle cx="'+(cx[1]+6)+'" cy="'+(y0+rh/2)+'" r="3" fill="'+(c.role==="Editor"?ACC:"#22a06b")+'"/>');
+      S.push('<text x="'+(cx[1]+16)+'" y="'+ty+'" font-family="'+BODY+'" font-size="11" font-weight="500" fill="'+INK+'">'+esc((c.name||"").slice(0,30))+'</text>');
+      S.push('<text x="'+(cx[2]+10)+'" y="'+ty+'" font-family="'+BODY+'" font-size="10" fill="'+INK2+'">'+esc((c.type||"").slice(0,20))+'</text>');
+      S.push('<text x="'+(cx[3]+10)+'" y="'+ty+'" font-family="'+MONO+'" font-size="9.5" fill="'+INK2+'">'+esc((c.spec||"").slice(0,30))+'</text>');
+      S.push('<text x="'+(cx[4]+10)+'" y="'+ty+'" font-family="'+MONO+'" font-size="9.5" fill="'+INK2+'">'+esc(c.ip||"\u2014")+'</text>');
+      // ports pills
+      var pxp=cx[5]+10;
+      (c.ports||[]).slice(0,5).forEach(function(p){
+        var col=SIG[p.signal]||"#9aa0a8", lab=SHORT[p.signal]||(p.signal||"");
+        var w=lab.length*5.6+14;
+        S.push('<rect x="'+pxp+'" y="'+(y0+rh/2-7)+'" width="'+w.toFixed(0)+'" height="14" rx="3" fill="none" stroke="'+col+'" stroke-width="1"/>');
+        S.push('<circle cx="'+(pxp+6)+'" cy="'+(y0+rh/2)+'" r="2.2" fill="'+col+'"/>');
+        S.push('<text x="'+(pxp+12)+'" y="'+(y0+rh/2+3)+'" font-family="'+MONO+'" font-size="7.5" fill="'+INK2+'">'+esc(lab)+'</text>');
+        pxp+=w+5;
+      });
+      S.push('<line x1="'+rx+'" y1="'+(y0+rh)+'" x2="'+(rx+rw)+'" y2="'+(y0+rh)+'" stroke="'+HAIR+'" stroke-width="0.6"/>');
+    });
+    // column separators (header..last row)
+    var tbottom=rowy+comps.length*rh;
+    [cx[1],cx[2],cx[3],cx[4],cx[5]].forEach(function(xx){S.push('<line x1="'+xx+'" y1="'+(ry)+'" x2="'+xx+'" y2="'+tbottom+'" stroke="'+HAIR+'" stroke-width="0.6"/>');});
+    S.push('<rect x="'+rx+'" y="'+ry+'" width="'+rw+'" height="'+(tbottom-ry)+'" fill="none" stroke="'+HAIR+'" stroke-width="1.1"/>');
 
-  var html = buildPdfDoc({
-    orientation:'portrait',
-    docType:'Rig Configuration',
-    kicker:'Virtual Production',
-    title:'Rig Configuration',
-    subtitle:components.length+' components \u00b7 '+connections.length+' signal connections',
-    metaHTML:'<b>System Specification</b><br>'+(ueVersion?'Unreal Engine '+esc(ueVersion)+'<br>':'')+'Generated '+exportDate,
-    dateStr:exportDate,
-    footerTitle:'Rig Configuration',
-    extraCSS:extraCSS,
-    glanceHTML:glance,
-    bodyHTML:body
+    // bottom band: signal routing (left) + title block (right)
+    var by0=600,byh=150;
+    var sgx=30,sgw=660;
+    S.push('<rect x="'+sgx+'" y="'+by0+'" width="'+sgw+'" height="'+byh+'" fill="none" stroke="'+HAIR+'" stroke-width="1.1"/>');
+    panelHead(S,sgx,by0,sgw,"SIGNAL ROUTING");
+    var sc2=[sgx,sgx+210,sgx+330,sgx+360,sgx+560,sgx+sgw];
+    var slab=["FROM","PORT","","TO","SIGNAL"];
+    slab.forEach(function(l,i){if(l)S.push('<text x="'+(sc2[i]+10)+'" y="'+(by0+36)+'" font-family="'+MONO+'" font-size="7.5" letter-spacing="1.1" fill="'+INK3+'">'+esc(l)+'</text>');});
+    S.push('<line x1="'+sgx+'" y1="'+(by0+42)+'" x2="'+(sgx+sgw)+'" y2="'+(by0+42)+'" stroke="'+INK+'" stroke-width="0.8"/>');
+    var conns=d.connections.slice(0,6), cry=by0+42, crh=15;
+    conns.forEach(function(cn,idx){var y0=cry+idx*crh,ty=y0+11;
+      S.push('<text x="'+(sc2[0]+10)+'" y="'+ty+'" font-family="'+BODY+'" font-size="9.5" fill="'+INK+'">'+esc((cn.from||"").slice(0,26))+'</text>');
+      S.push('<text x="'+(sc2[1]+10)+'" y="'+ty+'" font-family="'+MONO+'" font-size="8.5" fill="'+INK2+'">'+esc((cn.fromPort||"").slice(0,9))+'</text>');
+      S.push('<text x="'+(sc2[2]+6)+'" y="'+ty+'" font-family="'+MONO+'" font-size="9" fill="'+INK3+'">&#8594;</text>');
+      S.push('<text x="'+(sc2[3]+10)+'" y="'+ty+'" font-family="'+BODY+'" font-size="9.5" fill="'+INK+'">'+esc((cn.to||"").slice(0,26))+'</text>');
+      S.push('<circle cx="'+(sc2[4]+6)+'" cy="'+(y0+7)+'" r="2.6" fill="'+(SIG[cn.signal]||"#999")+'"/>');
+      S.push('<text x="'+(sc2[4]+13)+'" y="'+ty+'" font-family="'+MONO+'" font-size="8.5" fill="'+INK2+'">'+esc(cn.signal||"")+'</text>');
+    });
+    if(d.connections.length>6)
+      S.push('<text x="'+(sc2[0]+10)+'" y="'+(cry+6*crh+11)+'" font-family="'+MONO+'" font-size="8" fill="'+INK3+'">+ '+(d.connections.length-6)+' more connections</text>');
+    // col seps for routing
+    [sc2[1],sc2[3],sc2[4]].forEach(function(xx){S.push('<line x1="'+xx+'" y1="'+(by0+22)+'" x2="'+xx+'" y2="'+(by0+byh)+'" stroke="'+HAIR+'" stroke-width="0.6"/>');});
+    titleBlock(S,704,by0,389,byh,{tag:"CONFIG",title:"RIG CONFIGURATION",
+      project:d.project||"ICVFX LED VOLUME",scale:"N/A",date:d.date,sheet:"1 / 1",
+      drawn:d.drawn||"M. WHALEN",rev:"A",dwgno:d.docno||"US-RIG-001"});
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+PW+' '+PH+'" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">'+S.join("")+'</svg>';
+  }
+  return {buildSchematicSVG:buildSchematicSVG, buildRigSVG:buildRigSVG};
+})();
+
+function svgSheetHTML(svg, title){
+  return '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>'+title+' \u2014 Unreal Support</title>'
+    +'<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
+    +'<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">'
+    +'<style>@page{size:A4 landscape;margin:0}*{margin:0;padding:0;box-sizing:border-box}html,body{background:#e9ebee}'
+    +'body{font-family:Geist,system-ui,sans-serif}'
+    +'.bar{background:#0b0b0c;color:#fff;padding:11px 18px;display:flex;align-items:center;justify-content:space-between;gap:14px;position:sticky;top:0}'
+    +'.bar b{font-size:13px;font-weight:600}.bar .r{display:flex;align-items:center;gap:14px}'
+    +'.bar .tip{font-size:11px;color:#aeb3bb}'
+    +'.bar button{background:#3b6fe0;color:#fff;border:0;border-radius:7px;padding:8px 18px;font-size:13px;font-weight:600;cursor:pointer}'
+    +'.sheet{width:297mm;height:210mm;margin:18px auto;background:#fff;box-shadow:0 6px 30px rgba(0,0,0,.18)}'
+    +'.sheet svg{width:100%;height:100%;display:block}'
+    +'@media print{body{background:#fff}.bar{display:none}.sheet{width:100%;height:100%;margin:0;box-shadow:none}}'
+    +'</style></head><body>'
+    +'<div class="bar"><b>'+title+'</b><span class="r"><span class="tip">For an exact result set Margins to None and turn Headers and footers Off</span>'
+    +'<button onclick="window.print()">Print / Save as PDF</button></span></div>'
+    +'<div class="sheet">'+svg+'</div></body></html>';
+}
+
+function exportRigPDF(){
+  function specOf(c){
+    var f=c.fields||{};
+    if(c.type==='workstation') return f.gpu||f.machine||f.cpu||'';
+    var fs=compFieldset(c.type,c);
+    for(var i=0;i<fs.length;i++){var k=fs[i].k; if(k!=='ip'&&k!=='role'&&(f[k]||'').trim()) return f[k];}
+    return '';
+  }
+  var regs=components.map(function(c){
+    return {name:compName(c),type:(CTYPES[c.type]?CTYPES[c.type].label:''),role:(c.fields||{}).role||'',
+      spec:specOf(c),ip:(c.fields||{}).ip||'',
+      ports:(c.ports||[]).map(function(p){return {signal:p.signal};})};
   });
-  openPrintWindow(html);
+  var conns=connections.map(function(cn){
+    var fc=components.find(function(x){return x.id===cn.fromCompId;});
+    var tc=components.find(function(x){return x.id===cn.toCompId;});
+    var fp=fc?(fc.ports||[]).find(function(p){return p.id===cn.fromPortId;}):null;
+    return {from:fc?compName(fc):'?',fromPort:fp?(fp.label||fp.signal):'',to:tc?compName(tc):'?',signal:fp?fp.signal:''};
+  });
+  var ed=components.find(function(c){return c.type==='workstation'&&(c.fields||{}).role==='Editor';});
+  var ue=ed?(ed.fields.ue||''):'';
+  if(!ue){var anyws=components.find(function(c){return c.type==='workstation'&&(c.fields||{}).ue;}); ue=anyws?anyws.fields.ue:'';}
+  var d={date:new Date().toISOString().slice(0,10),docno:'US-RIG-001',project:'ICVFX LED VOLUME',drawn:'\u2014',
+    counts:{components:components.length,works:components.filter(function(c){return c.type==='workstation';}).length,
+      links:connections.length,ue:ue||'\u2014'},
+    components:regs,connections:conns};
+  openPrintWindow(svgSheetHTML(USPDF.buildRigSVG(d),'Rig Configuration'));
 }
 
 function updateStatusFooter(){
@@ -8828,106 +9024,26 @@ function renderMaint(){
 }
 
 function s3ExportPDF(){
-  var W=S3.roomW, D=S3.roomD, sc=Math.min(700/W, 450/D);
-  var CW=Math.round(W*sc+120), CH=Math.round(D*sc+150);
-  function X(x){return 60+(x+W/2)*sc;} function Z(z){return 60+(z+D/2)*sc;}
-  var s='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+CW+' '+CH+'" width="'+CW+'" height="'+CH+'" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif">';
-  var gx,gz;
-  for(gx=Math.ceil(-W/2);gx<=W/2+1e-6;gx++){ s+='<line x1="'+X(gx)+'" y1="'+Z(-D/2)+'" x2="'+X(gx)+'" y2="'+Z(D/2)+'" stroke="#eef0f2" stroke-width="1"/>'; }
-  for(gz=Math.ceil(-D/2);gz<=D/2+1e-6;gz++){ s+='<line x1="'+X(-W/2)+'" y1="'+Z(gz)+'" x2="'+X(W/2)+'" y2="'+Z(gz)+'" stroke="#eef0f2" stroke-width="1"/>'; }
-  s+='<rect x="'+X(-W/2)+'" y="'+Z(-D/2)+'" width="'+(W*sc)+'" height="'+(D*sc)+'" fill="none" stroke="#0b0b0c" stroke-width="1.6"/>';
-  s+='<text x="'+X(0)+'" y="'+(Z(D/2)+22)+'" text-anchor="middle" font-size="11" fill="#555">'+W.toFixed(1)+' m</text>';
-  s+='<text x="'+(X(-W/2)-20)+'" y="'+Z(0)+'" text-anchor="middle" font-size="11" fill="#555" transform="rotate(-90 '+(X(-W/2)-20)+' '+Z(0)+')">'+D.toFixed(1)+' m</text>';
-  var th=S3.curve*Math.PI/180, bz=-D/2+S3.wallBack, pts=[];
-  for(var i=0;i<=24;i++){ var uu=i/24;
-    if(S3.curve<1){ pts.push([(uu-0.5)*S3.wallW, bz]); }
-    else { var R=S3.wallW/th, a=-th/2+uu*th; pts.push([Math.sin(a)*R, bz+R-Math.cos(a)*R]); } }
-  s+='<polyline points="'+pts.map(function(p){return X(p[0])+','+Z(p[1]);}).join(' ')+'" fill="none" stroke="#4a7af5" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>';
-  s+='<text x="'+X(0)+'" y="'+(Z(bz)-9)+'" text-anchor="middle" font-size="10" font-weight="600" fill="#4a7af5">LED WALL  '+S3.wallW.toFixed(1)+'m \u00d7 '+S3.wallH.toFixed(1)+'m</text>';
-  s+='<text x="'+X(0)+'" y="'+(Z(D/2)+40)+'" text-anchor="middle" font-size="8.5" letter-spacing="1.5" fill="#9aa0a8">CAMERA / FRONT</text>';
-  var lanes={},ln=0;
+  var racks=S3.machines.filter(function(m){return m.t==='rack';}).map(function(m){return ['R'+m.i,m.x,m.z];});
+  var works=S3.machines.filter(function(m){return m.t==='ed';}).map(function(m){return ['WS'+(m.i+1),m.x,m.z];});
+  var devs=S3.machines.filter(function(m){return m.t==='float';}).map(function(m){var c=components.find(function(q){return q.id===m.i;});return [c?compName(c).slice(0,16):'?',m.x,m.z];});
+  var cables=[],seen={},order=[];
   connections.forEach(function(cn){
     var a=components.find(function(c){return c.id===cn.fromCompId;}),b=components.find(function(c){return c.id===cn.toCompId;});
     if(!a||!b||!a.rack||!b.rack)return;
-    function an(c){ if(c.rack>0){var m=S3.machines.find(function(x){return x.t==='rack'&&x.i===c.rack;});return m;}
+    function an(c){ if(c.rack>0){return S3.machines.find(function(x){return x.t==='rack'&&x.i===c.rack;});}
       if(c.rack>=100){return S3.machines.find(function(x){return x.t==='ed'&&x.i===c.rack-101;});}
       return S3.machines.find(function(x){return x.t==='float'&&x.i===c.id;}); }
     var pa=an(a),pb=an(b); if(!pa||!pb)return;
     var port=(a.ports||[]).find(function(p){return p.id===cn.fromPortId;});
-    var sig=(port||{}).signal||'Other', col=SIGNAL_COLOR[sig]||'#999';
-    if(lanes[sig]===undefined)lanes[sig]=ln++;
-    var path=s3CablePath(pa.x,pa.z,pb.x,pb.z,W,D,lanes[sig]*2);
-    s+='<polyline points="'+path.map(function(p){return X(p[0])+','+Z(p[1]);}).join(' ')+'" fill="none" stroke="'+col+'" stroke-width="1.6" opacity="0.9"/>';
+    var sig=(port||{}).signal||'Other';
+    if(!seen[sig]){seen[sig]=1;order.push(sig);}
+    cables.push({x1:pa.x,z1:pa.z,x2:pb.x,z2:pb.z,sig:sig});
   });
-  S3.machines.forEach(function(m){
-    var x=X(m.x),z=Z(m.z);
-    if(m.t==='rack'){ s+='<rect x="'+(x-10)+'" y="'+(z-12)+'" width="20" height="24" rx="2.5" fill="#fff" stroke="#0b0b0c" stroke-width="1.4"/><text x="'+x+'" y="'+(z+3)+'" text-anchor="middle" font-size="8" font-weight="600">R'+m.i+'</text>'; }
-    else if(m.t==='ed'){ s+='<rect x="'+(x-16)+'" y="'+(z-9)+'" width="32" height="18" rx="2.5" fill="#0b0b0c" stroke="#0b0b0c"/><text x="'+x+'" y="'+(z+3)+'" text-anchor="middle" font-size="7.5" font-weight="600" fill="#fff">WS'+(m.i+1)+'</text>'; }
-    else { var c=components.find(function(q){return q.id===m.i;});
-      s+='<circle cx="'+x+'" cy="'+z+'" r="7" fill="#fff" stroke="#0b0b0c" stroke-width="1.4"/><circle cx="'+x+'" cy="'+z+'" r="2.4" fill="#4a7af5"/><text x="'+x+'" y="'+(z+20)+'" text-anchor="middle" font-size="7.5" fill="#3a3f47">'+esc(c?compName(c).slice(0,16):'?')+'</text>'; }
-  });
-  var sbm=Math.min(5,Math.max(1,Math.round(W/4)||1)), sbpx=sbm*sc;
-  var sbx=X(W/2)-sbpx, sby=Z(D/2)+34;
-  s+='<line x1="'+sbx+'" y1="'+sby+'" x2="'+(sbx+sbpx)+'" y2="'+sby+'" stroke="#3a3f47" stroke-width="2"/>';
-  s+='<line x1="'+sbx+'" y1="'+(sby-4)+'" x2="'+sbx+'" y2="'+(sby+4)+'" stroke="#3a3f47" stroke-width="1.5"/>';
-  s+='<line x1="'+(sbx+sbpx)+'" y1="'+(sby-4)+'" x2="'+(sbx+sbpx)+'" y2="'+(sby+4)+'" stroke="#3a3f47" stroke-width="1.5"/>';
-  s+='<text x="'+(sbx+sbpx/2)+'" y="'+(sby-7)+'" text-anchor="middle" font-size="9" fill="#3a3f47">'+sbm+' m</text>';
-  s+='</svg>';
-
-  var keys=Object.keys(lanes), legendHTML;
-  if(keys.length){
-    legendHTML='<div class="legend">'+keys.map(function(sg){return '<span class="leg-item"><span class="swatch" style="background:'+(SIGNAL_COLOR[sg]||'#999')+'"></span>'+esc(sg)+'</span>';}).join('')+'</div>';
-  } else {
-    legendHTML='<div class="leg-empty">No signal routing defined on placed devices.</div>';
-  }
-
-  var nRack=S3.machines.filter(function(m){return m.t==='rack';}).length;
-  var nDev=S3.machines.filter(function(m){return m.t==='float';}).length;
-  var specTable='<table class="spec-t">'
-    +'<tr><td class="k">Studio footprint</td><td class="v">'+S3.roomW+' \u00d7 '+S3.roomD+' m</td></tr>'
-    +'<tr><td class="k">Studio height</td><td class="v">'+S3.roomH+' m</td></tr>'
-    +'<tr><td class="k">LED wall</td><td class="v">'+S3.wallW.toFixed(1)+' \u00d7 '+S3.wallH.toFixed(1)+' m</td></tr>'
-    +'<tr><td class="k">Wall curvature</td><td class="v">'+S3.curve+'\u00b0</td></tr>'
-    +'<tr><td class="k">Pixel pitch</td><td class="v">P'+S3.pitch+'</td></tr>'
-    +'<tr><td class="k">Equipment racks</td><td class="v">'+nRack+'</td></tr>'
-    +'<tr><td class="k">Devices placed</td><td class="v">'+nDev+'</td></tr>'
-    +'</table>';
-
-  var extraCSS=
-     '.plan-frame{border:1px solid #e7e9ec;border-radius:10px;background:#fff;padding:14px 16px 8px;margin-bottom:16px;break-inside:avoid}'
-    +'.plan-frame svg{width:100%;height:auto;display:block}'
-    +'.plan-cols{display:flex;gap:14px;align-items:stretch}'
-    +'.panel{flex:1;border:1px solid #e7e9ec;border-radius:9px;background:#fafbfc;overflow:hidden;break-inside:avoid}'
-    +'.panel-h{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:#3a3f47;padding:9px 12px;border-bottom:1px solid #eef0f2;background:#fff}'
-    +'.spec-t{width:100%;border-collapse:collapse}'
-    +'.spec-t td{padding:6px 12px;border-bottom:1px solid #f2f3f5;font-size:10.5px}.spec-t tr:last-child td{border-bottom:none}'
-    +'.spec-t .k{color:#7b818a;width:54%}.spec-t .v{color:#15161a;font-weight:600;font-family:ui-monospace,monospace}'
-    +'.legend{display:flex;flex-wrap:wrap;gap:8px 16px;padding:12px}'
-    +'.leg-item{display:flex;align-items:center;gap:6px;font-size:10.5px;color:#3a3f47}'
-    +'.swatch{width:15px;height:5px;border-radius:2px;display:inline-block;flex-shrink:0}'
-    +'.leg-empty{padding:12px;font-size:10.5px;color:#9aa0a8}';
-
-  var body='<div class="plan-frame">'+s+'</div>'
-    +'<div class="plan-cols">'
-    +'<div class="panel"><div class="panel-h">Stage specification</div>'+specTable+'</div>'
-    +'<div class="panel"><div class="panel-h">Signal legend</div>'+legendHTML+'</div>'
-    +'</div>';
-
-  var exportDate=new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
-  var html=buildPdfDoc({
-    orientation:'landscape',
-    docType:'Studio Layout',
-    kicker:'Studio Layout',
-    title:'LED Volume Schematic',
-    subtitle:S3.roomW+'m \u00d7 '+S3.roomD+'m \u00d7 '+S3.roomH+'m studio \u00b7 '+S3.wallW.toFixed(1)+'\u00d7'+S3.wallH.toFixed(1)+'m wall @ '+S3.curve+'\u00b0 \u00b7 P'+S3.pitch,
-    metaHTML:'<b>Plan view (to scale)</b><br>Generated '+exportDate,
-    dateStr:exportDate,
-    footerTitle:'LED Volume Schematic',
-    extraCSS:extraCSS,
-    glanceHTML:'',
-    bodyHTML:body
-  });
-  openPrintWindow(html);
+  var d={W:S3.roomW,D:S3.roomD,H:S3.roomH,wallW:S3.wallW,wallH:S3.wallH,curve:S3.curve,pitch:S3.pitch,wallBack:S3.wallBack,
+    racks:racks,works:works,devs:devs,cables:cables,legend:order,
+    date:new Date().toISOString().slice(0,10),docno:'US-STG-001',project:'ICVFX LED VOLUME',drawn:'\u2014'};
+  openPrintWindow(svgSheetHTML(USPDF.buildSchematicSVG(d),'LED Volume Schematic'));
 }
 
 // ── Mobile tab bar ──

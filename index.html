@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -2134,7 +2134,8 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
     <div class="pnl" id="pnl-admin">
       <div style="max-width:560px;padding:8px 0 40px">
         <h2 style="font-size:22px;font-weight:700;color:var(--ink);margin:0 0 4px">Admin</h2>
-        <p style="color:var(--ink3);margin:0 0 24px;font-size:13px">Create user accounts and manage access. Only visible to the admin account.</p>
+        <p style="color:var(--ink3);margin:0 0 6px;font-size:13px">Create user accounts and manage access. Only visible to the admin account.</p>
+        <p style="margin:0 0 24px"><code style="font-family:var(--mono);font-size:11px;color:#4ade80;background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.18);border-radius:4px;padding:2px 7px">v1.1.2</code></p>
 
         <div style="background:var(--card);border:1px solid var(--line);border-radius:6px;padding:20px;margin-bottom:16px">
           <div style="font-size:11px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px">Create new user</div>
@@ -4334,8 +4335,7 @@ function updateDiagram(){
     if(synModel) synLines.push({text:sh(synModel,18), color:'#9b9b9f'});
     var n = drawNode(COL_MID, bandY, NODE_W, synLines, compName(syn)||'Genlock / Sync', '#14532d', '#86efac', syn);
     nodes['syn'+i] = n; svgParts.push(n.html);
-    // Band label
-    svgParts.push(dgText(COL_MID-8, bandY + n.h/2, 'Sync', 9, '#2a2a2a', 'end'));
+    svgParts.push(dgText(40, bandY + n.h/2, 'SYNC / INFRA', 8, '#505058', 'start'));
     bandY += n.h + 10;
   });
 
@@ -4346,7 +4346,7 @@ function updateDiagram(){
     if(netSpeed) netLines.push({text:netSpeed, color:'#9b9b9f'});
     var n = drawNode(COL_MID, bandY, NODE_W, netLines, compName(net)||'Network', '#303038', '#606068', net);
     nodes['net'+i] = n; svgParts.push(n.html);
-    svgParts.push(dgText(COL_MID-8, bandY + n.h/2, 'Network', 9, '#2a2a2a', 'end'));
+    svgParts.push(dgText(40, bandY + n.h/2, 'SYNC / INFRA', 8, '#505058', 'start'));
     bandY += n.h + 10;
   });
 
@@ -4536,7 +4536,7 @@ function updateDiagram(){
   var totalH = Math.max(bandY + 20, 400);
   var headers = [
     dgRect(55,12,120,20,null,'rgba(255,255,255,0.035)',10)
-      + dgText(115,22,'Video in',10,'#646469'),
+      + dgText(115,22,'Camera / Tracking',10,'#646469'),
     dgRect(384,12,140,20,null,'rgba(255,255,255,0.035)',10)
       + dgText(454,22,'Compute',10,'#646469'),
     dgRect(694,12,140,20,null,'rgba(255,255,255,0.035)',10)
@@ -5562,11 +5562,11 @@ var USPDF=(function(){
       S.push('<text x="'+(sc2[4]+13)+'" y="'+ty+'" font-family="'+MONO+'" font-size="8.5" fill="'+INK2+'">'+esc(fit(cn.signal,sc2[5]-(sc2[4]+13)-6,8.5,CW_MONO))+'</text>');
     });
     if(d.connections.length>6)
-      S.push('<text x="'+(sc2[0]+10)+'" y="'+(cry+6*crh+11)+'" font-family="'+MONO+'" font-size="8" fill="'+INK3+'">+ '+(d.connections.length-6)+' more connections</text>');
+      S.push('<text x="'+(sc2[0]+10)+'" y="'+(cry+6*crh+11)+'" font-family="'+MONO+'" font-size="8" fill="'+INK3+'">+ '+(d.connections.length-6)+' more \u2014 see Signal Routing Schedule</text>');
     // col seps for routing
     [sc2[1],sc2[3],sc2[4]].forEach(function(xx){S.push('<line x1="'+xx+'" y1="'+(by0+22)+'" x2="'+xx+'" y2="'+(by0+byh)+'" stroke="'+HAIR+'" stroke-width="0.6"/>');});
     titleBlock(S,704,by0,389,byh,{tag:"CONFIG",title:"RIG CONFIGURATION",
-      project:d.project||"ICVFX LED VOLUME",scale:"N/A",date:d.date,sheet:"1 / 1",
+      project:d.project||"ICVFX LED VOLUME",scale:"N/A",date:d.date,sheet:d.sheet1||"1 / 1",
       drawn:d.drawn||"M. WHALEN",rev:"A",dwgno:d.docno||"US-RIG-001"});
     return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+PW+' '+PH+'" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">'+S.join("")+'</svg>';
   }
@@ -5601,14 +5601,44 @@ var USPDF=(function(){
     var conns=d.connections||[];
     var inCnt={},outCnt={},inSeen={},outSeen={};
     conns.forEach(function(cn){if(pos[cn.to])inCnt[cn.to]=(inCnt[cn.to]||0)+1;if(pos[cn.from])outCnt[cn.from]=(outCnt[cn.from]||0)+1;});
+    // Inter-lane gutter centres (box-free vertical channels at each lane boundary).
+    function gutterX(g){return bx0+bw*(g+1)/5;}     // gutter to the RIGHT of lane g (0..3)
+    var GUT_HW=bw/5*0.5-BW/2-4;                       // usable half-width of a gutter (~14px)
+    // Pre-count how many vertical runs each gutter must carry, so we can spread
+    // them evenly across the available gutter width instead of a fixed ±7 fan.
+    var gutNeed={};
+    conns.forEach(function(cn){var A=pos[cn.from],B=pos[cn.to];if(!A||!B)return;
+      var g = (B.lane>A.lane)?(B.lane-1) : (B.lane<A.lane)?B.lane : A.lane;
+      gutNeed[g]=(gutNeed[g]||0)+1;});
+    var gutSeen={};
+    function chanX(g){
+      var n=gutNeed[g]||1, k=(gutSeen[g]=(gutSeen[g]||0)+1)-1;
+      if(n<=1) return gutterX(g);
+      var span=Math.min(GUT_HW*2, (n-1)*6);           // cap total spread at gutter width
+      return gutterX(g) - span/2 + span*(k/(n-1));
+    }
     conns.forEach(function(cn,idx){var A=pos[cn.from],B=pos[cn.to];if(!A||!B)return;
-      var ko=outCnt[cn.from]||1,jo=(outSeen[cn.from]=(outSeen[cn.from]||0)+1)-1,sxo=(jo-(ko-1)/2)*8;
-      var ki=inCnt[cn.to]||1,ji=(inSeen[cn.to]=(inSeen[cn.to]||0)+1)-1,eyo=(ji-(ki-1)/2)*8;
-      var col=SIG[cn.signal]||"#9aa0a8",ax=A.x+A.w,ay=A.cy+sxo,bxx=B.x,by=B.cy+eyo,off=((idx%6)-2.5)*6;
-      if(bxx>ax+8){var midx=(ax+bxx)/2+off;
-        S.push('<path d="M'+ax+' '+ay+' H'+midx+' V'+by+' H'+bxx+'" fill="none" stroke="'+col+'" stroke-width="1.7" opacity="0.92"/>');}
-      else{var topy=Math.min(ay,by)-24-Math.abs(off);
-        S.push('<path d="M'+ax+' '+ay+' H'+(ax+14)+' V'+topy+' H'+(bxx-14)+' V'+by+' H'+bxx+'" fill="none" stroke="'+col+'" stroke-width="1.5" opacity="0.85" stroke-dasharray="4 3"/>');}
+      // vertical offset at source/target so multiple links on one box separate cleanly
+      var ko=outCnt[cn.from]||1,jo=(outSeen[cn.from]=(outSeen[cn.from]||0)+1)-1,sxo=(jo-(ko-1)/2)*6;
+      var ki=inCnt[cn.to]||1,ji=(inSeen[cn.to]=(inSeen[cn.to]||0)+1)-1,eyo=(ji-(ki-1)/2)*6;
+      var col=SIG[cn.signal]||"#9aa0a8",ax=A.x+A.w,ay=A.cy+sxo,bxx=B.x,by=B.cy+eyo;
+      var dash=(cn.signal==="Genlock/Ref"||cn.signal==="Timecode")?' stroke-dasharray="5 3"':'';
+      if(B.lane>A.lane){
+        // forward: single vertical leg in the gutter just LEFT of target lane
+        var gx=chanX(B.lane-1);
+        S.push('<path d="M'+ax+' '+ay+' H'+gx+' V'+by+' H'+bxx+'" fill="none" stroke="'+col+'" stroke-width="1.6" opacity="0.9"'+dash+'/>');
+      } else if(B.lane<A.lane){
+        // backward: up over the top band, across, drop into target gutter. Route the
+        // horizontal return at a per-link height so the returns don't overlap.
+        var gx2=chanX(B.lane);
+        var topy=bandTop+16+ (idx%5)*5;
+        S.push('<path d="M'+ax+' '+ay+' H'+(gutterX(A.lane>0?A.lane-1:0))+' V'+topy+' H'+gx2+' V'+by+' H'+bxx+'" fill="none" stroke="'+col+'" stroke-width="1.4" opacity="0.82" stroke-dasharray="4 3"/>');
+      } else {
+        // same lane: out to the gutter on the right and back — no tiny stub, the
+        // vertical sits fully in the box-free channel.
+        var gx3=chanX(A.lane);
+        S.push('<path d="M'+ax+' '+ay+' H'+gx3+' V'+by+' H'+bxx+'" fill="none" stroke="'+col+'" stroke-width="1.5" opacity="0.85"'+dash+'/>');
+      }
       S.push('<path d="M'+(bxx-7)+' '+(by-4.5)+' L'+bxx+' '+by+' L'+(bxx-7)+' '+(by+4.5)+' Z" fill="'+col+'"/>');});
     // processor -> wall
     lanes[3].forEach(function(pc){var P=pos[pc.name];if(!P)return;var ax=P.x+P.w,ay=P.cy,wy=wallY+wallH2/2;
@@ -5634,12 +5664,48 @@ var USPDF=(function(){
       S.push('<rect x="'+px+'" y="'+(py-7)+'" width="18" height="6" rx="1" fill="'+(SIG[sg]||"#999")+'"/>');
       S.push('<text x="'+(px+26)+'" y="'+py+'" font-family="'+BODY+'" font-size="10.5" fill="'+INK+'">'+esc(fit(sg,colw-32,10.5,CW_BODY))+'</text>');});
     titleBlock(S,704,by0,389,byh,{tag:"FLOW",title:"RIG SIGNAL FLOW",
-      project:d.project||"ICVFX LED VOLUME",scale:"NTS",date:d.date,sheet:"1 / 1",
+      project:d.project||"ICVFX LED VOLUME",scale:"NTS",date:d.date,sheet:d.sheet2||"2 / 2",
       drawn:d.drawn||"M. WHALEN",rev:"A",dwgno:d.docno||"US-RIG-001"});
     return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+PW+' '+PH+'" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">'+S.join("")+'</svg>';
   }
 
-  return {buildSchematicSVG:buildSchematicSVG, buildRigSVG:buildRigSVG, buildRigFlowSVG:buildRigFlowSVG, _esc:esc};
+  // ---------- SIGNAL ROUTING (paginated full table) ----------
+  // Renders one A4-landscape sheet of routing rows. pageRows = slice for this page.
+  function buildRoutingSheetSVG(d,pageRows,pageNo,pageTotal,rowOffset){
+    var PW=1123,PH=794;
+    var S=sheet({W:PW,H:PH,docno:d.docno||"US-RIG-001",date:d.date,status:"FOR REVIEW"});
+    var rx=30,rw=1063,ry=104;
+    panelHead(S,rx,ry,rw,"SIGNAL ROUTING \u2014 FULL");
+    // wide 6-col layout: #, FROM, OUT PORT, ->, TO, IN PORT, SIGNAL
+    var sc2=[rx,rx+44,rx+304,rx+474,rx+510,rx+770,rx+940,rx+rw];
+    var slab=["#","FROM DEVICE","OUTPUT PORT","","TO DEVICE","INPUT PORT","SIGNAL"];
+    var hy=ry+36;
+    slab.forEach(function(l,i){if(l)S.push('<text x="'+(sc2[i]+10)+'" y="'+hy+'" font-family="'+MONO+'" font-size="7.5" letter-spacing="1.1" fill="'+INK3+'">'+esc(l)+'</text>');});
+    S.push('<line x1="'+rx+'" y1="'+(hy+8)+'" x2="'+(rx+rw)+'" y2="'+(hy+8)+'" stroke="'+INK+'" stroke-width="1"/>');
+    var rowy=hy+8, rh=21;
+    pageRows.forEach(function(cn,idx){var y0=rowy+idx*rh,ty=y0+14;
+      if(idx%2===1) S.push('<rect x="'+rx+'" y="'+y0+'" width="'+rw+'" height="'+rh+'" fill="#fafbfc"/>');
+      S.push('<text x="'+(sc2[0]+10)+'" y="'+ty+'" font-family="'+MONO+'" font-size="9" fill="'+INK3+'">'+(rowOffset+idx+1)+'</text>');
+      S.push('<text x="'+(sc2[1]+10)+'" y="'+ty+'" font-family="'+BODY+'" font-size="10.5" fill="'+INK+'">'+esc(fit(cn.from,sc2[2]-(sc2[1]+10)-8,10.5,CW_BODY))+'</text>');
+      S.push('<text x="'+(sc2[2]+10)+'" y="'+ty+'" font-family="'+MONO+'" font-size="9" fill="'+INK2+'">'+esc(fit(cn.fromPort||"\u2014",sc2[3]-(sc2[2]+10)-8,9,CW_MONO))+'</text>');
+      S.push('<text x="'+(sc2[3]+6)+'" y="'+ty+'" font-family="'+MONO+'" font-size="10" fill="'+ACC+'">&#8594;</text>');
+      S.push('<text x="'+(sc2[4]+10)+'" y="'+ty+'" font-family="'+BODY+'" font-size="10.5" fill="'+INK+'">'+esc(fit(cn.to,sc2[5]-(sc2[4]+10)-8,10.5,CW_BODY))+'</text>');
+      S.push('<text x="'+(sc2[5]+10)+'" y="'+ty+'" font-family="'+MONO+'" font-size="9" fill="'+INK2+'">'+esc(fit(cn.toPort||"\u2014",sc2[6]-(sc2[5]+10)-8,9,CW_MONO))+'</text>');
+      S.push('<rect x="'+(sc2[6]+10)+'" y="'+(y0+rh/2-7)+'" width="13" height="13" rx="2" fill="none" stroke="'+(SIG[cn.signal]||"#999")+'" stroke-width="1"/>');
+      S.push('<circle cx="'+(sc2[6]+16.5)+'" cy="'+(y0+rh/2-0.5)+'" r="2.4" fill="'+(SIG[cn.signal]||"#999")+'"/>');
+      S.push('<text x="'+(sc2[6]+30)+'" y="'+ty+'" font-family="'+MONO+'" font-size="9" fill="'+INK2+'">'+esc(fit(cn.signal,sc2[7]-(sc2[6]+30)-6,9,CW_MONO))+'</text>');
+      S.push('<line x1="'+rx+'" y1="'+(y0+rh)+'" x2="'+(rx+rw)+'" y2="'+(y0+rh)+'" stroke="'+HAIR+'" stroke-width="0.6"/>');
+    });
+    var tbottom=rowy+pageRows.length*rh;
+    [sc2[1],sc2[2],sc2[4],sc2[5],sc2[6]].forEach(function(xx){S.push('<line x1="'+xx+'" y1="'+ry+'" x2="'+xx+'" y2="'+tbottom+'" stroke="'+HAIR+'" stroke-width="0.6"/>');});
+    S.push('<rect x="'+rx+'" y="'+ry+'" width="'+rw+'" height="'+(tbottom-ry)+'" fill="none" stroke="'+HAIR+'" stroke-width="1.1"/>');
+    titleBlock(S,704,600,389,150,{tag:"ROUTING",title:"SIGNAL ROUTING SCHEDULE",
+      project:d.project||"ICVFX LED VOLUME",scale:"N/A",date:d.date,sheet:pageNo+" / "+pageTotal,
+      drawn:d.drawn||"\u2014",rev:"A",dwgno:d.docno||"US-RIG-001"});
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+PW+' '+PH+'" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">'+S.join("")+'</svg>';
+  }
+
+  return {buildSchematicSVG:buildSchematicSVG, buildRigSVG:buildRigSVG, buildRigFlowSVG:buildRigFlowSVG, buildRoutingSheetSVG:buildRoutingSheetSVG, _esc:esc};
 })();
 
 function svgSheetHTML(svg, title){
@@ -5680,7 +5746,8 @@ function exportRigPDF(){
     var fc=components.find(function(x){return x.id===cn.fromCompId;});
     var tc=components.find(function(x){return x.id===cn.toCompId;});
     var fp=fc?(fc.ports||[]).find(function(p){return p.id===cn.fromPortId;}):null;
-    return {from:fc?compName(fc):'?',fromPort:fp?(fp.label||fp.signal):'',to:tc?compName(tc):'?',signal:fp?fp.signal:''};
+    var tp=tc?(tc.ports||[]).find(function(p){return p.id===cn.toPortId;}):null;
+    return {from:fc?compName(fc):'?',fromPort:fp?(fp.label||fp.signal):'',to:tc?compName(tc):'?',toPort:tp?(tp.label||tp.signal):'',signal:fp?fp.signal:''};
   });
   var ed=components.find(function(c){return c.type==='workstation'&&(c.fields||{}).role==='Editor';});
   var ue=ed?(ed.fields.ue||''):'';
@@ -5689,7 +5756,19 @@ function exportRigPDF(){
     counts:{components:components.length,works:components.filter(function(c){return c.type==='workstation';}).length,
       links:connections.length,ue:ue||'\u2014'},
     components:regs,connections:conns};
-  openPrintWindow(svgSheetHTML([USPDF.buildRigSVG(d), USPDF.buildRigFlowSVG(d)],'Rig Configuration'));
+  // Build sheet list: page 1 component register, page 2 flow diagram,
+  // then paginated full routing schedule (24 rows/page).
+  var PER=24, nPages=Math.ceil(conns.length/PER);
+  // Total sheet count = 2 (register+flow) + routing pages
+  var grandTotal=2+nPages;
+  d.sheet1="1 / "+grandTotal;
+  d.sheet2="2 / "+grandTotal;
+  var sheets=[USPDF.buildRigSVG(d), USPDF.buildRigFlowSVG(d)];
+  for(var pg=0; pg<nPages; pg++){
+    var slice=conns.slice(pg*PER,(pg+1)*PER);
+    sheets.push(USPDF.buildRoutingSheetSVG(d, slice, 3+pg, grandTotal, pg*PER));
+  }
+  openPrintWindow(svgSheetHTML(sheets,'Rig Configuration'));
 }
 
 function updateStatusFooter(){
@@ -9105,26 +9184,106 @@ function renderMaint(){
 }
 
 function s3ExportPDF(){
-  var racks=S3.machines.filter(function(m){return m.t==='rack';}).map(function(m){return ['R'+m.i,m.x,m.z];});
-  var works=S3.machines.filter(function(m){return m.t==='ed';}).map(function(m){return ['WS'+(m.i+1),m.x,m.z];});
-  var devs=S3.machines.filter(function(m){return m.t==='float';}).map(function(m){var c=components.find(function(q){return q.id===m.i;});return [c?compName(c).slice(0,16):'?',m.x,m.z];});
-  var cables=[],seen={},order=[];
+  var W=S3.roomW, D=S3.roomD, sc=Math.min(700/W, 450/D);
+  var CW=Math.round(W*sc+120), CH=Math.round(D*sc+150);
+  function X(x){return 60+(x+W/2)*sc;} function Z(z){return 60+(z+D/2)*sc;}
+  var s='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+CW+' '+CH+'" width="'+CW+'" height="'+CH+'" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif">';
+  var gx,gz;
+  for(gx=Math.ceil(-W/2);gx<=W/2+1e-6;gx++){ s+='<line x1="'+X(gx)+'" y1="'+Z(-D/2)+'" x2="'+X(gx)+'" y2="'+Z(D/2)+'" stroke="#eef0f2" stroke-width="1"/>'; }
+  for(gz=Math.ceil(-D/2);gz<=D/2+1e-6;gz++){ s+='<line x1="'+X(-W/2)+'" y1="'+Z(gz)+'" x2="'+X(W/2)+'" y2="'+Z(gz)+'" stroke="#eef0f2" stroke-width="1"/>'; }
+  s+='<rect x="'+X(-W/2)+'" y="'+Z(-D/2)+'" width="'+(W*sc)+'" height="'+(D*sc)+'" fill="none" stroke="#0b0b0c" stroke-width="1.6"/>';
+  s+='<text x="'+X(0)+'" y="'+(Z(D/2)+22)+'" text-anchor="middle" font-size="11" fill="#555">'+W.toFixed(1)+' m</text>';
+  s+='<text x="'+(X(-W/2)-20)+'" y="'+Z(0)+'" text-anchor="middle" font-size="11" fill="#555" transform="rotate(-90 '+(X(-W/2)-20)+' '+Z(0)+')">'+D.toFixed(1)+' m</text>';
+  var th=S3.curve*Math.PI/180, bz=-D/2+S3.wallBack, pts=[];
+  for(var i=0;i<=24;i++){ var uu=i/24;
+    if(S3.curve<1){ pts.push([(uu-0.5)*S3.wallW, bz]); }
+    else { var R=S3.wallW/th, a=-th/2+uu*th; pts.push([Math.sin(a)*R, bz+R-Math.cos(a)*R]); } }
+  s+='<polyline points="'+pts.map(function(p){return X(p[0])+','+Z(p[1]);}).join(' ')+'" fill="none" stroke="#4a7af5" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>';
+  s+='<text x="'+X(0)+'" y="'+(Z(bz)-9)+'" text-anchor="middle" font-size="10" font-weight="600" fill="#4a7af5">LED WALL  '+S3.wallW.toFixed(1)+'m \u00d7 '+S3.wallH.toFixed(1)+'m</text>';
+  s+='<text x="'+X(0)+'" y="'+(Z(D/2)+40)+'" text-anchor="middle" font-size="8.5" letter-spacing="1.5" fill="#9aa0a8">CAMERA / FRONT</text>';
+  var lanes={},ln=0;
   connections.forEach(function(cn){
     var a=components.find(function(c){return c.id===cn.fromCompId;}),b=components.find(function(c){return c.id===cn.toCompId;});
     if(!a||!b||!a.rack||!b.rack)return;
-    function an(c){ if(c.rack>0){return S3.machines.find(function(x){return x.t==='rack'&&x.i===c.rack;});}
+    function an(c){ if(c.rack>0){var m=S3.machines.find(function(x){return x.t==='rack'&&x.i===c.rack;});return m;}
       if(c.rack>=100){return S3.machines.find(function(x){return x.t==='ed'&&x.i===c.rack-101;});}
       return S3.machines.find(function(x){return x.t==='float'&&x.i===c.id;}); }
     var pa=an(a),pb=an(b); if(!pa||!pb)return;
     var port=(a.ports||[]).find(function(p){return p.id===cn.fromPortId;});
-    var sig=(port||{}).signal||'Other';
-    if(!seen[sig]){seen[sig]=1;order.push(sig);}
-    cables.push({x1:pa.x,z1:pa.z,x2:pb.x,z2:pb.z,sig:sig});
+    var sig=(port||{}).signal||'Other', col=SIGNAL_COLOR[sig]||'#999';
+    if(lanes[sig]===undefined)lanes[sig]=ln++;
+    var path=s3CablePath(pa.x,pa.z,pb.x,pb.z,W,D,lanes[sig]*2);
+    s+='<polyline points="'+path.map(function(p){return X(p[0])+','+Z(p[1]);}).join(' ')+'" fill="none" stroke="'+col+'" stroke-width="1.6" opacity="0.9"/>';
   });
-  var d={W:S3.roomW,D:S3.roomD,H:S3.roomH,wallW:S3.wallW,wallH:S3.wallH,curve:S3.curve,pitch:S3.pitch,wallBack:S3.wallBack,
-    racks:racks,works:works,devs:devs,cables:cables,legend:order,
-    date:new Date().toISOString().slice(0,10),docno:'US-STG-001',project:'ICVFX LED VOLUME',drawn:'\u2014'};
-  openPrintWindow(svgSheetHTML(USPDF.buildSchematicSVG(d),'LED Volume Schematic'));
+  S3.machines.forEach(function(m){
+    var x=X(m.x),z=Z(m.z);
+    if(m.t==='rack'){ s+='<rect x="'+(x-10)+'" y="'+(z-12)+'" width="20" height="24" rx="2.5" fill="#fff" stroke="#0b0b0c" stroke-width="1.4"/><text x="'+x+'" y="'+(z+3)+'" text-anchor="middle" font-size="8" font-weight="600">R'+m.i+'</text>'; }
+    else if(m.t==='ed'){ s+='<rect x="'+(x-16)+'" y="'+(z-9)+'" width="32" height="18" rx="2.5" fill="#0b0b0c" stroke="#0b0b0c"/><text x="'+x+'" y="'+(z+3)+'" text-anchor="middle" font-size="7.5" font-weight="600" fill="#fff">WS'+(m.i+1)+'</text>'; }
+    else { var c=components.find(function(q){return q.id===m.i;});
+      s+='<circle cx="'+x+'" cy="'+z+'" r="7" fill="#fff" stroke="#0b0b0c" stroke-width="1.4"/><circle cx="'+x+'" cy="'+z+'" r="2.4" fill="#4a7af5"/><text x="'+x+'" y="'+(z+20)+'" text-anchor="middle" font-size="7.5" fill="#3a3f47">'+esc(c?compName(c).slice(0,16):'?')+'</text>'; }
+  });
+  var sbm=Math.min(5,Math.max(1,Math.round(W/4)||1)), sbpx=sbm*sc;
+  var sbx=X(W/2)-sbpx, sby=Z(D/2)+34;
+  s+='<line x1="'+sbx+'" y1="'+sby+'" x2="'+(sbx+sbpx)+'" y2="'+sby+'" stroke="#3a3f47" stroke-width="2"/>';
+  s+='<line x1="'+sbx+'" y1="'+(sby-4)+'" x2="'+sbx+'" y2="'+(sby+4)+'" stroke="#3a3f47" stroke-width="1.5"/>';
+  s+='<line x1="'+(sbx+sbpx)+'" y1="'+(sby-4)+'" x2="'+(sbx+sbpx)+'" y2="'+(sby+4)+'" stroke="#3a3f47" stroke-width="1.5"/>';
+  s+='<text x="'+(sbx+sbpx/2)+'" y="'+(sby-7)+'" text-anchor="middle" font-size="9" fill="#3a3f47">'+sbm+' m</text>';
+  s+='</svg>';
+
+  var keys=Object.keys(lanes), legendHTML;
+  if(keys.length){
+    legendHTML='<div class="legend">'+keys.map(function(sg){return '<span class="leg-item"><span class="swatch" style="background:'+(SIGNAL_COLOR[sg]||'#999')+'"></span>'+esc(sg)+'</span>';}).join('')+'</div>';
+  } else {
+    legendHTML='<div class="leg-empty">No signal routing defined on placed devices.</div>';
+  }
+
+  var nRack=S3.machines.filter(function(m){return m.t==='rack';}).length;
+  var nDev=S3.machines.filter(function(m){return m.t==='float';}).length;
+  var specTable='<table class="spec-t">'
+    +'<tr><td class="k">Studio footprint</td><td class="v">'+S3.roomW+' \u00d7 '+S3.roomD+' m</td></tr>'
+    +'<tr><td class="k">Studio height</td><td class="v">'+S3.roomH+' m</td></tr>'
+    +'<tr><td class="k">LED wall</td><td class="v">'+S3.wallW.toFixed(1)+' \u00d7 '+S3.wallH.toFixed(1)+' m</td></tr>'
+    +'<tr><td class="k">Wall curvature</td><td class="v">'+S3.curve+'\u00b0</td></tr>'
+    +'<tr><td class="k">Pixel pitch</td><td class="v">P'+S3.pitch+'</td></tr>'
+    +'<tr><td class="k">Equipment racks</td><td class="v">'+nRack+'</td></tr>'
+    +'<tr><td class="k">Devices placed</td><td class="v">'+nDev+'</td></tr>'
+    +'</table>';
+
+  var extraCSS=
+     '.plan-frame{border:1px solid #e7e9ec;border-radius:10px;background:#fff;padding:14px 16px 8px;margin-bottom:16px;break-inside:avoid}'
+    +'.plan-frame svg{width:100%;height:auto;display:block}'
+    +'.plan-cols{display:flex;gap:14px;align-items:stretch}'
+    +'.panel{flex:1;border:1px solid #e7e9ec;border-radius:9px;background:#fafbfc;overflow:hidden;break-inside:avoid}'
+    +'.panel-h{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:#3a3f47;padding:9px 12px;border-bottom:1px solid #eef0f2;background:#fff}'
+    +'.spec-t{width:100%;border-collapse:collapse}'
+    +'.spec-t td{padding:6px 12px;border-bottom:1px solid #f2f3f5;font-size:10.5px}.spec-t tr:last-child td{border-bottom:none}'
+    +'.spec-t .k{color:#7b818a;width:54%}.spec-t .v{color:#15161a;font-weight:600;font-family:ui-monospace,monospace}'
+    +'.legend{display:flex;flex-wrap:wrap;gap:8px 16px;padding:12px}'
+    +'.leg-item{display:flex;align-items:center;gap:6px;font-size:10.5px;color:#3a3f47}'
+    +'.swatch{width:15px;height:5px;border-radius:2px;display:inline-block;flex-shrink:0}'
+    +'.leg-empty{padding:12px;font-size:10.5px;color:#9aa0a8}';
+
+  var body='<div class="plan-frame">'+s+'</div>'
+    +'<div class="plan-cols">'
+    +'<div class="panel"><div class="panel-h">Stage specification</div>'+specTable+'</div>'
+    +'<div class="panel"><div class="panel-h">Signal legend</div>'+legendHTML+'</div>'
+    +'</div>';
+
+  var exportDate=new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+  var html=buildPdfDoc({
+    orientation:'landscape',
+    docType:'Studio Layout',
+    kicker:'Studio Layout',
+    title:'LED Volume Schematic',
+    subtitle:S3.roomW+'m \u00d7 '+S3.roomD+'m \u00d7 '+S3.roomH+'m studio \u00b7 '+S3.wallW.toFixed(1)+'\u00d7'+S3.wallH.toFixed(1)+'m wall @ '+S3.curve+'\u00b0 \u00b7 P'+S3.pitch,
+    metaHTML:'<b>Plan view (to scale)</b><br>Generated '+exportDate,
+    dateStr:exportDate,
+    footerTitle:'LED Volume Schematic',
+    extraCSS:extraCSS,
+    glanceHTML:'',
+    bodyHTML:body
+  });
+  openPrintWindow(html);
 }
 
 // ── Mobile tab bar ──

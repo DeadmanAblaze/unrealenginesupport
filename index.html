@@ -174,6 +174,50 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:13p
 .api-modal p{font-size:13px;color:var(--ink2);line-height:1.6;margin-bottom:16px}
 .api-modal a{color:var(--ink);text-decoration:underline}
 .api-modal-err{font-size:12px;color:var(--crit);background:var(--rdim);border:1px solid rgba(248,113,113,.2);border-radius:var(--r);padding:7px 10px;margin-bottom:12px;display:none}
+/* ── REPORTS ── */
+.rep-wrap{max-width:920px;padding:8px 0 40px}
+.rep-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:22px}
+.rep-head-title{font-size:22px;font-weight:700;color:var(--ink);letter-spacing:-.01em}
+.rep-head-sub{font-size:13px;color:var(--ink3);margin-top:3px}
+.rep-card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:15px 17px;margin-bottom:10px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:border-color .14s,background .14s}
+.rep-card:hover{border-color:var(--line2);background:var(--el)}
+.rep-card-ic{width:38px;height:38px;border-radius:9px;background:var(--brand-dim);border:1px solid rgba(91,157,255,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.rep-card-ic svg{width:18px;height:18px;stroke:var(--brand1);stroke-width:1.7;fill:none}
+.rep-card-body{flex:1;min-width:0}
+.rep-card-title{font-size:14px;font-weight:550;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rep-card-meta{font-size:11px;color:var(--ink3);font-family:var(--mono);margin-top:3px}
+.rep-card-del{background:none;border:none;color:var(--ink4);cursor:pointer;padding:6px 8px;border-radius:6px;font-size:15px;line-height:1;flex-shrink:0;transition:all .12s}
+.rep-card-del:hover{color:var(--crit);background:var(--rdim)}
+.rep-empty{font-family:var(--mono);font-size:12px;color:var(--ink4);padding:40px 20px;text-align:center;border:1px dashed var(--line2);border-radius:10px;background:rgba(255,255,255,.008)}
+/* full-screen reader */
+.rep-reader{display:none;position:fixed;inset:0;z-index:9000;background:#33353a;flex-direction:column}
+.rep-reader.show{display:flex}
+.rep-reader-bar{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:11px 18px;background:#0e0e11;border-bottom:1px solid var(--line);flex-shrink:0}
+.rep-reader-back{background:none;border:none;color:var(--ink2);font-size:13px;font-weight:500;cursor:pointer;font-family:var(--sans);padding:6px 4px;transition:color .12s}
+.rep-reader-back:hover{color:var(--ink)}
+.rep-reader-actions{display:flex;gap:8px}
+.rep-reader-btn{display:flex;align-items:center;gap:7px;background:linear-gradient(135deg,var(--brand1),var(--brand2));color:#06141f;border:none;border-radius:6px;padding:8px 16px;font-size:12.5px;font-weight:600;font-family:var(--sans);cursor:pointer;transition:opacity .12s}
+.rep-reader-btn:hover{opacity:.9}
+.rep-reader-btn svg{width:15px;height:15px;stroke:currentColor;stroke-width:2;fill:none}
+.rep-reader-scroll{flex:1;overflow-y:auto;padding:36px 20px 80px}
+/* clean printed-document style */
+.rep-doc{max-width:760px;margin:0 auto;background:#fff;color:#1a1c20;border-radius:6px;box-shadow:0 8px 40px rgba(0,0,0,.3);padding:64px 72px;font-family:'Geist',system-ui,sans-serif;font-size:14.5px;line-height:1.72}
+.rep-doc .rd-kicker{font-family:'Barlow Condensed',var(--sans);font-weight:700;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#3b6fe0;margin-bottom:8px}
+.rep-doc .rd-title{font-size:27px;font-weight:700;letter-spacing:-.02em;color:#15171c;line-height:1.2;margin-bottom:12px}
+.rep-doc .rd-meta{font-family:'Geist Mono',monospace;font-size:11.5px;color:#8b929c;padding-bottom:20px;margin-bottom:28px;border-bottom:2px solid #15171c}
+.rep-doc h1,.rep-doc h2,.rep-doc h3{color:#15171c;font-weight:650;letter-spacing:-.01em;line-height:1.3;margin:26px 0 10px}
+.rep-doc h1{font-size:21px}.rep-doc h2{font-size:18px}.rep-doc h3{font-size:15.5px}
+.rep-doc h2,.rep-doc h3{padding-bottom:5px;border-bottom:1px solid #eef1f5}
+.rep-doc p{margin:0 0 14px}
+.rep-doc strong{font-weight:650;color:#15171c}
+.rep-doc ul,.rep-doc ol{margin:0 0 16px;padding-left:24px}
+.rep-doc li{margin-bottom:7px}
+.rep-doc code{font-family:'Geist Mono',monospace;font-size:12.5px;background:#f4f6f8;border:1px solid #e7eaee;border-radius:4px;padding:1px 6px;color:#c2410c}
+.rep-doc pre{background:#15171c;border-radius:8px;padding:16px 18px;overflow-x:auto;margin:0 0 18px}
+.rep-doc pre code{background:none;border:none;color:#e6e9ed;padding:0;font-size:12.5px;line-height:1.6}
+.rep-doc .rd-src{margin-top:36px;padding-top:18px;border-top:1px solid #e7eaee;font-size:12px;color:#8b929c}
+.rep-doc .rd-src a{color:#3b6fe0;text-decoration:none;display:block;margin-top:5px;word-break:break-all}
+@media(max-width:640px){.rep-doc{padding:38px 26px}.rep-reader-scroll{padding:18px 10px 60px}}
 .api-key-display{font-size:12px;color:var(--live);background:var(--live-dim);border:1px solid rgba(74,222,128,.2);border-radius:var(--r);padding:7px 10px;margin-bottom:12px;display:none}
 
 /* ── APP LAYOUT ── */
@@ -1747,7 +1791,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
         <span class="rail-brand-sub">Production console</span>
       </div>
     </div>
-    <div class="rail-nav-section">// Nav</div><nav class="rail-nav"><button aria-label="Home" title="Home" class="nb on" onclick="go('home',this)"><svg viewBox="0 0 24 24"><path d="M3 10l9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V10z"/></svg><span class="nb-label">Home</span></button><button aria-label="Support" title="Support" class="nb" onclick="go('chat',this)"><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5z"/></svg><span class="nb-label">Support</span></button><button aria-label="Maintenance" title="Maintenance" class="nb" onclick="go('issues',this)"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><span class="nb-label">Maintenance</span><span class="nbadge" id="bi">0</span></button><button aria-label="Rig specs" title="Rig specs" class="nb" onclick="go('specs',this)"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg><span class="nb-label">Rig specs</span></button><button aria-label="Stage 3D" title="Stage 3D" class="nb" onclick="go('stage3d',this);stage3dEnter()"><svg viewBox="0 0 24 24"><path d="M12 2l9 5v10l-9 5-9-5V7l9-5z"/><path d="M12 22V12M12 12L3 7M12 12l9-5"/></svg><span class="nb-label">Stage 3D</span></button><button aria-label="Production" title="Production" class="nb" onclick="go('cl',this)"><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span class="nb-label">Production</span><span class="nbadge" id="bc">0</span></button><button aria-label="Docs" title="Docs" class="nb" onclick="go('quickstart',this)"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M4 19.5A2.5 2.5 0 0 0 6.5 22H20V2H6.5A2.5 2.5 0 0 0 4 4.5v15z"/></svg><span class="nb-label">Docs</span></button><button aria-label="Admin" title="Admin" class="nb" id="nb-admin" style="display:none" onclick="go('admin',this);adminLoadUsers()"><svg viewBox="0 0 24 24"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></svg><span class="nb-label">Admin</span></button></nav>
+    <div class="rail-nav-section">// Nav</div><nav class="rail-nav"><button aria-label="Home" title="Home" class="nb on" onclick="go('home',this)"><svg viewBox="0 0 24 24"><path d="M3 10l9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V10z"/></svg><span class="nb-label">Home</span></button><button aria-label="Support" title="Support" class="nb" onclick="go('chat',this)"><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5z"/></svg><span class="nb-label">Support</span></button><button aria-label="Maintenance" title="Maintenance" class="nb" onclick="go('issues',this)"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><span class="nb-label">Maintenance</span><span class="nbadge" id="bi">0</span></button><button aria-label="Rig specs" title="Rig specs" class="nb" onclick="go('specs',this)"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg><span class="nb-label">Rig specs</span></button><button aria-label="Stage 3D" title="Stage 3D" class="nb" onclick="go('stage3d',this);stage3dEnter()"><svg viewBox="0 0 24 24"><path d="M12 2l9 5v10l-9 5-9-5V7l9-5z"/><path d="M12 22V12M12 12L3 7M12 12l9-5"/></svg><span class="nb-label">Stage 3D</span></button><button aria-label="Production" title="Production" class="nb" onclick="go('cl',this)"><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span class="nb-label">Production</span><span class="nbadge" id="bc">0</span></button><button aria-label="Docs" title="Docs" class="nb" onclick="go('quickstart',this)"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M4 19.5A2.5 2.5 0 0 0 6.5 22H20V2H6.5A2.5 2.5 0 0 0 4 4.5v15z"/></svg><span class="nb-label">Docs</span></button><button aria-label="Reports" title="Reports" class="nb" onclick="go('reports',this);renderReports()"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg><span class="nb-label">Reports</span><span class="nbadge" id="br">0</span></button><button aria-label="Admin" title="Admin" class="nb" id="nb-admin" style="display:none" onclick="go('admin',this);adminLoadUsers()"><svg viewBox="0 0 24 24"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></svg><span class="nb-label">Admin</span></button></nav>
     <div class="rail-spacer"></div>
 
     <div class="rail-user">
@@ -1986,6 +2030,18 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
       </div>
     </div>
 
+    <div class="pnl" id="pnl-reports">
+      <div class="rep-wrap">
+        <div class="rep-head">
+          <div>
+            <div class="rep-head-title">Reports</div>
+            <div class="rep-head-sub">Saved support analyses &mdash; open for a reader-friendly view or export as PDF</div>
+          </div>
+        </div>
+        <div id="rep-list"></div>
+      </div>
+    </div>
+
     <div class="pnl" id="pnl-quickstart">
       <div style="max-width:820px;padding:8px 0 40px">
         <h2 style="font-size:22px;font-weight:700;color:var(--ink1);margin:0 0 4px">nDisplay Quick Start</h2>
@@ -2147,7 +2203,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
       <div style="max-width:560px;padding:8px 0 40px">
         <h2 style="font-size:22px;font-weight:700;color:var(--ink);margin:0 0 4px">Admin</h2>
         <p style="color:var(--ink3);margin:0 0 6px;font-size:13px">Create user accounts and manage access. Only visible to the admin account.</p>
-        <p style="margin:0 0 24px"><code style="font-family:var(--mono);font-size:11px;color:#4ade80;background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.18);border-radius:4px;padding:2px 7px">v1.1.3</code></p>
+        <p style="margin:0 0 24px"><code style="font-family:var(--mono);font-size:11px;color:#4ade80;background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.18);border-radius:4px;padding:2px 7px">v1.1.4</code></p>
 
         <div style="background:var(--card);border:1px solid var(--line);border-radius:6px;padding:20px;margin-bottom:16px">
           <div style="font-size:11px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px">Create new user</div>
@@ -2746,6 +2802,18 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
     <div class="status-footer" id="status-footer"><span class="sf-dot"></span><span class="sf-item">Virtual Production</span><span class="sf-sep">·</span><span class="sf-item" id="sf-engine">UE 5.7</span><span class="sf-sep">·</span><span class="sf-item" id="sf-comps">— components</span><span class="sf-sep">·</span><span class="sf-item" id="sf-conn">— connections</span><span class="sf-right"><span class="sf-item">unrealsupport.net</span></span></div>
   </div>
 </div>
+</div>
+
+<div class="rep-reader" id="rep-reader">
+  <div class="rep-reader-bar">
+    <button class="rep-reader-back" onclick="closeReport()" title="Back to reports">&#8592; Reports</button>
+    <div class="rep-reader-actions">
+      <button class="rep-reader-btn" onclick="exportReportPDF()" title="Export this report as PDF"><svg viewBox="0 0 24 24"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>Export PDF</button>
+    </div>
+  </div>
+  <div class="rep-reader-scroll">
+    <article class="rep-doc" id="rep-doc"></article>
+  </div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -3704,6 +3772,10 @@ async function loadData(){
     var md = await dref('maintenance').get();
     if(md.exists) MAINT = Object.assign({items:{},panels:{},spares:0,spareLog:[]}, md.data());
 
+    var repd = await dref('reports').get();
+    if(repd.exists && repd.data().items){ reports=repd.data().items; repNextId=repd.data().nextId||(reports.length+1); }
+    if(typeof updateRepCount==='function') updateRepCount();
+
   } catch(e) {
     console.error('Load error', e);
     showToast('Could not load saved data \u2014 check your connection and refresh', true);
@@ -3860,8 +3932,9 @@ function go(id, btn){
   if(id==='cal') renderCalendar();
   if(id==='gear') renderGear();
   if(id==='cl') renderCL();
+  if(id==='reports') renderReports();
   if(id==='chat') setTimeout(vidRefresh, 200);
-  var t={'home':['Home','Welcome to Unreal Support'],'specs':['Rig specs','Virtual production configuration'],'issues':['Issues','Open and recent stage issues'],'chat':['Support','VP and nDisplay assistance'],'cl':['Checklist','Daily session readiness'],'cal':['Planner','Schedule and stage activity'],'gear':['Equipment','Component manifest and product links'],'plugin':['UE Plugin','Live diagnostics plugin for Unreal Engine'],'stage3d':['Stage 3D','Interactive LED volume and studio planner'],'maint':['Maintenance','Equipment service tracking and LED panel map'],'features':['Features','How Unreal Support works'],'quickstart':['Quick Start','nDisplay stage startup guide'],'admin':['Admin','User management']};
+  var t={'home':['Home','Welcome to Unreal Support'],'specs':['Rig specs','Virtual production configuration'],'issues':['Issues','Open and recent stage issues'],'chat':['Support','VP and nDisplay assistance'],'cl':['Checklist','Daily session readiness'],'cal':['Planner','Schedule and stage activity'],'gear':['Equipment','Component manifest and product links'],'plugin':['UE Plugin','Live diagnostics plugin for Unreal Engine'],'stage3d':['Stage 3D','Interactive LED volume and studio planner'],'maint':['Maintenance','Equipment service tracking and LED panel map'],'features':['Features','How Unreal Support works'],'quickstart':['Quick Start','nDisplay stage startup guide'],'reports':['Reports','Saved support analyses'],'admin':['Admin','User management']};
   if(t[id]&&el('tb-title')){el('tb-title').textContent=t[id][0];el('tb-meta').textContent=t[id][1];}
 }
 
@@ -7603,7 +7676,178 @@ function appendChatActions(bubble){
   btn.innerHTML=CL_ICON+'<span>Save as checklist</span>';
   btn.onclick=function(){ saveResponseAsChecklist(btn); };
   row.appendChild(btn);
+  var rbtn=document.createElement('button'); rbtn.className='msg-act'; rbtn.type='button';
+  rbtn.innerHTML='<svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;stroke-width:1.8;fill:none;vertical-align:-2px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg><span>Send to Reports</span>';
+  rbtn.onclick=function(){ saveResponseToReports(rbtn); };
+  row.appendChild(rbtn);
   grp.appendChild(row);
+}
+
+// ── REPORTS ──────────────────────────────────────────────────────────────────
+var reports=[], repNextId=1, _openReportId=null;
+function saveReports(){ fsave('reports',{items:reports,nextId:repNextId}); }
+function updateRepCount(){ var b=el('br'); if(b){ b.textContent=reports.length; b.style.display=reports.length?'':'none'; } }
+
+// Derive a title from the first heading or first sentence of the response.
+function deriveReportTitle(text){
+  var lines=String(text).split('\n');
+  for(var i=0;i<lines.length;i++){
+    var h=lines[i].match(/^\s*#{1,6}\s+(.+)/);
+    if(h) return h[1].replace(/[*`]/g,'').trim().slice(0,80);
+  }
+  // first non-empty prose line
+  for(var j=0;j<lines.length;j++){
+    var ln=lines[j].replace(/[*`#>]/g,'').trim();
+    if(ln){ return ln.length>80?ln.slice(0,80)+'\u2026':ln; }
+  }
+  return 'Support Report';
+}
+
+function saveResponseToReports(btn){
+  var grp=btn.closest('.msg-group'); if(!grp) return;
+  var bubble=grp.querySelector('.msg-bubble'); if(!bubble) return;
+  // Recover the original markdown for this turn from chatHist (last assistant entry
+  // matching this bubble's text), falling back to the rendered textContent.
+  var raw=bubble.textContent||'';
+  // Prefer the full stored assistant message (keeps code fences/markdown intact)
+  for(var i=chatHist.length-1;i>=0;i--){
+    if(chatHist[i].role==='assistant'){ raw=chatHist[i].content; break; }
+  }
+  var ps=parseSrc(raw);
+  var rep={ id:repNextId++, title:deriveReportTitle(ps.t||raw), body:ps.t||raw,
+    sources:ps.s||[], date:new Date().toISOString() };
+  reports.unshift(rep);
+  saveReports(); updateRepCount();
+  flashAct(btn,'Saved to Reports');
+}
+
+function renderReports(){
+  var host=el('rep-list'); if(!host) return;
+  if(!reports.length){ host.innerHTML='<div class="rep-empty">No reports yet. In Support, use \u201cSend to Reports\u201d on any response to save it here.</div>'; updateRepCount(); return; }
+  host.innerHTML=reports.map(function(r){
+    var dt=new Date(r.date), ds=dt.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})+' \u00b7 '+dt.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+    return '<div class="rep-card" onclick="openReport('+r.id+')">'
+      +'<div class="rep-card-ic"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8"/></svg></div>'
+      +'<div class="rep-card-body"><div class="rep-card-title">'+esc(r.title)+'</div><div class="rep-card-meta">'+ds+(r.sources&&r.sources.length?(' \u00b7 '+r.sources.length+' source'+(r.sources.length>1?'s':'')):'')+'</div></div>'
+      +'<button class="rep-card-del" onclick="event.stopPropagation();deleteReport('+r.id+')" title="Delete report">&#215;</button>'
+      +'</div>';
+  }).join('');
+  updateRepCount();
+}
+
+function deleteReport(id){
+  var r=reports.find(function(x){return x.id===id;}); if(!r) return;
+  if(!confirm('Delete this report? This cannot be undone.')) return;
+  reports=reports.filter(function(x){return x.id!==id;});
+  saveReports(); renderReports();
+  if(_openReportId===id) closeReport();
+}
+
+// Minimal, safe markdown -> HTML for the clean reader document.
+function reportMdToHtml(md){
+  function esc2(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function inline(s){
+    return esc2(s)
+      .replace(/`([^`]+)`/g,'<code>$1</code>')
+      .replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>')
+      .replace(/(^|[^*])\*([^*\n]+)\*/g,'$1<em>$2</em>')
+      .replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
+  }
+  var lines=String(md).replace(/\r\n/g,'\n').split('\n');
+  var html='', i=0, listType=null;
+  function closeList(){ if(listType){ html+='</'+listType+'>'; listType=null; } }
+  while(i<lines.length){
+    var ln=lines[i];
+    // fenced code block
+    var f=ln.match(/^```([a-zA-Z0-9_+-]*)\s*$/);
+    if(f){ closeList(); var code=[]; i++;
+      while(i<lines.length && !/^```\s*$/.test(lines[i])){ code.push(lines[i]); i++; }
+      i++; html+='<pre><code>'+esc2(code.join('\n'))+'</code></pre>'; continue; }
+    var h=ln.match(/^(#{1,6})\s+(.+)/);
+    if(h){ closeList(); var lv=Math.min(h[1].length,3); html+='<h'+lv+'>'+inline(h[2].replace(/[*]/g,function(m,o,s){return m;}))+'</h'+lv+'>'; i++; continue; }
+    var ul=ln.match(/^\s*[-*+]\s+(.+)/);
+    if(ul){ if(listType!=='ul'){ closeList(); html+='<ul>'; listType='ul'; } html+='<li>'+inline(ul[1])+'</li>'; i++; continue; }
+    var ol=ln.match(/^\s*\d+[.)]\s+(.+)/);
+    if(ol){ if(listType!=='ol'){ closeList(); html+='<ol>'; listType='ol'; } html+='<li>'+inline(ol[1])+'</li>'; i++; continue; }
+    if(!ln.trim()){ closeList(); i++; continue; }
+    closeList(); html+='<p>'+inline(ln)+'</p>'; i++;
+  }
+  closeList();
+  return html;
+}
+
+// If the body opens with a heading identical to the derived title, drop it so the
+// reader/PDF don't show the title twice.
+function stripDupTitle(body, title){
+  var lines=String(body).split('\n'), i=0;
+  while(i<lines.length && !lines[i].trim()) i++;
+  var h=lines[i] && lines[i].match(/^\s*#{1,6}\s+(.+)/);
+  if(h){
+    var ht=h[1].replace(/[*`]/g,'').trim();
+    if(ht.toLowerCase()===String(title).toLowerCase().replace(/\u2026$/,'').trim()){
+      lines.splice(i,1);
+      while(lines[i]!==undefined && !lines[i].trim()) lines.splice(i,1);
+      return lines.join('\n');
+    }
+  }
+  return body;
+}
+
+function buildReportDocHTML(r){
+  var dt=new Date(r.date);
+  var ds=dt.toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'})+' \u00b7 '+dt.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+  var h='<div class="rd-kicker">Unreal Support \u2014 Analysis Report</div>'
+    +'<div class="rd-title">'+esc(r.title)+'</div>'
+    +'<div class="rd-meta">'+ds+'</div>'
+    +reportMdToHtml(stripDupTitle(r.body, r.title));
+  if(r.sources&&r.sources.length){
+    h+='<div class="rd-src"><strong>Sources</strong>'+r.sources.map(function(s){
+      var u=s.url||''; var t=s.title||u;
+      return u?('<a href="'+esc(u)+'" target="_blank" rel="noopener">'+esc(t)+'</a>'):('<div>'+esc(t)+'</div>');
+    }).join('')+'</div>';
+  }
+  return h;
+}
+
+function openReport(id){
+  var r=reports.find(function(x){return x.id===id;}); if(!r) return;
+  _openReportId=id;
+  el('rep-doc').innerHTML=buildReportDocHTML(r);
+  el('rep-reader').classList.add('show');
+  el('rep-reader').querySelector('.rep-reader-scroll').scrollTop=0;
+}
+function closeReport(){ el('rep-reader').classList.remove('show'); _openReportId=null; }
+
+function exportReportPDF(){
+  var r=reports.find(function(x){return x.id===_openReportId;}); if(!r) return;
+  var exportDate=new Date(r.date).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+  var extraCSS=
+     'h1,h2,h3{color:#15171c;font-weight:650;letter-spacing:-.01em;line-height:1.3;margin:22px 0 9px}'
+    +'h1{font-size:19px}h2{font-size:16px}h3{font-size:14px}'
+    +'h2,h3{padding-bottom:4px;border-bottom:1px solid #eef1f5}'
+    +'p{margin:0 0 12px;font-size:12.5px;line-height:1.7;color:#23262c}'
+    +'strong{font-weight:650;color:#15171c}'
+    +'ul,ol{margin:0 0 14px;padding-left:22px}li{margin-bottom:6px;font-size:12.5px;line-height:1.65;color:#23262c}'
+    +'code{font-family:ui-monospace,monospace;font-size:11px;background:#f4f6f8;border:1px solid #e7eaee;border-radius:3px;padding:1px 5px;color:#c2410c}'
+    +'pre{background:#15171c;border-radius:7px;padding:13px 15px;overflow-x:auto;margin:0 0 15px;break-inside:avoid}'
+    +'pre code{background:none;border:none;color:#e6e9ed;padding:0;font-size:11px;line-height:1.55}'
+    +'.rd-src{margin-top:28px;padding-top:14px;border-top:1px solid #e7eaee;font-size:11px;color:#8b929c}'
+    +'.rd-src a{color:#3b6fe0;text-decoration:none;display:block;margin-top:4px;word-break:break-all}';
+  var body=reportMdToHtml(stripDupTitle(r.body, r.title));
+  if(r.sources&&r.sources.length){
+    body+='<div class="rd-src"><strong>Sources</strong>'+r.sources.map(function(s){
+      var u=s.url||''; var t=s.title||u;
+      return u?('<a href="'+esc(u)+'">'+esc(t)+'</a>'):('<div>'+esc(t)+'</div>');
+    }).join('')+'</div>';
+  }
+  var html=buildPdfDoc({
+    orientation:'portrait', docType:'Analysis Report', kicker:'Support',
+    title:r.title, subtitle:'Generated '+exportDate,
+    metaHTML:'<b>Support Analysis</b><br>Generated '+exportDate,
+    dateStr:exportDate, footerTitle:'Analysis Report',
+    extraCSS:extraCSS, glanceHTML:'', bodyHTML:body
+  });
+  openPrintWindow(html);
 }
 
 // Turn ONE specific assistant response into a checklist section. Prose lines

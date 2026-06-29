@@ -188,6 +188,9 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:13p
 .rep-card-meta{font-size:11px;color:var(--ink3);font-family:var(--mono);margin-top:3px}
 .rep-card-del{background:none;border:none;color:var(--ink4);cursor:pointer;padding:6px 8px;border-radius:6px;font-size:15px;line-height:1;flex-shrink:0;transition:all .12s}
 .rep-card-del:hover{color:var(--crit);background:var(--rdim)}
+.rep-card-edit{background:none;border:none;color:var(--ink4);cursor:pointer;padding:6px 7px;border-radius:6px;line-height:1;flex-shrink:0;transition:all .12s;display:flex;align-items:center}
+.rep-card-edit svg{width:14px;height:14px;stroke:currentColor;stroke-width:1.8;fill:none}
+.rep-card-edit:hover{color:var(--brand1);background:var(--brand-dim)}
 .rep-empty{font-family:var(--mono);font-size:12px;color:var(--ink4);padding:40px 20px;text-align:center;border:1px dashed var(--line2);border-radius:10px;background:rgba(255,255,255,.008)}
 /* full-screen reader */
 .rep-reader{display:none;position:fixed;inset:0;z-index:9000;background:radial-gradient(120% 100% at 50% 0%,#202126 0%,#161619 60%,#101012 100%);flex-direction:column}
@@ -197,6 +200,9 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:13p
 .rep-reader-back:hover{color:var(--ink)}
 .rep-reader-back svg{width:15px;height:15px;stroke:currentColor;stroke-width:2;fill:none}
 .rep-reader-actions{display:flex;gap:8px}
+.rep-reader-btn2{display:flex;align-items:center;gap:7px;background:var(--el);color:var(--ink2);border:1px solid var(--line2);border-radius:7px;padding:8px 14px;font-size:12.5px;font-weight:500;font-family:var(--sans);cursor:pointer;transition:all .12s}
+.rep-reader-btn2:hover{color:var(--ink);border-color:var(--line3);background:var(--el2)}
+.rep-reader-btn2 svg{width:14px;height:14px;stroke:currentColor;stroke-width:1.8;fill:none}
 .rep-reader-btn{display:flex;align-items:center;gap:7px;background:linear-gradient(135deg,var(--brand1),var(--brand2));color:#06141f;border:none;border-radius:7px;padding:8px 16px;font-size:12.5px;font-weight:600;font-family:var(--sans);cursor:pointer;transition:opacity .12s,transform .05s}
 .rep-reader-btn:hover{opacity:.92}
 .rep-reader-btn:active{transform:translateY(1px)}
@@ -2223,7 +2229,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
       <div style="max-width:560px;padding:8px 0 40px">
         <h2 style="font-size:22px;font-weight:700;color:var(--ink);margin:0 0 4px">Admin</h2>
         <p style="color:var(--ink3);margin:0 0 6px;font-size:13px">Create user accounts and manage access. Only visible to the admin account.</p>
-        <p style="margin:0 0 24px"><code style="font-family:var(--mono);font-size:11px;color:#4ade80;background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.18);border-radius:4px;padding:2px 7px">v1.1.6</code></p>
+        <p style="margin:0 0 24px"><code style="font-family:var(--mono);font-size:11px;color:#4ade80;background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.18);border-radius:4px;padding:2px 7px">v1.1.7</code></p>
 
         <div style="background:var(--card);border:1px solid var(--line);border-radius:6px;padding:20px;margin-bottom:16px">
           <div style="font-size:11px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px">Create new user</div>
@@ -2828,6 +2834,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
   <div class="rep-reader-bar">
     <button class="rep-reader-back" onclick="closeReport()" title="Back to reports">&#8592; Reports</button>
     <div class="rep-reader-actions">
+      <button class="rep-reader-btn2" onclick="renameReport(_openReportId)" title="Rename this report"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></svg>Rename</button>
       <button class="rep-reader-btn" onclick="exportReportPDF()" title="Export this report as PDF"><svg viewBox="0 0 24 24"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>Export PDF</button>
     </div>
   </div>
@@ -7749,6 +7756,7 @@ function renderReports(){
     return '<div class="rep-card" onclick="openReport('+r.id+')">'
       +'<div class="rep-card-ic"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8"/></svg></div>'
       +'<div class="rep-card-body"><div class="rep-card-title">'+esc(r.title)+'</div><div class="rep-card-meta">'+ds+(r.sources&&r.sources.length?(' \u00b7 '+r.sources.length+' source'+(r.sources.length>1?'s':'')):'')+'</div></div>'
+      +'<button class="rep-card-edit" onclick="event.stopPropagation();renameReport('+r.id+')" title="Rename report"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></svg></button>'
       +'<button class="rep-card-del" onclick="event.stopPropagation();deleteReport('+r.id+')" title="Delete report">&#215;</button>'
       +'</div>';
   }).join('');
@@ -7761,6 +7769,18 @@ function deleteReport(id){
   reports=reports.filter(function(x){return x.id!==id;});
   saveReports(); renderReports();
   if(_openReportId===id) closeReport();
+}
+
+function renameReport(id){
+  var r=reports.find(function(x){return x.id===id;}); if(!r) return;
+  var nv=prompt('Rename report:', r.title);
+  if(nv===null) return;            // cancelled
+  nv=nv.trim(); if(!nv) return;    // empty -> keep existing
+  r.title=nv.slice(0,120);
+  saveReports();
+  renderReports();
+  // If this report is open in the reader, refresh its title live
+  if(_openReportId===id){ el('rep-doc').innerHTML=buildReportDocHTML(r); }
 }
 
 // Minimal, safe markdown -> HTML for the clean reader document.

@@ -190,34 +190,54 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:13p
 .rep-card-del:hover{color:var(--crit);background:var(--rdim)}
 .rep-empty{font-family:var(--mono);font-size:12px;color:var(--ink4);padding:40px 20px;text-align:center;border:1px dashed var(--line2);border-radius:10px;background:rgba(255,255,255,.008)}
 /* full-screen reader */
-.rep-reader{display:none;position:fixed;inset:0;z-index:9000;background:#33353a;flex-direction:column}
+.rep-reader{display:none;position:fixed;inset:0;z-index:9000;background:radial-gradient(120% 100% at 50% 0%,#202126 0%,#161619 60%,#101012 100%);flex-direction:column}
 .rep-reader.show{display:flex}
-.rep-reader-bar{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:11px 18px;background:#0e0e11;border-bottom:1px solid var(--line);flex-shrink:0}
-.rep-reader-back{background:none;border:none;color:var(--ink2);font-size:13px;font-weight:500;cursor:pointer;font-family:var(--sans);padding:6px 4px;transition:color .12s}
+.rep-reader-bar{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:11px 18px;background:rgba(13,13,15,.85);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line);flex-shrink:0;z-index:2}
+.rep-reader-back{display:flex;align-items:center;gap:7px;background:none;border:none;color:var(--ink2);font-size:13px;font-weight:500;cursor:pointer;font-family:var(--sans);padding:6px 4px;transition:color .12s}
 .rep-reader-back:hover{color:var(--ink)}
+.rep-reader-back svg{width:15px;height:15px;stroke:currentColor;stroke-width:2;fill:none}
 .rep-reader-actions{display:flex;gap:8px}
-.rep-reader-btn{display:flex;align-items:center;gap:7px;background:linear-gradient(135deg,var(--brand1),var(--brand2));color:#06141f;border:none;border-radius:6px;padding:8px 16px;font-size:12.5px;font-weight:600;font-family:var(--sans);cursor:pointer;transition:opacity .12s}
-.rep-reader-btn:hover{opacity:.9}
+.rep-reader-btn{display:flex;align-items:center;gap:7px;background:linear-gradient(135deg,var(--brand1),var(--brand2));color:#06141f;border:none;border-radius:7px;padding:8px 16px;font-size:12.5px;font-weight:600;font-family:var(--sans);cursor:pointer;transition:opacity .12s,transform .05s}
+.rep-reader-btn:hover{opacity:.92}
+.rep-reader-btn:active{transform:translateY(1px)}
 .rep-reader-btn svg{width:15px;height:15px;stroke:currentColor;stroke-width:2;fill:none}
-.rep-reader-scroll{flex:1;overflow-y:auto;padding:36px 20px 80px}
-/* clean printed-document style */
-.rep-doc{max-width:760px;margin:0 auto;background:#fff;color:#1a1c20;border-radius:6px;box-shadow:0 8px 40px rgba(0,0,0,.3);padding:64px 72px;font-family:'Geist',system-ui,sans-serif;font-size:14.5px;line-height:1.72}
-.rep-doc .rd-kicker{font-family:'Barlow Condensed',var(--sans);font-weight:700;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#3b6fe0;margin-bottom:8px}
-.rep-doc .rd-title{font-size:27px;font-weight:700;letter-spacing:-.02em;color:#15171c;line-height:1.2;margin-bottom:12px}
-.rep-doc .rd-meta{font-family:'Geist Mono',monospace;font-size:11.5px;color:#8b929c;padding-bottom:20px;margin-bottom:28px;border-bottom:2px solid #15171c}
-.rep-doc h1,.rep-doc h2,.rep-doc h3{color:#15171c;font-weight:650;letter-spacing:-.01em;line-height:1.3;margin:26px 0 10px}
-.rep-doc h1{font-size:21px}.rep-doc h2{font-size:18px}.rep-doc h3{font-size:15.5px}
-.rep-doc h2,.rep-doc h3{padding-bottom:5px;border-bottom:1px solid #eef1f5}
-.rep-doc p{margin:0 0 14px}
-.rep-doc strong{font-weight:650;color:#15171c}
-.rep-doc ul,.rep-doc ol{margin:0 0 16px;padding-left:24px}
-.rep-doc li{margin-bottom:7px}
-.rep-doc code{font-family:'Geist Mono',monospace;font-size:12.5px;background:#f4f6f8;border:1px solid #e7eaee;border-radius:4px;padding:1px 6px;color:#c2410c}
-.rep-doc pre{background:#15171c;border-radius:8px;padding:16px 18px;overflow-x:auto;margin:0 0 18px}
-.rep-doc pre code{background:none;border:none;color:#e6e9ed;padding:0;font-size:12.5px;line-height:1.6}
-.rep-doc .rd-src{margin-top:36px;padding-top:18px;border-top:1px solid #e7eaee;font-size:12px;color:#8b929c}
-.rep-doc .rd-src a{color:#3b6fe0;text-decoration:none;display:block;margin-top:5px;word-break:break-all}
-@media(max-width:640px){.rep-doc{padding:38px 26px}.rep-reader-scroll{padding:18px 10px 60px}}
+.rep-reader-scroll{flex:1;overflow-y:auto;padding:40px 20px 90px}
+/* polished dark document */
+.rep-doc{max-width:780px;margin:0 auto;background:linear-gradient(180deg,#27272d 0%,#212126 100%);color:var(--ink);border:1px solid var(--line2);border-radius:14px;box-shadow:0 24px 70px rgba(0,0,0,.45),0 2px 0 rgba(255,255,255,.02) inset;overflow:hidden;font-family:'Geist',system-ui,sans-serif;font-size:14.5px;line-height:1.74}
+/* masthead band */
+.rep-doc .rd-head{position:relative;padding:38px 56px 26px;background:linear-gradient(180deg,rgba(91,157,255,.06),rgba(91,157,255,0));border-bottom:1px solid var(--line)}
+.rep-doc .rd-head::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--brand1),var(--brand2))}
+.rep-doc .rd-kicker{display:flex;align-items:center;gap:9px;font-family:'Barlow Condensed',var(--sans);font-weight:800;font-size:11.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--brand1);margin-bottom:11px}
+.rep-doc .rd-kicker::before{content:'';width:18px;height:2px;background:linear-gradient(90deg,var(--brand1),transparent)}
+.rep-doc .rd-title{font-size:28px;font-weight:700;letter-spacing:-.025em;color:#fff;line-height:1.18;margin-bottom:14px}
+.rep-doc .rd-meta{display:flex;flex-wrap:wrap;gap:7px 16px;font-family:'Geist Mono',monospace;font-size:11px;color:var(--ink3);letter-spacing:.02em}
+.rep-doc .rd-meta .rd-chip{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:5px;text-transform:uppercase;letter-spacing:.08em}
+.rep-doc .rd-meta .rd-chip svg{width:11px;height:11px;stroke:var(--ink3);stroke-width:1.8;fill:none}
+/* body */
+.rep-doc .rd-body{padding:30px 56px 52px}
+.rep-doc h1,.rep-doc h2,.rep-doc h3{color:#fff;font-weight:650;letter-spacing:-.015em;line-height:1.3;margin:30px 0 12px}
+.rep-doc h1:first-child,.rep-doc h2:first-child,.rep-doc h3:first-child{margin-top:0}
+.rep-doc h1{font-size:21px}.rep-doc h2{font-size:18px;display:flex;align-items:center;gap:11px}
+.rep-doc h2::before{content:'';width:4px;height:17px;border-radius:2px;background:linear-gradient(180deg,var(--brand1),var(--brand2));flex-shrink:0}
+.rep-doc h3{font-size:15px;color:var(--ink);padding-bottom:6px;border-bottom:1px solid var(--line)}
+.rep-doc p{margin:0 0 15px;color:var(--ink2)}
+.rep-doc strong{font-weight:600;color:#fff}
+.rep-doc em{color:var(--ink)}
+.rep-doc ul,.rep-doc ol{margin:0 0 17px;padding-left:4px;list-style:none;counter-reset:rd}
+.rep-doc li{position:relative;margin-bottom:9px;padding-left:26px;color:var(--ink2)}
+.rep-doc ul li::before{content:'';position:absolute;left:7px;top:9px;width:5px;height:5px;border-radius:50%;background:var(--brand1)}
+.rep-doc ol li{counter-increment:rd}
+.rep-doc ol li::before{content:counter(rd);position:absolute;left:0;top:1px;width:18px;height:18px;border-radius:5px;background:var(--brand-dim);border:1px solid rgba(91,157,255,.25);color:var(--brand1);font-family:'Geist Mono',monospace;font-size:10px;font-weight:500;display:flex;align-items:center;justify-content:center}
+.rep-doc code{font-family:'Geist Mono',monospace;font-size:12.5px;background:rgba(91,157,255,.1);border:1px solid rgba(91,157,255,.18);border-radius:4px;padding:1px 6px;color:#9ec5ff}
+.rep-doc pre{position:relative;background:#0e0e11;border:1px solid var(--line2);border-radius:9px;padding:15px 17px;overflow-x:auto;margin:0 0 18px}
+.rep-doc pre::before{content:'';position:absolute;left:0;top:11px;bottom:11px;width:2px;background:linear-gradient(180deg,var(--brand1),var(--brand2));border-radius:2px}
+.rep-doc pre code{background:none;border:none;color:#d8dbe2;padding:0 0 0 8px;font-size:12.5px;line-height:1.65;display:block}
+.rep-doc .rd-src{margin-top:34px;padding-top:20px;border-top:1px solid var(--line)}
+.rep-doc .rd-src-h{font-family:'Barlow Condensed',var(--sans);font-weight:800;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);margin-bottom:12px}
+.rep-doc .rd-src a{display:flex;align-items:center;gap:9px;padding:9px 12px;margin-bottom:6px;background:rgba(255,255,255,.022);border:1px solid var(--line);border-radius:7px;color:var(--ink2);text-decoration:none;font-size:12px;transition:all .12s;word-break:break-all}
+.rep-doc .rd-src a:hover{border-color:rgba(91,157,255,.3);background:var(--brand-dim);color:var(--ink)}
+.rep-doc .rd-src a svg{width:13px;height:13px;stroke:var(--brand1);stroke-width:1.7;fill:none;flex-shrink:0}
+@media(max-width:640px){.rep-doc .rd-head{padding:26px 24px 20px}.rep-doc .rd-body{padding:22px 24px 36px}.rep-doc .rd-title{font-size:23px}.rep-reader-scroll{padding:18px 10px 60px}}
 .api-key-display{font-size:12px;color:var(--live);background:var(--live-dim);border:1px solid rgba(74,222,128,.2);border-radius:var(--r);padding:7px 10px;margin-bottom:12px;display:none}
 
 /* ── APP LAYOUT ── */
@@ -2203,7 +2223,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
       <div style="max-width:560px;padding:8px 0 40px">
         <h2 style="font-size:22px;font-weight:700;color:var(--ink);margin:0 0 4px">Admin</h2>
         <p style="color:var(--ink3);margin:0 0 6px;font-size:13px">Create user accounts and manage access. Only visible to the admin account.</p>
-        <p style="margin:0 0 24px"><code style="font-family:var(--mono);font-size:11px;color:#4ade80;background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.18);border-radius:4px;padding:2px 7px">v1.1.4</code></p>
+        <p style="margin:0 0 24px"><code style="font-family:var(--mono);font-size:11px;color:#4ade80;background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.18);border-radius:4px;padding:2px 7px">v1.1.5</code></p>
 
         <div style="background:var(--card);border:1px solid var(--line);border-radius:6px;padding:20px;margin-bottom:16px">
           <div style="font-size:11px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px">Create new user</div>
@@ -7795,17 +7815,27 @@ function stripDupTitle(body, title){
 
 function buildReportDocHTML(r){
   var dt=new Date(r.date);
-  var ds=dt.toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'})+' \u00b7 '+dt.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
-  var h='<div class="rd-kicker">Unreal Support \u2014 Analysis Report</div>'
+  var ds=dt.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+  var ts=dt.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+  var calIc='<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>';
+  var docIc='<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>';
+  var h='<div class="rd-head">'
+    +'<div class="rd-kicker">Unreal Support \u2014 Analysis Report</div>'
     +'<div class="rd-title">'+esc(r.title)+'</div>'
-    +'<div class="rd-meta">'+ds+'</div>'
+    +'<div class="rd-meta">'
+    +'<span class="rd-chip">'+calIc+ds+' \u00b7 '+ts+'</span>'
+    +(r.sources&&r.sources.length?('<span class="rd-chip">'+docIc+r.sources.length+' source'+(r.sources.length>1?'s':'')+'</span>'):'')
+    +'</div></div>'
+    +'<div class="rd-body">'
     +reportMdToHtml(stripDupTitle(r.body, r.title));
   if(r.sources&&r.sources.length){
-    h+='<div class="rd-src"><strong>Sources</strong>'+r.sources.map(function(s){
+    var lnk='<svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.5 1.5"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7L12 19"/></svg>';
+    h+='<div class="rd-src"><div class="rd-src-h">Sources</div>'+r.sources.map(function(s){
       var u=s.url||''; var t=s.title||u;
-      return u?('<a href="'+esc(u)+'" target="_blank" rel="noopener">'+esc(t)+'</a>'):('<div>'+esc(t)+'</div>');
+      return u?('<a href="'+esc(u)+'" target="_blank" rel="noopener">'+lnk+esc(t)+'</a>'):('<a>'+lnk+esc(t)+'</a>');
     }).join('')+'</div>';
   }
+  h+='</div>';
   return h;
 }
 

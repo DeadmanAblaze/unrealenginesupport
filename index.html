@@ -2235,7 +2235,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
       <div style="max-width:560px;padding:8px 0 40px">
         <h2 style="font-size:22px;font-weight:700;color:var(--ink);margin:0 0 4px">Admin</h2>
         <p style="color:var(--ink3);margin:0 0 6px;font-size:13px">Create user accounts and manage access. Only visible to the admin account.</p>
-        <p style="margin:0 0 24px"><code style="font-family:var(--mono);font-size:11px;color:#4ade80;background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.18);border-radius:4px;padding:2px 7px">v1.2.2</code></p>
+        <p style="margin:0 0 24px"><code style="font-family:var(--mono);font-size:11px;color:#4ade80;background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.18);border-radius:4px;padding:2px 7px">v1.2.3</code></p>
 
         <div style="background:var(--card);border:1px solid var(--line);border-radius:6px;padding:20px;margin-bottom:16px">
           <div style="font-size:11px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px">Create new user</div>
@@ -6044,10 +6044,12 @@ function selectCalDate(dateStr){
 // ── WELCOME / HOME ──────────────────────────────────────────────────────────
 // ── HOME · AI STAGE BRIEFING ───────────────────────────────────────────────
 var BRIEF_SYS = 'You are the on-stage AI engineer for an ICVFX LED volume used in live sports broadcast. '
-  + 'You will be given a live telemetry snapshot of the rig. Write a concise status briefing for the operator. '
-  + 'Format EXACTLY like this: one short paragraph of 2-3 sentences giving the overall state and readiness in plain, confident broadcast-engineer language; then a blank line; then 3 to 5 bullet points, each starting with "- ", highlighting the most important specifics (genlock/sync, LED wall and panel health, render nodes, camera tracking, open fault reports, anything needing attention). '
-  + 'Lead with what matters most. If something is wrong or needs action, say so plainly and first; if everything is healthy, say it is good to go. '
-  + 'Only use facts from the snapshot - never invent numbers or hardware. No headings, no bold, no preamble such as "Here is" - just the paragraph then the bullets. Keep the entire reply under 130 words.';
+  + 'You will be given a CONFIGURATION AND RECORDS snapshot of the rig. This is NOT live hardware telemetry: it describes what hardware is configured in the rig spec, plus fault tickets and maintenance records the operator has entered manually. '
+  + 'CRITICAL: You must NEVER state or imply that hardware has been verified as working when it has not. There is currently no live link to the hardware, so you cannot confirm that genlock is actually locked, that the camera is actually tracking, that render nodes are actually online, or that LED panels are actually healthy. '
+  + 'Do NOT invent or assert live readings (e.g. do not say "genlock is locked solid", "tracking is live with no anomalies", "all nodes online", "wall is healthy" as if measured). Instead describe what is CONFIGURED (e.g. "a house sync source is configured", "3 render nodes are defined", "Vive Mars tracking is set up") and what the RECORDS show (open fault tickets, panels flagged for service, devices checked out of maintenance). '
+  + 'When nothing is wrong in the records, say the rig is "configured and shows no outstanding faults in the records" or similar - NOT that it is verified healthy or "good to go". If a live systems check would be needed to confirm readiness, say so briefly. '
+  + 'Format EXACTLY like this: one short paragraph of 2-3 sentences giving the overall configured state and any outstanding records-based issues in plain broadcast-engineer language; then a blank line; then 3 to 5 bullet points each starting with "- " covering the most important specifics (sync configuration, LED wall/panel records, render nodes defined, camera tracking configuration, open fault reports, maintenance). '
+  + 'Lead with anything that needs action. Only use facts from the snapshot - never invent numbers or hardware. No headings, no bold, no preamble such as "Here is" - just the paragraph then the bullets. Keep the entire reply under 130 words.';
 
 var AI_SPARKLE = '<svg viewBox="0 0 24 24" fill="none"><defs><linearGradient id="aiSpark" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3aa0ff"/><stop offset="0.5" stop-color="#9b8cff"/><stop offset="1" stop-color="#5ad1ff"/></linearGradient></defs><path d="M12 2.4l1.9 5.2 5.2 1.9-5.2 1.9L12 16.6l-1.9-5.2L4.9 9.5l5.2-1.9z" fill="url(#aiSpark)"/><path d="M18.6 13.4l.9 2.5 2.5.9-2.5.9-.9 2.5-.9-2.5-2.5-.9 2.5-.9z" fill="url(#aiSpark)" opacity="0.82"/></svg>';
 var AI_REFRESH = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 12a8.5 8.5 0 1 1-2.4-6"/><path d="M20.5 4v4.5H16"/></svg>';
@@ -6097,17 +6099,17 @@ function gatherRigState(){
 
 function buildBriefingPrompt(st){
   var L=[];
-  L.push('RIG TELEMETRY SNAPSHOT (live):');
+  L.push('RIG CONFIGURATION & RECORDS SNAPSHOT (NOT live hardware telemetry - no live link to the rig exists):');
   L.push('- Stage: ICVFX LED volume for live sports broadcast; 15m x 3m curved wall (3 degree curve)'+(st.ue?(', Unreal Engine '+st.ue):'')+'.');
-  L.push('- Readiness score: '+st.score+'/100 ('+st.verdict+').');
-  L.push('- Genlock / house sync: '+(st.syncOk?('LOCKED'+(st.syncRate?(' at '+st.syncRate):'')):'NO SYNC SOURCE CONFIGURED')+'.');
-  L.push('- LED wall: '+st.wallHealthPct+'% healthy ('+st.panelsOut+' of '+st.totalPanels+' panels out'+(st.faulty?(', '+st.faulty+' flagged for service'):'')+').');
-  if(st.nodes) L.push('- Render cluster: '+st.nodesOnline+' of '+st.nodes+' nodes online ('+st.nodeList.map(function(n){return n.nm+(n.online?'':' [OFFLINE]');}).join(', ')+').');
+  L.push('- Configuration completeness score: '+st.score+'/100 ('+st.verdict+'). This reflects how completely the rig is configured and whether records show faults - NOT a verified hardware health check.');
+  L.push('- Genlock / house sync: '+(st.syncOk?('a sync source is CONFIGURED'+(st.syncRate?(' ('+st.syncRate+')'):'')+' - lock state NOT verified live'):'NO SYNC SOURCE CONFIGURED')+'.');
+  L.push('- LED wall: '+st.totalPanels+' panels defined; records show '+st.panelsOut+' marked out'+(st.faulty?(' and '+st.faulty+' flagged for service'):'')+' (panels with no recorded fault are not verified healthy).');
+  if(st.nodes) L.push('- Render cluster: '+st.nodes+' render node(s) defined'+(st.nodesOnline<st.nodes?('; '+(st.nodes-st.nodesOnline)+' checked OUT in maintenance'):'; none checked out in maintenance')+' ('+st.nodeList.map(function(n){return n.nm+(n.online?'':' [OUT]');}).join(', ')+'). Actual online state NOT verified live.');
   else L.push('- Render cluster: no render nodes configured.');
-  L.push('- Camera tracking: '+(st.trackOk?(((st.trackSys||'tracker'))+' live'):'offline / not configured')+'.');
-  L.push('- Open fault reports: '+st.open+(st.openCrit?(' (including '+st.openCrit+' high or critical)'):'')+'.'+(st.openList.length?(' Items: '+st.openList.map(function(i){return '"'+i.t+'"'+(i.p?(' ['+i.p+']'):'');}).join('; ')+'.'):''));
-  L.push('- Maintenance: '+st.out+' device(s) out of service, '+st.faulty+' panel(s) flagged, '+st.spares+' spare panel(s) on hand.');
-  L.push('- Inventory: '+st.components+' components, '+st.connections+' signal connections.');
+  L.push('- Camera tracking: '+(st.trackOk?(((st.trackSys||'a tracker'))+' is CONFIGURED - live tracking stream NOT verified'):'not configured')+'.');
+  L.push('- Open fault reports (operator-entered): '+st.open+(st.openCrit?(' (including '+st.openCrit+' high or critical)'):'')+'.'+(st.openList.length?(' Items: '+st.openList.map(function(i){return '"'+i.t+'"'+(i.p?(' ['+i.p+']'):'');}).join('; ')+'.'):''));
+  L.push('- Maintenance records: '+st.out+' device(s) out of service, '+st.faulty+' panel(s) flagged, '+st.spares+' spare panel(s) on hand.');
+  L.push('- Inventory: '+st.components+' components, '+st.connections+' signal connections defined.');
   if(st.upcoming.length) L.push('- Upcoming (next 30 days): '+st.upcoming.slice(0,4).map(function(p){return p.title+' ('+p.date+')';}).join('; ')+'.');
   return L.join('\n');
 }
@@ -6130,7 +6132,7 @@ function renderBriefingHTML(text, generating){
       return '<li>'+inl(b)+(last?'<span class="ai-cursor"></span>':'')+'</li>';
     }).join('')+'</ul>';
   }
-  if(!h) h='<div class="ai-thinking"><span class="ai-dots"><span></span><span></span><span></span></span>Analysing rig telemetry</div>';
+  if(!h) h='<div class="ai-thinking"><span class="ai-dots"><span></span><span></span><span></span></span>Analysing rig configuration</div>';
   return h;
 }
 
@@ -6225,9 +6227,9 @@ function renderHome(){
     +'<span class="ai-state" style="color:'+pc+';background:'+hexA(pc,0.12)+';border:1px solid '+hexA(pc,0.32)+'"><i></i>'+esc(st.verdict)+'</span>'
     +'<button class="ai-rebtn" id="ai-rebtn" onclick="reanalyzeBriefing()" title="Re-analyse" aria-label="Re-analyse">'+AI_REFRESH+'</button>'
     +'</div></div>'
-    +'<div class="ai-meter"><span class="ai-meter-lbl">Readiness</span><span class="ai-meter-track"><span class="ai-meter-fill" id="ai-meter-fill" style="background:'+pc+'"></span></span><span class="ai-meter-num" id="ai-meter-num" style="color:'+pc+'">'+st.score+'</span></div>'
+    +'<div class="ai-meter"><span class="ai-meter-lbl">Config</span><span class="ai-meter-track"><span class="ai-meter-fill" id="ai-meter-fill" style="background:'+pc+'"></span></span><span class="ai-meter-num" id="ai-meter-num" style="color:'+pc+'">'+st.score+'</span></div>'
     +'<div class="ai-card-body" id="ai-brief-body"></div>'
-    +'<div class="ai-card-foot"><span class="ai-meta" id="ai-meta"></span><span class="ai-meta">Generated live by Claude</span></div>'
+    +'<div class="ai-card-foot"><span class="ai-meta" id="ai-meta"></span><span class="ai-meta">Config &amp; records \u2014 not a live hardware check</span></div>'
     +'</div></div>';
   ensureBriefing();
   if(window._briefBusy) setBriefBusy(true);

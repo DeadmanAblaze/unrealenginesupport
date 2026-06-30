@@ -929,24 +929,15 @@ select.cv-edit{text-align:left;cursor:pointer}
 .ci textarea{flex:1;background:var(--el);border:1px solid var(--line2);border-radius:var(--r);color:var(--ink);font-size:13px;font-family:var(--sans);padding:8px 12px;outline:none;resize:none;max-height:120px;transition:border .12s}
 .ci textarea::placeholder{color:var(--ink4)}
 .ci textarea:focus{border-color:var(--brand1);background:var(--el2);box-shadow:0 0 0 3px var(--brand-dim)}
-.attach-btn{background:var(--el);color:var(--ink3);border:1px solid var(--line2);border-radius:var(--r);width:36px;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .12s;align-self:stretch}
-.attach-btn:hover{color:var(--brand1);border-color:rgba(91,157,255,.45);background:var(--el2)}
-.attach-btn svg{width:16px;height:16px;stroke:currentColor;stroke-width:1.8;fill:none}
-.attach-chip{display:none;align-items:center;gap:8px;margin:0 12px 0;padding:7px 10px;background:var(--brand-dim);border:1px solid rgba(91,157,255,.28);border-radius:6px;font-size:11px;font-family:var(--mono)}
-.attach-chip.show{display:flex}
-.attach-chip svg{width:13px;height:13px;stroke:var(--brand1);stroke-width:1.8;fill:none;flex-shrink:0}
-.attach-chip-name{color:var(--ink);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1}
-.attach-chip-size{color:var(--ink3);flex-shrink:0}
-.attach-chip-x{background:none;border:none;color:var(--ink3);cursor:pointer;padding:2px 4px;border-radius:4px;font-size:14px;line-height:1;flex-shrink:0;transition:all .12s}
-.attach-chip-x:hover{color:var(--crit);background:var(--rdim)}
-.msg-attach{display:inline-flex;align-items:center;gap:6px;margin-top:6px;padding:4px 9px;background:rgba(255,255,255,.05);border:1px solid var(--line2);border-radius:5px;font-size:10.5px;font-family:var(--mono);color:var(--ink2)}
-.msg-attach svg{width:11px;height:11px;stroke:var(--brand1);stroke-width:1.8;fill:none}
 .sbtn{background:linear-gradient(135deg,var(--brand1),var(--brand2));color:#06141f;border:none;border-radius:var(--r);padding:0 15px;cursor:pointer;font-size:13px;transition:opacity .12s;flex-shrink:0;display:flex;align-items:center}
 .sbtn:hover{opacity:.85}
 .sbtn:disabled{opacity:.35;cursor:not-allowed}
 .sidebar{display:flex;flex-direction:column;gap:10px;overflow-y:auto}
 .qa-box{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:5px}
-.qa-t{font-size:10px;color:var(--ink3);font-weight:500;letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}
+.qa-t{font-size:10px;color:var(--ink3);font-weight:500;letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.log-upload-btn{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink3);background:var(--el);border:1px solid var(--line2);border-radius:6px;padding:3px 8px;cursor:pointer;transition:all .12s}
+.log-upload-btn:hover{color:var(--brand1);border-color:rgba(91,157,255,.4);background:var(--brand-dim)}
+.log-upload-btn svg{width:12px;height:12px;stroke:currentColor;stroke-width:1.9;fill:none}
 .log-box{flex:1;min-height:0}
 .log-row{display:flex;gap:6px}
 .log-sel{flex:1;min-width:0;background:var(--bg);color:var(--ink2);border:1px solid var(--line2);border-radius:5px;padding:6px 7px;font-family:var(--sans);font-size:11px;cursor:pointer}
@@ -2244,7 +2235,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
       <div style="max-width:560px;padding:8px 0 40px">
         <h2 style="font-size:22px;font-weight:700;color:var(--ink);margin:0 0 4px">Admin</h2>
         <p style="color:var(--ink3);margin:0 0 6px;font-size:13px">Create user accounts and manage access. Only visible to the admin account.</p>
-        <p style="margin:0 0 24px"><code style="font-family:var(--mono);font-size:11px;color:#4ade80;background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.18);border-radius:4px;padding:2px 7px">v1.2.1</code></p>
+        <p style="margin:0 0 24px"><code style="font-family:var(--mono);font-size:11px;color:#4ade80;background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.18);border-radius:4px;padding:2px 7px">v1.2.2</code></p>
 
         <div style="background:var(--card);border:1px solid var(--line);border-radius:6px;padding:20px;margin-bottom:16px">
           <div style="font-size:11px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px">Create new user</div>
@@ -2617,24 +2608,17 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none}
             </div>
           </div>
           <div class="msgs" id="msgs"></div>
-          <div class="attach-chip" id="attach-chip">
-            <svg viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
-            <span class="attach-chip-name" id="attach-name">file.log</span>
-            <span class="attach-chip-size" id="attach-size"></span>
-            <button class="attach-chip-x" onclick="clearAttachment()" title="Remove attachment">&#215;</button>
-          </div>
           <div class="ci">
-            <input type="file" id="logfile" style="display:none" onchange="onLogFile(this)">
-            <button class="attach-btn" aria-label="Attach log file" title="Attach a log file" onclick="el('logfile').click()">
-              <svg viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
-            </button>
             <textarea id="cinput" rows="1" placeholder="Ask about your stage..." onkeydown="onChatKey(event)" oninput="autoR(this)"></textarea>
             <button class="sbtn" id="csend" aria-label="Send message" onclick="sendChat()">&#9654;</button>
           </div>
         </div>
         <div class="sidebar">
           <div class="qa-box log-box">
-            <div class="qa-t">Paste node logs</div>
+            <div class="qa-t">Paste node logs
+              <input type="file" id="logfile" style="display:none" onchange="onLogFile(this)">
+              <button class="log-upload-btn" title="Upload a log file" onclick="el('logfile').click()"><svg viewBox="0 0 24 24"><path d="M12 16V4m0 0l-4 4m4-4l4 4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>Upload</button>
+            </div>
             <div class="log-row">
               <select class="log-sel" id="log-type" title="Log type">
                 <option value="Output log">Output log</option>
@@ -7395,26 +7379,30 @@ function addSrcs(s,wrap){
 function autoR(e){ e.style.height='auto'; e.style.height=Math.min(e.scrollHeight,110)+'px'; }
 
 // ── Log file attachment ──────────────────────────────────────────────────────
-var attachedLog=null; // {name, size, content}
 function fmtBytes(n){ if(n<1024) return n+' B'; if(n<1048576) return (n/1024).toFixed(1)+' KB'; return (n/1048576).toFixed(1)+' MB'; }
 function onLogFile(inp){
   var f=inp.files&&inp.files[0]; if(!f){ return; }
-  // Accept any text-based file. Reject obviously-binary by size sanity + type sniff later.
   var rdr=new FileReader();
   rdr.onload=function(){
     var txt=String(rdr.result||'');
-    attachedLog={ name:f.name, size:f.size, content:txt };
-    el('attach-name').textContent=f.name;
-    el('attach-size').textContent=fmtBytes(f.size);
-    el('attach-chip').classList.add('show');
+    var ta=el('log-paste');
+    if(ta){
+      ta.value=txt;                       // replace whatever is in the box
+      if(typeof logCount==='function') logCount();
+      // Best-effort: pick the source machine from the filename if it matches a node
+      var sel=el('log-machine');
+      if(sel){
+        var lc=f.name.toLowerCase();
+        var hit = /node[_\- ]?0/.test(lc)?'Node_0' : /node[_\- ]?1/.test(lc)?'Node_1' : /editor/.test(lc)?'Editor' : '';
+        if(hit){ for(var i=0;i<sel.options.length;i++){ if(sel.options[i].value===hit||sel.options[i].text===hit){ sel.selectedIndex=i; break; } } }
+      }
+      ta.focus();
+    }
+    if(typeof showToast==='function') showToast('Loaded '+f.name+' ('+fmtBytes(f.size)+')');
   };
   rdr.onerror=function(){ if(typeof showToast==='function') showToast('Could not read that file.',true); };
   rdr.readAsText(f);
   inp.value=''; // allow re-selecting the same file
-}
-function clearAttachment(){
-  attachedLog=null;
-  var c=el('attach-chip'); if(c) c.classList.remove('show');
 }
 
 // ── CHAT HEALTH CHECK ────────────────────────────────────────────────────────
@@ -7495,41 +7483,19 @@ function sq(t){ el('cinput').value=t; sendChat(); }
 
 function sendChat(){
   if(streaming) return;
-  var input=el('cinput'), text=input.value.trim();
-  // Allow sending with no text as long as a log file is attached.
-  if(!text && !attachedLog) return;
+  var input=el('cinput'), text=input.value.trim(); if(!text) return;
   // If the message is essentially a YouTube link (optionally with an "add/summarise"
   // style intent), treat it as a request to summarise the video into the knowledge base.
   var ytid=ytIdFrom(text);
   var nonUrl=text.replace(YT_URL_RE,' ').replace(/https?:\/\/\S+/g,' ').replace(/\s+/g,' ').trim();
-  if(!attachedLog && ytid && (nonUrl==='' || /(summar|\badd\b|knowledge|\blearn\b|watch this|remember|ingest|transcript|save this|\bkb\b)/i.test(text))){
+  if(ytid && (nonUrl==='' || /(summar|\badd\b|knowledge|\blearn\b|watch this|remember|ingest|transcript|save this|\bkb\b)/i.test(text))){
     handleVideoMessage(text, ytid); return;
   }
   var ce=document.querySelector('.chat-empty'); if(ce) el('msgs').innerHTML='';
   input.value=''; input.style.height='auto';
   el('csend').disabled=true; streaming=true;
-
-  // Compose the message actually sent to the AI (full file content appended),
-  // and a separate display string for the chat bubble (question + file badge).
-  var aiText=text, displayText=text, logMeta=null;
-  if(attachedLog){
-    var lf=attachedLog;
-    logMeta={name:lf.name, size:lf.size};
-    var q=text || 'Analyse this log file. Identify errors, warnings, and misconfigurations relevant to my rig, and give fixes:';
-    aiText=q+'\n\n=== ATTACHED FILE: '+lf.name+' ('+fmtBytes(lf.size)+') ===\n```\n'+lf.content+'\n```';
-    displayText=text; // bubble shows only the typed question; file shown as a badge
-    clearAttachment();
-  }
-
-  chatHist.push({role:'user',content:aiText});
-  var userBubble=addMsg('user', displayText || '(log file attached)');
-  // Attach a file badge to the user bubble
-  if(logMeta && userBubble){
-    var badge=document.createElement('div');
-    badge.className='msg-attach';
-    badge.innerHTML='<svg viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>'+esc(logMeta.name)+' \u00b7 '+fmtBytes(logMeta.size);
-    if(userBubble.parentElement) userBubble.parentElement.appendChild(badge);
-  }
+  chatHist.push({role:'user',content:text});
+  addMsg('user',text);
   var m=el('msgs');
   var si=document.createElement('div'); si.className='msg-group ai'; si.id='sind';
   si.innerHTML='<div class="msg-from">Support</div><div class="typing-bubble">Searching docs &amp; community<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>';
